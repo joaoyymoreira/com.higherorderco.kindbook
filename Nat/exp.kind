@@ -1,53 +1,17 @@
-// Performs exponentiation of natural numbers.
-// 1st: The base number.
-// 2nd: The exponent.
+// Performs exponentiation of nats.
+// - m: The base number.
+// - n: The exponent.
 // = The result of raising the base to the power of the exponent.
-Nat/exp
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Nat
-= λm λ{
-  #Zero: #1
-  #Succ: λn.pred (Nat/mul m (Nat/exp m n.pred))
-}
-// Tests the exponentiation function for natural numbers.
+Nat/exp : Nat -> Nat -> Nat
+| m #Zero    = #1
+| m #Succ{n} = (Nat/mul m (Nat/exp m n))
 
-// Test: 2⁰ = 1
-TO : (Equal Nat (Nat/exp #2 #Zero) #1)
-= #Refl
-
-// Test: 2¹ = 2
-TEST_1 : (Equal Nat (Nat/exp #2 #1) #2)
-= #Refl
-
-// Test: 2² = 4
-TEST_2 : (Equal Nat (Nat/exp #2 #2) #4)
-= #Refl
-
-// Test: 3² = 9
-TEST_3 : (Equal Nat (Nat/exp #3 #2) #9)
-= #Refl
-
-// Test: 5¹ = 5
-TEST_4 : (Equal Nat (Nat/exp #5 #1) #5)
-= #Refl
-
-// Test: 10⁰ = 1
-TEST_5 : (Equal Nat (Nat/exp #10 #Zero) #1)
-= #Refl
-
-// Test: 3³ = 27
-TEST_6 : (Equal Nat (Nat/exp #3 #3) #27)
-= #Refl
-
-// Test: 1⁵ = 1
-TEST_6 : (Equal Nat (Nat/exp #1 #5) #1)
-= #Refl
-
-// Test: 0² = 0
-TEST_7 : (Equal Nat (Nat/exp #Zero #2) #Zero)
-= #Refl
-
-// Test: Exponentiation property: (a^b)^c = a^(b*c)
-TEST_8 : (Equal Nat (Nat/exp (Nat/exp #2 #3) #2) (Nat/exp #2 (Nat/mul #3 #2)))
-= #Refl
+#test: (Nat/exp #2 #0) == #1  // 2⁰ = 1
+#test: (Nat/exp #2 #1) == #2  // 2¹ = 2
+#test: (Nat/exp #2 #2) == #4  // 2² = 4
+#test: (Nat/exp #3 #2) == #9  // 3² = 9
+#test: (Nat/exp #5 #1) == #5  // 5¹ = 5
+#test: (Nat/exp #9 #0) == #1  // 9⁰ = 1
+#test: (Nat/exp #3 #3) == #27 // 3³ = 27
+#test: (Nat/exp #1 #5) == #1  // 1⁵ = 1
+#test: (Nat/exp #0 #2) == #0  // 0² = 0

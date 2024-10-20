@@ -1,45 +1,16 @@
-// Returns the minimum of two natural numbers.
-// 1st: The natural number to compare.
-// 2nd: The natural number to compare.
-// = The smaller of the two input numbers.
-Nat/min
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Nat
-= λm λn
-  (Bool/if Nat (Nat/lte m n) m n)
-// Test: min 0 0 = 0.
-TEST_0 : (Equal Nat (Nat/min #Zero #Zero) #Zero)
-= #Refl
+// Returns the minimum of two nats.
+// - m: The first nat.
+// - n: The second nat.
+// = The smaller of the two input nats.
+Nat/min : Nat -> Nat -> Nat
+| m n = (Bool/if Nat (Nat/lte m n) m n)
 
-// Test: min 0 5 = 0.
-TEST_1 : (Equal Nat (Nat/min #Zero #5) #Zero)
-= #Refl
-
-// Test: min 5 0 = 0.
-TEST_2 : (Equal Nat (Nat/min #5 #Zero) #Zero)
-= #Refl
-
-// Test: min 3 2 = 2.
-TEST_3 : (Equal Nat (Nat/min #3 #2) #2)
-= #Refl
-
-// Test: min 7 8 = 7.
-TEST_4 : (Equal Nat (Nat/min #7 #8) #7)
-= #Refl
-
-// Test: min 8 7 = 7.
-TEST_5 : (Equal Nat (Nat/min #8 #7) #7)
-= #Refl
-
-// Test: Commutativity: min a b = min b a.
-TEST_6 : (Equal Nat (Nat/min #3 #4) (Nat/min #4 #3))
-= #Refl
-
-// Test: Idempotence: min a a = a.
-TEST_7 : (Equal Nat (Nat/min #5 #5) #5)
-= #Refl
-
-// Test: min with equal values.
-TEST_8 : (Equal Nat (Nat/min #6 #6) #6)
-= #Refl
+#test: (Nat/min #0 #0) == #0
+#test: (Nat/min #0 #5) == #0
+#test: (Nat/min #5 #0) == #0
+#test: (Nat/min #3 #2) == #2
+#test: (Nat/min #7 #8) == #7
+#test: (Nat/min #8 #7) == #7
+#test: (Nat/min #3 #4) == (Nat/min #4 #3)
+#test: (Nat/min #5 #5) == #5
+#test: (Nat/min #6 #6) == #6

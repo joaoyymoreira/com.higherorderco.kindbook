@@ -1,44 +1,13 @@
-// Doubles a natural number.
-// 1st: The number to double.
-// = The double of the input number.
-Nat/double
-: ∀(n: Nat)
-  Nat
-= λ{
-  #Zero: #Zero
-  #Succ: λn.pred #Succ{#Succ{(Nat/double n.pred)}}
-}
-// Tests for the double function.
+// Doubles a nat.
+// - n: The nat to double.
+// = The double of the input nat.
+Nat/double : Nat -> Nat
+| #Zero    = #Zero
+| #Succ{n} = #Succ{#Succ{(Nat/double n)}}
 
-// Test: double 0 = 0
-TEST_0
-: (Equal Nat (Nat/double #Zero) #Zero)
-= #Refl
-
-// Test: double 1 = 2
-TEST_1
-: (Equal Nat (Nat/double #1) #2)
-= #Refl
-
-// Test: double 2 = 4
-TEST_2
-: (Equal Nat (Nat/double #2) #4)
-= #Refl
-
-// Test: double 5 = 10
-TEST_3
-: (Equal Nat (Nat/double #5) #10)
-= #Refl
-
-// Test: double (double 2) = 8
-TEST_4
-: (Equal Nat (Nat/double (Nat/double #2)) #8)
-= #Refl
-
-// Test: double (3 + 2) = double 3 + double 2
-TEST_5
-: (Equal
-    Nat
-    (Nat/double (Nat/add #3 #2))
-    (Nat/add (Nat/double #3) (Nat/double #2)))
-= #Refl
+#test: (Nat/double #0) == #0
+#test: (Nat/double #1) == #2
+#test: (Nat/double #2) == #4
+#test: (Nat/double #5) == #10
+#test: (Nat/double (Nat/double #2)) == #8
+#test: (Nat/double (Nat/add #3 #2)) == (Nat/add (Nat/double #3) (Nat/double #2))

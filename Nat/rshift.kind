@@ -1,42 +1,15 @@
-// Performs right shift operation on a natural number. This function divides
-// 1st: The input natural number.
-// 2nd: The number of positions to shift right.
-// = The right-shifted result as a new natural number.
-Nat/rshift
-: ∀(n: Nat)
-  ∀(shift: Nat)
-  Nat
-= λn λshift (Nat/div n (Nat/exp #2 shift))
-// Tests the right shift function for natural numbers.
+// Performs right shift operation on a nat.
+// - n: The input nat.
+// - shift: The number of positions to shift right.
+// = The right-shifted result as a new nat.
+Nat/rshift : Nat -> Nat -> Nat
+| n shift = (Nat/div n (Nat/exp #2 shift))
 
-// Test: 0 >> 1 = 0.
-TEST_0 : (Equal Nat (Nat/rshift #Zero #1) #Zero)
-  = #Refl
-
-// Test: 1 >> 1 = 0.
-TEST_1 : (Equal Nat (Nat/rshift #1 #1) #Zero)
-  = #Refl
-
-// Test: 2 >> 1 = 1.
-TEST_2 : (Equal Nat (Nat/rshift #2 #1) #1)
-  = #Refl
-
-// Test: 4 >> 1 = 2.
-TEST_3 : (Equal Nat (Nat/rshift #4 #1) #2)
-  = #Refl
-
-// Test: 8 >> 2 = 2.
-TEST_4 : (Equal Nat (Nat/rshift #8 #2) #2)
-  = #Refl
-
-// Test: 16 >> 3 = 2.
-TEST_5 : (Equal Nat (Nat/rshift (Nat/exp #2 #4) #3) #2)
-  = #Refl
-
-// Test: 100 >> 2 = 25.
-TEST_6 : (Equal Nat (Nat/rshift (Nat/exp (Nat/mul #5 #2) #2) #2) (Nat/exp #5 #2))
-  = #Refl
-
-// Test: 1000 >> 3 = 125.
-TEST_7 : (Equal Nat (Nat/rshift (Nat/exp (Nat/mul #5 #2) #3) #3) (Nat/exp #5 #3))
-  = #Refl
+#test: (Nat/rshift #0 #1) == #0
+#test: (Nat/rshift #1 #1) == #0
+#test: (Nat/rshift #2 #1) == #1
+#test: (Nat/rshift #4 #1) == #2
+#test: (Nat/rshift #8 #2) == #2
+#test: (Nat/rshift (Nat/exp #2 #4) #3) == #2
+#test: (Nat/rshift (Nat/exp (Nat/mul #5 #2) #2) #2) == (Nat/exp #5 #2)
+#test: (Nat/rshift (Nat/exp (Nat/mul #5 #2) #3) #3) == (Nat/exp #5 #3)

@@ -1,12 +1,15 @@
-// Generates a list of natural numbers from start (inclusive) to end (exclusive).
-// 1st: The start number in the range.
-// 2nd: The number after the last number in the range.
-// = A list of natural numbers from start to (2nd - 1).
-Nat/range
-: ∀(start: Nat)
-  ∀(end: Nat)
-  (List Nat)
-= λstart λend
-  (Bool/if (List Nat) (Nat/lt start end)
-    (#Cons{start (Nat/range (#Succ{start}) end)})
-    #Nil)
+// Generates a list of nats from start (inclusive) to end (exclusive).
+// - start: The start number in the range.
+// - end: The number after the last number in the range.
+// = A list of nats from start to (end - 1).
+Nat/range : Nat -> Nat -> (List Nat)
+| ini end = if (Nat/lt ini end) {
+  #Cons{ini (Nat/range (#Succ{ini}) end)}
+} else {
+  #Nil
+}
+
+#test: (Nat/range #0 #0) == #Nil
+#test: (Nat/range #0 #5) == [#0 #1 #2 #3 #4]
+#test: (Nat/range #3 #7) == [#3 #4 #5 #6]
+#test: (List/length _ (Nat/range #0 #10)) == #10

@@ -1,0 +1,43 @@
+NOTE ON CURRENT UPDATE
+
+Kind has recently received many new syntaxes, which means many files are still
+outdated. To update definitions, favor the equational notation. Also update
+tests to use the '#test' notation. Example:
+
+```
+// Doubles a natural number.
+// 1st: The number to double.
+// = The double of the input number.
+Nat/double
+: ∀(n: Nat)
+  Nat
+= λ{
+  #Zero: #Zero
+  #Succ: λn.pred #Succ{#Succ{(Nat/double n.pred)}}
+}
+// Tests for the double function.
+
+// Test: double 0 = 0
+TEST_0
+: (Equal Nat (Nat/double #Zero) #Zero)
+= #Refl
+
+// Test: double 1 = 2
+TEST_1
+: (Equal Nat (Nat/double #1) #2)
+= #Refl
+```
+
+Must be updated to:
+
+```
+// Doubles a nat.
+// - n: The nat to double.
+// = The double of the input nat.
+Nat/double : Nat -> Nat
+| #Zero    = #Zero
+| #Succ{n} = #Succ{#Succ{(Nat/double n)}}
+
+#test: (Nat/double #0) == #0
+#test: (Nat/double #1) == #2
+```

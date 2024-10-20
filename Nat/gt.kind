@@ -1,87 +1,14 @@
-// Checks if one natural number is greater than another.
-// 1st: The natural number.
-// 2nd: The natural number.
-// = True if the 1st number is greater than the 2nd, False otherwise.
-Nat/gt
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Bool
-= λm λn (Nat/lt n m)
-// Tests the greater than function for natural numbers.
+// Checks if one nat is greater than another.
+// - m: The first nat.
+// - n: The second nat.
+// = True if m is greater than n, False otherwise.
+Nat/gt : Nat -> Nat -> Bool
+| m n = (Nat/lt n m)
 
-// Test: 3 > 2 = True
-TEST_0
-: (Equal Bool (Nat/gt #3 #2) #True)
-= #Refl
-
-// Test: 2 > 3 = False
-TEST_1
-: (Equal Bool (Nat/gt #2 #3) #False)
-= #Refl
-
-// Test: 5 > 5 = False
-TEST_2
-: (Equal Bool (Nat/gt #5 #5) #False)
-= #Refl
-
-// Test: 0 > 0 = False
-TEST_3
-: (Equal Bool (Nat/gt #Zero #Zero) #False)
-= #Refl
-
-// Test: 1 > 0 = True
-TEST_4
-: (Equal Bool (Nat/gt #1 #Zero) #True)
-= #Refl
-
-// Test: 0 > 1 = False
-TEST_5
-: (Equal Bool (Nat/gt #Zero #1) #False)
-= #Refl
-
-// Test: 10 > 5 = True
-TEST_6
-: (Equal Bool (Nat/gt #10 #5) #True)
-= #Refl
-
-// Test: 100 > 99 = True
-TEST_7
-: (Equal Bool (Nat/gt
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #10
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #9
-  ) #True)
-= #Refl
-
-// Test: 42 > 42 = False
-TEST_8
-: (Equal Bool (Nat/gt
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #2
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #2
-  ) #False)
-= #Refl
+#test: (Nat/gt #3 #2) == #True
+#test: (Nat/gt #2 #3) == #False
+#test: (Nat/gt #5 #5) == #False
+#test: (Nat/gt #0 #0) == #False
+#test: (Nat/gt #1 #0) == #True
+#test: (Nat/gt #0 #1) == #False
+#test: (Nat/gt #10 #5) == #True

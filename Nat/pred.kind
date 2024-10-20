@@ -1,39 +1,14 @@
-// Returns the predecessor of a natural number.
-// 1st: The input natural number.
+// Returns the predecessor of a nat.
+// - n: The input nat.
 // = The predecessor of n, or Zero if n is already Zero.
-Nat/pred
-: ∀(n: Nat)
-  Nat
-= λ{
-  #Zero: #Zero
-  #Succ: λn.pred n.pred
-}
-// Tests the predecessor function for natural numbers.
+Nat/pred : Nat -> Nat
+| #Zero    = #Zero
+| #Succ{n} = n
 
-// Test: pred 0 = 0.
-TEST_0 : (Equal Nat (Nat/pred #Zero) #Zero)
-= #Refl
-
-// Test: pred 1 = 0.
-TEST_1 : (Equal Nat (Nat/pred #1) #Zero)
-= #Refl
-
-// Test: pred 2 = 1.
-TEST_2 : (Equal Nat (Nat/pred #2) #1)
-= #Refl
-
-// Test: pred 5 = 4.
-TEST_3 : (Equal Nat (Nat/pred #5) #4)
-= #Refl
-
-// Test: pred (pred 3) = 1.
-TEST_4 : (Equal Nat (Nat/pred (Nat/pred #3)) #1)
-= #Refl
-
-// Test: pred (pred 1) = 0.
-TEST_5 : (Equal Nat (Nat/pred (Nat/pred #1)) #Zero)
-= #Refl
-
-// Test: pred (pred 0) = 0.
-TEST_6 : (Equal Nat (Nat/pred (Nat/pred #Zero)) #Zero)
-= #Refl
+#test: (Nat/pred #0) == #0
+#test: (Nat/pred #1) == #0
+#test: (Nat/pred #2) == #1
+#test: (Nat/pred #5) == #4
+#test: (Nat/pred (Nat/pred #3)) == #1
+#test: (Nat/pred (Nat/pred #1)) == #0
+#test: (Nat/pred (Nat/pred #0)) == #0

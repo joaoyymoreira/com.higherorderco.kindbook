@@ -1,63 +1,27 @@
-// Performs an auxiliary calculation for the modulo operation.
-// 1st: Accumulator for the remainder.
-// 2nd: The divisor.
-// 3rd: The remaining dividend.
-// 4th: Counter for the divisor.
-// = The remainder of the division.
-Nat/mod/aux
-: ∀(k: Nat)
-  ∀(m: Nat)
-  ∀(n: Nat)
-  ∀(j: Nat)
-  Nat
-= λk λm λ{
-  #Zero: λj k
-  #Succ: λn.pred λ{
-    #Zero: (Nat/mod/aux #Zero m n.pred m)
-    #Succ: λj.pred (Nat/mod/aux #Succ{k} m n.pred j.pred)
-  }
-}
-
 // Performs the natural number modulo operation.
-// 1st: The dividend.
-// 2nd: The divisor.
+// - n: The dividend.
+// - m: The divisor.
 // = The remainder of dividend divided by divisor.
-Nat/mod
-: ∀(n: Nat)
-  ∀(m: Nat)
-  Nat
-= λn λ{
-  #Zero: #Zero
-  #Succ: λm.pred (Nat/mod/aux #Zero m.pred n m.pred)
-}
-// Test: 0 % 5 = 0
-TEST_0 : (Equal Nat (Nat/mod #Zero #5) #Zero)
-= #Refl
+Nat/mod : Nat -> Nat -> Nat
+| n #Zero = #Zero
+| n #Succ{m} = (Nat/mod/go #Zero m n m)
 
-// Test: 5 % 1 = 0
-TEST_1 : (Equal Nat (Nat/mod #5 #1) #Zero)
-= #Refl
+// Performs an goiliary calculation for the modulo operation.
+// - k: Accumulator for the remainder.
+// - m: The divisor.
+// - n: The remaining dividend.
+// - j: Counter for the divisor.
+// = The remainder of the division.
+Nat/mod/go : Nat -> Nat -> Nat -> Nat -> Nat
+| k m #Zero    j        = k
+| k m #Succ{n} #Zero    = (Nat/mod/go #Zero m n m)
+| k m #Succ{n} #Succ{j} = (Nat/mod/go #Succ{k} m n j)
 
-// Test: 7 % 3 = 1
-TEST_2 : (Equal Nat (Nat/mod #7 #3) #1)
-= #Refl
-
-// Test: 10 % 4 = 2
-TEST_3 : (Equal Nat (Nat/mod #10 #4) #2)
-= #Refl
-
-// Test: 15 % 5 = 0
-TEST_4 : (Equal Nat (Nat/mod #15 #5) #Zero)
-= #Refl
-
-// Test: 17 % 6 = 5
-TEST_5 : (Equal Nat (Nat/mod #17 #6) #5)
-= #Refl
-
-// Test: (a % b) % b = a % b
-TEST_6 : (Equal Nat (Nat/mod (Nat/mod #13 #5) #5) (Nat/mod #13 #5))
-= #Refl
-
-// Test: (a + b) % b = a % b
-TEST_7 : (Equal Nat (Nat/mod (Nat/add #7 #3) #3) (Nat/mod #7 #3))
-= #Refl
+#test: (Nat/mod #0 #5) == #0
+#test: (Nat/mod #5 #1) == #0
+#test: (Nat/mod #7 #3) == #1
+#test: (Nat/mod #10 #4) == #2
+#test: (Nat/mod #15 #5) == #0
+#test: (Nat/mod #17 #6) == #5
+#test: (Nat/mod (Nat/mod #13 #5) #5) == (Nat/mod #13 #5)
+#test: (Nat/mod (Nat/add #7 #3) #3) == (Nat/mod #7 #3)

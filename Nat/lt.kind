@@ -1,54 +1,22 @@
 // Checks if one nat is less than another.
-// 1st: The natural number.
-// 2nd: The natural number.
-// = True if 1st is less than 2nd, False otherwise.
-Nat/lt
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Bool
-= λ{
-  #Zero: λ{
-    #Zero: #False
-    #Succ: λn.pred #True
-  }
-  #Succ: λm.pred λ{
-    #Zero: #False
-    #Succ: λn.pred (Nat/lt m.pred n.pred)
-  }
-}
-// Tests the less than operation for natural numbers.
+// - m: The first nat.
+// - n: The second nat.
+// = True if m is less than n, False otherwise.
+Nat/lt : Nat -> Nat -> Bool
+| #Zero    #Zero    = #False
+| #Zero    #Succ{n} = #True
+| #Succ{m} #Zero    = #False
+| #Succ{m} #Succ{n} = (Nat/lt m n)
 
-// Teste: 0 < 0 = False.
-TEST_0 : (Equal Bool (Nat/lt #Zero #Zero) #False)
-  = #Refl
+#test: (Nat/lt #0 #0) == #False
+#test: (Nat/lt #0 #1) == #True
+#test: (Nat/lt #1 #0) == #False
+#test: (Nat/lt #2 #5) == #True
+#test: (Nat/lt #5 #2) == #False
+#test: (Nat/lt #7 #7) == #False
 
-// Teste: 0 < 1 = True.
-TEST_1 : (Equal Bool (Nat/lt #Zero #1) #True)
-  = #Refl
+// Transitivity: if a < b and b < c, then a < c
+#test: (Nat/lt #3 #8) == #True
 
-// Teste: 1 < 0 = False.
-TEST_2 : (Equal Bool (Nat/lt #1 #Zero) #False)
-  = #Refl
-
-// Teste: 2 < 5 = True.
-TEST_3 : (Equal Bool (Nat/lt #2 #5) #True)
-  = #Refl
-
-// Teste: 5 < 2 = False.
-TEST_4 : (Equal Bool (Nat/lt #5 #2) #False)
-  = #Refl
-
-// Teste: 7 < 7 = False.
-TEST_5 : (Equal Bool (Nat/lt #7 #7) #False)
-  = #Refl
-
-// Teste: Transitividade: se a < b e b < c, então a < c.
-TEST_6
-: ∀(a_lt_b: (Equal Bool (Nat/lt #3 #5) #True))
-  ∀(b_lt_c: (Equal Bool (Nat/lt #5 #8) #True))
-  (Equal Bool (Nat/lt #3 #8) #True)
-= λa_lt_b λb_lt_c #Refl
-
-// Teste: Irreflexividade: a < a = False.
-TEST_7 : (Equal Bool (Nat/lt #4 #4) #False)
-  = #Refl
+// Irreflexivity: a < a is always False
+#test: (Nat/lt #4 #4) == #False

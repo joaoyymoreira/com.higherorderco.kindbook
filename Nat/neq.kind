@@ -1,49 +1,14 @@
-// Checks if two natural numbers are not equal.
-// 1st: The natural number to compare.
-// 2nd: The natural number to compare.
-// = True if the numbers are not equal, False otherwise.
-Nat/neq
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Bool
-= λm λn (Bool/not (Nat/eq m n))
-// Test cases for neq function
+// Checks if two nats are not equal.
+// - m: The first nat.
+// - n: The second nat.
+// = True if the nats are not equal, False otherwise.
+Nat/neq : Nat -> Nat -> Bool
+| m n = (Bool/not (Nat/eq m n))
 
-// Test : Different numbers should return True.
-TEST_0
-: (Equal Bool (Nat/neq #1 #Zero) #True)
-= #Refl
-
-// Test : Same numbers should return False.
-TEST_1
-: (Equal Bool (Nat/neq #2 #2) #False)
-= #Refl
-
-// Test : Zero and a non-zero number should return True.
-TEST_2
-: (Equal Bool (Nat/neq #Zero #3) #True)
-= #Refl
-
-// Test : Different non-zero numbers should return True.
-TEST_3
-: (Equal Bool (Nat/neq #4 #5) #True)
-= #Refl
-
-// Test : Zero and itself should return False.
-TEST_4
-: (Equal Bool (Nat/neq #Zero #Zero) #False)
-= #Refl
-
-// Test : Larger numbers should work correctly.
-TEST_5
-: (Equal Bool (Nat/neq #10
-                        #11)
-                  #True)
-= #Refl
-
-// Test : Larger same numbers should return False.
-TEST_6
-: (Equal Bool (Nat/neq #10
-                        #10)
-                  #False)
-= #Refl
+#test: (Nat/neq #1 #0) == #True
+#test: (Nat/neq #2 #2) == #False
+#test: (Nat/neq #0 #3) == #True
+#test: (Nat/neq #4 #5) == #True
+#test: (Nat/neq #0 #0) == #False
+#test: (Nat/neq #10 #11) == #True
+#test: (Nat/neq #10 #10) == #False

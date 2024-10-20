@@ -1,28 +1,13 @@
-// Checks if two natural numbers are equal.
-// - m: The natural number.
-// - n: The natural number.
-// = True if the numbers are equal, False otherwise.
+// Checks if two nats are equal.
+// - m: The first nat.
+// - n: The second nat.
+// = True if the nats are equal, False otherwise.
 Nat/eq : Nat -> Nat -> Bool
-| #Zero     #Zero    = #True
-| #Succ{m}  #Succ{n} = (Nat/eq m n)
-| x         y        = #False
+| #Zero    #Zero    = #True
+| #Succ{m} #Succ{n} = (Nat/eq m n)
+| x        y        = #False
 
-// Test: equality of the same number
-TEST_0
-: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero}}) (#Succ{#Succ{ #Zero}})) #True)
-= #Refl
-
-// Test: equality of different numbers
-TEST_1
-: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero}}) (#Succ{#Succ{#Succ{ #Zero}}})) #False)
-= #Refl
-
-// Test: equality of zero
-TEST_2
-: (Equal Bool (Nat/eq #Zero #Zero) #True)
-= #Refl
-
-// Test: inequality of the same number
-TEST_3
-: (Equal Bool (Nat/neq (#Succ{#Succ{#Succ{#Succ{ #Zero}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero}}}})) #False)
-= #Refl
+#test: (Nat/eq #2 #2) == #True
+#test: (Nat/eq #2 #3) == #False
+#test: (Nat/eq #0 #0) == #True
+#test: (Nat/eq #4 #4) == #True

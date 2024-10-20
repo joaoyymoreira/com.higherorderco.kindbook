@@ -1,56 +1,21 @@
 // Applies a function to a natural number based on its structure.
 // This function allows pattern matching on natural numbers.
-// 1st: A type-level function that determines the return type for each case.
-// 2nd: The value to return in the zero case.
-// 3rd: The function to apply in the successor case.
-// 4th: The natural number to match on.
+// - P: A type-level function that determines the return type for each case.
+// - z: The value to return in the zero case.
+// - s: The function to apply in the successor case.
+// - n: The natural number to match on.
 // = The result of matching on the input natural number.
-Nat/match
-: ∀(P: ∀(x: Nat) *)
-  ∀(z: (P #Zero))
-  ∀(s: ∀(x: Nat) (P #Succ{x}))
-  ∀(n: Nat)
-  (P n)
-= λP λz λs λ{
-  #Zero: z
-  #Succ: λn.pred (s n.pred)
-}
-// A simple function that returns a string description of a natural number
-Nat/describe
-: ∀(n: Nat)
-  Bool
-= (Nat/match
-    λx(Bool)
-    #False
-    λpred #True
-  )
+Nat/match : ∀(P: Nat -> *) (P #Zero) -> (∀(x: Nat) (P #Succ{x})) -> ∀(n: Nat) (P n)
+| P z s #Zero    = z
+| P z s #Succ{n} = (s n)
 
-// Test: Describe of Zero
-TEST_0
-: (Equal Bool (Nat/describe #Zero) #False)
-= #Refl
+// A simple function that returns a boolean description of a natural number
+Nat/describe : Nat -> Bool
+= (Nat/match (λx Bool) #False (λpred #True))
 
-// Test: Describe of Succ{Zero}
-TEST_1
-: (Equal Bool (Nat/describe #1) #True)
-= #Refl
-
-// Test: Describe of Succ{Succ{Zero}}
-TEST_2
-: (Equal Bool (Nat/describe #2) #True)
-= #Refl
-
-// Test: Describe of Succ{Succ{Succ{Zero}}}
-TEST_3
-: (Equal Bool (Nat/describe #3) #True)
-= #Refl
-
-// Test: Equality of describe results for different non-zero numbers
-TEST_4
-: (Equal Bool (Bool/eq (Nat/describe #1) (Nat/describe #2)) #True)
-= #Refl
-
-// Test: Inequality of describe results for zero and non-zero
-TEST_5
-: (Equal Bool (Bool/eq (Nat/describe #Zero) (Nat/describe #1)) #False)
-= #Refl
+#test: (Nat/describe #Zero) == #False
+#test: (Nat/describe #1) == #True
+#test: (Nat/describe #2) == #True
+#test: (Nat/describe #3) == #True
+#test: (Bool/eq (Nat/describe #1) (Nat/describe #2)) == #True
+#test: (Bool/eq (Nat/describe #Zero) (Nat/describe #1)) == #False

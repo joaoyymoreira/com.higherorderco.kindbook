@@ -1,66 +1,16 @@
-// Compares two natural numbers. This function determines the relative order
-// of two given natural numbers.
-// - 1st: The first natural number to compare.
-// - 2nd: The second natural number to compare.
-// = An Ordering value: LT if 1st < 2nd, EQ if 1st = 2nd, GT if 1st > 2nd.
-Nat/compare
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Ordering
-= λ{
-  #Zero: λ{
-    #Zero: #EQ
-    #Succ: λn.pred #LT
-  }
-  #Succ: λm.pred λ{
-    #Zero: #GT
-    #Succ: λn.pred (Nat/compare m.pred n.pred)
-  }
-}
-// // Test: Transitivity: if a < b and b < c, then a < c
-// T6
-// : ∀(a: Nat)
-//   ∀(b: Nat)
-//   ∀(c: Nat)
-//   ∀(ab_lt: (Equal Ordering (Nat/compare a b) #LT))
-//   ∀(bc_lt: (Equal Ordering (Nat/compare b c) #LT))
-//   (Equal Ordering (Nat/compare a c) #LT)
-// = λa λb λc λab_lt λbc_lt #Refl
+// Compares two natural numbers.
+// - m: The first natural number to compare.
+// - n: The second natural number to compare.
+// = An Ordering value: LT if m < n, EQ if m = n, GT if m > n.
+Nat/compare : Nat -> Nat -> Ordering
+| #Zero    #Zero    = #EQ
+| #Zero    #Succ{n} = #LT
+| #Succ{m} #Zero    = #GT
+| #Succ{m} #Succ{n} = (Nat/compare m n)
 
-// // Test: Antisymmetry: if compare a b = EQ, then a = b
-// T7
-// : ∀(a: Nat)
-//   ∀(b: Nat)
-//   ∀(eq: (Equal Ordering (Nat/compare a b) #EQ))
-//   (Equal Nat a b)
-// = λa λb λeq #Refl
-
-// Test: compare 0 0 = EQ
-TEST_0
-: (Equal Ordering (Nat/compare #Zero #Zero) #EQ)
-= #Refl
-
-// Test: compare 0 5 = LT
-TEST_1
-: (Equal Ordering (Nat/compare #Zero #5) #LT)
-= #Refl
-
-// Test: compare 5 0 = GT
-TEST_2
-: (Equal Ordering (Nat/compare #5 #Zero) #GT)
-= #Refl
-
-// Test: compare 3 3 = EQ
-TEST_3
-: (Equal Ordering (Nat/compare #3 #3) #EQ)
-= #Refl
-
-// Test: compare 2 7 = LT
-TEST_4
-: (Equal Ordering (Nat/compare #2 #7) #LT)
-= #Refl
-
-// Test: compare 8 4 = GT
-TEST_5
-: (Equal Ordering (Nat/compare (#8) (#4)) #GT)
-= #Refl
+#test: (Nat/compare #Zero #Zero) == #EQ
+#test: (Nat/compare #Zero #5) == #LT
+#test: (Nat/compare #5 #Zero) == #GT
+#test: (Nat/compare #3 #3) == #EQ
+#test: (Nat/compare #2 #7) == #LT
+#test: (Nat/compare (#8) (#4)) == #GT

@@ -1,53 +1,38 @@
 // Performs integer division of natural numbers.
-// This function divides the dividend by the divisor.
-// 1st: The dividend.
-// 2nd: The divisor.
+// - m: The dividend.
+// - n: The divisor.
 // = The quotient of the division.
-Nat/div
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Nat
-= λm λ{
-  #Zero: #Zero  // Division by zero returns zero.
-  #Succ: λn.pred (Nat/div/go n.pred m n.pred #Zero)
-}
-// Test: Division of zero by one.
-// = 0
-TEST_0 : (Equal Nat (Nat/div #Zero #1) #Zero)
- = #Refl
+Nat/div : Nat -> Nat -> Nat
+| m #Zero    = #Zero  // Division by zero returns zero.
+| m #Succ{n} = (Nat/div/go n m n #Zero)
 
-// Test: Division of five by one.
-// = 5
-TEST_1 : (Equal Nat (Nat/div #5 #1) #5)
- = #Refl
+// Helper function 'go' for Euclidean division.
+//
+// go computes n / (1+m) via iteration on n.
+//
+//   n div (suc m) = go m n m 0
+//
+// The state of the iterator has two accumulator variables:
+//
+//   k: The quotient, returned once n=0. Initialized to 0.
+//
+//   j: A counter, initialized to the divisor m, decreased on each iteration step.
+//      Once it reaches 0, the quotient k is increased and j reset to m,
+//      starting the next countdown.
+//
+// Under the precondition j ≤ m, the invariant is
+//
+//   go m n j k = (k + (n + m - j)) / (1 + m)
+Nat/div/go : Nat -> Nat -> Nat -> Nat -> Nat
+| m #Zero    j        k = k
+| m #Succ{n} #Zero    k = (Nat/div/go m n m (#Succ{k}))
+| m #Succ{n} #Succ{j} k = (Nat/div/go m n j k)
 
-// Test: Division of five by two.
-// = 2
-TEST_2 : (Equal Nat (Nat/div #5 #2) #2)
- = #Refl
-
-// Test: Division of ten by three.
-// = 3
-TEST_3 : (Equal Nat (Nat/div #10 #3) #3)
- = #Refl
-
-// Test: Division of fifteen by five.
-// = 3
-TEST_4 : (Equal Nat (Nat/div #15 #5) #3)
- = #Refl
-
-// Test: Division of one hundred by ten.
-// = 10
-TEST_5 : (Equal Nat (Nat/div (#100) (#10)) #10)
- = #Refl
-
-// Test: Division by zero returns zero.
-// = 0
-TEST_6 : (Equal Nat (Nat/div #5 #Zero) #Zero)
- = #Refl
-
-// Test: Division-multiplication-modulo identity.
-// This test verifies that (a / b) * b + (a % b) = a for non-zero b.
-// = 15
-TEST_7 : (Equal Nat (Nat/add (Nat/mul (Nat/div #15 #4) #4) (Nat/mod #15 #4)) #15)
- = #Refl
+#test: (Nat/div #Zero #1) == #Zero
+#test: (Nat/div #5 #1) == #5
+#test: (Nat/div #5 #2) == #2
+#test: (Nat/div #10 #3) == #3
+#test: (Nat/div #15 #5) == #3
+#test: (Nat/div (#100) (#10)) == #10
+#test: (Nat/div #5 #Zero) == #Zero
+#test: (Nat/add (Nat/mul (Nat/div #15 #4) #4) (Nat/mod #15 #4)) == #15

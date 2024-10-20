@@ -1,45 +1,16 @@
-// Returns the maximum of two natural numbers. This function compares two
-// 1st: The first natural number.
-// 2nd: The second natural number.
-// = The larger of the two input numbers.
-Nat/max
-: ∀(m: Nat)
-  ∀(n: Nat)
-  Nat
-= λm λn
-  (Bool/if Nat (Nat/gte m n) m n)
-// Test: max 0 0 = 0
-TEST_0 : (Equal Nat (Nat/max #Zero #Zero) #Zero)
-= #Refl
+// Returns the maximum of two nats.
+// - m: The first nat.
+// - n: The second nat.
+// = The larger of the two input nats.
+Nat/max : Nat -> Nat -> Nat
+| m n = (Bool/if Nat (Nat/gte m n) m n)
 
-// Test: max 0 5 = 5
-TEST_1 : (Equal Nat (Nat/max #Zero #5) #5)
-= #Refl
-
-// Test: max 5 0 = 5
-TEST_2 : (Equal Nat (Nat/max #5 #Zero) #5)
-= #Refl
-
-// Test: max 3 2 = 3
-TEST_3 : (Equal Nat (Nat/max #3 #2) #3)
-= #Refl
-
-// Test: max 2 3 = 3
-TEST_4 : (Equal Nat (Nat/max #2 #3) #3)
-= #Refl
-
-// Test: max 7 7 = 7
-TEST_5 : (Equal Nat (Nat/max #7 #7) #7)
-= #Refl
-
-// Test: Commutativity: max a b = max b a
-TEST_6 : (Equal Nat (Nat/max #4 #6) (Nat/max #6 #4))
-= #Refl
-
-// Test: Idempotence: max a a = a
-TEST_7 : (Equal Nat (Nat/max #8 #8) #8)
-= #Refl
-
-// Test: Associativity: max a (max b c) = max (max a b) c
-TEST_8 : (Equal Nat (Nat/max #2 (Nat/max #3 #4)) (Nat/max (Nat/max #2 #3) #4))
-= #Refl
+#test: (Nat/max #0 #0) == #0
+#test: (Nat/max #0 #5) == #5
+#test: (Nat/max #5 #0) == #5
+#test: (Nat/max #3 #2) == #3
+#test: (Nat/max #2 #3) == #3
+#test: (Nat/max #7 #7) == #7
+#test: (Nat/max #4 #6) == (Nat/max #6 #4)
+#test: (Nat/max #8 #8) == #8
+#test: (Nat/max #2 (Nat/max #3 #4)) == (Nat/max (Nat/max #2 #3) #4)
