@@ -1,0 +1,19 @@
+// Checks if two Ord values are equal.
+// - a: The first Ord value.
+// - b: The second Ord value.
+// = True if a and b are equal, False otherwise.
+Ord/eq : Ord -> Ord -> Bool
+| #LT #LT = #True
+| #EQ #EQ = #True
+| #GT #GT = #True
+| a   b   = #False
+
+#test: (Ord/eq #LT #LT) == #True
+#test: (Ord/eq #EQ #EQ) == #True
+#test: (Ord/eq #GT #GT) == #True
+#test: (Ord/eq #LT #EQ) == #False
+#test: (Ord/eq #LT #GT) == #False
+#test: (Ord/eq #EQ #LT) == #False
+#test: (Ord/eq #EQ #GT) == #False
+#test: (Ord/eq #GT #LT) == #False
+#test: (Ord/eq #GT #EQ) == #False

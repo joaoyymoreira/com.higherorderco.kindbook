@@ -1,0 +1,18 @@
+// Matches on an Ord value and returns a result based on the case.
+// - A: The type of the result.
+// - lt: The value to return in the LT case.
+// - eq: The value to return in the EQ case.
+// - gt: The value to return in the GT case.
+// - ord: The Ord value to match on.
+// = The result of the match.
+Ord/match : ∀(A: *) A -> A -> A -> Ord -> A
+| A lt eq gt #LT = lt
+| A lt eq gt #EQ = eq
+| A lt eq gt #GT = gt
+
+#test: (Ord/match Bool #True #False #True #LT) == #True
+#test: (Ord/match Bool #True #False #True #EQ) == #False
+#test: (Ord/match Bool #True #False #True #GT) == #True
+#test: (Ord/match U32 1 2 3 #LT) == 1
+#test: (Ord/match U32 1 2 3 #EQ) == 2
+#test: (Ord/match U32 1 2 3 #GT) == 3
