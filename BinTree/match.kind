@@ -1,121 +1,19 @@
-// Dependent eliminator for binary trees.
+// Pattern matcher for binary trees.
 // - A: The type of elements in the tree.
 // - P: The motive (type family) for the elimination.
 // - leaf: The result for the leaf case.
 // - node: The function to apply for the node case.
-// - tree: The tree to eliminate (scrutinee).
-// = The result of the elimination, whose type depends on the input tree.
+// - tree: The tree to match against.
+// = The result of the match, whose type depends on the input tree.
 BinTree/match
 : ∀(A: *)
-  ∀(P: ∀(tree: (BinTree/BinTree A)) *)
+  ∀(P: (BinTree A) -> *)
   ∀(leaf: (P #Leaf))
-  ∀(node: ∀(val: A)
-          ∀(lft: (BinTree/BinTree A))
-          ∀(rgt: (BinTree/BinTree A))
-          ∀(p_lft: (P lft))
-          ∀(p_rgt: (P rgt))
-          (P (#Node{val lft rgt})))
-  ∀(tree: (BinTree/BinTree A))
+  ∀(node: ∀(x: A) ∀(l: (BinTree A)) ∀(r: (BinTree A)) (P (#Node{x l r})))
+  ∀(tree: (BinTree A))
   (P tree)
-= λA λP λleaf λnode λ{
-  #Leaf: leaf
-  #Node: λtree.val λtree.lft λtree.rgt
-    (node
-      tree.val
-      tree.lft
-      tree.rgt
-      (BinTree/match A P leaf node tree.lft)
-      (BinTree/match A P leaf node tree.rgt))
-}
+| A P leaf node #Leaf              = leaf
+| A P leaf node #Node{val lft rgt} = (node val lft rgt)
 
-// Test cases for BinTree match function
-
-// Counts the number of nodes in a binary tree
-count-nodes
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  Nat
-= λA λtree
-  (BinTree/match A (λx Nat) #Zero (λval λlft λrgt λl λr #Succ{(Nat/add l r)}) tree)
-
-// Test: Counting nodes
-TEST_0
-: (Equal
-    Nat
-    (count-nodes
-      Nat
-      (#Node{
-        #Zero
-        (#Node{#Zero #Leaf #Leaf})
-        (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
-      }))
-    #4
-  )
-= #Refl
-
-// Calculates the depth of a binary tree
-tree-depth
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  Nat
-= λA λtree
-  (BinTree/match A (λx Nat) #Zero (λval λlft λrgt λl λr #Succ{(Nat/max l r)}) tree)
-
-// Test: Tree depth
-TEST_1
-: (Equal
-    Nat
-    (tree-depth
-      Nat
-      (#Node{
-        #Zero
-        (#Node{#Zero #Leaf #Leaf})
-        (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
-      }))
-    #3
-  )
-= #Refl
-
-// Counts the number of leaves in a binary tree
-leaf-count
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  Nat
-= λA λtree
-  (BinTree/match A (λx Nat) #1 (λval λlft λrgt λl λr (Nat/add l r)) tree)
-
-// Test: Leaf count
-TEST_2
-: (Equal
-    Nat
-    (leaf-count
-      Nat
-      (#Node{
-        #Zero
-        (#Node{#Zero #Leaf #Leaf})
-        (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
-      }))
-    #5
-  )
-= #Refl
-
-// Sums all values in a binary tree of natural numbers
-sum-tree
-: ∀(tree: (BinTree/BinTree Nat))
-  Nat
-= λtree
-  (BinTree/match Nat (λx Nat) #Zero (λval λlft λrgt λl λr (Nat/add val (Nat/add l r))) tree)
-
-// Test: Sum of values (for Nat trees)
-TEST_3
-: (Equal
-    Nat
-    (sum-tree
-      (#Node{
-        #2
-        (#Node{#1 #Leaf #Leaf})
-        (#Node{#3 #Leaf #Leaf})
-      }))
-    #6
-  )
-= #Refl
+#test: (BinTree/match Nat (λx Bool) #True (λv λl λr #False) #Leaf) == #True
+#test: (BinTree/match Nat (λx Bool) #True (λv λl λr #False) (#Node{#1 #Leaf #Leaf})) == #False

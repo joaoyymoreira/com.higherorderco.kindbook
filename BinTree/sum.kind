@@ -1,77 +1,14 @@
 // Calculates the sum of all values in a tree of natural numbers.
-// - 1st: The tree to sum.
+// - t: The tree to sum.
 // = The sum of all values in the tree.
-BinTree/sum
-: ∀(t: (BinTree/BinTree Nat))
-  Nat
-= λ{
-  #Leaf:
-    #Zero
-  #Node: λt.val λt.lft λt.rgt
-    let lft_sum = (BinTree/sum t.lft)
-    let rgt_sum = (BinTree/sum t.rgt)
-    (Nat/add t.val (Nat/add lft_sum rgt_sum))
-}
+BinTree/sum : (BinTree Nat) -> Nat
+| #Leaf              = #Zero
+| #Node{val lft rgt} = (Nat/add val (Nat/add (BinTree/sum lft) (BinTree/sum rgt)))
 
-// Test: Sum of an empty tree
-TEST_0
-: (Equal Nat (BinTree/sum #Leaf) #Zero)
-= #Refl
-
-// Test: Sum of a tree with a single node
-TEST_1
-: (Equal Nat (BinTree/sum (#Node{#5 #Leaf #Leaf})) #5)
-= #Refl
-
-// Test: Sum of a balanced tree
-TEST_2
-: (Equal Nat
-    (BinTree/sum (#Node{#1
-              (#Node{#2 #Leaf #Leaf})
-              (#Node{#3 #Leaf #Leaf})}))
-    #6)
-= #Refl
-
-// Test: Sum of an unbalanced tree
-TEST_3
-: (Equal Nat
-    (BinTree/sum (#Node{#1
-              (#Node{#2
-                (#Node{#3 #Leaf #Leaf})
-                #Leaf})
-              #Leaf}))
-    #6)
-= #Refl
-
-// Test: Sum of a larger tree
-TEST_4
-: (Equal Nat
-    (BinTree/sum (#Node{#10
-              (#Node{#5
-                (#Node{#2 #Leaf #Leaf})
-                (#Node{#3 #Leaf #Leaf})})
-              (#Node{#15
-                (#Node{#12 #Leaf #Leaf})
-                (#Node{#18 #Leaf #Leaf})})}))
-    #65)
-= #Refl
-
-// Test: Sum of a tree with zero and small numbers
-TEST_5
-: (Equal Nat
-    (BinTree/sum (#Node{#Zero (#Node{#1 #Leaf #Leaf}) (#Node{#2 #Leaf #Leaf})}))
-    #3)
-= #Refl
-
-// Test: Sum of a tree with repeated values
-TEST_6
-: (Equal Nat
-    (BinTree/sum (#Node{#1
-              (#Node{#1
-                (#Node{#1 #Leaf #Leaf})
-                (#Node{#1 #Leaf #Leaf})})
-              (#Node{#1
-                (#Node{#1 #Leaf #Leaf})
-                (#Node{#1 #Leaf #Leaf})})}))
-    #7)
-= #Refl
+#test: (BinTree/sum #Leaf) == #Zero
+#test: (BinTree/sum (#Node{#5 #Leaf #Leaf})) == #5
+#test: (BinTree/sum (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})})) == #6
+#test: (BinTree/sum (#Node{#1 (#Node{#2 (#Node{#3 #Leaf #Leaf}) #Leaf}) #Leaf})) == #6
+#test: (BinTree/sum (#Node{#10 (#Node{#5 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}) (#Node{#15 (#Node{#12 #Leaf #Leaf}) (#Node{#18 #Leaf #Leaf})})})) == #65
+#test: (BinTree/sum (#Node{#Zero (#Node{#1 #Leaf #Leaf}) (#Node{#2 #Leaf #Leaf})})) == #3
+#test: (BinTree/sum (#Node{#1 (#Node{#1 (#Node{#1 #Leaf #Leaf}) (#Node{#1 #Leaf #Leaf})}) (#Node{#1 (#Node{#1 #Leaf #Leaf}) (#Node{#1 #Leaf #Leaf})})})) == #7

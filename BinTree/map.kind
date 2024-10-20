@@ -1,86 +1,18 @@
 // Applies a function to each element of a binary tree.
-// - 1st: The type of elements in the input tree.
-// - 2nd: The type of elements in the output tree.
-// - 3rd: The function to be applied to each element.
-// - 4th: The binary tree to map over.
+// - A: The type of elements in the input tree.
+// - B: The type of elements in the output tree.
+// - f: The function to be applied to each element.
+// - t: The binary tree to map over.
 // = A new binary tree with the function applied to all elements.
-BinTree/map
-: ∀(A: *)
-  ∀(B: *)
-  ∀(f: ∀(x: A) B)
-  ∀(t: (BinTree/BinTree A))
-  (BinTree/BinTree B)
-= λA λB λf λ{
-  #Leaf:
-    #Leaf
-  #Node: λt.val λt.lft λt.rgt
-    #Node{
-      (f t.val)
-      (BinTree/map A B f t.lft)
-      (BinTree/map A B f t.rgt)
-    }
-}
+BinTree/map : ∀(A: *) ∀(B: *) (A -> B) -> (BinTree A) -> (BinTree B)
+| A B f #Leaf              = #Leaf
+| A B f #Node{val lft rgt} = #Node{(f val) (BinTree/map A B f lft) (BinTree/map A B f rgt)}
 
-// Test: Mapping identity function over a tree
-TEST_0
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (Function/id Nat) (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-    (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-= #Refl
-
-// Test: Mapping increment function over a tree
-TEST_1
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (Nat/add #1) (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-    (#Node{#2 (#Node{#3 #Leaf #Leaf}) (#Node{#4 #Leaf #Leaf})}))
-= #Refl
-
-// Test: Mapping over an empty tree
-TEST_2
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (Nat/add #1) #Leaf)
-    #Leaf)
-= #Refl
-
-// Test: Composing two map operations
-TEST_3
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (Nat/add #2) (BinTree/map _ _ (Nat/add #1) (#Node{#1 (#Node{#2 #Leaf #Leaf}) #Leaf})))
-    (#Node{#4 (#Node{#5 #Leaf #Leaf}) #Leaf}))
-= #Refl
-
-// Test: Mapping a constant function over a tree
-TEST_4
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (λx #Zero) (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-    (#Node{#Zero (#Node{#Zero #Leaf #Leaf}) (#Node{#Zero #Leaf #Leaf})}))
-= #Refl
-
-// Test: Mapping multiplication by 2 over a tree
-TEST_5
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (Nat/mul #2) (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-    (#Node{#2 (#Node{#4 #Leaf #Leaf}) (#Node{#6 #Leaf #Leaf})}))
-= #Refl
-
-// Test: Mapping boolean negation over a tree of booleans
-TEST_6
-: (Equal
-    (BinTree/BinTree Bool)
-    (BinTree/map _ _ Bool/not (#Node{#True (#Node{#False #Leaf #Leaf}) (#Node{#True #Leaf #Leaf})}))
-    (#Node{#False (#Node{#True #Leaf #Leaf}) (#Node{#False #Leaf #Leaf})}))
-= #Refl
-
-// Test: Mapping a complex function over a tree
-TEST_7
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/map _ _ (λx (Nat/add #1 (Nat/mul #2 x))) (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 #Leaf #Leaf})}))
-    (#Node{#3 (#Node{#5 #Leaf #Leaf}) (#Node{#7 #Leaf #Leaf})}))
-= #Refl
+#test: (BinTree/map Nat Nat (Function/id Nat) #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}
+#test: (BinTree/map Nat Nat (Nat/add #1) #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}}
+#test: (BinTree/map Nat Nat (Nat/add #1) #Leaf) == #Leaf
+#test: (BinTree/map Nat Nat (Nat/add #2) (BinTree/map Nat Nat (Nat/add #1) #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf})) == #Node{#4 #Node{#5 #Leaf #Leaf} #Leaf}
+#test: (BinTree/map Nat Nat (λx #Zero) #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Node{#Zero #Node{#Zero #Leaf #Leaf} #Node{#Zero #Leaf #Leaf}}
+#test: (BinTree/map Nat Nat (Nat/mul #2) #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Node{#2 #Node{#4 #Leaf #Leaf} #Node{#6 #Leaf #Leaf}}
+#test: (BinTree/map Bool Bool Bool/not #Node{#True #Node{#False #Leaf #Leaf} #Node{#True #Leaf #Leaf}}) == #Node{#False #Node{#True #Leaf #Leaf} #Node{#False #Leaf #Leaf}}
+#test: (BinTree/map Nat Nat (λx (Nat/add #1 (Nat/mul #2 x))) #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Node{#3 #Node{#5 #Leaf #Leaf} #Node{#7 #Leaf #Leaf}}

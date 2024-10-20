@@ -1,22 +1,10 @@
 // Creates a leaf node (empty tree).
-// - 1st: The type of values stored in the tree.
+// - A: The type of values stored in the tree.
 // = An empty tree (leaf node).
-BinTree/leaf
-: ∀(A: *)
-  (BinTree/BinTree A)
-= λA #Leaf
+BinTree/leaf : ∀(A: *) (BinTree A)
+| A = #Leaf
 
-// Test: leaf creates an empty tree
-TEST_0
-: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf)
-= #Refl
-
-// Test: leaf is polymorphic
-TEST_1
-: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf)
-= #Refl
-
-// Test: leaf {String} is equivalent to Leaf
-TEST_2
-: (Equal (BinTree/BinTree String) (BinTree/leaf String) #Leaf)
-= #Refl
+#test: (BinTree/leaf Nat) == #Leaf
+#test: (BinTree/leaf String) == #Leaf
+#test: (BinTree/is-leaf Nat (BinTree/leaf Nat)) == #True
+#test: (BinTree/is-node Nat (BinTree/leaf Nat)) == #False

@@ -41,3 +41,5 @@ Nat/double : Nat -> Nat
 #test: (Nat/double #0) == #0
 #test: (Nat/double #1) == #2
 ```
+
+NOTE: tests should always be one-liners, and without comments.

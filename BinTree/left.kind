@@ -1,36 +1,13 @@
 // Gets the left subtree of a binary tree node.
-// - 1st: The type of values stored in the tree.
-// - 2nd: The input tree.
+// - A: The type of values stored in the tree.
+// - tree: The input tree.
 // = The left subtree, or None if the tree is a leaf.
-BinTree/left
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  (Maybe (BinTree/BinTree A))
-= λA λ{
-  #Leaf: (Maybe/None _)
-  #Node: λtree.val λtree.lft λtree.rgt (Maybe/Some _ tree.lft)
-}
+BinTree/left : ∀(A: *) (BinTree A) -> (Maybe (BinTree A))
+| A #Leaf              = #None
+| A #Node{val lft rgt} = #Some{lft}
 
-// Test: Left of a leaf is None
-TEST_0
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Leaf)
-    (#None))
-= #Refl
-
-// Test: Left of a node with left child returns Some of that child
-TEST_1
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf})
-    (#Some{#Node{#2 #Leaf #Leaf}}))
-= #Refl
-
-// Test: Left of a node with only right child still returns Some Leaf for left
-TEST_2
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Node{#1 #Leaf #Node{#3 #Leaf #Leaf}})
-    (#Some{#Leaf}))
-= #Refl
+#test: (BinTree/left Nat #Leaf) == #None
+#test: (BinTree/left Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf}) == #Some{#Node{#2 #Leaf #Leaf}}
+#test: (BinTree/left Nat #Node{#1 #Leaf #Node{#3 #Leaf #Leaf}}) == #Some{#Leaf}
+#test: (BinTree/left Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #Some{#Node{#2 #Leaf #Leaf}}
+#test: (BinTree/left Nat #Node{#1 #Leaf #Leaf}) == #Some{#Leaf}

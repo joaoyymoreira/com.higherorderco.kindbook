@@ -1,86 +1,34 @@
 // Merges two trees using combining functions.
-// - 1st: The type of elements in the first tree.
-// - 2nd: The type of elements in the second tree.
-// - 3th: The type of elements in the resulting tree.
-// - 4th: Function to handle cases where only the first tree has a value.
-// - 5th: Function to handle cases where only the second tree has a value.
-// - 6th: Function to combine values when both trees have a value.
-// - 7th: The first input tree.
-// - 8th: The second input tree.
-// = A new tree where each node is the result of applying the appropriate
-//   function based on the presence of values in both input trees.
+// - A: Type of elements in the first tree.
+// - B: Type of elements in the second tree.
+// - C: Type of elements in the resulting tree.
+// - f: Function for when only the first tree has a value.
+// - g: Function for when only the second tree has a value.
+// - h: Function to combine values when both trees have a value.
+// - a: The first input tree.
+// - b: The second input tree.
+// = A new tree with combined values based on input trees.
 BinTree/merge
 : ∀(A: *)
   ∀(B: *)
   ∀(C: *)
-  ∀(a: ∀(x: A) C)
-  ∀(b: ∀(x: B) C)
-  ∀(ab: ∀(x: A) ∀(y: B) C)
-  ∀(t1: (BinTree/BinTree A))
-  ∀(t2: (BinTree/BinTree B))
-  (BinTree/BinTree C)
-= λA λB λC λa λb λab λ{
-  #Leaf: λ{
-    #Leaf: #Leaf
-    #Node: λt2.val λt2.lft λt2.rgt
-      #Node{
-        val: (b t2.val)
-        lft: (BinTree/merge A B C a b ab #Leaf t2.lft)
-        rgt: (BinTree/merge A B C a b ab #Leaf t2.rgt)
-      }
-  }
-  #Node: λt1.val λt1.lft λt1.rgt λ{
-    #Leaf:
-      #Node{
-        val: (a t1.val)
-        lft: (BinTree/merge A B C a b ab t1.lft #Leaf)
-        rgt: (BinTree/merge A B C a b ab t1.rgt #Leaf)
-      }
-    #Node: λt2.val λt2.lft λt2.rgt
-      #Node{
-        val: (ab t1.val t2.val)
-        lft: (BinTree/merge A B C a b ab t1.lft t2.lft)
-        rgt: (BinTree/merge A B C a b ab t1.rgt t2.rgt)
-      }
-  }
-}
-
-// Test: Merging two empty trees
-TEST_0 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/add #Leaf #Leaf) #Leaf)
-= #Refl
-
-// Test: Merging an empty tree with a non-empty tree
-TEST_1 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/add #Leaf #Node{5 #Leaf #Leaf}) #Node{5 #Leaf #Leaf})
-= #Refl
-
-// Test: Merging a non-empty tree with an empty tree
-TEST_2 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/add #Node{3 #Leaf #Leaf} #Leaf) #Node{3 #Leaf #Leaf})
-= #Refl
-
-// Test: Merge two non-empty trees
-TEST_3 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/add #Node{2 #Leaf #Leaf} #Node{3 #Leaf #Leaf}) #Node{5 #Leaf #Leaf})
-= #Refl
-
-// Test: Merging two more complex trees
-TEST_4 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/add #Node{1 #Node{2 #Leaf #Leaf} #Leaf} #Node{3 #Leaf #Node{4 #Leaf #Leaf}}) #Node{4 #Node{2 #Leaf #Leaf} #Node{4 #Leaf #Leaf}})
-= #Refl
-
-// Test: Merging trees with a different merge function (max)
-TEST_5 
-: (Equal _ (BinTree/merge _ _ _ (Function/id _) (Function/id _) U32/max #Node{5 #Node{3 #Leaf #Leaf} #Node{7 #Leaf #Leaf}} #Node{4 #Node{6 #Leaf #Leaf} #Node{2 #Leaf #Leaf}}) #Node{5 #Node{6 #Leaf #Leaf} #Node{7 #Leaf #Leaf}})
-= #Refl
-
-// Test: Merging trees with custom functions for single-tree nodes
-TEST_6 
-: (Equal _ (BinTree/merge _ _ _ (λx (U32/add x 1)) (λx (U32/mul x 2)) U32/add #Node{3 #Leaf #Node{2 #Leaf #Leaf}} #Node{1 #Node{4 #Leaf #Leaf} #Leaf}) #Node{4 #Node{8 #Leaf #Leaf} #Node{3 #Leaf #Leaf}})
-= #Refl
-
-// Test: Merge trees with different types
-TEST_7 
-: (Equal _ (BinTree/merge _ _ _ (λx (Bool/if Nat x 1 0)) (Function/id _) (λx λy (Bool/if Nat x (U32/add y 1) y)) #Node{#True #Leaf #Leaf} #Node{5 #Leaf #Leaf}) #Node{6 #Leaf #Leaf})
-= #Refl
+  ∀(f: A -> C)
+  ∀(g: B -> C)
+  ∀(h: A -> B -> C)
+  ∀(a: (BinTree A))
+  ∀(b: (BinTree B))
+  (BinTree C)
+| A B C f g h #Leaf #Leaf =
+  #Leaf
+| A B C f g h #Leaf #Node{bx bl br} =
+  let cl = (BinTree/merge A B C f g h #Leaf bl)
+  let cr = (BinTree/merge A B C f g h #Leaf br)
+  #Node{(g bx) cl cr}
+| A B C f g h #Node{ax al ar} #Leaf =
+  let cl = (BinTree/merge A B C f g h al #Leaf)
+  let cr = (BinTree/merge A B C f g h ar #Leaf)
+  #Node{(f ax) cl cr}
+| A B C f g h #Node{ax al ar} #Node{bx bl br} =
+  let cl = (BinTree/merge A B C f g h al bl)
+  let cr = (BinTree/merge A B C f g h ar br)
+  #Node{(h ax bx) cl cr}

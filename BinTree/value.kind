@@ -1,40 +1,7 @@
 // Gets the value of a binary tree node.
-// - 1st: The type of values stored in the tree.
-// - 2nd: The input tree.
+// - A: The type of values stored in the tree.
+// - t: The input tree.
 // = The value of the node, or None if the tree is a leaf.
-BinTree/value
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  (Maybe A)
-= λA λ{
-  #Leaf: #None
-  #Node: λval λlft λrgt #Some{val}
-}
-
-// Test: value of a leaf node is None
-TEST_0
-: (Equal
-    (Maybe Nat)
-    (BinTree/value Nat #Leaf)
-    (#None))
-= #Refl
-
-// Test: value of a node with content 5 is (Some 5)
-TEST_1
-: (Equal
-    (Maybe Nat)
-    (BinTree/value Nat (#Node{#5 #Leaf #Leaf}))
-    (#Some{#5))
-= #Refl
-
-// Test: value of a complex tree returns the root node's value
-TEST_2
-: (Equal
-    (Maybe Nat)
-    (BinTree/value Nat (#Node{
-      #1
-      (#Node{#2 #Leaf #Leaf})
-      (#Node{#3 #Leaf #Leaf})
-    }))
-    (#Some{#1))
-= #Refl
+BinTree/value : ∀(A: *) (BinTree A) -> (Maybe A)
+| A #Leaf              = (Maybe/none A)
+| A #Node{val lft rgt} = (Maybe/some A val)

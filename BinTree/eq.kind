@@ -1,189 +1,69 @@
 // Checks if two binary trees are equal.
-// - 1st: The type of elements in the tree.
-// - 2nd: An equality function for type.
-// - 3rd: The first tree to compare.
-// - 4th: The second tree to compare.
+// - A: The type of elements in the tree.
+// - e: An equality function for type A.
+// - a: The first tree to compare.
+// - b: The second tree to compare.
 // = True if the trees are equal, False otherwise.
-BinTree/eq
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  ∀(a: (BinTree/BinTree A))
-  ∀(b: (BinTree/BinTree A))
-  Bool
-= λA λe λ{
-  #Leaf: λ{
-    #Leaf: #True
-    #Node: λb.val λb.lft λb.rgt #False
-  }
-  #Node: λa.val λa.lft λa.rgt λ{
-    #Leaf: #False
-    #Node: λb.val λb.lft λb.rgt
-      let eq_val = (Trait/Eq/eq A e a.val b.val)
-      let eq_lft = (BinTree/eq A e a.lft b.lft)
-      let eq_rgt = (BinTree/eq A e a.rgt b.rgt)
-      (Bool/and eq_val (Bool/and eq_lft eq_rgt))
-  }
-}
+BinTree/eq : ∀(A: *) ∀(e: (Trait/Eq A)) (BinTree A) -> (BinTree A) -> Bool
+| A e #Leaf           #Leaf           = #True
+| A e #Leaf           #Node{bv bl br} = #False
+| A e #Node{av al ar} #Leaf           = #False
+| A e #Node{av al ar} #Node{bv bl br} =
+  let eq_val = (Trait/Eq/eq A e av bv)
+  let eq_lft = (BinTree/eq A e al bl)
+  let eq_rgt = (BinTree/eq A e ar br)
+  (Bool/and eq_val (Bool/and eq_lft eq_rgt))
 
-// Test equality of two identical simple trees.
-TEST_0
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{#1 #Leaf #Leaf})
-      (#Node{#1 #Leaf #Leaf}))
-    #True)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/leaf Nat)
+  use b = (BinTree/leaf Nat)
+  (BinTree/eq Nat e a b) == #True
 
-// Test equality of two identical complex trees.
-TEST_1
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        #Leaf})
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        #Leaf}))
-    #True)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/leaf Nat)
+  use b = (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
+  (BinTree/eq Nat e a b) == #False
 
-// Test inequality of trees with different root values.
-TEST_2
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{#1 #Leaf #Leaf})
-      (#Node{#2 #Leaf #Leaf}))
-    #False)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
+  use b = (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
+  (BinTree/eq Nat e a b) == #True
 
-// Test inequality between a leaf and a non-leaf tree.
-TEST_3
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      #Leaf
-      (#Node{#1 #Leaf #Leaf}))
-    #False)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
+  use b = (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+  (BinTree/eq Nat e a b) == #False
 
-// Test equality of two empty trees (leaves).
-TEST_4
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      #Leaf
-      #Leaf)
-    #True)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/node Nat #1 
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #3 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+  use b = (BinTree/node Nat #1 
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #3 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+  (BinTree/eq Nat e a b) == #True
 
-// Test inequality of trees with same root but different structure.
-TEST_5
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        #Leaf})
-      (#Node{
-        #1
-        #Leaf
-        (#Node{#2 #Leaf #Leaf})}))
-    #False)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/node Nat #1 
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #3 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+  use b = (BinTree/node Nat #1 
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #4 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+  (BinTree/eq Nat e a b) == #False
 
-// Test equality of trees with nested structures.
-TEST_6
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #3
-        (#Node{
-          #2
-          (#Node{#1 #Leaf #Leaf})
-          #Leaf})
-        (#Node{#4 #Leaf #Leaf})})
-      (#Node{
-        #3
-        (#Node{
-          #2
-          (#Node{#1 #Leaf #Leaf})
-          #Leaf})
-        (#Node{#4 #Leaf #Leaf})}))
-    #True)
-= #Refl
-
-// Test inequality of trees with different values in deep structures.
-TEST_7
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #3
-        (#Node{
-          #2
-          (#Node{#1 #Leaf #Leaf})
-          #Leaf})
-        (#Node{#4 #Leaf #Leaf})})
-      (#Node{
-        #3
-        (#Node{
-          #2
-          (#Node{#1 #Leaf #Leaf})
-          #Leaf})
-        (#Node{#5 #Leaf #Leaf})}))
-    #False)
-= #Refl
-
-// Test equality of trees with multiple levels and identical structure
-TEST_8
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #1
-        (#Node{
-          #2
-          (#Node{#3 #Leaf #Leaf})
-          (#Node{#4 #Leaf #Leaf})})
-        (#Node{
-          #5
-          (#Node{#6 #Leaf #Leaf})
-          #Leaf})})
-      (#Node{
-        #1
-        (#Node{
-          #2
-          (#Node{#3 #Leaf #Leaf})
-          (#Node{#4 #Leaf #Leaf})})
-        (#Node{
-          #5
-          (#Node{#6 #Leaf #Leaf})
-          #Leaf})}))
-    #True)
-= #Refl
-
-// Test inequality of trees with same structure but different leaf values
-TEST_9
-: (Equal
-    Bool
-    (BinTree/eq Nat NT/Eq
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        (#Node{#3 #Leaf #Leaf})})
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        (#Node{
-          #3
-          #Leaf
-          (#Node{#4 #Leaf #Leaf})})}))
-    #False)
-= #Refl
+#test:
+  use e = Nat/Trait/Eq
+  use a = (BinTree/node Nat #1 
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/leaf Nat))
+  use b = (BinTree/node Nat #1 
+    (BinTree/leaf Nat)
+    (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+  (BinTree/eq Nat e a b) == #False

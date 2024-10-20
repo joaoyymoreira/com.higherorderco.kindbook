@@ -1,58 +1,11 @@
 // Creates a binary tree node with a value and left and right subtrees.
-// - 1st: The type of values stored in the tree.
-// - 2nd: The value stored in this node.
-// - 3rd: The left subtree.
-// - 4th: The right subtree.
+// - A: The type of values stored in the tree.
+// - val: The value stored in this node.
+// - lft: The left subtree.
+// - rgt: The right subtree.
 // = A new binary tree node.
-BinTree/node
-: ∀(A: *)
-  ∀(value: A)
-  ∀(left: (BinTree/BinTree A))
-  ∀(right: (BinTree/BinTree A))
-  (BinTree/BinTree A)
-= λA λvalue λleft λright
-  #Node{value left right}
-	
-// Test: Create a simple node with two leaf children
-TEST_0
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
-    #Node{#1 #Leaf #Leaf}
-  )
-= #Refl
+BinTree/node : ∀(A: *) A -> (BinTree A) -> (BinTree A) -> (BinTree A)
+| A val lft rgt = #Node{val lft rgt}
 
-// Test: Create a node with a left child
-TEST_1
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/node Nat #2
-      (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
-      (BinTree/leaf Nat))
-    #Node{#2 #Node{#1 #Leaf #Leaf} #Leaf}
-  )
-= #Refl
-
-// Test: Create a node with a right child
-TEST_2
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/node Nat #3
-      (BinTree/leaf Nat)
-      (BinTree/node Nat #4 (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#3 #Leaf #Node{#4 #Leaf #Leaf}}
-  )
-= #Refl
-
-// Test: Create a balanced tree with three levels
-TEST_3
-: (Equal
-    (BinTree/BinTree Nat)
-    (BinTree/node Nat #1
-      (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
-      (BinTree/node Nat #3 (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#1
-      #Node{#2 #Leaf #Leaf}
-      #Node{#3 #Leaf #Leaf}}
-  )
-= #Refl
+#test: (BinTree/node Nat #1 #Leaf #Leaf) == #Node{#1 #Leaf #Leaf}
+#test: (BinTree/node Bool #True (BinTree/node Bool #False #Leaf #Leaf) #Leaf) == #Node{#True #Node{#False #Leaf #Leaf} #Leaf}

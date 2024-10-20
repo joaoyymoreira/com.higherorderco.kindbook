@@ -1,60 +1,12 @@
 // Calculates the number of nodes in a binary tree.
-// - 1st: The type of elements stored in the tree.
-// - 2nd: The binary tree to count.
+// - A: The type of elements stored in the tree.
+// - t: The binary tree to count.
 // = The total number of nodes in the tree.
-BinTree/length
-: ∀(A: *)
-  ∀(t: (BinTree/BinTree A))
-  Nat
-= λA λ{
-  #Leaf: #Zero
-  #Node: λt.val λt.lft λt.rgt
-    #Succ{(Nat/add (BinTree/length A t.lft) (BinTree/length A t.rgt))}
-}
-// Test: Length of an empty tree is zero
-TEST_0
-: (Equal Nat (BinTree/length _ #Leaf) #Zero)
-= #Refl
+BinTree/length : ∀(A: *) (BinTree A) -> Nat
+| A #Leaf              = #Zero
+| A #Node{val lft rgt} = #Succ{(Nat/add (BinTree/length A lft) (BinTree/length A rgt))}
 
-// Test: Length of a single node tree is one
-TEST_1
-: (Equal Nat (BinTree/length _ (#Node{#1 #Leaf #Leaf})) #1)
-= #Refl
-
-// Test: Length of a tree with three nodes
-TEST_2
-: (Equal
-    Nat
-    (BinTree/length _
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        #Leaf
-      })
-    )
-    #2
-  )
-= #Refl
-
-// Test: Length of a balanced tree with seven nodes
-TEST_3
-: (Equal
-    Nat
-    (BinTree/length _
-      (#Node{
-        #1
-        (#Node{
-          #2
-          (#Node{#4 #Leaf #Leaf})
-          (#Node{#5 #Leaf #Leaf})
-        })
-        (#Node{
-          #3
-          (#Node{#6 #Leaf #Leaf})
-          (#Node{#7 #Leaf #Leaf})
-        })
-      })
-    )
-    #7
-  )
-= #Refl
+#test: (BinTree/length Nat #Leaf) == #Zero
+#test: (BinTree/length Nat #Node{#1 #Leaf #Leaf}) == #1
+#test: (BinTree/length Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf}) == #2
+#test: (BinTree/length Nat #Node{#1 #Node{#2 #Node{#4 #Leaf #Leaf} #Node{#5 #Leaf #Leaf}} #Node{#3 #Node{#6 #Leaf #Leaf} #Node{#7 #Leaf #Leaf}}}) == #7

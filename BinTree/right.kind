@@ -1,63 +1,13 @@
 // Gets the right subtree of a binary tree node.
-// - 1st: The type of values stored in the tree.
-// - 2nd: The input tree.
+// - A: The type of values stored in the tree.
+// - tree: The input tree.
 // = The right subtree, or None if the tree is a leaf.
-BinTree/right
-: ∀(A: *)
-  ∀(tree: (BinTree/BinTree A))
-  (Maybe (BinTree/BinTree A))
-= λA λ{
-  #Leaf: #None
-  #Node: λval λlft λrgt #Some{rgt}
-}
+BinTree/right : ∀(A: *) (BinTree A) -> (Maybe (BinTree A))
+| A #Leaf              = #None
+| A #Node{val lft rgt} = #Some{rgt}
 
-// Test: Right of a leaf is None.
-TEST_0
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Leaf)
-    (#None))
-= #Refl
-
-// Test: Right of a node with right child returns Some of that child.
-TEST_1
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#1 #Leaf #Node{#3 #Leaf #Leaf}})
-    (#Some{#Node{#3 #Leaf #Leaf}}))
-= #Refl
-
-// Test: Right of a node with only left child still returns Some leaf for right.
-TEST_2
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf})
-    (#Some{#Leaf}))
-= #Refl
-
-// Test: Right of a complex tree returns the correct right subtree.
-TEST_3
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#1
-      #Node{#2 #Leaf #Leaf}
-      #Node{#3
-        #Node{#4 #Leaf #Leaf}
-        #Node{#5 #Leaf #Leaf}
-      }
-    })
-    (#Some{      
-			#Node{#3
-        #Node{#4 #Leaf #Leaf}
-        #Node{#5 #Leaf #Leaf}
-      }}
-    ))
-= #Refl
-
-// Test: Right of a single node tree with no children returns Some leaf.
-TEST_4
-: (Equal
-    (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#1 #Leaf #Leaf})
-    (#Some{#Leaf}))
-= #Refl
+#test: (BinTree/right Nat #Leaf) == #None
+#test: (BinTree/right Nat #Node{#1 #Leaf #Node{#3 #Leaf #Leaf}}) == #Some{#Node{#3 #Leaf #Leaf}}
+#test: (BinTree/right Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf}) == #Some{#Leaf}
+#test: (BinTree/right Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Node{#4 #Leaf #Leaf} #Node{#5 #Leaf #Leaf}}}) == #Some{#Node{#3 #Node{#4 #Leaf #Leaf} #Node{#5 #Leaf #Leaf}}}
+#test: (BinTree/right Nat #Node{#1 #Leaf #Leaf}) == #Some{#Leaf}

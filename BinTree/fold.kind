@@ -1,123 +1,17 @@
 // Performs a fold operation on a binary tree.
-// - 1st: The type of elements in the tree.
-// - 2nd: The type of the result.
-// - 3rd: Function to apply to each node.
-// - 4th: Value to use for leaf nodes.
-// - 5th: The tree to fold over.
+// - A: The type of elements in the tree.
+// - B: The type of the result.
+// - n: Function to apply to each node.
+// - l: Value to use for leaf nodes.
+// - t: The tree to fold over.
 // = The result of folding the tree.
-BinTree/fold
-: ∀(A: *)
-  ∀(B: *)
-  ∀(f: ∀(x: A) ∀(l: B) ∀(r: B) B)
-  ∀(z: B)
-  ∀(t: (BinTree/BinTree A))
-  B
-= λA λB λf λz λ{
-  #Leaf: z
-  #Node: λt.val λt.lft λt.rgt
-    (f t.val
-      (BinTree/fold A B f z t.lft)
-      (BinTree/fold A B f z t.rgt))
-}
+BinTree/fold : ∀(A: *) ∀(B: *) (A -> B -> B -> B) -> B -> (BinTree A) -> B
+| A B n l #Leaf              = l
+| A B n l #Node{val lft rgt} = (n val (BinTree/fold A B n l lft) (BinTree/fold A B n l rgt))
 
-// Test: Folding a leaf tree
-TEST_0
-: (Equal Nat (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #Zero #Leaf) #Zero)
-= #Refl
-
-// Test: Folding a simple tree with addition
-TEST_1
-: (Equal
-    Nat
-    (BinTree/fold
-      Nat
-      Nat
-      (λx λl λr (Nat/add x (Nat/add l r)))
-      #Zero
-      (#Node{
-        #1
-        (#Node{#2 #Leaf #Leaf})
-        (#Node{#3 #Leaf #Leaf})
-      }))
-    #6)
-= #Refl
-
-// Test: Folding a tree with boolean OR operation
-TEST_2
-: (Equal
-    Bool
-    (BinTree/fold
-      Bool
-      Bool
-      (λx λl λr (Bool/or x (Bool/or l r)))
-      #False
-      (#Node{
-        #True
-        (#Node{#False #Leaf #Leaf})
-        (#Node{#False #Leaf #Leaf})
-      }))
-    #True)
-= #Refl
-
-// Test: Folding a more complex tree with addition
-TEST_3
-: (Equal
-    Nat
-    (BinTree/fold
-      Nat
-      Nat
-      (λx λl λr (Nat/add x (Nat/add l r)))
-      #Zero
-      (#Node{
-        #1
-        (#Node{
-          #2
-          (#Node{#3 #Leaf #Leaf})
-          (#Node{#4 #Leaf #Leaf})
-        })
-        (#Node{#5 #Leaf #Leaf})
-      }))
-    #15)
-= #Refl
-
-// Test: Folding a tree with multiplication
-TEST_4
-: (Equal
-    Nat
-    (BinTree/fold
-      Nat
-      Nat
-      (λx λl λr (Nat/mul x (Nat/mul l r)))
-      #1
-      (#Node{
-        #2
-        (#Node{#3 #Leaf #Leaf})
-        (#Node{#4 #Leaf #Leaf})
-      }))
-    #24)
-= #Refl
-
-// Test: Folding a tree to find the maximum value
-TEST_5
-: (Equal
-    Nat
-    (BinTree/fold
-      Nat
-      Nat
-      (λx λl λr (Nat/max x (Nat/max l r)))
-      #Zero
-      (#Node{
-        #5
-        (#Node{
-          #3
-          (#Node{#7 #Leaf #Leaf})
-          #Leaf
-        })
-        (#Node{
-          #2
-          #Leaf
-          (#Node{#6 #Leaf #Leaf})
-        })
-      }))
-    #7)
-= #Refl
+#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Leaf) == #0
+#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #6
+#test: (BinTree/fold Bool Bool (λx λl λr (Bool/or x (Bool/or l r))) #False #Node{#True #Node{#False #Leaf #Leaf} #Node{#False #Leaf #Leaf}}) == #True
+#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Node{#1 #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}} #Node{#5 #Leaf #Leaf}}) == #15
+#test: (BinTree/fold Nat Nat (λx λl λr (Nat/mul x (Nat/mul l r))) #1 #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}}) == #24
+#test: (BinTree/fold Nat Nat (λx λl λr (Nat/max x (Nat/max l r))) #0 #Node{#5 #Node{#3 #Node{#7 #Leaf #Leaf} #Leaf} #Node{#2 #Leaf #Node{#6 #Leaf #Leaf}}}) == #7
