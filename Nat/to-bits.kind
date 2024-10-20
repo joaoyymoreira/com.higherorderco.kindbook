@@ -5,13 +5,13 @@ Nat/to-bits
 : ∀(n: Nat)
   Bits
 = λ{
-  #Zero: #O{#E{}}
+  #Zero: #O{#E}
 	#Succ: λ{
-		#Zero: #I{#E{}}
+		#Zero: #I{#E}
 		#Succ: λn.pred
-			let quotient = (Nat/div #Succ{#Succ{n.pred}} #Succ{#Succ{#Zero{}}})
-			let remainder = (Nat/mod #Succ{#Succ{n.pred}} #Succ{#Succ{#Zero{}}})
-			(Bool/if Bits (Nat/eq remainder #Zero{})
+			let quotient = (Nat/div #Succ{#Succ{n.pred}} #Succ{#Succ{#Zero}})
+			let remainder = (Nat/mod #Succ{#Succ{n.pred}} #Succ{#Succ{#Zero}})
+			(Bool/if Bits (Nat/eq remainder #Zero)
 				#O{(Nat/to-bits quotient)}
 				#I{(Nat/to-bits quotient)})
 	}
@@ -21,40 +21,40 @@ Nat/to-bits
 
 // Test: to-bits 0 = O E.
 TEST_0
-: (Equal Bits (Nat/to-bits #Zero{}) (#O{#E{}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Zero) (#O{#E}))
+= #Refl
 
 // Test: to-bits 1 = I E.
 TEST_1
-: (Equal Bits (Nat/to-bits #Succ{#Zero{}}) (#I{#E{}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Zero}) (#I{#E}))
+= #Refl
 
 // Test: to-bits 2 = O (I E).
 TEST_2
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Zero{}}}) (#O{#I{#E{}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Zero}}) (#O{#I{#E}}))
+= #Refl
 
 // Test: to-bits 3 = I (I E).
 TEST_3
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Zero{}}}}) (#I{#I{#E{}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Zero}}}) (#I{#I{#E}}))
+= #Refl
 
 // Test: to-bits 4 = O (O (I E)).
 TEST_4
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (#O{#O{#I{#E{}}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (#O{#O{#I{#E}}}))
+= #Refl
 
 // Test: to-bits 5 = I (O (I E)).
 TEST_5
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) (#I{#O{#I{#E{}}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) (#I{#O{#I{#E}}}))
+= #Refl
 
 // Test: to-bits 8 = O (O (O (I E))).
 TEST_6
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#O{#O{#O{#I{#E{}}}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) (#O{#O{#O{#I{#E}}}}))
+= #Refl
 
 // Test: to-bits 15 = I (I (I (I E))).
 TEST_7
-: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}) (#I{#I{#I{#I{#E{}}}}}))
-= #Refl{}
+: (Equal Bits (Nat/to-bits #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}) (#I{#I{#I{#I{#E}}}}))
+= #Refl

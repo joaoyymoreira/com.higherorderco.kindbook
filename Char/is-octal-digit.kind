@@ -9,20 +9,20 @@ Char/is-octal-digit
 
 // Test: Checks if '0' is recognized as an octal digit.
 TEST_0
-: (Equal Bool (Char/is-octal-digit 48) #True{})
-= #Refl{}
+: (Equal Bool (Char/is-octal-digit 48) #True)
+= #Refl
 
 // Test: Checks if '7' is recognized as an octal digit.
 TEST_1
-: (Equal Bool (Char/is-octal-digit 55) #True{})
-= #Refl{}
+: (Equal Bool (Char/is-octal-digit 55) #True)
+= #Refl
 
 // Test: Checks if '8' is not recognized as an octal digit.
 TEST_2
-: (Equal Bool (Char/is-octal-digit 56) #False{})
-= #Refl{}
+: (Equal Bool (Char/is-octal-digit 56) #False)
+= #Refl
 
 // Test: Checks if 'a' is not recognized as an octal digit.
 TEST_3
-: (Equal Bool (Char/is-octal-digit 97) #False{})
-= #Refl{}
+: (Equal Bool (Char/is-octal-digit 97) #False)
+= #Refl

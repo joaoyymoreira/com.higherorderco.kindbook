@@ -12,5 +12,5 @@ ArrTree/ArrTree
   } : (ArrTree/ArrTree A (#Succ{d}))
   #Leaf{
     val: A
-  } : (ArrTree/ArrTree A #Zero{})
+  } : (ArrTree/ArrTree A #Zero)
 }

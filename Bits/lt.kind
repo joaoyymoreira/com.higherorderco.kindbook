@@ -8,18 +8,18 @@ Bits/lt
   Bool
 = λ{
   #E: λ{
-    #E: #False{}
-    #O: λb.tail #True{}
-    #I: λb.tail #True{}
+    #E: #False
+    #O: λb.tail #True
+    #I: λb.tail #True
   }
   #O: λa.tail λ{
-    #E: #False{}
+    #E: #False
     #O: λb.tail (Bits/lt a.tail b.tail)
-    #I: λb.tail #True{}
+    #I: λb.tail #True
   }
   #I: λa.tail λ{
-    #E: #False{}
-    #O: λb.tail #False{}
+    #E: #False
+    #O: λb.tail #False
     #I: λb.tail (Bits/lt a.tail b.tail)
   }
 }

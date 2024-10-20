@@ -12,14 +12,14 @@ BinMap/init
   (BinMap/BinMap A)
 = λA λ{
   #Leaf: λ{
-		#E: λv #Node{#Some{v} #Leaf{} #Leaf{}}
-		#O: λb λv #Node{#None{} (BinMap/init A #Leaf{} b v) #Leaf{}}
-		#I: λb λv #Node{#None{} #Leaf{} (BinMap/init A #Leaf{} b v)}
+		#E: λv #Node{#Some{v} #Leaf #Leaf}
+		#O: λb λv #Node{#None (BinMap/init A #Leaf b v) #Leaf}
+		#I: λb λv #Node{#None #Leaf (BinMap/init A #Leaf b v)}
 	}
   #Node: λval λlft λrgt λ{
 		#E: λv 	
-			use none = #Node{#Some{v} #Leaf{} #Leaf{}}
-			use some = λx #Node{#Some{x} #Leaf{} #Leaf{}}
+			use none = #Node{#Some{v} #Leaf #Leaf}
+			use some = λx #Node{#Some{x} #Leaf #Leaf}
 			(Maybe/match A (λx (BinMap/BinMap A)) none some val)
 		#O: λb λv #Node{val (BinMap/init A lft b v) rgt}
 		#I: λb λv #Node{val lft (BinMap/init A rgt b v)}

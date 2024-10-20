@@ -3,10 +3,10 @@ Bool/Trait/Eq/EqBool : (Trait/Eq Bool)
   = (Trait/Eq/derive Bool Bool/eq)
 
 TEST_0 
-: (Equal Bool (Bool/eq #True{} #True{}) (#True{}))
-= #Refl{}
+: (Equal Bool (Bool/eq #True #True) (#True))
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/eq #False{} #True{}) (#False{}))
-= #Refl{}
+: (Equal Bool (Bool/eq #False #True) (#False))
+= #Refl
 

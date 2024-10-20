@@ -9,7 +9,7 @@ BinMap/get
   ∀(k: Bits)
   (Maybe A)
 = λA λ{
-  #Leaf: λk #None{}
+  #Leaf: λk #None
   #Node: λval λlft λrgt λ{
 		#E: val
 		#O: λb (BinMap/get A lft b)

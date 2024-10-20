@@ -6,7 +6,7 @@ Bits/concat
 : ∀(xs: (List Bits))
   Bits
 = λ{
-  #Nil: #E{}
+  #Nil: #E
   #Cons: λ{
     #E: λxs.tail (Bits/concat xs.tail)
     #O: λxs.head.tail λxs.tail #O{(Bits/concat (#Cons{xs.head.tail xs.tail}))}

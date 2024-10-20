@@ -11,6 +11,6 @@ Maybe/Monad/bind
   ∀(f: ∀(x: A) (Maybe B))
   (Maybe B)
 = λA λB λ{
-  #None: λf #None{}
+  #None: λf #None
   #Some: λm.value λf (f m.value)
 }

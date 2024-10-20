@@ -9,37 +9,37 @@ Nat/min
 = λm λn
   (Bool/if Nat (Nat/lte m n) m n)
 // Test: min 0 0 = 0.
-TEST_0 : (Equal Nat (Nat/min #Zero{} #Zero{}) #Zero{})
-= #Refl{}
+TEST_0 : (Equal Nat (Nat/min #Zero #Zero) #Zero)
+= #Refl
 
 // Test: min 0 5 = 0.
-TEST_1 : (Equal Nat (Nat/min #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
-= #Refl{}
+TEST_1 : (Equal Nat (Nat/min #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+= #Refl
 
 // Test: min 5 0 = 0.
-TEST_2 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Zero{})
-= #Refl{}
+TEST_2 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Zero)
+= #Refl
 
 // Test: min 3 2 = 2.
-TEST_3 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}})
-= #Refl{}
+TEST_3 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Zero}})
+= #Refl
 
 // Test: min 7 8 = 7.
-TEST_4 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
-= #Refl{}
+TEST_4 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+= #Refl
 
 // Test: min 8 7 = 7.
-TEST_5 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
-= #Refl{}
+TEST_5 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+= #Refl
 
 // Test: Commutativity: min a b = min b a.
-TEST_6 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/min #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
-= #Refl{}
+TEST_6 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/min #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Zero}}}))
+= #Refl
 
 // Test: Idempotence: min a a = a.
-TEST_7 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+TEST_7 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl
 
 // Test: min with equal values.
-TEST_8 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
-= #Refl{}
+TEST_8 : (Equal Nat (Nat/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+= #Refl

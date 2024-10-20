@@ -5,7 +5,7 @@ Bits/is-zero
 : ∀(bits: Bits)
   Bool
 = λ{
-  #E: #True{}
-  #O: λtail (Bool/and #True{} (Bits/is-zero tail))
-  #I: λtail #False{}
+  #E: #True
+  #O: λtail (Bool/and #True (Bits/is-zero tail))
+  #I: λtail #False
 }

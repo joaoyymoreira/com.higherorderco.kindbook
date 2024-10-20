@@ -7,19 +7,19 @@ BinTree/length
   ∀(t: (BinTree/BinTree A))
   Nat
 = λA λ{
-  #Leaf: #Zero{}
+  #Leaf: #Zero
   #Node: λt.val λt.lft λt.rgt
     #Succ{(Nat/add (BinTree/length A t.lft) (BinTree/length A t.rgt))}
 }
 // Test: Length of an empty tree is zero
 TEST_0
-: (Equal Nat (BinTree/length _ #Leaf{}) #Zero{})
-= #Refl{}
+: (Equal Nat (BinTree/length _ #Leaf) #Zero)
+= #Refl
 
 // Test: Length of a single node tree is one
 TEST_1
-: (Equal Nat (BinTree/length _ (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})) #Succ{#Zero{}})
-= #Refl{}
+: (Equal Nat (BinTree/length _ (#Node{#Succ{#Zero} #Leaf #Leaf})) #Succ{#Zero})
+= #Refl
 
 // Test: Length of a tree with three nodes
 TEST_2
@@ -27,14 +27,14 @@ TEST_2
     Nat
     (BinTree/length _
       (#Node{
-        #Succ{#Zero{}}
-        (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
-        #Leaf{}
+        #Succ{#Zero}
+        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #Leaf
       })
     )
-    #Succ{#Succ{#Zero{}}}
+    #Succ{#Succ{#Zero}}
   )
-= #Refl{}
+= #Refl
 
 // Test: Length of a balanced tree with seven nodes
 TEST_3
@@ -42,19 +42,19 @@ TEST_3
     Nat
     (BinTree/length _
       (#Node{
-        #Succ{#Zero{}}
+        #Succ{#Zero}
         (#Node{
-          #Succ{#Succ{#Zero{}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})
+          #Succ{#Succ{#Zero}}
+          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})
+          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})
         })
         (#Node{
-          #Succ{#Succ{#Succ{#Zero{}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Leaf{} #Leaf{}})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Leaf{} #Leaf{}})
+          #Succ{#Succ{#Succ{#Zero}}}
+          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Leaf #Leaf})
+          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
         })
       })
     )
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
   )
-= #Refl{}
+= #Refl

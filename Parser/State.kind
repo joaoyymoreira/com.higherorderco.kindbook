@@ -17,7 +17,7 @@ Parser/new_parser_state
   Parser/State
 = λinput #MkState{
   input: input
-  index: #Zero{}
+  index: #Zero
 }
 
 // Helper function to get the input from a State

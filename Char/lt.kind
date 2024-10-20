@@ -9,20 +9,20 @@ Char/lt
 = λx λy (U32/lt x y)
 // Test: Compare lowercase 'a' with uppercase 'A'
 TEST_0 
-: (Equal Bool (Char/lt 'a' 'A') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/lt 'a' 'A') #False) 
+= #Refl
 
 // Test: Compare lowercase 'a' with lowercase 'b'
 TEST_1 
-: (Equal Bool (Char/lt 'a' 'b') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/lt 'a' 'b') #True) 
+= #Refl
 
 // Test: Compare uppercase 'Z' with lowercase 'a'
 TEST_2 
-: (Equal Bool (Char/lt 'Z' 'a') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/lt 'Z' 'a') #True) 
+= #Refl
 
 // Test: Compare same character
 TEST_3 
-: (Equal Bool (Char/lt 'c' 'c') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/lt 'c' 'c') #False) 
+= #Refl

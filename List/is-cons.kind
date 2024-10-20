@@ -7,6 +7,6 @@ List/is-cons
   ∀(xs: (List A))
   Bool
 = λA λ{
-  #Nil: #False{}
-  #Cons: λxs.head λxs.tail #True{}
+  #Nil: #False
+  #Cons: λxs.head λxs.tail #True
 }

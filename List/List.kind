@@ -3,6 +3,6 @@
 // - Nil: The empty list.
 List : * -> *
 = λA data[]{
-  #Nil{} : (List A)
+  #Nil : (List A)
   #Cons{ head:A tail:(List A) } : (List A)
 }

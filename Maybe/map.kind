@@ -11,6 +11,6 @@ Maybe/map
   ∀(m: (Maybe A))
   (Maybe B)
 = λA λB λf λ{
-    #None: #None{}
+    #None: #None
     #Some: λm.value #Some{(f m.value)}
   }

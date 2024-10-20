@@ -7,6 +7,6 @@ Maybe/to-list
   ∀(m: (Maybe A))
   (List A)
 = λA λ{
-  #None: #Nil{}
-  #Some: λma.value #Cons{ma.value #Nil{}}
+  #None: #Nil
+  #Some: λma.value #Cons{ma.value #Nil}
 }

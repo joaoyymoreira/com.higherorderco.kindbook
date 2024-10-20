@@ -8,18 +8,18 @@ AVLTree/neq
   Bool
 = λ{
   #MinusOne: λ{
-    #MinusOne:  #False{}
-    #Zero:      #True{}
-    #PlusOne:   #True{}
+    #MinusOne:  #False
+    #Zero:      #True
+    #PlusOne:   #True
   }
   #Zero: λ{
-    #MinusOne:  #True{}
-    #Zero:      #False{}
-    #PlusOne:   #True{}
+    #MinusOne:  #True
+    #Zero:      #False
+    #PlusOne:   #True
   }
   #PlusOne: λ{
-    #MinusOne:  #True{}
-    #Zero:      #True{}
-    #PlusOne:   #False{}
+    #MinusOne:  #True
+    #Zero:      #True
+    #PlusOne:   #False
   }
 }

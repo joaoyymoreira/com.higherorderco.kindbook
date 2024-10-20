@@ -9,7 +9,7 @@ List/all-equal
   ∀(xs: (List A))
   Bool
 = λA λe λ{
-  #Nil: #True{}
+  #Nil: #True
   #Cons: λxs.head λxs.tail
     (List/all-equal/aux A e xs.head xs.tail)
 }
@@ -22,7 +22,7 @@ List/all-equal/aux
   ∀(xs: (List A))
   Bool
 = λA λe λx λ{
-  #Nil: #True{}
+  #Nil: #True
   #Cons: λxs.head λxs.tail
     (Bool/and
       (Trait/Eq/eq A e x xs.head)

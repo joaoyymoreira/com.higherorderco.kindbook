@@ -4,4 +4,4 @@
 String/from-char
 : ∀(chars: U32)
   String
-= λchars (String/from-list (#Cons{chars #Nil{}}))
+= λchars (String/from-list (#Cons{chars #Nil}))

@@ -3,4 +3,4 @@
 // - x: The value term.
 // = A proof that x equals itself.
 Equal/refl : ∀(A: *) ∀(x: A) (Equal A x x)
-| A x = #Refl{}
+| A x = #Refl

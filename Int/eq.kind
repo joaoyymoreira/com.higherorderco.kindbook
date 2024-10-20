@@ -9,10 +9,10 @@ Int/eq
 = λ{
   #Pos: λx.value λ{
     #Pos: λy.value (Nat/eq x.value y.value)
-    #NegSuc: λy.value #False{}
+    #NegSuc: λy.value #False
   }
   #NegSuc: λx.value λ{
-    #Pos: λy.value #False{}
+    #Pos: λy.value #False
     #NegSuc: λy.value (Nat/eq x.value y.value)
   }
 }

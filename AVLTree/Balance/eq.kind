@@ -8,18 +8,18 @@ AVLTree/Balance/eq
   Bool
 = λ{
   #MinusOne: λ{
-    #MinusOne:  #True{}
-    #Zero:      #False{}
-    #PlusOne:   #False{}
+    #MinusOne:  #True
+    #Zero:      #False
+    #PlusOne:   #False
   }
   #Zero: λ{
-    #MinusOne:  #False{}
-    #Zero:      #True{}
-    #PlusOne:   #False{}
+    #MinusOne:  #False
+    #Zero:      #True
+    #PlusOne:   #False
   }
   #PlusOne: λ{
-    #MinusOne:  #False{}
-    #Zero:      #False{}
-    #PlusOne:   #True{}
+    #MinusOne:  #False
+    #Zero:      #False
+    #PlusOne:   #True
   }
 }

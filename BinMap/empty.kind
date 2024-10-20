@@ -8,4 +8,4 @@ BinMap/empty
 // Test case to verify that an empty BinMap is equivalent to a Leaf
 TEST_0
 : (Equal (BinMap/BinMap Nat) (BinMap/empty Nat) (BinMap/Leaf Nat))
-= #Refl{}
+= #Refl

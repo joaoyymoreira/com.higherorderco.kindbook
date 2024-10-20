@@ -12,18 +12,18 @@ List/compare
   Ordering
 = λA λord λ{
   #Nil: λ{
-    #Nil: #EQ{}
-    #Cons: λys.head λys.tail #LT{}
+    #Nil: #EQ
+    #Cons: λys.head λys.tail #LT
   }
   #Cons: λxs.head λxs.tail λ{
-    #Nil: #GT{}
+    #Nil: #GT
     #Cons: λys.head λys.tail
       let head_cmp = (Trait/Ord/compare A ord xs.head ys.head)
       (Ordering/match
         Ordering
-        #LT{}
+        #LT
         (List/compare A ord xs.tail ys.tail)
-        #GT{}
+        #GT
         head_cmp)
   }
 }

@@ -26,39 +26,39 @@ List/for-given
 TEST_0
 : (Equal
     (Maybe Nat)
-    (List/for-given Maybe MT/Monad Nat Nat (List/Nil Nat) #Zero{} (λs λx (#Some{(Nat/add s x)})))
-    (#Some{#Zero{}}))
-= #Refl{}
+    (List/for-given Maybe MT/Monad Nat Nat (List/Nil Nat) #Zero (λs λx (#Some{(Nat/add s x)})))
+    (#Some{#Zero}))
+= #Refl
 
 // Test: Non-empty list with Maybe monad
 TEST_1
 : (Equal
     (Maybe Nat)
     (List/for-given Maybe MT/Monad Nat Nat
-      (List/Cons _ #Succ{#Zero{}}
-        (List/Cons _ #Succ{#Succ{#Zero{}}}
-          (List/Cons _ #Succ{#Succ{#Succ{#Zero{}}}}
+      (List/Cons _ #Succ{#Zero}
+        (List/Cons _ #Succ{#Succ{#Zero}}
+          (List/Cons _ #Succ{#Succ{#Succ{#Zero}}}
             (List/Nil _))))
-      #Zero{}
+      #Zero
       (λs λx (#Some{(Nat/add s x)})))
-    (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
+    (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
   )
-= #Refl{}
+= #Refl
 
 // Test: Maybe monad with potential failure
 TEST_2
 : (Equal
     (Maybe Nat)
     (List/for-given Maybe MT/Monad Nat Nat
-      (List/Cons _ #Succ{#Zero{}}
-        (List/Cons _ #Zero{}
-          (List/Cons _ #Succ{#Succ{#Zero{}}}
+      (List/Cons _ #Succ{#Zero}
+        (List/Cons _ #Zero
+          (List/Cons _ #Succ{#Succ{#Zero}}
             (List/Nil _))))
-      #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
+      #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}
       (λs λx
         (Bool/if (Maybe Nat)
-          (Nat/eq x #Zero{})
-          (#None{})
+          (Nat/eq x #Zero)
+          (#None)
           (#Some{(Nat/sub s x)}))))
-    (#None{}))
-= #Refl{}
+    (#None))
+= #Refl

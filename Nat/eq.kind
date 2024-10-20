@@ -9,20 +9,20 @@ Nat/eq : Nat -> Nat -> Bool
 
 // Test: equality of the same number
 TEST_0
-: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{ #Zero{}}})) #True{})
-= #Refl{}
+: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero}}) (#Succ{#Succ{ #Zero}})) #True)
+= #Refl
 
 // Test: equality of different numbers
 TEST_1
-: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{#Succ{ #Zero{}}}})) #False{})
-= #Refl{}
+: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero}}) (#Succ{#Succ{#Succ{ #Zero}}})) #False)
+= #Refl
 
 // Test: equality of zero
 TEST_2
-: (Equal Bool (Nat/eq #Zero{} #Zero{}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/eq #Zero #Zero) #True)
+= #Refl
 
 // Test: inequality of the same number
 TEST_3
-: (Equal Bool (Nat/neq (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}})) #False{})
-= #Refl{}
+: (Equal Bool (Nat/neq (#Succ{#Succ{#Succ{#Succ{ #Zero}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero}}}})) #False)
+= #Refl

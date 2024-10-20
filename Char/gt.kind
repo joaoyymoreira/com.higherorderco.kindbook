@@ -9,35 +9,35 @@ Char/gt
 = λx λy (U32/gt x y)
 // Test: 'b' is greater than 'a'.
 TEST_0
-: (Equal Bool (Char/gt 'b' 'a') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/gt 'b' 'a') #True) 
+= #Refl
 
 // Test: 'a' is not greater than 'b'.
 TEST_1
-: (Equal Bool (Char/gt 'a' 'b') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/gt 'a' 'b') #False) 
+= #Refl
 
 // Test: 'A' is not greater than 'a'.
 TEST_2
-: (Equal Bool (Char/gt 'A' 'a') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/gt 'A' 'a') #False) 
+= #Refl
 
 // Test: 'z' is greater than 'a'.
 TEST_3
-: (Equal Bool (Char/gt 'z' 'a') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/gt 'z' 'a') #True) 
+= #Refl
 
 // Test: '9' is greater than '0'.
 TEST_4
-: (Equal Bool (Char/gt '9' '0') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/gt '9' '0') #True) 
+= #Refl
 
 // Test: '~' is greater than '!'.
 TEST_5
-: (Equal Bool (Char/gt '~' '!') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/gt '~' '!') #True) 
+= #Refl
 
 // Test: 'a' is not greater than 'a'.
 TEST_6
-: (Equal Bool (Char/gt 'a' 'a') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/gt 'a' 'a') #False) 
+= #Refl

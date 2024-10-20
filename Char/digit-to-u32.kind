@@ -9,34 +9,34 @@ Char/digit-to-u32
   (U32/if (Maybe U32)
     (& (>= n 0) (<= n 9))
     (#Some{n})
-    #None{}
+    #None
   )
 // Test: '0' converts to Some 0.
 TEST_0
 : (Equal (Maybe U32) (Char/digit-to-u32 48) (#Some{0}))
-= #Refl{}
+= #Refl
 
 // Test: '5' converts to Some 5.
 TEST_1
 : (Equal (Maybe U32) (Char/digit-to-u32 53) (#Some{5}))
-= #Refl{}
+= #Refl
 
 // Test: '9' converts to Some 9.
 TEST_2
 : (Equal (Maybe U32) (Char/digit-to-u32 57) (#Some{9}))
-= #Refl{}
+= #Refl
 
 // Test: 'a' converts to None.
 TEST_3
-: (Equal (Maybe U32) (Char/digit-to-u32 97) #None{})
-= #Refl{}
+: (Equal (Maybe U32) (Char/digit-to-u32 97) #None)
+= #Refl
 
 // Test: '!' converts to None.
 TEST_4
-: (Equal (Maybe U32) (Char/digit-to-u32 33) #None{})
-= #Refl{}
+: (Equal (Maybe U32) (Char/digit-to-u32 33) #None)
+= #Refl
 
 // Test: ' ' (space) converts to None.
 TEST_5
-: (Equal (Maybe U32) (Char/digit-to-u32 32) #None{})
-= #Refl{}
+: (Equal (Maybe U32) (Char/digit-to-u32 32) #None)
+= #Refl

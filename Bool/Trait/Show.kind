@@ -5,10 +5,10 @@ Bool/Trait/Show/Bool : (Trait/Show Bool) =
   }
 
 Bool/T0
-: (Equal Bool (Bool/show #True{}) (#True{}))
-= #Refl{}
+: (Equal Bool (Bool/show #True) (#True))
+= #Refl
 
 Bool/T1
-: (Equal Bool (Bool/show #False{}) #False{})
-= #Refl{}
+: (Equal Bool (Bool/show #False) #False)
+= #Refl
 

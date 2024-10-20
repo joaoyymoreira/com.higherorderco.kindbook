@@ -7,4 +7,4 @@ BinMap/new
 // Test that creating a new BinMap results in a Leaf
 TEST_0
 : (Equal (BinMap/BinMap Nat) (BinMap/new Nat) (BinMap/Leaf Nat))
-= #Refl{}
+= #Refl

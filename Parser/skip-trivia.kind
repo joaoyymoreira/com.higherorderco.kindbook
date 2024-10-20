@@ -11,9 +11,9 @@ Pair/is-comment
 = λ{
   #Cons: λhead λ{
     #Cons: λsecond λtail (Bool/and (Char/eq head 47) (Char/eq second 47))
-    #Nil: #False{}
+    #Nil: #False
   }
-  #Nil: #False{}
+  #Nil: #False
 }
 
 // Helper function to handle comment skipping
@@ -34,7 +34,7 @@ Pair/skip-trivia-go
   ∀(cs: (List Char))
   (Pair/Pair Nat (List Char))
 = λacc λ{
-  #Nil: (Pair/Pair.new _ _ acc #Nil{})
+  #Nil: (Pair/Pair.new _ _ acc #Nil)
   #Cons: λc λcs
     (Bool/if (Pair/Pair Nat (List Char))
       (Char/is-space c)
@@ -52,7 +52,7 @@ Pair/skip-trivia
 = λs
   let input = (Pair/State/input s)
   let chars = input
-  let skipped = (Pair/skip-trivia-go #Zero{} chars)
+  let skipped = (Pair/skip-trivia-go #Zero chars)
   let skp = (Pair/Pair/fst _ _ skipped)
   let rem = (Pair/Pair/snd _ _ skipped)
   let new-index = (Nat/add (Pair/State/index s) skp)

@@ -7,20 +7,20 @@ Char/is-alpha
 = λcode (Bool/or (Char/is-upper code) (Char/is-lower code))
 // Test: Lowercase 'a' is alphabetic.
 TEST_0 
-: (Equal Bool (Char/is-alpha 97) #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-alpha 97) #True) 
+= #Refl
 
 // Test: Uppercase 'Z' is alphabetic.
 TEST_1 
-: (Equal Bool (Char/is-alpha 90) #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-alpha 90) #True) 
+= #Refl
 
 // Test: Digit '5' is not alphabetic.
 TEST_2 
-: (Equal Bool (Char/is-alpha 53) #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-alpha 53) #False) 
+= #Refl
 
 // Test: Special character '@' is not alphabetic.
 TEST_3 
-: (Equal Bool (Char/is-alpha 64) #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-alpha 64) #False) 
+= #Refl

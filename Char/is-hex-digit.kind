@@ -12,25 +12,25 @@ Char/is-hex-digit
 
 // Test: Digit '5' is a hexadecimal digit
 TEST_0 
-: (Equal Bool (Char/is-hex-digit '5') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-hex-digit '5') #True) 
+= #Refl
 
 // Test: Uppercase 'A' is a hexadecimal digit
 TEST_1 
-: (Equal Bool (Char/is-hex-digit 'A') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-hex-digit 'A') #True) 
+= #Refl
 
 // Test: Lowercase 'f' is a hexadecimal digit
 TEST_2 
-: (Equal Bool (Char/is-hex-digit 'f') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-hex-digit 'f') #True) 
+= #Refl
 
 // Test: Letter 'G' is not a hexadecimal digit
 TEST_3 
-: (Equal Bool (Char/is-hex-digit 'G') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-hex-digit 'G') #False) 
+= #Refl
 
 // Test: Special character '@' is not a hexadecimal digit
 TEST_4 
-: (Equal Bool (Char/is-hex-digit '@') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-hex-digit '@') #False) 
+= #Refl

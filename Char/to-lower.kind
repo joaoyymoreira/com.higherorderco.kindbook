@@ -13,24 +13,24 @@ Char/to-lower
 // Test: Uppercase 'A' is converted to lowercase 'a'
 TEST_0 
 : (Equal Char (Char/to-lower 'A') 'a')
-= #Refl{}
+= #Refl
 
 // Test: Lowercase 'a' remains unchanged
 TEST_1 
 : (Equal Char (Char/to-lower 'a') 'a')
-= #Refl{}
+= #Refl
 
 // Test: Digit '5' remains unchanged
 TEST_2 
 : (Equal Char (Char/to-lower '5') '5')
-= #Refl{}
+= #Refl
 
 // Test: Special character '@' remains unchanged
 TEST_3 
 : (Equal Char (Char/to-lower '@') '@')
-= #Refl{}
+= #Refl
 
 // Test: Uppercase 'Z' is converted to lowercase 'z'
 TEST_4 
 : (Equal Char (Char/to-lower 'Z') 'z')
-= #Refl{}
+= #Refl

@@ -8,11 +8,11 @@ String/eq
   Bool
 = λ{
   #Nil: λ{
-    #Nil: #True{}
-    #Cons: λb.head λb.tail #False{}
+    #Nil: #True
+    #Cons: λb.head λb.tail #False
   }
   #Cons: λa.head λa.tail λ{
-    #Nil: #False{}
+    #Nil: #False
     #Cons: λb.head λb.tail
       let head_eq = (U32/eq a.head b.head)
       let tail_eq = (String/eq a.tail b.tail)

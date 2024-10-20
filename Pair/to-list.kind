@@ -10,4 +10,4 @@ Pair/to-list
 = λA λpair
   let x = (Pair/Sigma/fst _ _ pair)
   let y = (Pair/Sigma/snd _ _ pair)
-  #Cons{x #Cons{y #Nil{}}}
+  #Cons{x #Cons{y #Nil}}

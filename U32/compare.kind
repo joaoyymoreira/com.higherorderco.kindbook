@@ -9,11 +9,11 @@ U32/compare
   Ordering
 = λ{
   0: λ{
-    0: #EQ{}
-    _: λb.pred #LT{}
+    0: #EQ
+    _: λb.pred #LT
   }
   _: λa.pred λ{
-    0: #GT{}
+    0: #GT
     _: λb.pred (U32/compare a.pred b.pred)
   }
 }

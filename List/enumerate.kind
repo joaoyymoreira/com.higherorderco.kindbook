@@ -6,7 +6,7 @@ List/enumerate-go
   ∀(xs: (List A))
   (List (Pair/Pair Nat A))
 = λA λn λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λxs.head λxs.tail
     #Cons{
       #Pair{n xs.head}
@@ -22,7 +22,7 @@ List/enumerate
 : ∀(A: *)
   ∀(xs: (List A))
   (List (Pair/Pair Nat A))
-= λA λxs (List/enumerate-go A #Zero{} xs)
+= λA λxs (List/enumerate-go A #Zero xs)
 
 // Examples and properties of the enumerate function
 
@@ -30,10 +30,10 @@ List/enumerate
 List/enumerate/example0
 : (Equal
     (List (Pair/Pair Nat (List U32)))
-    (List/enumerate (List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil{}})})}))
-    (#Cons{(Pair/Pair #Zero{} "0") (#Cons{(Pair/Pair #Succ{#Zero{}} "1") (#Cons{(Pair/Pair #Succ{#Succ{#Zero{}}} "2") #Nil{}})})})
+    (List/enumerate (List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil})})}))
+    (#Cons{(Pair/Pair #Zero "0") (#Cons{(Pair/Pair #Succ{#Zero} "1") (#Cons{(Pair/Pair #Succ{#Succ{#Zero}} "2") #Nil})})})
 )
-= #Refl{} 
+= #Refl 
 
 // ✓ List/enumerate/empty
 // ERROR:
@@ -49,7 +49,7 @@ List/enumerate/empty
 : ∀(A: *)
   (Equal
     (List (Pair/Pair Nat A))
-    (List/enumerate A #Nil{})
-    #Nil{}
+    (List/enumerate A #Nil)
+    #Nil
   )
-= λA #Refl{}
+= λA #Refl

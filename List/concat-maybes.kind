@@ -18,4 +18,4 @@ List/concat-maybes
 : ∀(A: *)
   ∀(xs: (List (Maybe A)))
   (List A)
-= λA λxs (List/foldr _ _ (concat-maybes-go  _) #Nil{} xs _)
+= λA λxs (List/foldr _ _ (concat-maybes-go  _) #Nil xs _)

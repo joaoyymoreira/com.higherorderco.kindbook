@@ -9,44 +9,44 @@ Char/digit-to-nat
   (U32/if (Maybe Nat)
     (& (<= 0 n) (<= n 9))
     #Some{(U32/to-nat n)}
-    #None{}
+    #None
   )
 // Test: '0' converts to Some 0.
 TEST_0
-: (Equal (Maybe Nat) (Char/digit-to-nat 48) (#Some{#Zero{}}))
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 48) (#Some{#Zero}))
+= #Refl
 
 // Test: '5' converts to Some 5.
 TEST_1
-: (Equal (Maybe Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}))
+= #Refl
 
 // Test: '9' converts to Some 9.
 TEST_2
-: (Equal (Maybe Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}))
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}))
+= #Refl
 
 // Test: 'a' converts to None.
 TEST_3
-: (Equal (Maybe Nat) (Char/digit-to-nat 97) #None{})
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 97) #None)
+= #Refl
 
 // Test: '!' converts to None.
 TEST_4
-: (Equal (Maybe Nat) (Char/digit-to-nat 33) #None{})
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 33) #None)
+= #Refl
 
 // Test: ' ' (space) converts to None.
 TEST_5
-: (Equal (Maybe Nat) (Char/digit-to-nat 32) #None{})
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 32) #None)
+= #Refl
 
 // Test: '\n' (newline) converts to None.
 TEST_6
-: (Equal (Maybe Nat) (Char/digit-to-nat 10) #None{})
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 10) #None)
+= #Refl
 
 // Test: '١' (Arabic-Indic digit one) converts to None.
 TEST_7
-: (Equal (Maybe Nat) (Char/digit-to-nat 1633) #None{})
-= #Refl{}
+: (Equal (Maybe Nat) (Char/digit-to-nat 1633) #None)
+= #Refl

@@ -9,7 +9,7 @@ List/filter
   ∀(xs: (List A))
   (List A)
 = λA λfn λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λxs.head λxs.tail
     let tail = (List/filter _ fn xs.tail)
     (Bool/if _ (fn xs.head) (#Cons{xs.head tail}) tail)

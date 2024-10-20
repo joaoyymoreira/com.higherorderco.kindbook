@@ -8,7 +8,7 @@
 Maybe/match
 : ∀(A: *)
   ∀(P: ∀(m: (Maybe A)) *)
-  ∀(none: (P #None{}))
+  ∀(none: (P #None))
   ∀(some: ∀(x: A) (P (#Some{x})))
   ∀(m: (Maybe A))
   (P m)

@@ -31,13 +31,13 @@ main : (Pair/Pair U32 U32)
 //use Bool/ as Bool/
 
 //Foo : Bool -> Bool
-//| #True{} = #False
+//| #True = #False
 //| other   = #True
 
 //Main : Bool
-//= (Foo #False{})
+//= (Foo #False)
 
-//| #True{} = ?a
+//| #True = ?a
 
 //use Nat/ as Nat/
 //use String/ as String/
@@ -58,7 +58,7 @@ main : (Pair/Pair U32 U32)
 //: ∀(b: Bool)
   //*
 //= λb data[b]{
-  //#Indeed{} : (IsTrue #True)
+  //#Indeed : (IsTrue #True)
 //}
 
 //Main
@@ -109,7 +109,7 @@ main : (Pair/Pair U32 U32)
 //Main
 //: ∀(f: ∀(x: Bool) Bool)
   //Nat
-//= λf match (f #True{}) {
+//= λf match (f #True) {
   //#True: ?a
   //#False: ?b
 //}

@@ -5,13 +5,13 @@ Bits/succ
 : ∀(bs: Bits)
   Bits
 = λ{
-  #E: #I{#E{}}
+  #E: #I{#E}
   #O: λbs.tail #I{bs.tail}
   #I: λbs.tail #O{(Bits/succ bs.tail)}
 }
 
 // Examples:
-// Bits/succ #E{}                = #I{#E{}}         (0 → 1)
-// Bits/succ (#O{#E{}})          = #I{#E{}}         (0 → 1)
-// Bits/succ (#I{#E{}})          = #O{#I{#E{}}}     (1 → 10)
-// Bits/succ (#I{#I{#E{}}})      = #O{#O{#I{#E{}}}} (11 → 100)
+// Bits/succ #E                = #I{#E}         (0 → 1)
+// Bits/succ (#O{#E})          = #I{#E}         (0 → 1)
+// Bits/succ (#I{#E})          = #O{#I{#E}}     (1 → 10)
+// Bits/succ (#I{#I{#E}})      = #O{#O{#I{#E}}} (11 → 100)

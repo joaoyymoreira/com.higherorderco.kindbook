@@ -8,7 +8,7 @@ List/last
   ∀(xs: (List A))
   (Maybe A)
 = λA λ{
-  #Nil: #None{}
+  #Nil: #None
   #Cons: λxs.head λ{
     #Nil: #Some{xs.head}
     #Cons: λxs.tail.head λxs.tail.tail (List/last _ (#Cons{xs.tail.head xs.tail.tail}))

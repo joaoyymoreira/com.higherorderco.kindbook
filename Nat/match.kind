@@ -7,7 +7,7 @@
 // = The result of matching on the input natural number.
 Nat/match
 : ∀(P: ∀(x: Nat) *)
-  ∀(z: (P #Zero{}))
+  ∀(z: (P #Zero))
   ∀(s: ∀(x: Nat) (P #Succ{x}))
   ∀(n: Nat)
   (P n)
@@ -21,36 +21,36 @@ Nat/describe
   Bool
 = (Nat/match
     λx(Bool)
-    #False{}
-    λpred #True{}
+    #False
+    λpred #True
   )
 
-// Test: Describe of Zero{}
+// Test: Describe of Zero
 TEST_0
-: (Equal Bool (Nat/describe #Zero{}) #False{})
-= #Refl{}
+: (Equal Bool (Nat/describe #Zero) #False)
+= #Refl
 
 // Test: Describe of Succ{Zero}
 TEST_1
-: (Equal Bool (Nat/describe #Succ{#Zero{}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/describe #Succ{#Zero}) #True)
+= #Refl
 
 // Test: Describe of Succ{Succ{Zero}}
 TEST_2
-: (Equal Bool (Nat/describe #Succ{#Succ{#Zero{}}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/describe #Succ{#Succ{#Zero}}) #True)
+= #Refl
 
 // Test: Describe of Succ{Succ{Succ{Zero}}}
 TEST_3
-: (Equal Bool (Nat/describe #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/describe #Succ{#Succ{#Succ{#Zero}}}) #True)
+= #Refl
 
 // Test: Equality of describe results for different non-zero numbers
 TEST_4
-: (Equal Bool (Bool/eq (Nat/describe #Succ{#Zero{}}) (Nat/describe #Succ{#Succ{#Zero{}}})) #True{})
-= #Refl{}
+: (Equal Bool (Bool/eq (Nat/describe #Succ{#Zero}) (Nat/describe #Succ{#Succ{#Zero}})) #True)
+= #Refl
 
 // Test: Inequality of describe results for zero and non-zero
 TEST_5
-: (Equal Bool (Bool/eq (Nat/describe #Zero{}) (Nat/describe #Succ{#Zero{}})) #False{})
-= #Refl{}
+: (Equal Bool (Bool/eq (Nat/describe #Zero) (Nat/describe #Succ{#Zero})) #False)
+= #Refl

@@ -5,6 +5,6 @@ U32/to-nat
 : ∀(x: U32)
   Nat
 = λ{
-  0: #Zero{}
+  0: #Zero
   _: λx.pred #Succ{(U32/to-nat x.pred)}
 }

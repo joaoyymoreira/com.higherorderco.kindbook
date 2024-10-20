@@ -11,5 +11,5 @@ List/diagonal
     (List A)
     (List A)
     (List/append A)
-    #Nil{}
+    #Nil
     (List/stripe A xss))

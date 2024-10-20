@@ -6,7 +6,7 @@ Int/neg
   Int
 = λ{
   #Pos: λ{
-    #Zero: #Pos{#Zero{}}
+    #Zero: #Pos{#Zero}
     #Succ: λn #NegSuc{n}
   }
   #NegSuc: λn #Pos{#Succ{n}}

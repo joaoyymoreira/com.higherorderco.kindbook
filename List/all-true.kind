@@ -9,4 +9,4 @@ List/all-true
   ∀(xs: (List A))
   Bool
 = λA λp λxs
-  (List/foldr _ _ (λx λacc (Bool/and (p x) acc)) #True{} xs)
+  (List/foldr _ _ (λx λacc (Bool/and (p x) acc)) #True xs)

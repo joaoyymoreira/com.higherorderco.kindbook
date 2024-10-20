@@ -4,15 +4,15 @@ BinMap/to-list-go
   ∀(queue: (List (Pair/Pair Bits (BinMap/BinMap A))))
   (List (Pair/Pair Bits A))
 = λA λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λ{
 		#Pair: λacc λ{
 			#Leaf: λtail (BinMap/to-list-go A tail)
 			#Node: λ{
 				#None: λlft λrgt λtail 
-					(BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil{}}})))
+					(BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))
 				#Some: λval λlft λrgt λtail
-					#Cons{#Pair{acc val} (BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil{}}})))}
+					#Cons{#Pair{acc val} (BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))}
 			}
 		}
 	} 
@@ -27,30 +27,30 @@ BinMap/to-list
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
   (List (Pair/Pair Bits A))
-= λA λm (BinMap/to-list-go A #Cons{#Pair{#E{} (BinMap/invert A m)} #Nil{}})
+= λA λm (BinMap/to-list-go A #Cons{#Pair{#E (BinMap/invert A m)} #Nil})
 // Test: Empty map should result in an empty list
 TEST_0
 : (Equal
     (List (Pair/Pair Bits Bool))
-    (BinMap/to-list Bool #Leaf{})
-    (#Nil{}))
-= #Refl{}
+    (BinMap/to-list Bool #Leaf)
+    (#Nil))
+= #Refl
 
 // Test: BinMap with a single element
 TEST_1
 : (Equal
     (List (Pair/Pair Bits Bool))
-    (BinMap/to-list Bool (BinMap/set Bool #Leaf{} #E{} #True{}))
-    (#Cons{(#Pair{#E{} #True{}}) (#Nil{})}))
-= #Refl{}
+    (BinMap/to-list Bool (BinMap/set Bool #Leaf #E #True))
+    (#Cons{(#Pair{#E #True}) (#Nil)}))
+= #Refl
 
 // Test: Overwrite element
 TEST_2
 : (Equal
     (List (Pair/Pair Bits Bool))
-    (BinMap/to-list Bool (BinMap/set Bool (BinMap/set Bool #Leaf{} #E{} #True{}) #E{} #False{}))
-    (#Cons{(#Pair{#E{} #False{}}) (#Nil{})}))
-= #Refl{}
+    (BinMap/to-list Bool (BinMap/set Bool (BinMap/set Bool #Leaf #E #True) #E #False))
+    (#Cons{(#Pair{#E #False}) (#Nil)}))
+= #Refl
 
 // // Test: Skip None values 
 // // BUG: Constructor Cons not found in pattern match.
@@ -59,8 +59,8 @@ TEST_2
 //     (List (Pair/Pair Bits Bool))
 //     (BinMap/to-list Bool 
 //       (#Node{
-// 				#None{}
-//         (#Node{#Some{#True{}} #Leaf{} #Leaf{}})
-//         (#Node{#Some{#False{}} #Leaf{} #Leaf{}})}))
-//     (#Cons{(#Pair{(#O{#E{}}) #True{}}) (#Cons{(#Pair{(#I{#E{}}) #False{}}) #Nil{}})}))
-// = #Refl{}
+// 				#None
+//         (#Node{#Some{#True} #Leaf #Leaf})
+//         (#Node{#Some{#False} #Leaf #Leaf})}))
+//     (#Cons{(#Pair{(#O{#E}) #True}) (#Cons{(#Pair{(#I{#E}) #False}) #Nil})}))
+// = #Refl

@@ -4,4 +4,4 @@
 List/and
 : ∀(xs: (List Bool))
   Bool
-= λxs (List/foldr _ Bool Bool/and #True{} xs)
+= λxs (List/foldr _ Bool Bool/and #True xs)

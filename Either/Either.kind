@@ -14,20 +14,20 @@ Either
 // Test 1: Construct a Left value
 Equal/test-left
 : (Either Nat Bool)
-= #Lft{#Zero{}} 
+= #Lft{#Zero} 
 
 // Test 2: Construct a Right value
 Equal/test-right
 : (Either Nat Bool)
-= #Rgt{#True{}} 
+= #Rgt{#True} 
 
 // Test 3: Equality check for Left
 Equal/T0
-: (EQ/Equal Bool (Equal/test-right) (#Rgt{#True{}}))
-= #Refl{}
+: (EQ/Equal Bool (Equal/test-right) (#Rgt{#True}))
+= #Refl
 
 // Test 4: Equality check for Right
 Equal/T1
-: (EQ/Equal Bool (Equal/test-left) (#Lft{#Zero{}}))
-= #Refl{}
+: (EQ/Equal Bool (Equal/test-left) (#Lft{#Zero}))
+= #Refl
 

@@ -10,11 +10,11 @@ LO/take
   (List A)
 = λA λ{
   #Zero: λomega
-    #Nil{}
+    #Nil
   #Succ: λn.pred λ{
     #MkOmega: λomega.prefix λ{
       #Nil:
-        #Nil{}
+        #Nil
       #Cons: λxs.head λxs.tail
         #Cons{xs.head (LO/take A n.pred (#MkOmega{xs.tail}))}
     }

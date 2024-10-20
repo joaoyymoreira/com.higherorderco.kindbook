@@ -7,5 +7,5 @@ Int/to-nat
   Nat
 = λ{
   #Pos: λi.value i.value
-  #NegSuc: λi.value #Zero{}
+  #NegSuc: λi.value #Zero
 }

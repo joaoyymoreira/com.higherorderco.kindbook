@@ -6,5 +6,5 @@ Bits : *
 = data[]{
   #O{ tail: Bits } : Bits
   #I{ tail: Bits } : Bits
-  #E{} : Bits
+  #E : Bits
 }

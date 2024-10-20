@@ -20,8 +20,8 @@ BinTree/foldr
 
 // Test: Empty tree
 TEST_0 
-: (Equal Nat (BinTree/foldr _ _ Nat/add #Zero{} #Leaf{}) #Zero{})
-= #Refl{}
+: (Equal Nat (BinTree/foldr _ _ Nat/add #Zero #Leaf) #Zero)
+= #Refl
 
 // Test: Single node tree
 TEST_1 
@@ -29,10 +29,10 @@ TEST_1
 		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
-			#Zero{} 
-			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+			#Zero 
+			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})) 
+		#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl
 
 // Test: Tree with multiple nodes
 TEST_2 
@@ -40,12 +40,12 @@ TEST_2
 		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
-			#Zero{} 
-			(#Node{#Succ{#Zero{}} 
-				(#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
-= #Refl{}
+			#Zero 
+			(#Node{#Succ{#Zero} 
+				(#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) 
+				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) 
+		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+= #Refl
 
 // Test: Using multiplication instead of addition
 TEST_3 
@@ -53,12 +53,12 @@ TEST_3
 	 	Nat 
 		(BinTree/foldr _ _ 
 			Nat/mul 
-			#Succ{#Zero{}} 
-			(#Node{#Succ{#Succ{#Zero{}}} 
-				(#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}})
-= #Refl{}
+			#Succ{#Zero} 
+			(#Node{#Succ{#Succ{#Zero}} 
+				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
+				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})) 
+		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}})
+= #Refl
 
 // Test: Using a more complex tree structure
 TEST_4 
@@ -66,16 +66,16 @@ TEST_4
 		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
-			#Zero{} 
-			(#Node{#Succ{#Zero{}} 
-				(#Node{#Succ{#Succ{#Zero{}}} 
-					(#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}) 
-					#Leaf{}}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} 
-					#Leaf{} 
-					(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}})
-= #Refl{}
+			#Zero 
+			(#Node{#Succ{#Zero} 
+				(#Node{#Succ{#Succ{#Zero}} 
+					(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
+					#Leaf}) 
+				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} 
+					#Leaf 
+					(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})})})) 
+		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+= #Refl
 
 // Test: Right-associative nature of foldr
 TEST_5 
@@ -83,12 +83,12 @@ TEST_5
 		Nat 
 		(BinTree/foldr _ _ 
 			Nat/sub 
-			#Zero{} 
-			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
-= #Refl{}
+			#Zero 
+			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} 
+				(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}) 
+				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) 
+		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}})
+= #Refl
 
 // Test: Using foldr to count nodes
 TEST_6 
@@ -96,11 +96,11 @@ TEST_6
 		Nat 
 		(BinTree/foldr _ _ 
 			(λx λacc #Succ{acc}) 
-			#Zero{} 
-			(#Node{#Succ{#Zero{}} 
-				(#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero{}}}} 
-					#Leaf{} 
-					(#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}})})})) 
-			#Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
-= #Refl{}
+			#Zero 
+			(#Node{#Succ{#Zero} 
+				(#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) 
+				(#Node{#Succ{#Succ{#Succ{#Zero}}} 
+					#Leaf 
+					(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})})) 
+			#Succ{#Succ{#Succ{#Succ{#Zero}}}})
+= #Refl

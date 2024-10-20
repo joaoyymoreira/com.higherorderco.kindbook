@@ -11,7 +11,7 @@ List/drop
 = λA λ{
   #Zero: λxs xs
   #Succ: λn.pred λ{
-    #Nil: #Nil{}
+    #Nil: #Nil
     #Cons: λxs.head λxs.tail (List/drop A n.pred xs.tail)
   }
 }

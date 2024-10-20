@@ -19,7 +19,7 @@ List/test-neq-bool-lists
     Bool
     (List/neq
       (Bool/Eq/derive Bool/eq)
-      (Bool/Cons #True{} (Bool/Cons #False{} Bool/Nil))
-      (Bool/Cons #True{} (Bool/Cons #True{} Bool/Nil)))
-    #True{})
-= #Refl{}
+      (Bool/Cons #True (Bool/Cons #False Bool/Nil))
+      (Bool/Cons #True (Bool/Cons #True Bool/Nil)))
+    #True)
+= #Refl

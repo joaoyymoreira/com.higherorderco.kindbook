@@ -4,19 +4,19 @@
 BinTree/leaf
 : ∀(A: *)
   (BinTree/BinTree A)
-= λA #Leaf{}
+= λA #Leaf
 
 // Test: leaf creates an empty tree
 TEST_0
-: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf{})
-= #Refl{}
+: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf)
+= #Refl
 
 // Test: leaf is polymorphic
 TEST_1
-: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf{})
-= #Refl{}
+: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf)
+= #Refl
 
 // Test: leaf {String} is equivalent to Leaf
 TEST_2
-: (Equal (BinTree/BinTree String) (BinTree/leaf String) #Leaf{})
-= #Refl{}
+: (Equal (BinTree/BinTree String) (BinTree/leaf String) #Leaf)
+= #Refl

@@ -9,7 +9,7 @@ List/lookup
   ∀(i: Nat)
   (Maybe A)
 = λA λ{
-  #Nil: λi #None{}
+  #Nil: λi #None
   #Cons: λxs.head λxs.tail λ{
     #Zero: #Some{xs.head}
     #Succ: λi.pred (List/lookup _ xs.tail i.pred)

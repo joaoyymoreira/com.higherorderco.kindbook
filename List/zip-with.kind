@@ -16,9 +16,9 @@ List/zip-with
   ∀(ys: (List B))
   (List C)
 = λA λB λC λf λ{
-  #Nil: λys #Nil{}
+  #Nil: λys #Nil
   #Cons: λxs.head λxs.tail λ{
-    #Nil: #Nil{}
+    #Nil: #Nil
     #Cons: λys.head λys.tail
       #Cons{
         head: (f xs.head ys.head)

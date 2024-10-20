@@ -13,30 +13,30 @@ Char/is-space
   (== code 12)))))))  
 // Test: Space character is a whitespace
 TEST_0 
-: (Equal Bool (Char/is-space 32) #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 32) #True) 
+= #Refl
 
 // Test: Newline character is a whitespace
 TEST_1 
-: (Equal Bool (Char/is-space 10) #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 10) #True) 
+= #Refl
 
 // Test: Tab character is a whitespace
 TEST_2 
-: (Equal Bool (Char/is-space 9) #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 9) #True) 
+= #Refl
 
 // Test: Regular letter 'A' is not a whitespace
 TEST_3 
-: (Equal Bool (Char/is-space 65) #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 65) #False) 
+= #Refl
 
 // Test: Digit '5' is not a whitespace
 TEST_4 
-: (Equal Bool (Char/is-space 53) #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 53) #False) 
+= #Refl
 
 // Test: Special character '!' is not a whitespace
 TEST_5 
-: (Equal Bool (Char/is-space 33) #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-space 33) #False) 
+= #Refl

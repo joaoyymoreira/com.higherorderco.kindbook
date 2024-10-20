@@ -16,6 +16,6 @@ Equal/trans
   (Equal A x z)
 = λA λx λy λz λ{
   #Refl: λ{
-    #Refl: #Refl{}
+    #Refl: #Refl
   }
 }

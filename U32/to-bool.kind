@@ -4,6 +4,6 @@
 U32/to-bool
 : ∀(x: U32)
   Bool
-= λ{0: #False{}
-  _: λx.pred #True{}
+= λ{0: #False
+  _: λx.pred #True
 	}

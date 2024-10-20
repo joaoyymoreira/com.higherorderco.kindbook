@@ -7,4 +7,4 @@ List/concat
   ∀(xss: (List (List A)))
   (List A)
 = λA λxss
-  (List/foldr _ (List A) (List/append _) #Nil{} xss)
+  (List/foldr _ (List A) (List/append _) #Nil xss)

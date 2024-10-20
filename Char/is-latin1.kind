@@ -9,30 +9,30 @@ Char/is-latin1
 
 // Test: ASCII character 'A' (code point 65).
 TEST_0
-: (Equal Bool (Char/is-latin1 'A') #True{})
-= #Refl{}
+: (Equal Bool (Char/is-latin1 'A') #True)
+= #Refl
 
 // Test: Latin-1 character 'ñ' (code point 241).
 TEST_1
-: (Equal Bool (Char/is-latin1 'ñ') #True{})
-= #Refl{}
+: (Equal Bool (Char/is-latin1 'ñ') #True)
+= #Refl
 
 // Test: Latin-1 character '¿' (code point 191).
 TEST_2
-: (Equal Bool (Char/is-latin1 '¿') #True{})
-= #Refl{}
+: (Equal Bool (Char/is-latin1 '¿') #True)
+= #Refl
 
 // Test: Latin-1 character 'ÿ' (code point 255).
 TEST_3
-: (Equal Bool (Char/is-latin1 'ÿ') #True{})
-= #Refl{}
+: (Equal Bool (Char/is-latin1 'ÿ') #True)
+= #Refl
 
 // Test: ASCII control character NUL (code point 0).
 // T4
-// : (Equal Bool (Char/is-latin1 '\x0000') #True{})
-// = #Refl{}
+// : (Equal Bool (Char/is-latin1 '\x0000') #True)
+// = #Refl
 
 // Test: Non-Latin-1 character '€' (code point 8364).
 TEST_5
-: (Equal Bool (Char/is-latin1 '€') #False{})
-= #Refl{}
+: (Equal Bool (Char/is-latin1 '€') #False)
+= #Refl

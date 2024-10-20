@@ -12,9 +12,9 @@ BinMap/set
   (BinMap/BinMap A)
 = λA λ{
   #Leaf: λ{
-		#E: λv #Node{#Some{v} #Leaf{} #Leaf{}}
-		#O: λb λv #Node{#None{} (BinMap/set A #Leaf{} b v) #Leaf{}}
-		#I: λb λv #Node{#None{} #Leaf{} (BinMap/set A #Leaf{} b v)}
+		#E: λv #Node{#Some{v} #Leaf #Leaf}
+		#O: λb λv #Node{#None (BinMap/set A #Leaf b v) #Leaf}
+		#I: λb λv #Node{#None #Leaf (BinMap/set A #Leaf b v)}
 	}
   #Node: λval λlft λrgt λ{
 		#E: λv #Node{#Some{v} lft rgt}

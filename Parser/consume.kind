@@ -15,7 +15,7 @@ Pair/consume
           input: (String/drop (List/length U32 target) input)
           index: (Nat/add index (List/length U32 target))
         }
-        value: #Unit{}
+        value: #Unit
       }
     })
     (#Fail{

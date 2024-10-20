@@ -25,4 +25,4 @@ BinMap/Node
 BinMap/Leaf
 : ∀(A: *)
   (BinMap/BinMap A)
-= λA #Leaf{}
+= λA #Leaf

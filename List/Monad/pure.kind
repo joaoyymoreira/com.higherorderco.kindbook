@@ -7,5 +7,5 @@ List/Monad/pure
 : ∀(A: *)
   ∀(x: A)
   (List A)
-= λA λx #Cons{x #Nil{}}
+= λA λx #Cons{x #Nil}
 

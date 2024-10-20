@@ -4,5 +4,5 @@
 BinTree/BinTree : * -> *
 = λA data[]{
   #Node{ val:A lft:(BinTree/BinTree A) rgt:(BinTree/BinTree A) } : (BinTree/BinTree A)
-  #Leaf{} : (BinTree/BinTree A)
+  #Leaf : (BinTree/BinTree A)
 }

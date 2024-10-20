@@ -11,7 +11,7 @@ List/contains
   ∀(xs: (List A))
   Bool
 = λA λe λx λ{
-  #Nil: #False{}
+  #Nil: #False
   #Cons: λxs.head λxs.tail
     (Bool/or (Trait/Eq/eq _ e x xs.head) (List/contains _ e x xs.tail))
 }

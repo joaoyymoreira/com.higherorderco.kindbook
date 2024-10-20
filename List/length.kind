@@ -7,6 +7,6 @@ List/length
   ∀(xs: (List A))
   Nat
 = λA λ{
-  #Nil: #Zero{}
+  #Nil: #Zero
   #Cons: λxs.head λxs.tail #Succ{(List/length _ xs.tail)}
 }

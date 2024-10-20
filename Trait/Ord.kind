@@ -74,8 +74,8 @@ Trait/Ord/derive
   (Trait/Ord A)
 = λA λcompare #Ord{
   compare: compare
-  lt: λx λy (Ordering/eq (compare x y) #LT{})
-  gt: λx λy (Ordering/eq (compare x y) #GT{})
-  lte: λx λy (Ordering/neq (compare x y) #GT{})
-  gte: λx λy (Ordering/neq (compare x y) #LT{})
+  lt: λx λy (Ordering/eq (compare x y) #LT)
+  gt: λx λy (Ordering/eq (compare x y) #GT)
+  lte: λx λy (Ordering/neq (compare x y) #GT)
+  gte: λx λy (Ordering/neq (compare x y) #LT)
 }

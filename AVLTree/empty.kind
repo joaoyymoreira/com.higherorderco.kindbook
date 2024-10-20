@@ -4,4 +4,4 @@ AVLTree/empty
 : ∀(K: *)
   ∀(V: *)
   (AVLTree/AVLTree K V)
-= λK λV #Leaf{}
+= λK λV #Leaf

@@ -6,4 +6,4 @@ List/reverse
 : ∀(A: *)
   ∀(xs: (List A))
   (List A)
-= λA λxs (List/foldl _ _ (λxs λx #Cons{x xs}) #Nil{} xs)
+= λA λxs (List/foldl _ _ (λxs λx #Cons{x xs}) #Nil xs)

@@ -9,11 +9,11 @@ Nat/compare
   Ordering
 = λ{
   #Zero: λ{
-    #Zero: #EQ{}
-    #Succ: λn.pred #LT{}
+    #Zero: #EQ
+    #Succ: λn.pred #LT
   }
   #Succ: λm.pred λ{
-    #Zero: #GT{}
+    #Zero: #GT
     #Succ: λn.pred (Nat/compare m.pred n.pred)
   }
 }
@@ -22,45 +22,45 @@ Nat/compare
 // : ∀(a: Nat)
 //   ∀(b: Nat)
 //   ∀(c: Nat)
-//   ∀(ab_lt: (Equal Ordering (Nat/compare a b) #LT{}))
-//   ∀(bc_lt: (Equal Ordering (Nat/compare b c) #LT{}))
-//   (Equal Ordering (Nat/compare a c) #LT{})
-// = λa λb λc λab_lt λbc_lt #Refl{}
+//   ∀(ab_lt: (Equal Ordering (Nat/compare a b) #LT))
+//   ∀(bc_lt: (Equal Ordering (Nat/compare b c) #LT))
+//   (Equal Ordering (Nat/compare a c) #LT)
+// = λa λb λc λab_lt λbc_lt #Refl
 
 // // Test: Antisymmetry: if compare a b = EQ, then a = b
 // T7
 // : ∀(a: Nat)
 //   ∀(b: Nat)
-//   ∀(eq: (Equal Ordering (Nat/compare a b) #EQ{}))
+//   ∀(eq: (Equal Ordering (Nat/compare a b) #EQ))
 //   (Equal Nat a b)
-// = λa λb λeq #Refl{}
+// = λa λb λeq #Refl
 
 // Test: compare 0 0 = EQ
 TEST_0
-: (Equal Ordering (Nat/compare #Zero{} #Zero{}) #EQ{})
-= #Refl{}
+: (Equal Ordering (Nat/compare #Zero #Zero) #EQ)
+= #Refl
 
 // Test: compare 0 5 = LT
 TEST_1
-: (Equal Ordering (Nat/compare #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #LT{})
-= #Refl{}
+: (Equal Ordering (Nat/compare #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #LT)
+= #Refl
 
 // Test: compare 5 0 = GT
 TEST_2
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #GT{})
-= #Refl{}
+: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #GT)
+= #Refl
 
 // Test: compare 3 3 = EQ
 TEST_3
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #EQ{})
-= #Refl{}
+: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Zero}}}) #EQ)
+= #Refl
 
 // Test: compare 2 7 = LT
 TEST_4
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #LT{})
-= #Refl{}
+: (Equal Ordering (Nat/compare #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}) #LT)
+= #Refl
 
 // Test: compare 8 4 = GT
 TEST_5
-: (Equal Ordering (Nat/compare (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) #GT{})
-= #Refl{}
+: (Equal Ordering (Nat/compare (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Zero}}}})) #GT)
+= #Refl

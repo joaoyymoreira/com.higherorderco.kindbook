@@ -9,7 +9,7 @@ List/drop-while
   ∀(xs: (List A))
   (List A)
 = λA λfn λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λxs.head λxs.tail
     use if_t = (List/drop-while _ fn xs.tail)
     use if_f = #Cons{xs.head xs.tail}

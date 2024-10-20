@@ -9,4 +9,4 @@ Nat/range
 = λstart λend
   (Bool/if (List Nat) (Nat/lt start end)
     (#Cons{start (Nat/range (#Succ{start}) end)})
-    #Nil{})
+    #Nil)

@@ -11,7 +11,7 @@ String/from-bits
   
 // Test: Empty bits should result in an empty string
 TEST_0
-: (Equal String (String/from-bits #E{}) "")
+: (Equal String (String/from-bits #E) "")
 = #Refl
 
 // Test: A single character (ASCII 'A')

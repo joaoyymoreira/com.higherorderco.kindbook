@@ -11,5 +11,5 @@ Equal/sym
   ∀(e: (Equal A x y))
   (Equal A y x)
 = λA λx λy λ{
-  #Refl: #Refl{}
+  #Refl: #Refl
 }

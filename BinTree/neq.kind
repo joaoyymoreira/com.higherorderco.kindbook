@@ -14,40 +14,40 @@ BinTree/neq
 
 // Test: Inequality of two different simple trees
 TEST_0 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})) #True)
+= #Refl
 
 // Test: Inequality of two identical complex trees
 TEST_1 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) #Leaf{}}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) #Leaf{}})) #False{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) #Leaf}) (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) #Leaf})) #False)
+= #Refl
 
 // Test: Inequality of trees with same root but different structure
 TEST_2 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) #Leaf{}}) (#Node{#Succ{#Zero{}} #Leaf{} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})})) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) #Leaf}) (#Node{#Succ{#Zero} #Leaf (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})})) #True)
+= #Refl
 
 // Test: Inequality between a leaf and a non-leaf tree
 TEST_3 
-: (Equal Bool (BinTree/neq Nat NT/Eq #Leaf{} (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq #Leaf (#Node{#Succ{#Zero} #Leaf #Leaf})) #True)
+= #Refl
 
 // Test: Inequality of two empty trees (leaves)
 TEST_4 
-: (Equal Bool (BinTree/neq Nat NT/Eq #Leaf{} #Leaf{}) #False{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq #Leaf #Leaf) #False)
+= #Refl
 
 // Test: Inequality of trees with different values in subtrees
 TEST_5 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}})})) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}) (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})) #True)
+= #Refl
 
 // Test: Inequality of trees with same structure but different root values
 TEST_6 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}) (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})})) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}) (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) #True)
+= #Refl
 
 // Test: Inequality of a complex tree and a leaf
 TEST_7 
-: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}) #Leaf{}) #True{})
-= #Refl{}
+: (Equal Bool (BinTree/neq Nat NT/Eq (#Node{#Succ{#Zero} (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}) #Leaf) #True)
+= #Refl

@@ -3,7 +3,7 @@
 // - EQ: Equal to
 // - GT: Greater than
 Ordering : * = data[]{
-  #LT{} : Ordering
-  #EQ{} : Ordering
-  #GT{} : Ordering
+  #LT : Ordering
+  #EQ : Ordering
+  #GT : Ordering
 }

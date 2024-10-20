@@ -8,24 +8,24 @@ Char/from-nat
 // Test: Convert 65 to character 'A'.
 TEST_0 
 : (Equal Char (Char/from-nat (U32/to-nat 65)) 'A')
-= #Refl{}
+= #Refl
 
 // Test: Convert 97 to character 'a'.
 TEST_1 
 : (Equal Char (Char/from-nat (U32/to-nat 97)) 'a')
-= #Refl{}
+= #Refl
 
 // Test: Convert 0 to null character.
 // T2 
 // : (Equal Char (Char/from-nat (U32/to-nat 0)) '\0')
-// = #Refl{}
+// = #Refl
 
 // Test: Convert 32 to space character.
 // T3 
 // : (Equal Char (Char/from-nat (U32/to-nat 32)) '')
-// = #Refl{}
+// = #Refl
 
 // Test: Convert 48 to character '0'.
 TEST_4 
 : (Equal Char (Char/from-nat (U32/to-nat 48)) '0')
-= #Refl{}
+= #Refl

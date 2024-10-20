@@ -12,11 +12,11 @@ Maybe/eq
   Bool
 = λA λe λ{
   #None: λ{
-    #None: #True{}
-    #Some: λy.value #False{}
+    #None: #True
+    #Some: λy.value #False
   }
   #Some: λx.value λ{
-    #None: #False{}
+    #None: #False
     #Some: λy.value
       use x = Trait/Eq
       (Trait/Eq/eq A e x.value y.value)

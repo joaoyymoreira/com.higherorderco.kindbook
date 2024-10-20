@@ -7,11 +7,11 @@ BinMap/invert-split-go
   (BinMap/BinMap A)
 = λA λx λ{
     #Leaf: λ{
-			#Leaf: #Node{x #Leaf{} #Leaf{}}
-			#Node: λbval λblft λbrgt (BinMap/invert-split-go A x (#Node{#None{} #Leaf{} #Leaf{}}) (#Node{bval blft brgt}))
+			#Leaf: #Node{x #Leaf #Leaf}
+			#Node: λbval λblft λbrgt (BinMap/invert-split-go A x (#Node{#None #Leaf #Leaf}) (#Node{bval blft brgt}))
 		}
     #Node: λaval λalft λargt λ{
-			#Leaf: (BinMap/invert-split-go A x (#Node{aval alft argt}) (#Node{#None{} #Leaf{} #Leaf{}}))
+			#Leaf: (BinMap/invert-split-go A x (#Node{aval alft argt}) (#Node{#None #Leaf #Leaf}))
 			#Node: λbval λblft λbrgt #Node{x #Node{aval alft blft} #Node{bval argt brgt}}
 		}
   }
@@ -22,7 +22,7 @@ BinMap/invert-split
   ∀(m: (BinMap/BinMap A))
   (BinMap/BinMap A)
 = λA λ{
-    #Leaf: #Leaf{}
+    #Leaf: #Leaf
     #Node: λval λlft λrgt (BinMap/invert-split-go A val (BinMap/invert-split A lft) (BinMap/invert-split A rgt))
   }
 
@@ -34,26 +34,26 @@ BinMap/invert
   (BinMap/BinMap A)
 = λA λm
 	let inv = (BinMap/invert-split A m)
-	use leaf = #Leaf{}
+	use leaf = #Leaf
 	use node = λval λlft λrgt λl λr (#Node{val (BinMap/invert A l) (BinMap/invert A r)})
 	(BinTree/match (Maybe A) (λx (BinMap/BinMap A)) leaf node inv)
 // Test: Inverting an empty BinMap should return an empty BinMap
 TEST_0
 : (Equal (BinMap/BinMap Bits) (BinMap/invert Bits (BinMap/empty Bits)) (BinMap/empty Bits))
-= #Refl{}
+= #Refl
 
 // Test: Inverting a BinMap with a single element should return the same BinMap
 TEST_1
 : (Equal
     (BinMap/BinMap Bits)
-    (BinMap/invert Bits (BinMap/set Bits (BinMap/empty Bits) #E{} (#O{#E{}})))
-    (BinMap/set Bits (BinMap/empty Bits) #E{} (#O{#E{}})))
-= #Refl{}
+    (BinMap/invert Bits (BinMap/set Bits (BinMap/empty Bits) #E (#O{#E})))
+    (BinMap/set Bits (BinMap/empty Bits) #E (#O{#E})))
+= #Refl
 
 // Test: Inverting a BinMap twice should return the original BinMap
 TEST_2
 : (Equal
     (BinMap/BinMap Bits)
-    (BinMap/invert Bits (BinMap/invert Bits (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}}))))
-    (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}})))
-= #Refl{}
+    (BinMap/invert Bits (BinMap/invert Bits (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E}) (#I{#E})) (#I{#E}) (#O{#E}))))
+    (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E}) (#I{#E})) (#I{#E}) (#O{#E})))
+= #Refl

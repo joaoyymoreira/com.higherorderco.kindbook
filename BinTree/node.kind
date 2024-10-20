@@ -17,42 +17,42 @@ BinTree/node
 TEST_0
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Zero{}} (BinTree/leaf Nat) (BinTree/leaf Nat))
-    #Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}
+    (BinTree/node Nat #Succ{#Zero} (BinTree/leaf Nat) (BinTree/leaf Nat))
+    #Node{#Succ{#Zero} #Leaf #Leaf}
   )
-= #Refl{}
+= #Refl
 
 // Test: Create a node with a left child
 TEST_1
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Succ{#Zero{}}}
-      (BinTree/node Nat #Succ{#Zero{}} (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #Succ{#Succ{#Zero}}
+      (BinTree/node Nat #Succ{#Zero} (BinTree/leaf Nat) (BinTree/leaf Nat))
       (BinTree/leaf Nat))
-    #Node{#Succ{#Succ{#Zero{}}} #Node{#Succ{#Zero{}} #Leaf{} #Leaf{}} #Leaf{}}
+    #Node{#Succ{#Succ{#Zero}} #Node{#Succ{#Zero} #Leaf #Leaf} #Leaf}
   )
-= #Refl{}
+= #Refl
 
 // Test: Create a node with a right child
 TEST_2
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Succ{#Succ{#Zero{}}}}
+    (BinTree/node Nat #Succ{#Succ{#Succ{#Zero}}}
       (BinTree/leaf Nat)
-      (BinTree/node Nat #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}}}
+      (BinTree/node Nat #Succ{#Succ{#Succ{#Succ{#Zero}}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
+    #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}}
   )
-= #Refl{}
+= #Refl
 
 // Test: Create a balanced tree with three levels
 TEST_3
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Zero{}}
-      (BinTree/node Nat #Succ{#Succ{#Zero{}}} (BinTree/leaf Nat) (BinTree/leaf Nat))
-      (BinTree/node Nat #Succ{#Succ{#Succ{#Zero{}}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#Succ{#Zero{}}
-      #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}
-      #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}}
+    (BinTree/node Nat #Succ{#Zero}
+      (BinTree/node Nat #Succ{#Succ{#Zero}} (BinTree/leaf Nat) (BinTree/leaf Nat))
+      (BinTree/node Nat #Succ{#Succ{#Succ{#Zero}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
+    #Node{#Succ{#Zero}
+      #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}
+      #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}}
   )
-= #Refl{}
+= #Refl

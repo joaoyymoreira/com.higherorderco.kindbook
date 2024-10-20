@@ -5,7 +5,7 @@ Bits/not
 : ∀(bits: Bits)
   Bits
 = λ{
-  #E: #E{}
+  #E: #E
   #O: λbits.tail #I{(Bits/not bits.tail)}
   #I: λbits.tail #O{(Bits/not bits.tail)}
 }

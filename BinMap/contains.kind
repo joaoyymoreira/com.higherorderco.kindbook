@@ -9,11 +9,11 @@ BinMap/contains
   ∀(k: Bits)
   Bool
 = λA λ{
-  #Leaf: λk #False{}
+  #Leaf: λk #False
   #Node: λval λlft λrgt λ{
 		#E: 
-			use false = #False{}
-			use true = λs #True{}
+			use false = #False
+			use true = λs #True
 			(Maybe/match A (λx Bool) false true val)
 		#O: λb (BinMap/contains A lft b)
 		#I: λb (BinMap/contains A rgt b)

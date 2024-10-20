@@ -17,7 +17,7 @@ BinMap/got
   ∀(key: Bits)
   (Pair/Pair (BinMap/BinMap A) (Maybe A))
 = λA λ{
-  #Leaf: λkey #Pair{ #Leaf{} #None{} }
+  #Leaf: λkey #Pair{ #Leaf #None }
   #Node: λval λlft λrgt λ{
     #E: #Pair{ #Node{ val lft rgt } val }
     #O: λkey match (BinMap/got A lft key) {

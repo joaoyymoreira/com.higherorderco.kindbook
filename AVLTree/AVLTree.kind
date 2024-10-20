@@ -6,7 +6,7 @@ AVLTree/AVLTree
   ∀(V: *)
   *
 = λK λV data[]{
-  #Leaf{} : (AVLTree/AVLTree K V)
+  #Leaf : (AVLTree/AVLTree K V)
   #Node{
     key_value: (Pair/Pair K V)
     balance: Bool/Balance

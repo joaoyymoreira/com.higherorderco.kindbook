@@ -6,7 +6,7 @@ BinTree/sum
   Nat
 = λ{
   #Leaf:
-    #Zero{}
+    #Zero
   #Node: λt.val λt.lft λt.rgt
     let lft_sum = (BinTree/sum t.lft)
     let rgt_sum = (BinTree/sum t.rgt)
@@ -15,63 +15,63 @@ BinTree/sum
 
 // Test: Sum of an empty tree
 TEST_0
-: (Equal Nat (BinTree/sum #Leaf{}) #Zero{})
-= #Refl{}
+: (Equal Nat (BinTree/sum #Leaf) #Zero)
+= #Refl
 
 // Test: Sum of a tree with a single node
 TEST_1
-: (Equal Nat (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+: (Equal Nat (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl
 
 // Test: Sum of a balanced tree
 TEST_2
 : (Equal Nat
-    (BinTree/sum (#Node{#Succ{#Zero{}}
-              (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
-              (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
-= #Refl{}
+    (BinTree/sum (#Node{#Succ{#Zero}
+              (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+              (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}))
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+= #Refl
 
 // Test: Sum of an unbalanced tree
 TEST_3
 : (Equal Nat
-    (BinTree/sum (#Node{#Succ{#Zero{}}
-              (#Node{#Succ{#Succ{#Zero{}}}
-                (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
-                #Leaf{}})
-              #Leaf{}}))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
-= #Refl{}
+    (BinTree/sum (#Node{#Succ{#Zero}
+              (#Node{#Succ{#Succ{#Zero}}
+                (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
+                #Leaf})
+              #Leaf}))
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+= #Refl
 
 // Test: Sum of a larger tree
 TEST_4
 : (Equal Nat
-    (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
-              (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}
-                (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
-                (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})})
-              (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}
-                (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}} #Leaf{} #Leaf{}})
-                (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}} #Leaf{} #Leaf{}})})}))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
-= #Refl{}
+    (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}
+              (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}
+                (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+                (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})
+              (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}
+                (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}} #Leaf #Leaf})
+                (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}} #Leaf #Leaf})})}))
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+= #Refl
 
 // Test: Sum of a tree with zero and small numbers
 TEST_5
 : (Equal Nat
-    (BinTree/sum (#Node{#Zero{} (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})}))
-    #Succ{#Succ{#Succ{#Zero{}}}})
-= #Refl{}
+    (BinTree/sum (#Node{#Zero (#Node{#Succ{#Zero} #Leaf #Leaf}) (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})}))
+    #Succ{#Succ{#Succ{#Zero}}})
+= #Refl
 
 // Test: Sum of a tree with repeated values
 TEST_6
 : (Equal Nat
-    (BinTree/sum (#Node{#Succ{#Zero{}}
-              (#Node{#Succ{#Zero{}}
-                (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
-                (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})})
-              (#Node{#Succ{#Zero{}}
-                (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
-                (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})})}))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
-= #Refl{}
+    (BinTree/sum (#Node{#Succ{#Zero}
+              (#Node{#Succ{#Zero}
+                (#Node{#Succ{#Zero} #Leaf #Leaf})
+                (#Node{#Succ{#Zero} #Leaf #Leaf})})
+              (#Node{#Succ{#Zero}
+                (#Node{#Succ{#Zero} #Leaf #Leaf})
+                (#Node{#Succ{#Zero} #Leaf #Leaf})})}))
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+= #Refl

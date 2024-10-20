@@ -8,18 +8,18 @@ Ordering/neq
   Bool
 = λ{
   #LT: λ{
-    #LT: #False{}
-    #EQ: #True{}
-    #GT: #True{}
+    #LT: #False
+    #EQ: #True
+    #GT: #True
   }
   #EQ: λ{
-    #LT: #True{}
-    #EQ: #False{}
-    #GT: #True{}
+    #LT: #True
+    #EQ: #False
+    #GT: #True
   }
   #GT: λ{
-    #LT: #True{}
-    #EQ: #True{}
-    #GT: #False{}
+    #LT: #True
+    #EQ: #True
+    #GT: #False
   }
 }

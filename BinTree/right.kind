@@ -7,7 +7,7 @@ BinTree/right
   ∀(tree: (BinTree/BinTree A))
   (Maybe (BinTree/BinTree A))
 = λA λ{
-  #Leaf: #None{}
+  #Leaf: #None
   #Node: λval λlft λrgt #Some{rgt}
 }
 
@@ -15,49 +15,49 @@ BinTree/right
 TEST_0
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Leaf{})
-    (#None{}))
-= #Refl{}
+    (BinTree/right Nat #Leaf)
+    (#None))
+= #Refl
 
 // Test: Right of a node with right child returns Some of that child.
 TEST_1
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
-    (#Some{#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}}))
-= #Refl{}
+    (BinTree/right Nat #Node{#Succ{#Zero} #Leaf #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}})
+    (#Some{#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}}))
+= #Refl
 
 // Test: Right of a node with only left child still returns Some leaf for right.
 TEST_2
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
-    (#Some{#Leaf{}}))
-= #Refl{}
+    (BinTree/right Nat #Node{#Succ{#Zero} #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf} #Leaf})
+    (#Some{#Leaf}))
+= #Refl
 
 // Test: Right of a complex tree returns the correct right subtree.
 TEST_3
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero{}}
-      #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}
-      #Node{#Succ{#Succ{#Succ{#Zero{}}}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}
+    (BinTree/right Nat #Node{#Succ{#Zero}
+      #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}
+      #Node{#Succ{#Succ{#Succ{#Zero}}}
+        #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}
+        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}
       }
     })
     (#Some{      
-			#Node{#Succ{#Succ{#Succ{#Zero{}}}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}
+			#Node{#Succ{#Succ{#Succ{#Zero}}}
+        #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}
+        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}
       }}
     ))
-= #Refl{}
+= #Refl
 
 // Test: Right of a single node tree with no children returns Some leaf.
 TEST_4
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
-    (#Some{#Leaf{}}))
-= #Refl{}
+    (BinTree/right Nat #Node{#Succ{#Zero} #Leaf #Leaf})
+    (#Some{#Leaf}))
+= #Refl

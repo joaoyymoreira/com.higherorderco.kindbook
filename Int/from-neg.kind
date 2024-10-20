@@ -6,6 +6,6 @@ Int/from-neg
 : ∀(n: Nat)
   Int
 = λ{
-  #Zero: #Pos{#Zero{}}
+  #Zero: #Pos{#Zero}
   #Succ: λn.pred #NegSuc{n.pred}
 }

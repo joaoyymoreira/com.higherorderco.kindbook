@@ -6,19 +6,19 @@ Nat/is-zero
 : ∀(n: Nat)
   Bool
 = λ{
-  #Zero: #True{}
-  #Succ: λn.pred #False{}
+  #Zero: #True
+  #Succ: λn.pred #False
 }
 // Tests for the Nat/is-zero function.
 
 // Test: is-zero of Zero should be True
-TEST_0 : (Equal Bool (Nat/is-zero #Zero{}) #True{})
-  = #Refl{}
+TEST_0 : (Equal Bool (Nat/is-zero #Zero) #True)
+  = #Refl
 
 // Test: is-zero of 1 should be False
-TEST_1 : (Equal Bool (Nat/is-zero #Succ{#Zero{}}) #False{})
-  = #Refl{}
+TEST_1 : (Equal Bool (Nat/is-zero #Succ{#Zero}) #False)
+  = #Refl
 
 // Test: is-zero of 2 should be False
-TEST_2 : (Equal Bool (Nat/is-zero #Succ{#Succ{#Zero{}}}) #False{})
-  = #Refl{}
+TEST_2 : (Equal Bool (Nat/is-zero #Succ{#Succ{#Zero}}) #False)
+  = #Refl

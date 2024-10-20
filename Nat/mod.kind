@@ -13,7 +13,7 @@ Nat/mod/aux
 = λk λm λ{
   #Zero: λj k
   #Succ: λn.pred λ{
-    #Zero: (Nat/mod/aux #Zero{} m n.pred m)
+    #Zero: (Nat/mod/aux #Zero m n.pred m)
     #Succ: λj.pred (Nat/mod/aux #Succ{k} m n.pred j.pred)
   }
 }
@@ -27,37 +27,37 @@ Nat/mod
   ∀(m: Nat)
   Nat
 = λn λ{
-  #Zero: #Zero{}
-  #Succ: λm.pred (Nat/mod/aux #Zero{} m.pred n m.pred)
+  #Zero: #Zero
+  #Succ: λm.pred (Nat/mod/aux #Zero m.pred n m.pred)
 }
 // Test: 0 % 5 = 0
-TEST_0 : (Equal Nat (Nat/mod #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
-= #Refl{}
+TEST_0 : (Equal Nat (Nat/mod #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+= #Refl
 
 // Test: 5 % 1 = 0
-TEST_1 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Zero{}}) #Zero{})
-= #Refl{}
+TEST_1 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Zero}) #Zero)
+= #Refl
 
 // Test: 7 % 3 = 1
-TEST_2 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Zero{}})
-= #Refl{}
+TEST_2 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Zero})
+= #Refl
 
 // Test: 10 % 4 = 2
-TEST_3 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #Succ{#Succ{#Zero{}}})
-= #Refl{}
+TEST_3 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #Succ{#Succ{#Zero}})
+= #Refl
 
 // Test: 15 % 5 = 0
-TEST_4 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
-= #Refl{}
+TEST_4 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+= #Refl
 
 // Test: 17 % 6 = 5
-TEST_5 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+TEST_5 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl
 
 // Test: (a % b) % b = a % b
-TEST_6 : (Equal Nat (Nat/mod (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}))
-= #Refl{}
+TEST_6 : (Equal Nat (Nat/mod (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}))
+= #Refl
 
 // Test: (a + b) % b = a % b
-TEST_7 : (Equal Nat (Nat/mod (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
-= #Refl{}
+TEST_7 : (Equal Nat (Nat/mod (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Zero}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}))
+= #Refl

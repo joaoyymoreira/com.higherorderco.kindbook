@@ -7,11 +7,11 @@ List/stripe
   ∀(xss: (List (List A)))
   (List (List A))
 = λA λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λ{
     #Nil:  λxss (List/stripe A xss)
     #Cons: λx λxs λxss 
-      #Cons{ #Cons{x #Nil{}} (List/zip-cons A xs (List/stripe A xss))}
+      #Cons{ #Cons{x #Nil} (List/zip-cons A xs (List/stripe A xss))}
   }
 }
 

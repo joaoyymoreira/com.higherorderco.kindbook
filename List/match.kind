@@ -8,7 +8,7 @@
 List/match
 : ∀(A: *)
   ∀(P: ∀(xs: (List A)) *)
-  ∀(nil: (P #Nil{}))
+  ∀(nil: (P #Nil))
   ∀(cons: ∀(x: A) ∀(xs: (List A)) (P (#Cons{x xs})))
   ∀(xs: (List A))
   (P xs)

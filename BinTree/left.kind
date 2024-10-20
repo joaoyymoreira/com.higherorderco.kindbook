@@ -15,22 +15,22 @@ BinTree/left
 TEST_0
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Leaf{})
-    (#None{}))
-= #Refl{}
+    (BinTree/left Nat #Leaf)
+    (#None))
+= #Refl
 
 // Test: Left of a node with left child returns Some of that child
 TEST_1
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
-    (#Some{#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}}))
-= #Refl{}
+    (BinTree/left Nat #Node{#Succ{#Zero} #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf} #Leaf})
+    (#Some{#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}}))
+= #Refl
 
 // Test: Left of a node with only right child still returns Some Leaf for left
 TEST_2
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/left Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
-    (#Some{#Leaf{}}))
-= #Refl{}
+    (BinTree/left Nat #Node{#Succ{#Zero} #Leaf #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}})
+    (#Some{#Leaf}))
+= #Refl

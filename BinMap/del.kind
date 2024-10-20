@@ -9,9 +9,9 @@ BinMap/del
   ∀(k: Bits)
   (BinMap/BinMap A)
 = λA λ{
-  #Leaf: λk #Leaf{}
+  #Leaf: λk #Leaf
   #Node: λval λlft λrgt λ{
-		#E: #Node{#None{} lft rgt}
+		#E: #Node{#None lft rgt}
 		#O: λb #Node{val (BinMap/del A lft b) rgt}
 		#I: λb #Node{val lft (BinMap/del A rgt b)}
 	}

@@ -11,7 +11,7 @@ List/zip-cons
 = λA λ{
   #Nil: λyss yss
   #Cons: λxs.head λxs.tail λ{
-    #Nil: (List/map _ _ (λy #Cons{y #Nil{}}) #Cons{xs.head xs.tail})
+    #Nil: (List/map _ _ (λy #Cons{y #Nil}) #Cons{xs.head xs.tail})
     #Cons: λyss.head λyss.tail
       #Cons{#Cons{xs.head yss.head} (List/zip-cons _ xs.tail yss.tail)}
   }

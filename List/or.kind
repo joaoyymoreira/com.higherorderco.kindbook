@@ -4,4 +4,4 @@
 List/or
 : ∀(xs: (List Bool))
   Bool
-= λxs (List/foldr _ Bool Bool/or #False{} xs)
+= λxs (List/foldr _ Bool Bool/or #False xs)

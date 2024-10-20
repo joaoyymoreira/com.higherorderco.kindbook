@@ -16,7 +16,7 @@ List/mmap
   ∀(xs: (List A))
   (M (List B))
 = λM λm λA λB λf λ{
-  #Nil: (Trait/Monad/pure M m _ #Nil{})
+  #Nil: (Trait/Monad/pure M m _ #Nil)
   #Cons: λxs.head λxs.tail
     let bind = (Trait/Monad/bind M m)
     let pure = (Trait/Monad/pure M m)

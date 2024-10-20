@@ -6,5 +6,5 @@ Bool/not : Bool -> Bool
 | #False = #True
 
 TEST_0
-: (Equal Bool #True{} (Bool/not #False{}))
-= #Refl{}
+: (Equal Bool #True (Bool/not #False))
+= #Refl

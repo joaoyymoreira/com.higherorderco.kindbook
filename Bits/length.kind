@@ -3,7 +3,7 @@ Bits/length
 : ∀(bits: Bits)
   Nat
 = λ{
-  #E: #Zero{}
+  #E: #Zero
   #O: λbits.tail #Succ{(Bits/length bits.tail)}
   #I: λbits.tail #Succ{(Bits/length bits.tail)}
 }

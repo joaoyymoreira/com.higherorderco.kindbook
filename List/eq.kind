@@ -32,8 +32,8 @@ List/eq : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
 // Test: Different lists should not be equal
 List/test_eq_different_lists
 : (Equal
-    (List/eq (List Bool) #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}} 
-                          #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}})
-    #True{})
-= λa #Refl{}
+    (List/eq (List Bool) #Cons{#True #Cons{#True #Cons{#True #Nil}}} 
+                          #Cons{#True #Cons{#True #Cons{#True #Nil}}})
+    #True)
+= λa #Refl
 

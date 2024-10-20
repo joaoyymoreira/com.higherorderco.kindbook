@@ -2,7 +2,7 @@
 // ----------
 
 HVM/RNet : *
-= data[]{ #RN{} : HVM/RNet }
+= data[]{ #RN : HVM/RNet }
 
 HVM/HVM : * -> *
 | K = ∀(net: HVM/RNet) (Maybe (Pair/Pair HVM/RNet K))
@@ -11,7 +11,7 @@ HVM/HVM : * -> *
 // --------------
 
 HVM/net_new : HVM/RNet
-= #RN{}
+= #RN
 
 // Running
 // -------

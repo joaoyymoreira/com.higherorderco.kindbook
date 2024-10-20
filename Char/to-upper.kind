@@ -13,34 +13,34 @@ Char/to-upper
 // Test: Lowercase 'a' is converted to uppercase 'A'
 TEST_0 
 : (Equal Char (Char/to-upper 'a') 'A')
-= #Refl{}
+= #Refl
 
 // Test: Uppercase 'A' remains unchanged
 TEST_1 
 : (Equal Char (Char/to-upper 'A') 'A')
-= #Refl{}
+= #Refl
 
 // Test: Digit '5' remains unchanged
 TEST_2 
 : (Equal Char (Char/to-upper '5') '5')
-= #Refl{}
+= #Refl
 
 // Test: Special character '@' remains unchanged
 TEST_3 
 : (Equal Char (Char/to-upper '@') '@')
-= #Refl{}
+= #Refl
 
 // // Test: Space character remains unchanged
 // T4 
 // : (Equal Char (Char/to-upper ' ') ' ')
-// = #Refl{}
+// = #Refl
 
 // // Test: Newline character remains unchanged
 // T5 
 // : (Equal Char (Char/to-upper '\n') '\n')
-// = #Refl{}
+// = #Refl
 
 // Test: Lowercase 'z' is converted to uppercase 'Z'
 TEST_6 
 : (Equal Char (Char/to-upper 'z') 'Z')
-= #Refl{}
+= #Refl

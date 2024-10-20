@@ -4,4 +4,4 @@
 Maybe/None
 : ∀(A: *)
   (Maybe A)
-= λA #None{}
+= λA #None

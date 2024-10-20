@@ -5,35 +5,35 @@ Nat/pred
 : ∀(n: Nat)
   Nat
 = λ{
-  #Zero: #Zero{}
+  #Zero: #Zero
   #Succ: λn.pred n.pred
 }
 // Tests the predecessor function for natural numbers.
 
 // Test: pred 0 = 0.
-TEST_0 : (Equal Nat (Nat/pred #Zero{}) #Zero{})
-= #Refl{}
+TEST_0 : (Equal Nat (Nat/pred #Zero) #Zero)
+= #Refl
 
 // Test: pred 1 = 0.
-TEST_1 : (Equal Nat (Nat/pred #Succ{#Zero{}}) #Zero{})
-= #Refl{}
+TEST_1 : (Equal Nat (Nat/pred #Succ{#Zero}) #Zero)
+= #Refl
 
 // Test: pred 2 = 1.
-TEST_2 : (Equal Nat (Nat/pred #Succ{#Succ{#Zero{}}}) #Succ{#Zero{}})
-= #Refl{}
+TEST_2 : (Equal Nat (Nat/pred #Succ{#Succ{#Zero}}) #Succ{#Zero})
+= #Refl
 
 // Test: pred 5 = 4.
-TEST_3 : (Equal Nat (Nat/pred #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
-= #Refl{}
+TEST_3 : (Equal Nat (Nat/pred #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}})
+= #Refl
 
 // Test: pred (pred 3) = 1.
-TEST_4 : (Equal Nat (Nat/pred (Nat/pred #Succ{#Succ{#Succ{#Zero{}}}})) #Succ{#Zero{}})
-= #Refl{}
+TEST_4 : (Equal Nat (Nat/pred (Nat/pred #Succ{#Succ{#Succ{#Zero}}})) #Succ{#Zero})
+= #Refl
 
 // Test: pred (pred 1) = 0.
-TEST_5 : (Equal Nat (Nat/pred (Nat/pred #Succ{#Zero{}})) #Zero{})
-= #Refl{}
+TEST_5 : (Equal Nat (Nat/pred (Nat/pred #Succ{#Zero})) #Zero)
+= #Refl
 
 // Test: pred (pred 0) = 0.
-TEST_6 : (Equal Nat (Nat/pred (Nat/pred #Zero{})) #Zero{})
-= #Refl{}
+TEST_6 : (Equal Nat (Nat/pred (Nat/pred #Zero)) #Zero)
+= #Refl

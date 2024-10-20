@@ -12,15 +12,15 @@ String/to-bits
 
 // Test: Empty string conversion
 TEST_0 
-: (Equal Bits (String/to-bits "") #E{})
+: (Equal Bits (String/to-bits "") #E)
 = #Refl
 
 // Test: Single character string conversion
 TEST_1 
-: (Equal Bits (String/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
+: (Equal Bits (String/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}})
 = #Refl
 
 // Test: Two character string conversion
 TEST_2 
-: (Equal Bits (String/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+: (Equal Bits (String/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
 = #Refl

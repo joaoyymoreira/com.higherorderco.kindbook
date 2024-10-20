@@ -1,9 +1,9 @@
 Tag : *
 = data[]{
-  #Tic{}: Tag
-  #Tac{}: Tag
-  #Foo{}: Tag
-  #Bar{}: Tag
+  #Tic: Tag
+  #Tac: Tag
+  #Foo: Tag
+  #Bar: Tag
 }
 
 Pair : *
@@ -12,8 +12,8 @@ Pair : *
 }
 
 //bug : Pair -> Pair -> U32
-//| #Pair{#Tac{} v1} #Pair{#Bar{} v2} = ?x
-//| #Pair{#Tic{} v1} #Pair{#Foo{} v2} = ?y
+//| #Pair{#Tac v1} #Pair{#Bar v2} = ?x
+//| #Pair{#Tic v1} #Pair{#Foo v2} = ?y
 //| a                b                = ?z
 
 bug : Pair -> Pair -> U32

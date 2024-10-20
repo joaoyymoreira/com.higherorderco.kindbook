@@ -12,20 +12,20 @@ Char/is-binary-digit
 
 // Test: '0' is a binary digit.
 TEST_0
-: (Equal Bool (Char/is-binary-digit '0') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-binary-digit '0') #True) 
+= #Refl
 
 // Test: '1' is a binary digit.
 TEST_1
-: (Equal Bool (Char/is-binary-digit '1') #True{}) 
-= #Refl{}
+: (Equal Bool (Char/is-binary-digit '1') #True) 
+= #Refl
 
 // Test: '2' is not a binary digit.
 TEST_2
-: (Equal Bool (Char/is-binary-digit '2') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-binary-digit '2') #False) 
+= #Refl
 
 // Test: 'a' is not a binary digit.
 TEST_3
-: (Equal Bool (Char/is-binary-digit 'a') #False{}) 
-= #Refl{}
+: (Equal Bool (Char/is-binary-digit 'a') #False) 
+= #Refl

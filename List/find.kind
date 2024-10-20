@@ -10,7 +10,7 @@ List/find
   ∀(xs: (List A))
   (Maybe A)
 = λA λpred λ{
-  #Nil: #None{}
+  #Nil: #None
   #Cons: λxs.head λxs.tail
     (Bool/if _ (pred xs.head)
       (#Some{xs.head})

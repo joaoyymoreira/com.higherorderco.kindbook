@@ -3,7 +3,7 @@ Monad/Monad
   *
 = λM data[]{
   #Bind{ A:* B:* ma:(M A) fn:(∀(a: A) (M B)) }: (Monad/Monad M)
-  #Pure{}: (Monad/Monad M)
+  #Pure: (Monad/Monad M)
 }
 
 //use Trait/ as Trait/

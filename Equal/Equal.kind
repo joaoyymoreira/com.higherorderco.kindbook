@@ -5,5 +5,5 @@
 // = A proposition that x equals y.
 Equal : ∀(A: *) A -> A -> *
 = λA λx λy data[y]{
-  #Refl{} : (Equal A x x)
+  #Refl : (Equal A x x)
 }

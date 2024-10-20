@@ -9,7 +9,7 @@ List/intercalate
   ∀(yss: (List (List A)))
   (List A)
 = λA λxs λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λyshead λystail 
     (List/match (List A) ystail
       yshead

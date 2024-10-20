@@ -3,7 +3,7 @@
 // - Zero: Left and right subtrees have the same height.
 // - Pos: Right subtree is taller by 1.
 Bool/Balance : * = data[]{
-  #MinusOne{} : Bool/Balance
-  #Zero{}     : Bool/Balance
-  #PlusOne{}  : Bool/Balance
+  #MinusOne : Bool/Balance
+  #Zero     : Bool/Balance
+  #PlusOne  : Bool/Balance
 }

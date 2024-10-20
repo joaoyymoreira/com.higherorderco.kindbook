@@ -11,40 +11,40 @@ Nat/lte
 
 // Test: 0 <= 0 is True.
 TEST_0
-: (Equal Bool (Nat/lte #Zero{} #Zero{}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Zero #Zero) #True)
+= #Refl
 
 // Test: 0 <= 1 is True.
 TEST_1
-: (Equal Bool (Nat/lte #Zero{} #Succ{#Zero{}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Zero #Succ{#Zero}) #True)
+= #Refl
 
 // Test: 1 <= 0 is False.
 TEST_2
-: (Equal Bool (Nat/lte #Succ{#Zero{}} #Zero{}) #False{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Zero} #Zero) #False)
+= #Refl
 
 // Test: 1 <= 1 is True.
 TEST_3
-: (Equal Bool (Nat/lte #Succ{#Zero{}} #Succ{#Zero{}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Zero} #Succ{#Zero}) #True)
+= #Refl
 
 // Test: 1 <= 2 is True.
 TEST_4
-: (Equal Bool (Nat/lte #Succ{#Zero{}} #Succ{#Succ{#Zero{}}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Zero} #Succ{#Succ{#Zero}}) #True)
+= #Refl
 
 // Test: 2 <= 1 is False.
 TEST_5
-: (Equal Bool (Nat/lte #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #False{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Succ{#Zero}} #Succ{#Zero}) #False)
+= #Refl
 
 // Test: 5 <= 10 is True.
 TEST_6
-: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) #True{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}) #True)
+= #Refl
 
 // Test: 10 <= 5 is False.
 TEST_7
-: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
-= #Refl{}
+: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #False)
+= #Refl

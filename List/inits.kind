@@ -8,7 +8,7 @@ List/inits
   (List (List A))
 = λA λxs
   #Cons{
-    #Nil{}
+    #Nil
     (List/inits/tail A xs)
   }
 
@@ -18,10 +18,10 @@ List/inits/tail
   ∀(xs: (List A))
   (List (List A))
 = λA λ{
-  #Nil: #Nil{}
+  #Nil: #Nil
   #Cons: λxs.head λxs.tail
     #Cons{
-      #Cons{xs.head #Nil{}}
+      #Cons{xs.head #Nil}
       (List/map
         (List A)
         (List A)

@@ -12,16 +12,16 @@ List/lt
   Bool
 = λA λO λ{
   #Nil: λ{
-    #Nil: #False{}
-    #Cons: λys.head λys.tail #True{}
+    #Nil: #False
+    #Cons: λys.head λys.tail #True
   }
   #Cons: λxs.head λxs.tail λ{
-    #Nil: #False{}
+    #Nil: #False
     #Cons: λys.head λys.tail
       let lt = (Trait/Ord/lt _ O xs.head ys.head)
       let gt = (Trait/Ord/gt _ O xs.head ys.head)
-      (Bool/if Bool lt #True{}
-        (Bool/if Bool gt #False{}
+      (Bool/if Bool lt #True
+        (Bool/if Bool gt #False
           (List/lt _ O xs.tail ys.tail)))
   }
 }

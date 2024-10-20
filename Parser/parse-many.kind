@@ -6,7 +6,7 @@ Parser/parse_many
 : ∀(A: *)
   ∀(p: (Parser/Parser A))
   (Parser/Parser (List A))
-= λA λp (Parser/parse_many_go A p #Nil{})
+= λA λp (Parser/parse_many_go A p #Nil)
 
 // Helper function to accumulate parsed results.
 // - A: The type of elements parsed by the given parser.

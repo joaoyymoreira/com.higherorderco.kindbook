@@ -19,17 +19,17 @@ Nat/apply
 TEST_0
 : (Equal
     Nat
-    (Nat/apply _ #Zero{} (Function/id Nat) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+    (Nat/apply _ #Zero (Function/id Nat) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl
 
 // Test: Applying Succ 3 times to 0 should return 3
 TEST_1
 : (Equal
     Nat
-    (Nat/apply _ #Succ{#Succ{#Succ{#Zero{}}}} (λx #Succ{x}) #Zero{})
-    #Succ{#Succ{#Succ{#Zero{}}}})
-= #Refl{}
+    (Nat/apply _ #Succ{#Succ{#Succ{#Zero}}} (λx #Succ{x}) #Zero)
+    #Succ{#Succ{#Succ{#Zero}}})
+= #Refl
 
 // Test: Applying (_+ 1) 2 times to 3 should return 5
 TEST_2
@@ -37,8 +37,8 @@ TEST_2
     Nat
     (Nat/apply
       _
-      #Succ{#Succ{#Zero{}}}
-      (λx (Nat/add x #Succ{#Zero{}}))
-      #Succ{#Succ{#Succ{#Zero{}}}})
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
-= #Refl{}
+      #Succ{#Succ{#Zero}}
+      (λx (Nat/add x #Succ{#Zero}))
+      #Succ{#Succ{#Succ{#Zero}}})
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+= #Refl

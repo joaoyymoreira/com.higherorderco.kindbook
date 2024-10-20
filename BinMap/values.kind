@@ -8,7 +8,7 @@ BinMap/values
   ∀(m: (BinMap/BinMap A))
   (List A)
 = λA λ{
-  #Leaf: #Nil{}
+  #Leaf: #Nil
   #Node: λ{
 		#None: λlft λrgt (List/append A (BinMap/values A lft)  (BinMap/values A rgt))
 		#Some: λv λlft λrgt #Cons{v (List/append A (BinMap/values A lft) (BinMap/values A rgt))}

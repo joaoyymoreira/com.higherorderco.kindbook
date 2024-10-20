@@ -8,20 +8,20 @@ Char/is-upper
 
 // Test: Uppercase 'A' is considered uppercase
 TEST_0
-: (Equal Bool (Char/is-upper 'A') #True{})
-= #Refl{}
+: (Equal Bool (Char/is-upper 'A') #True)
+= #Refl
 
 // Test: Lowercase 'a' is not considered uppercase
 TEST_1
-: (Equal Bool (Char/is-upper 'a') #False{})
-= #Refl{}
+: (Equal Bool (Char/is-upper 'a') #False)
+= #Refl
 
 // Test: Digit '5' is not considered uppercase
 TEST_2
-: (Equal Bool (Char/is-upper '5') #False{})
-= #Refl{}
+: (Equal Bool (Char/is-upper '5') #False)
+= #Refl
 
 // Test: Special character '@' is not considered uppercase
 TEST_3
-: (Equal Bool (Char/is-upper '@') #False{})
-= #Refl{}
+: (Equal Bool (Char/is-upper '@') #False)
+= #Refl

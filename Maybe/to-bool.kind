@@ -7,6 +7,6 @@ Maybe/to-bool
   ∀(m: (Maybe A))
   Bool
 = λA λ{
-  #None: #False{}
-  #Some: λma.value #True{}
+  #None: #False
+  #Some: λma.value #True
 }

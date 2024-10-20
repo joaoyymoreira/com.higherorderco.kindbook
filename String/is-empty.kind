@@ -5,6 +5,6 @@ String/is-empty
 : ∀(s: String)
   Bool
 = λ{
-    #Nil: #True{}
-    #Cons: λhead λtail #False{}
+    #Nil: #True
+    #Cons: λhead λtail #False
   }
