@@ -1,0 +1,17 @@
+use Nat/ as N/
+use Bool/ as B/
+use Equal/ as E/
+
+// Tests for the N/is-zero function.
+
+// Test: is-zero of Zero should be True
+T0 : (E/Equal B/Bool (N/is-zero #Zero{}) #True{})
+  = #Refl{}
+
+// Test: is-zero of 1 should be False
+T1 : (E/Equal B/Bool (N/is-zero #Succ{#Zero{}}) #False{})
+  = #Refl{}
+
+// Test: is-zero of 2 should be False
+T2 : (E/Equal B/Bool (N/is-zero #Succ{#Succ{#Zero{}}}) #False{})
+  = #Refl{}

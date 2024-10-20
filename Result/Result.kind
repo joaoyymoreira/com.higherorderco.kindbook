@@ -1,0 +1,14 @@
+use Result/ as R/
+
+// Represents a computation that may succeed with a value or fail with an error.
+// - 1st: The type of the successful result.
+// - 2nd: The type of the error.
+// = A value that either contains the successful result or the error.
+R/Result
+: ∀(A: *)
+  ∀(E: *)
+  *
+= λA λE data[]{
+  #Done{ value: A } : (R/Result A E)
+  #Fail{ error: E } : (R/Result A E)
+}

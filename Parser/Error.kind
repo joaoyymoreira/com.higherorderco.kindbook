@@ -1,0 +1,27 @@
+use Parser/ as PS/
+use Nat/ as N/
+use String/ as S/
+
+// Represents a parser error with an index and an error message.
+// - index: The position in the input where the error occurred.
+// - error: A string describing the error.
+PS/Error : * = data[]{
+  #MkError{
+    index: N/Nat
+    error: S/String
+  } : PS/Error
+}
+// Accessor for the index field
+PS/Error/index
+: ∀(e: PS/Error)
+  N/Nat
+= λ{
+  #MkError: λe.index λe.error e.index
+}
+// Accessor for the error field
+PS/Error/error
+: ∀(e: PS/Error)
+  S/String
+= λ{
+  #MkError: λe.index λe.error e.error
+}

@@ -1,0 +1,10 @@
+use U32/ as U32/
+
+// Sums numbers up to an upper bound, exclusive.
+// - x: The upper bound of the sum.
+// = The sum of all numbers from 0 to x, exclusive.
+U32/sum : U32 -> U32
+= λ{
+  0: 0
+  _{p}: (+ p (U32/sum p))
+}

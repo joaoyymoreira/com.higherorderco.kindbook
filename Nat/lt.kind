@@ -1,0 +1,21 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Checks if one nat is less than another.
+// 1st: The natural number.
+// 2nd: The natural number.
+// = True if 1st is less than 2nd, False otherwise.
+N/lt
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  B/Bool
+= λ{
+  #Zero: λ{
+    #Zero: #False{}
+    #Succ: λn.pred #True{}
+  }
+  #Succ: λm.pred λ{
+    #Zero: #False{}
+    #Succ: λn.pred (N/lt m.pred n.pred)
+  }
+}

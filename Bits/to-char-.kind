@@ -1,0 +1,19 @@
+use Bits/ as BS/
+use Char/ as C/
+use Equal/ as E/
+use U32/ as U32/
+
+// Test: Convert 'A' (Unicode 65) to Char
+T0
+: (E/Equal C/Char (BS/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
+= #Refl
+
+// // Test: Convert null character (Unicode 0) to Char
+// T1
+// : (E/Equal C/Char (BS/to-char #E) '\0')
+// = #Refl
+
+// // Test: Convert space character (Unicode 32) to Char
+// T2
+// : (E/Equal C/Char (BS/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
+// = #Refl

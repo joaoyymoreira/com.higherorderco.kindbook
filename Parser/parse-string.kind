@@ -1,0 +1,27 @@
+use Parser/ as PS/
+use Char/ as C/
+use List/ as L/
+use String/ as S/
+use Maybe/ as M/
+
+// Parses multiple characters until a closing quote is encountered.
+// = A list of characters representing the parsed string content.
+PS/parse-chars : (PS/Parser S/String)
+= do PS/Monad {
+  ask c = (PS/parse-char)
+  (match (C/eq '"' c) {
+    #True: (PS/Monad/pure _ [])
+    #False: do PS/Monad {
+      ask cs = (PS/parse-chars)
+      (PS/Monad/pure _ #Cons{c cs})
+    }
+  })
+}
+// Parses a quoted string.
+// = A String value representing the parsed quoted string.
+PS/parse-string : (PS/Parser S/String)
+= do PS/Monad {
+  ask y = (PS/consume "\"")
+  ask chars = (PS/parse-chars)
+  (PS/Monad/pure _ (chars))
+}

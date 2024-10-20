@@ -1,0 +1,17 @@
+use Parser/ as PS/
+use Maybe/ as M/
+use Result/ as R/
+use String/ as S/
+
+// Peeks at the next character in the input without consuming it.
+// - s: The current parser state.
+// = A Reply containing the current state and the next character (if any).
+PS/peek-one : (PS/Parser (M/Maybe U32))
+= λs
+  let next_char = (S/head (PS/State/input s))
+  #Done{
+    #MkReply{
+      state: s
+      value: next_char
+    }
+  }

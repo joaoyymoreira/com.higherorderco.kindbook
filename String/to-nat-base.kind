@@ -1,0 +1,38 @@
+use String/ as S/
+use Char/ as C/
+use List/ as L/
+use Maybe/ as M/
+use Nat/ as N/
+
+// Helper function for S/to-nat-base
+// - base: The base to use for conversion.
+// - chars: The list of characters to convert.
+// - acc: The accumulator for the result.
+// = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
+S/to-nat-base-go
+: ∀(base: N/Nat)
+  ∀(chars: S/String)
+  ∀(acc: N/Nat)
+  (M/Maybe N/Nat)
+= λbase λ{
+  #Nil: λacc #Some{acc}
+  #Cons: λhead λtail λacc
+    let digit = (C/to-digit base head)
+    match digit {
+      #None: #None
+      #Some: λvalue (S/to-nat-base-go base tail (N/add (N/mul acc base) value))
+    }
+}
+
+// Converts a string to a natural number in the given base.
+// - base: The base to use for conversion.
+// - str: The string to convert.
+// = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
+S/to-nat-base
+: ∀(base: N/Nat)
+  ∀(str: S/String)
+  (M/Maybe N/Nat)
+= λbase λ{
+  #Nil: #None
+  #Cons: λhead λtail (S/to-nat-base-go base #Cons{head tail} #0)
+}

@@ -1,0 +1,6 @@
+use Unit/ as U/
+
+// Represents a unit type with a single inhabitant.
+U/Unit : * = data[]{
+  #Unit{} : U/Unit
+}

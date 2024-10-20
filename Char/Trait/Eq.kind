@@ -1,0 +1,6 @@
+use Char/ as C/
+use Trait/ as T/
+
+// Instance of Eq trait for Char
+C/Trait/Eq : (T/Eq C/Char) = 
+  (T/Eq/derive C/Char C/eq)

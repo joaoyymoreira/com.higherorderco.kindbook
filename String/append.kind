@@ -1,0 +1,12 @@
+use String/ as S/
+use List/ as L/
+
+// Concatenates two strings.
+// - 1st: The first string.
+// - 2nd: The second string.
+// = A new string that is the concatenation of the two input strings.
+S/append
+: ∀(a: S/String)
+  ∀(b: S/String)
+  S/String
+= λa λb (L/append U32 a b)

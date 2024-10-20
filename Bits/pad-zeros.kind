@@ -1,0 +1,20 @@
+use Bits/ as BS/
+use Nat/ as N/
+
+// Pads Bits with insignificant zeroes to achieve a specific length.
+// - 1st: The desired length of the resulting Bits.
+// - 2nd: The original Bits to be padded.
+// = A new Bits value with the same significance as the input, 
+//   but padded with leading zeroes to reach the specified length.
+BS/pad-zeros
+: ∀(n: N/Nat)
+  ∀(bits: BS/Bits)
+  BS/Bits
+= λ{
+  #Zero: λb b
+  #Succ: λpred λ{
+    #E:       #O{(BS/pad-zeros pred #E)}
+    #O: λtail #O{(BS/pad-zeros pred tail)}
+    #I: λtail #I{(BS/pad-zeros pred tail)}
+  }
+}

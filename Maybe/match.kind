@@ -1,0 +1,20 @@
+use Maybe/ as M/
+
+// Elimination principle for Maybe.
+// - A: The type of the value inside Maybe.
+// - P: A type family indexed by Maybe A.
+// - none: The case for None.
+// - some: The case for Some.
+// - m: The Maybe value to match against.
+// = A value of type (P m), determined by the structure of m.
+M/match
+: ∀(A: *)
+  ∀(P: ∀(m: (M/Maybe A)) *)
+  ∀(none: (P #None{}))
+  ∀(some: ∀(x: A) (P (#Some{x})))
+  ∀(m: (M/Maybe A))
+  (P m)
+= λA λP λnone λsome λ{
+  #None: none
+  #Some: λm.value (some m.value)
+}

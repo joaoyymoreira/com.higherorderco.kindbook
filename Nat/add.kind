@@ -1,0 +1,9 @@
+use Nat/ as N/
+
+// Performs addition of nats.
+// - m: The 1st nat.
+// - n: The 2nd nat.
+// = The sum of the two nats.
+N/add : N/Nat -> N/Nat -> N/Nat
+| #Zero    n = n
+| #Succ{m} n = #Succ{(N/add m n)}

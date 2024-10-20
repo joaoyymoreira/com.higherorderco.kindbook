@@ -1,0 +1,10 @@
+use String/ as S/
+use List/ as L/
+
+// Converts a character to a string.
+// - 1st: The input character.
+// = A string containing only the input character.
+S/from-char
+: ∀(chars: U32)
+  S/String
+= λchars (S/from-list (#Cons{chars #Nil{}}))

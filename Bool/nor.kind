@@ -1,0 +1,9 @@
+use Bool/ as B/
+
+// Performs logical NOR operation on two boolean values.
+// - a: The first boolean value.
+// - b: The second boolean value.
+// = True if both inputs are False, False otherwise.
+B/nor : B/Bool -> B/Bool -> B/Bool
+| #True  b = #False
+| #False b = (B/not b)

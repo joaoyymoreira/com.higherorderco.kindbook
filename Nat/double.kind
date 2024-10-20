@@ -1,0 +1,12 @@
+use Nat/ as N/
+
+// Doubles a natural number.
+// 1st: The number to double.
+// = The double of the input number.
+N/double
+: ∀(n: N/Nat)
+  N/Nat
+= λ{
+  #Zero: #Zero{}
+  #Succ: λn.pred #Succ{#Succ{(N/double n.pred)}}
+}

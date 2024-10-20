@@ -1,0 +1,22 @@
+use BinMap/ as BM/
+use BinTree/ as BT/
+use List/ as L/
+use Maybe/ as M/
+
+// Converts a BinMap to a List of the stored values.
+// None values are skipped.
+// - A: The type of values stored in the map.
+// - m: The input BinMap.
+// = A list with the values stored in the BinMap.
+BM/values
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  (L/List A)
+= λA λ{
+  #Leaf: #Nil{}
+  #Node: λ{
+		#None: λlft λrgt (L/append A (BM/values A lft)  (BM/values A rgt))
+		#Some: λv λlft λrgt #Cons{v (L/append A (BM/values A lft) (BM/values A rgt))}
+	}
+}
+  

@@ -1,0 +1,14 @@
+use String/ as S/
+use Bool/ as B/
+use List/ as L/
+
+// Checks if a string is empty.
+// - s: The string to check.
+// = True if the string is empty, False otherwise.
+S/is-empty
+: ∀(s: S/String)
+  B/Bool
+= λ{
+    #Nil: #True{}
+    #Cons: λhead λtail #False{}
+  }

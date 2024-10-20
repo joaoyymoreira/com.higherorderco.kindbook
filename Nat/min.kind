@@ -1,0 +1,13 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Returns the minimum of two natural numbers.
+// 1st: The natural number to compare.
+// 2nd: The natural number to compare.
+// = The smaller of the two input numbers.
+N/min
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λm λn
+  (B/if N/Nat (N/lte m n) m n)

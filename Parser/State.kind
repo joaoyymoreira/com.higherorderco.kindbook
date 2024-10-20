@@ -1,0 +1,48 @@
+use Parser/ as PS/
+use Nat/ as N/
+use String/ as S/
+
+// Represents the state of a parser.
+// - input: The remaining input text to be consumed.
+// - index: The current parsing index.
+// = A record containing the current state of parsing.
+PS/State : * = data[]{
+  #MkState{
+    input: S/String
+    index: N/Nat
+  } : PS/State
+}
+
+// Creates a new State with the given input and initial index of zero.
+// - input: The input string to be parsed.
+// = A new State with the given input and index set to zero.
+PS/new_parser_state
+: ∀(input: S/String)
+  PS/State
+= λinput #MkState{
+  input: input
+  index: #Zero{}
+}
+
+// Helper function to get the input from a State
+PS/State/input
+: ∀(s: PS/State)
+  S/String
+= λ{
+  #MkState: λs.input λs.index s.input
+}
+
+// Helper function to get the index from a State
+PS/State/index
+: ∀(s: PS/State)
+  N/Nat
+= λ{
+  #MkState: λs.input λs.index s.index
+}
+
+// Helper function to create a new State
+PS/State/new
+: ∀(input: S/String)
+  ∀(index: N/Nat)
+  PS/State
+= λinput λindex #MkState{input index}

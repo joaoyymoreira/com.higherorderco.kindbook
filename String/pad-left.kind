@@ -1,0 +1,21 @@
+use String/ as S/
+use List/ as L/
+use Nat/ as N/
+use Bool/ as B/
+
+// Pads a string with a character to the left until the given length is reached.
+// - 1st: The desired length of the resulting string.
+// - 2nd: The character to use for padding.
+// - 3rd: The input string to pad.
+// = A new string padded to length n with character c on the left side.
+S/pad-left
+: ∀(n: N/Nat)
+  ∀(c: U32)
+  ∀(s: S/String)
+  S/String
+= λn λc λs
+  let #Pair{str len} = (L/length-got U32 s)
+  match (N/lt len n) {
+      #True: (S/append (S/replicate (N/sub n len) c) str)
+      #False: str
+    }

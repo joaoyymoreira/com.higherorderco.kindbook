@@ -1,0 +1,7 @@
+use Nat/ as N/
+use Trait/ as T/
+
+// Instance of Add trait for Nat
+N/Trait/Add : (T/Add N/Nat) = #MkAdd{
+  add: N/add
+}

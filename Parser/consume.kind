@@ -1,0 +1,35 @@
+use Parser/ as P/
+use String/ as S/
+use Result/ as R/
+use Unit/ as U/
+use Nat/ as N/
+use List/ as L/
+use Bool/ as B/
+
+// Attempts to consume a specific string from the input.
+// - target: The target string to consume.
+// = A Parser that returns unit if successful, or fails if the target string is not found at the current position.
+P/consume
+: ∀(target: S/String)
+  (P/Parser U/Unit)
+= λtarget λstate
+  let input = (P/State/input state)
+  let index = (P/State/index state)
+  (B/if (R/Result (P/Reply U/Unit) P/Error)
+    (S/starts-with input target)
+    (#Done{
+      #MkReply{
+        state: #MkState{
+          input: (S/drop (L/length U32 target) input)
+          index: (N/add index (L/length U32 target))
+        }
+        value: #Unit{}
+      }
+    })
+    (#Fail{
+      #MkError{
+        index: index
+        error: (S/append "Expected " target)
+      }
+    })
+  )

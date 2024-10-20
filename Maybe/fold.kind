@@ -1,0 +1,20 @@
+use Maybe/ as M/
+
+// Folds over a Maybe value.
+// - 1st: The type of the value inside Maybe.
+// - 2nd: The type of the result.
+// - 3rd: The value to return if the Maybe is None.
+// - 4th: The function to apply to the value if the Maybe is Some.
+// - 5th: The Maybe value to fold over.
+// = Either the default value (if None) or the result of applying fn to the value (if Some).
+M/fold
+: ∀(A: *)
+  ∀(B: *)
+  ∀(default: B)
+  ∀(f: ∀(x: A) B)
+  ∀(m: (M/Maybe A))
+  B
+= λA λB λdefault λf λ{
+  #None: default
+  #Some: λm.value (f m.value)
+}

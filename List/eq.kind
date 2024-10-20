@@ -1,0 +1,36 @@
+use List/ as L/
+use Bool/ as B/
+use Trait/ as T/
+
+// Checks if two lists are equal.
+// - A: The type of elements in the lists.
+// - e: An equality function for type A.
+// - xs: The first list.
+// - ys: The second list.
+// = True if the lists are equal, False otherwise.
+L/eq : ∀(A: *) (T/Eq A) -> (L/List A) -> (L/List A) -> B/Bool
+= λA λe λ{
+  #Nil: λ{
+    #Nil: #True
+    #Cons: λys.head λys.tail #False
+  }
+  #Cons: λxs.head λxs.tail λ{
+    #Nil: #False
+    #Cons: λys.head λys.tail
+      (B/and
+        (T/Eq/eq A e xs.head ys.head)
+        (L/eq A e xs.tail ys.tail))
+  }
+}
+
+// -- TODO: flatten the case tree into equational clauses
+
+// L/eq : ∀ A → (T/Eq A) → (L/List A) → (L/List A) → B/Bool
+// L/eq A e #Nil #Nil = #True
+
+// L/eq A e #Nil (#Cons ys.head ys.tail) = #False
+// L/eq A e (#Cons xs.head xs.tail) #Nil = #False
+// L/eq A e (#Cons xs.head xs.tail) (#Cons ys.head ys.tail) =
+//   B/and (T/Eq/eq A e xs.head ys.head) (L/eq A e xs.tail ys.tail)
+
+

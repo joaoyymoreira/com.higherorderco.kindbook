@@ -1,0 +1,13 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Returns the maximum of two natural numbers. This function compares two
+// 1st: The first natural number.
+// 2nd: The second natural number.
+// = The larger of the two input numbers.
+N/max
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λm λn
+  (B/if N/Nat (N/gte m n) m n)

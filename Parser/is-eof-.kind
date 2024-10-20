@@ -1,0 +1,33 @@
+use Parser/ as PS/
+use Bool/ as B/
+use Equal/ as E/
+use Result/ as R/
+use String/ as S/
+
+// Test: is-eof returns True for an empty string
+T0
+: (E/Equal
+    (R/Result (PS/Reply B/Bool) PS/Error)
+    (PS/is-eof (PS/State/new [] #Zero))
+    (#Done{
+      #MkReply{
+        state: (PS/State/new [] #Zero)
+        value: #True
+      }
+    })
+  )
+= #Refl
+
+// Test: is-eof returns False for a non-empty string
+T1
+: (E/Equal
+    (R/Result (PS/Reply B/Bool) PS/Error)
+    (PS/is-eof (PS/State/new (S/from-list [97u32 98u32 99u32]) #Zero))
+    (#Done{
+      #MkReply{
+        state: (PS/State/new (S/from-list [97u32 98u32 99u32]) #Zero)
+        value: #False
+      }
+    })
+  )
+= #Refl

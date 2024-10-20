@@ -1,0 +1,16 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Performs integer division of natural numbers.
+// This function divides the dividend by the divisor.
+// 1st: The dividend.
+// 2nd: The divisor.
+// = The quotient of the division.
+N/div
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λm λ{
+  #Zero: #Zero{}  // Division by zero returns zero.
+  #Succ: λn.pred (N/div/go n.pred m n.pred #Zero{})
+}

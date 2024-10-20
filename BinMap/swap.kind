@@ -1,0 +1,41 @@
+use BinMap/ as BM/
+use Bits/ as BS/
+use Maybe/ as M/
+use Pair/ as P/
+use BinTree/ as BT/
+
+// Swaps a value in the BinMap for a new value, returning the old value if it existed.
+// - A: The type of values stored in the BinMap.
+// - m: The BinMap to swap in.
+// - k: The Bits key to swap.
+// - v: The new value to insert.
+// = A pair containing the new BinMap and Maybe the old value if the key existed.
+BM/swap
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  ∀(k: BS/Bits)
+  ∀(v: A)
+  (P/Pair (BM/BinMap A) (M/Maybe A))
+= λA  λ{
+  #Leaf: λ{
+		#E: λv #Pair{#Node{#Some{v} #Leaf{} #Leaf{}} #None{}} 
+		#O: λb λv 
+			let left = (BM/swap A #Leaf{} b v)
+			#Pair{#Node{#None{} (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) left) #Leaf{}} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) left)}
+		#I: λb λv 
+			let right = (BM/swap A #Leaf{} b v)
+			#Pair{#Node{#None{} #Leaf{} (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) right)} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) right)}
+	}
+  #Node: λval λlft λrgt λ{
+		#E: λv
+			use none = #Pair{#Node{#Some{v} lft rgt} #None{}}
+			use some = λx #Pair{#Node{#Some{v} lft rgt} #Some{x}}
+			(M/match A (λx (P/Pair (BM/BinMap A) (M/Maybe A))) none some val)
+		#O: λb λv 
+			let left = (BM/swap A lft b v)
+			#Pair{#Node{val (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) left) rgt} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) left)}
+		#I: λb λv 			
+			let right = (BM/swap A rgt b v)
+			#Pair{#Node{val lft (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) right)} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) right)}
+	}
+}

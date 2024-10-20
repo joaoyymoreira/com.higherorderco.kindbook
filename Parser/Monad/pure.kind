@@ -1,0 +1,12 @@
+use Parser/ as PS/
+use Result/ as R/
+
+// Creates a parser that always succeeds with the given value without consuming any input
+PS/Monad/pure : ∀(A: *) A -> (PS/Parser A)
+= λA λx λs
+  #Done{
+    #MkReply{
+      state: s
+      value: x
+    }
+  }

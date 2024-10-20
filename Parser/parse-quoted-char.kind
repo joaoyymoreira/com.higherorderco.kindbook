@@ -1,0 +1,15 @@
+use Parser/ as PS/
+use Char/ as C/
+
+// Parses a quoted character.
+// - 1st: Consumes the opening single quote.
+// - 2nd: Parses a single character.
+// - 3rd: Consumes the closing single quote.
+// = Returns the parsed character.
+PS/parse-quoted-char : (PS/Parser C/Char)
+= do PS/Monad {
+  ask y = (PS/consume "'")
+  ask c = (PS/parse-char)
+  ask x = (PS/consume "'")
+ (PS/Monad/pure _ c)
+}

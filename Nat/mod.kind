@@ -1,0 +1,34 @@
+use Nat/ as N/
+
+// Performs an auxiliary calculation for the modulo operation.
+// 1st: Accumulator for the remainder.
+// 2nd: The divisor.
+// 3rd: The remaining dividend.
+// 4th: Counter for the divisor.
+// = The remainder of the division.
+N/mod/aux
+: ∀(k: N/Nat)
+  ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  ∀(j: N/Nat)
+  N/Nat
+= λk λm λ{
+  #Zero: λj k
+  #Succ: λn.pred λ{
+    #Zero: (N/mod/aux #Zero{} m n.pred m)
+    #Succ: λj.pred (N/mod/aux #Succ{k} m n.pred j.pred)
+  }
+}
+
+// Performs the natural number modulo operation.
+// 1st: The dividend.
+// 2nd: The divisor.
+// = The remainder of dividend divided by divisor.
+N/mod
+: ∀(n: N/Nat)
+  ∀(m: N/Nat)
+  N/Nat
+= λn λ{
+  #Zero: #Zero{}
+  #Succ: λm.pred (N/mod/aux #Zero{} m.pred n m.pred)
+}

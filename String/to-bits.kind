@@ -1,0 +1,17 @@
+use String/ as S/
+use Bits/ as BS/
+use Char/ as C/
+use U32/ as U32/
+use List/ as L/
+
+// Converts a string to its binary representation with padded char bits.
+// - 1st: The input string.
+// = The binary representation of the string as Bits, with each char
+//   represented by exactly 21 bits.
+S/to-bits
+: ∀(s: S/String)
+  BS/Bits
+= λs
+  use char-to-bits = λx (BS/pad-zeros #21 (U32/to-bits x))
+  let bits-list = (L/map U32 BS/Bits char-to-bits s)
+  (BS/concat bits-list)

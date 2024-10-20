@@ -1,0 +1,19 @@
+use ArrTree/ as AT/
+use Nat/ as N/
+
+// Defines an array-like binary tree datatype.
+// - Node: Contains two subtrees.
+// - Leaf: Contains a value.
+AT/ArrTree
+: ∀(A: *)
+  ∀(d: N/Nat)
+  *
+= λA λd data[]{
+  #Node{
+    lft: (AT/ArrTree A d)
+    rgt: (AT/ArrTree A d)
+  } : (AT/ArrTree A (#Succ{d}))
+  #Leaf{
+    val: A
+  } : (AT/ArrTree A #Zero{})
+}

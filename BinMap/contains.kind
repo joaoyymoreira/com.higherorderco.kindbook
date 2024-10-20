@@ -1,0 +1,28 @@
+use BinMap/ as BM/
+use Bits/ as BS/
+use Bool/ as B/
+use Maybe/ as M/
+use BinTree/ as BT/
+
+// Checks if a key exists in the BinMap.
+// - A: The type of values stored in the map.
+// - m: The BinMap to search in.
+// - k: The Bits key to look for.
+// = True if the key exists in the BinMap, False otherwise.
+BM/contains
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  ∀(k: BS/Bits)
+  B/Bool
+= λA λ{
+  #Leaf: λk #False{}
+  #Node: λval λlft λrgt λ{
+		#E: 
+			use false = #False{}
+			use true = λs #True{}
+			(M/match A (λx B/Bool) false true val)
+		#O: λb (BM/contains A lft b)
+		#I: λb (BM/contains A rgt b)
+	}
+}
+

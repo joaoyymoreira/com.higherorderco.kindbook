@@ -1,0 +1,9 @@
+use Char/ as C/
+use String/ as S/
+
+S/cons
+: ∀(head: C/Char)
+  ∀(tail: S/String)
+  S/String
+= λhead λtail
+  #Cons{ head tail }

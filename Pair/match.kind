@@ -1,0 +1,19 @@
+use Pair/ as P/
+
+// Matches a pair and applies a function to its components.
+// - A: The type of the first component.
+// - B: The type family for the second component.
+// - C: The return type.
+// - p: The pair to match.
+// - f: The function to apply to the pair's components.
+// = The result of applying f to the pair's components.
+P/match
+: ∀(A: *)
+  ∀(B: *)
+  ∀(P: ∀(x: (P/Pair A B)) *)
+  ∀(f: ∀(fst: A) ∀(snd: B) (P #Pair { fst snd }))
+  ∀(p: (P/Pair A B))
+  (P p)
+= λA λB λP λf λ{
+  #Pair: λfst λsnd (f fst snd)
+}

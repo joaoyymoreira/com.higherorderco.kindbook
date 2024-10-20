@@ -1,0 +1,26 @@
+use List/ as L/
+use Trait/ as T/
+
+// Applies a monadic function to each element of a list, threading a state through the computation.
+// - M: The monad type constructor.
+// - m: The Monad instance for M.
+// - A: The type of elements in the list.
+// - S: The type of the state.
+// - xs: The list of elements to process.
+// - s: The initial state.
+// - f: The monadic function that takes the current state and list element, and returns a new state.
+// = A monadic value containing the final state after processing all elements.
+L/for-given
+: ∀(M: ∀(A: *) *)
+  ∀(m: (T/Monad M))
+  ∀(A: *)
+  ∀(S: *)
+  ∀(xs: (L/List A))
+  ∀(s: S)
+  ∀(f: ∀(s: S) ∀(a: A) (M S))
+  (M S)
+= λM λm λA λS λ{
+  #Nil: λs λf (T/Monad/pure M m S s)
+  #Cons: λhead λtail λs λf 
+    (T/Monad/bind M m S S (f s head) (λx (L/for-given M m A S tail x f)))
+}

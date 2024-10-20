@@ -1,0 +1,13 @@
+use Char/ as C/
+use Bool/ as B/
+use U32/ as U32/
+
+// Compares two characters lexicographically.
+// 1st: The character to compare.
+// 2nd: The character to compare.
+// = True if the 1st character is less than the 2nd, False otherwise.
+C/lt
+: ∀(x: C/Char)
+  ∀(y: C/Char)
+  B/Bool
+= λx λy (U32/lt x y)

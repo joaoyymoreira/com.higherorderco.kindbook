@@ -1,0 +1,25 @@
+use Bits/ as BS/
+use Nat/ as N/
+use Pair/ as P/
+
+// Splits a Bits value at a specified position.
+// - 1st: The position at which to split the Bits.
+// - 2nd: The Bits value to be split.
+// = A Pair of Bits where the first element contains the bits before the split point,
+//   and the second element contains the bits after the split point.
+BS/split-at
+: ∀(m: N/Nat)
+  ∀(bits: BS/Bits)
+  (P/Pair BS/Bits BS/Bits)
+= λ{
+  #Zero: λbits  #Pair{#E bits}
+  #Succ: λpred λ{
+    #E: #Pair{(BS/pad-zeros pred #E) #E}
+    #O: λtail
+      let #Pair{collected rest} = (BS/split-at pred tail)
+      #Pair{#O{collected} rest}
+    #I: λtail
+      let #Pair{collected rest} = (BS/split-at pred tail)
+      #Pair{#I{collected} rest}
+  }
+}

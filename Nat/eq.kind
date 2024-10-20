@@ -1,0 +1,11 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Checks if two natural numbers are equal.
+// - m: The natural number.
+// - n: The natural number.
+// = True if the numbers are equal, False otherwise.
+N/eq : N/Nat -> N/Nat -> B/Bool
+| #Zero     #Zero    = #True
+| #Succ{m}  #Succ{n} = (N/eq m n)
+| x         y        = #False

@@ -1,0 +1,10 @@
+use Parser/ as PS/
+use Result/ as R/
+
+// Represents a parser as a function from State to Result.
+// - A: The type of the value to be parsed.
+// = A function that takes a State and returns a Result which is either:
+//   - Done: a Reply containing the parsed value and new state.
+//   - Fail: an Error containing the index and message.
+PS/Parser : * -> *
+= λA (PS/State -> (R/Result (PS/Reply A) PS/Error))

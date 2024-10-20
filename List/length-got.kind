@@ -1,0 +1,18 @@
+use List/ as L/
+use Pair/ as P/
+use Nat/ as N/
+
+// Computes the length of a list while preserving the original list.
+// - 1st: The type of elements in the list.
+// - 2nd: The input list.
+// = A pair containing the original list and its length as a Nat.
+L/length-got
+: ∀(A: *)
+  ∀(xs: (L/List A))
+  (P/Pair (L/List A) N/Nat)
+= λA λ{
+  #Nil: #Pair{[] #0}
+  #Cons: λhead λtail
+    let #Pair{rest n} = (L/length-got A tail)
+		#Pair{(#Cons{head rest}) (#Succ{n})}
+}

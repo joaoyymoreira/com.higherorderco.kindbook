@@ -1,0 +1,14 @@
+use Nat/ as N/
+
+// Performs exponentiation of natural numbers.
+// 1st: The base number.
+// 2nd: The exponent.
+// = The result of raising the base to the power of the exponent.
+N/exp
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λm λ{
+  #Zero: #Succ{#Zero{}}
+  #Succ: λn.pred (N/mul m (N/exp m n.pred))
+}

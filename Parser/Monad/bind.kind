@@ -1,0 +1,38 @@
+use Parser/ as PS/
+use Result/ as R/
+
+// Binds two parsers together
+// - A: The type of the first parser's result
+// - B: The type of the second parser's result
+// - p: The first parser
+// - f: A function that takes the result of the first parser and returns a new parser
+// = A new parser that combines the results of both parsers
+PS/Monad/bind
+: ∀(A: *)
+  ∀(B: *)
+  ∀(p: (PS/Parser A))
+  ∀(f: ∀(a: A) (PS/Parser B))
+  (PS/Parser B)
+= λA λB λp λf λs
+  match (p s) {
+    #Done: λr
+      let value = (PS/Reply/value A r)
+      let state = (PS/Reply/state A r)
+      (f value state)
+    #Fail: λe #Fail{e}
+  }
+
+// Sequencing of parsers, discarding the result of the first parser
+// - A: The type of the first parser's result (discarded)
+// - B: The type of the second parser's result
+// - p: The first parser (result discarded)
+// - q: The second parser
+// = A new parser that runs both parsers in sequence, returning the result of the second
+PS/Monad/seq
+: ∀(A: *)
+  ∀(B: *)
+  ∀(p: (PS/Parser A))
+  ∀(q: (PS/Parser B))
+  (PS/Parser B)
+= λA λB λp λq
+  (P/Monad/bind A B p (λx q))

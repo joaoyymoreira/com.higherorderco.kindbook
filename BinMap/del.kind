@@ -1,0 +1,23 @@
+use BinMap/ as BM/
+use BinTree/ as BT/
+use Bits/ as BS/
+use Maybe/ as M/
+
+// Removes a key-value pair from the BinMap.
+// - A: The type of values stored in the map.
+// - m: The BinMap to remove from.
+// - k: The Bits key to remove.
+// = A new BinMap with the key-value pair removed.
+BM/del
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  ∀(k: BS/Bits)
+  (BM/BinMap A)
+= λA λ{
+  #Leaf: λk #Leaf{}
+  #Node: λval λlft λrgt λ{
+		#E: #Node{#None{} lft rgt}
+		#O: λb #Node{val (BM/del A lft b) rgt}
+		#I: λb #Node{val lft (BM/del A rgt b)}
+	}
+}

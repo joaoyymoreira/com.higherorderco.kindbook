@@ -1,0 +1,9 @@
+use Nat/ as N/
+
+// Calculates half of a nat.
+// - n: The number to halve.
+// = The largest nat not exceeding n/2.
+N/half : N/Nat -> N/Nat
+| #Succ{#Succ{n}} = #Succ{(N/half n)} 
+| #Succ{n}        = #Zero
+| #Zero           = #Zero

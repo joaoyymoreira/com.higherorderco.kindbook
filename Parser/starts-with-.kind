@@ -1,0 +1,34 @@
+use Parser/ as PS/
+use String/ as S/
+use Bool/ as B/
+use Equal/ as E/
+
+// Test: Starts with matching prefix
+T0 : (E/Equal
+  (R/Result (PS/Reply B/Bool) PS/Error)
+  (PS/starts-with "hello" (PS/State/new "hello world" #0))
+  #Done{#MkReply{
+    state: (PS/State/new "hello world" #0)
+    value: #True
+  }}
+) = #Refl
+
+// // Test: Starts with non-matching prefix
+// T1 : (E/Equal
+//   (R/Result (PS/Reply B/Bool) PS/Error)
+//   (PS/starts-with "hello" (PS/State/new "goodbye world" #0))
+//   #Done{#MkReply{
+//     state: (PS/State/new "goodbye world" #0)
+//     value: #False
+//   }}
+// ) = #Refl
+
+// Test: Starts with empty string
+T2 : (E/Equal
+  (R/Result (PS/Reply B/Bool) PS/Error)
+  (PS/starts-with "" (PS/State/new "any string" #0))
+  #Done{#MkReply{
+    state: (PS/State/new "any string" #0)
+    value: #True
+  }}
+) = #Refl

@@ -1,0 +1,5 @@
+use String/ as S/
+
+S/nil
+: S/String
+= #Nil{}

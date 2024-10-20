@@ -1,0 +1,12 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Checks if one natural number is less than or equal to another.
+// 1st: The natural number.
+// 2nd: The natural number.
+// = True if the 1st number is less than or equal to the 2nd, False otherwise.
+N/lte
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  B/Bool
+= λm λn (B/or (N/lt m n) (N/eq m n))

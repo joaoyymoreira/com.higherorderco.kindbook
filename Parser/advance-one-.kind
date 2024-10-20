@@ -1,0 +1,30 @@
+use Parser/ as PS/
+use Result/ as R/
+use Maybe/ as M/
+use Char/ as C/
+use String/ as S/
+use Equal/ as E/
+
+// Test: Advance one character in a non-empty string
+T0 
+: (E/Equal 
+  (PS/Parser (M/Maybe C/Char))
+  (PS/advance-one (PS/State/new "abc" #Zero)) 
+  (#Done{(#MkReply{(PS/State/new "bc" (#Succ{#Zero})) (#Some{97})})}))
+= #Refl
+
+// Test: Advance one character in an empty string
+T1 
+: (E/Equal 
+  (PS/Parser (M/Maybe C/Char))
+  (PS/advance-one (PS/State/new "" #Zero)) 
+  (#Done{(#MkReply{(PS/State/new "" #Zero) #None})}))
+= #Refl
+
+// Test: Advance one character in a string with special characters
+T2 
+: (E/Equal 
+  (PS/Parser (M/Maybe C/Char))
+  (PS/advance-one (PS/State/new "!@#" #Zero)) 
+  (#Done{(#MkReply{(PS/State/new "@#" (#Succ{#Zero})) (#Some{33})})}))
+= #Refl

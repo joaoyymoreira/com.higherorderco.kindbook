@@ -1,0 +1,17 @@
+use Nat/ as N/
+
+// Subtracts one natural number from another.
+// 1st: The number to subtract from.
+// 2nd: The number to subtract.
+// = The result of 1st - 2nd, or zero if 2nd > 1st.
+N/sub
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λ{
+  #Zero: λn #Zero{}
+  #Succ: λm.pred λ{
+    #Zero: #Succ{m.pred}
+    #Succ: λn.pred (N/sub m.pred n.pred)
+  }
+}

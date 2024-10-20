@@ -1,0 +1,15 @@
+use Bool/ as B/
+
+// Performs logical OR operation on two bools.
+// - 1st: The bool.
+// - 2nd: The bool.
+// = True if either 1st or 2nd is true, False otherwise.
+B/or
+: ∀(a: B/Bool)
+  ∀(b: B/Bool)
+  B/Bool
+= λ{
+  #True: λb #True{}
+  #False: λb b
+}
+

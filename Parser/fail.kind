@@ -1,0 +1,20 @@
+use Parser/ as PS/
+use Result/ as R/
+use String/ as S/
+
+// Creates a failing parser with the given error message.
+// - A: The type of the value to be parsed.
+// - msg: The error message as a String.
+// = A Parser that always fails with the specified error message.
+PS/fail
+: ∀(A: *)
+  ∀(msg: S/String)
+  (PS/Parser A)
+= λA λmsg λs
+  #Fail{
+    #MkError{
+      index: (PS/State/index s)
+      error: msg
+    }
+  }
+

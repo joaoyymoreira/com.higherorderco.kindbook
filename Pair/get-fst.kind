@@ -1,0 +1,9 @@
+use Pair/ as P/
+
+// Retrieves the first component of a dependent pair.
+// - A: The type of the first component.
+// - B: The type family for the second component.
+// - p: The dependent pair.
+// = The first component of the pair.
+P/get-fst : ∀(A: *) ∀(B: ∀(a: A) *) ∀(pair: (P/Sigma A B)) A
+| A B #Pair{fst snd} = fst

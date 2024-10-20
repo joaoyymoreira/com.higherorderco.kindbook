@@ -1,0 +1,7 @@
+use Bool/ as B/
+use Trait/ as T/
+
+// Instance of Eq for Bool
+B/Trait/Eq/EqBool : (T/Eq B/Bool)
+  = (T/Eq/derive B/Bool B/eq)
+

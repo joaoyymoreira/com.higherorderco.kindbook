@@ -1,0 +1,10 @@
+use Maybe/ as M/
+use Trait/ as T/
+
+// Derives an Eq instance for Maybe A, given an Eq instance for A
+M/Trait/Eq
+: ∀(A: *)
+  ∀(e: (T/Eq A))
+  (T/Eq (M/Maybe A))
+= λA λe
+  (T/Eq/derive (M/Maybe A) (M/eq A e))

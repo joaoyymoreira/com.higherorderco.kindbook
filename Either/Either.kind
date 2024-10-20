@@ -1,0 +1,15 @@
+use Either/ as E/
+
+// Represents a value of one of two possible types.
+// 1st: The type of the left value.
+// 2nd: The type of the right value.
+// = Returns left or right value.
+E/Either
+: ∀(A: *)
+  ∀(B: *)
+  *
+= λA λB data[]{
+  #Lft{ value: A } : (E/Either A B)
+  #Rgt{ value: B } : (E/Either A B)
+}
+

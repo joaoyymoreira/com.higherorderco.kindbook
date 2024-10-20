@@ -1,0 +1,21 @@
+use List/ as L/
+use Bool/ as B/
+
+// Takes elements from the front of the list as long as they satisfy the predicate.
+// - A: The type of elements in the list.
+// - fn: The predicate function.
+// - xs: The input list.
+// = A list containing the longest prefix of xs of elements that satisfy p.
+L/take-while
+: ∀(A: *)
+  ∀(fn: ∀(a: A) B/Bool)
+  ∀(xs: (L/List A))
+  (L/List A)
+= λA λfn λ{
+  #Nil: []
+  #Cons: λxs.head λxs.tail
+    match (fn xs.head) {
+      #True: #Cons{xs.head (L/take-while A fn xs.tail)}
+      #False: []
+    }
+}

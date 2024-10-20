@@ -1,0 +1,9 @@
+use Bool/ as B/
+
+// Performs logical AND operation on two boolean values.
+// - 1st: The boolean value.
+// - 2nd: The boolean value.
+// = True if both 1st and 2nd are true, False otherwise.
+B/and : B/Bool -> B/Bool -> B/Bool
+| #True  b = b
+| #False b = b

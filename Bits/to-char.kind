@@ -1,0 +1,11 @@
+use Bits/ as BS/
+use Char/ as C/
+use U32/ as U32/
+
+// Converts a Bits value to its corresponding Unicode character.
+// 1st: The Bits value to convert.
+// = The Unicode character corresponding to the given Bits value.
+BS/to-char
+: ∀(bits: BS/Bits)
+  C/Char
+= λbits (U32/from-bits bits)

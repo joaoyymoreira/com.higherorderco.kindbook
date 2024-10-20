@@ -1,0 +1,19 @@
+use Equal/ as E/
+
+// Congruence property of equality.
+// - A: Input type.
+// - B: Output type.
+// - f: The function to apply.
+// - x: The 1st value.
+// - y: The 2nd value.
+// - e: Proof that x equals y.
+// = Proof that (f x) is equal to (f y).
+E/apply
+: ∀(A: *)
+  ∀(B: *)
+  ∀(f: ∀(x: A) B)
+  ∀(x: A)
+  ∀(y: A)
+  ∀(e: (E/Equal A x y))
+  (E/Equal B (f x) (f y))
+| A B f x y #Refl = #Refl

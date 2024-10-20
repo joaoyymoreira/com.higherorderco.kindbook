@@ -1,0 +1,16 @@
+use Parser/ as PS/
+use Pair/ as P/
+use String/ as S/
+use Nat/ as N/
+use Equal/ as E/
+
+// Test: Verify Reply record field access
+T0 : (E/Equal use x = (PS/Reply)
+      (P/Pair PS/State N/Nat)
+      (#Pair{
+        (PS/Reply/state N/Nat (#MkReply{(#MkState{"abc" #0}) #42}))
+        (PS/Reply/value N/Nat (#MkReply{(#MkState{"abc" #0}) #42}))})
+      (#Pair{
+        (#MkState{"abc" #0})
+        #42}))
+= #Refl

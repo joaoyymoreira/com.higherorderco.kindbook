@@ -1,0 +1,19 @@
+use List/ as L/
+use Bool/ as B/
+use Equal/ as E/
+use Nat/ as N/
+
+// Proof that is-cons returns False for an empty list
+L/is-cons-empty
+: ∀(A: *)
+  (E/Equal B/Bool (L/is-cons A (#Nil{})) #False{})
+= λA #Refl{}
+
+// Proof that is-cons returns True for a non-empty list
+L/is-cons-cons
+: ∀(A: *)
+  ∀(x: A)
+  ∀(xs: (L/List A))
+  (E/Equal B/Bool (L/is-cons A (#Cons{x xs})) #True{})
+= λA λx λxs #Refl{}
+

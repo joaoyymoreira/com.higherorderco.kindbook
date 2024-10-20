@@ -1,0 +1,14 @@
+use Nat/ as N/
+
+// Performs multiplication of natural numbers.
+// 1st: The natural number.
+// 2nd: The natural number.
+// = The product of the two natural numbers.
+N/mul
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  N/Nat
+= λ{
+  #Zero: λn #Zero{}
+  #Succ: λm.pred λn (N/add n (N/mul m.pred n))
+}

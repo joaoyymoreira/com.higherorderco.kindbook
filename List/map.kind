@@ -1,0 +1,11 @@
+use List/ as L/
+
+// Applies a function to each element of a list.
+// - A: The type of elements in the input list.
+// - B: The type of elements in the output list.
+// - fn: The function to be applied.
+// - xs: The elements to apply fn to.
+// = A new list with fn applied to all elements.
+L/map : ∀(A: *) ∀(B: *) (A -> B) -> (L/List A) -> (L/List B)
+| A B fn #Nil             = #Nil
+| A B fn #Cons{head tail} = #Cons{(fn head) (L/map A B fn tail)}

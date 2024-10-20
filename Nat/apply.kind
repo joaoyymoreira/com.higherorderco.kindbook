@@ -1,0 +1,19 @@
+use Nat/ as N/
+use Function/ as F/
+
+// Applies a function n times to an initial argument.
+// - 1st: The type of the argument and result.
+// - 2nd: The number of times to apply the function.
+// - 3rd: The function to apply.
+// - 4th: The initial argument.
+// = The result of applying function to argument, n times.
+N/apply
+: ∀(A: *)
+  ∀(n: N/Nat)
+  ∀(f: ∀(a: A) A)
+  ∀(x: A)
+  A
+= λA λ{
+  #Zero: λf λx x
+  #Succ: λn.pred λf λx (f (N/apply A n.pred f x))
+}

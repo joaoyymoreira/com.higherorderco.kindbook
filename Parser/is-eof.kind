@@ -1,0 +1,25 @@
+use Parser/ as PS/
+use Bool/ as B/
+use Result/ as R/
+use String/ as S/
+
+// Checks if the parser has reached the end of the input.
+// = A Reply containing a Bool: True if at the end of input, False otherwise.
+PS/is-eof : (PS/Parser B/Bool)
+= λstate
+  let input = (PS/State/input state)
+  let result = (S/is-empty input)
+  #Done{
+    #MkReply{
+      state: state
+      value: result
+    }
+  }
+
+// Accessor for the input field of State
+PS/State/input
+: ∀(s: PS/State)
+  S/String
+= λ{
+  #MkState: λs.input λs.index s.input
+}

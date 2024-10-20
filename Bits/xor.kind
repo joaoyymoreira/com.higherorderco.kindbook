@@ -1,0 +1,12 @@
+use Bits/ as BS/
+
+// Performs bitwise XOR operation on two Bits values.
+// - a: The 1st Bits value.
+// - b: The 2nd Bits value.
+// = A new Bits value representing the bitwise XOR of a and b.
+BS/xor : BS/Bits -> BS/Bits -> BS/Bits
+| #O{a}  #O{b} = #O{(BS/xor a b)}
+| #O{a}  #I{b} = #I{(BS/xor a b)}
+| #I{a}  #O{b} = #I{(BS/xor a b)}
+| #I{a}  #I{b} = #O{(BS/xor a b)}
+| a      b     = b

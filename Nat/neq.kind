@@ -1,0 +1,12 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Checks if two natural numbers are not equal.
+// 1st: The natural number to compare.
+// 2nd: The natural number to compare.
+// = True if the numbers are not equal, False otherwise.
+N/neq
+: ∀(m: N/Nat)
+  ∀(n: N/Nat)
+  B/Bool
+= λm λn (B/not (N/eq m n))

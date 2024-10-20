@@ -1,0 +1,9 @@
+use Bool/ as B/
+
+// Represents a Boolean value.
+// - True: Represents logical truth.
+// - False: Represents logical falsehood.
+B/Bool : * = data[]{
+  #True : B/Bool
+  #False : B/Bool
+}

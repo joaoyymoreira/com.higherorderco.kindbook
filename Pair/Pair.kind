@@ -1,0 +1,8 @@
+use Pair/ as P/
+
+// Simple pair type
+P/Pair
+: ∀(A: *)
+  ∀(B: *)
+  *
+= λA λB (P/Sigma A (λx B))

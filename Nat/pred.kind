@@ -1,0 +1,12 @@
+use Nat/ as N/
+
+// Returns the predecessor of a natural number.
+// 1st: The input natural number.
+// = The predecessor of n, or Zero if n is already Zero.
+N/pred
+: ∀(n: N/Nat)
+  N/Nat
+= λ{
+  #Zero: #Zero{}
+  #Succ: λn.pred n.pred
+}

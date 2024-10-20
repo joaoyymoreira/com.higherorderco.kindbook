@@ -1,0 +1,24 @@
+use Bits/ as BS/
+use Nat/ as N/
+
+// Recursively converts a Bits representation to Nat.
+// 1st: The Bits to convert.
+// 2nd: The weight or power of 2 to be applied for the current bit position.
+// = The Nat representation of the input Bits after recursive processing.
+BS/to-nat-go
+: ∀(bits: BS/Bits)
+  ∀(weight: N/Nat)
+  N/Nat
+= λ{
+  #E: λweight #Zero{}
+  #O: λb.tail λweight (BS/to-nat-go b.tail (N/mul #Succ{#Succ{#Zero{}}} weight))
+  #I: λb.tail λweight (N/add weight (BS/to-nat-go b.tail (N/mul #Succ{#Succ{#Zero{}}} weight)))
+}
+
+// Converts a binary representation (Bits) to its Nat value.
+// 1st: The Bits to convert.
+// = The Nat representation of the input Bits.
+BS/to-nat
+: ∀(bits: BS/Bits)
+  N/Nat
+= λbits (BS/to-nat-go bits #Succ{#Zero{}})

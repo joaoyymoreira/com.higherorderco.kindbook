@@ -1,0 +1,33 @@
+use Parser/ as PS/
+use Result/ as R/
+use String/ as S/
+use Equal/ as E/
+use Nat/ as N/
+use Bool/ as B/
+
+// Test: Failing parser with a test error message
+T0
+: (E/Equal
+    (R/Result (PS/Reply S/String) PS/Error)
+    ((PS/fail S/String "Test error") (PS/State/new "abcdef" #0))
+    (#Fail{#MkError{#0 "Test error"}})
+  )
+= #Refl
+
+// Test: Failing parser with an empty input string
+T1
+: (E/Equal
+    (R/Result (PS/Reply N/Nat) PS/Error)
+    ((PS/fail N/Nat "Empty input") (PS/State/new "" #0))
+    (#Fail{#MkError{#0 "Empty input"}})
+  )
+= #Refl
+
+// Test: Failing parser with a non-zero index
+T2
+: (E/Equal
+    (R/Result (PS/Reply B/Bool) PS/Error)
+    ((PS/fail B/Bool "Error at index 5") (PS/State/new "hello world" #5))
+    (#Fail{#MkError{#5 "Error at index 5"}})
+  )
+= #Refl

@@ -1,0 +1,29 @@
+use Bits/ as BS/
+use Nat/ as N/
+use Pair/ as P/
+use Equal/ as E/
+
+// Test: Split at zero
+T0 
+: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
+= #Refl
+
+// Test: Split at one for non-empty Bits
+T1 
+: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
+= #Refl
+
+// Test: Split at length greater than Bits length
+T2 
+: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+= #Refl
+
+// Test: Split empty Bits
+T3 
+: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #1 #E) (#Pair{#E #E}))
+= #Refl
+
+// Test: Split at exact length of Bits
+T4 
+: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+= #Refl

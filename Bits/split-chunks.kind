@@ -1,0 +1,33 @@
+use Bits/ as BS/
+use Nat/ as N/
+use List/ as L/
+use Pair/ as P/
+
+// Splits a Bits value into chunks of a specified length.
+// - 1st: The length of each chunk.
+// - 2nd: The Bits value to be split.
+// = A List of Bits, where each element is a chunk of the specified length.
+BS/split-chunks
+: ∀(d: N/Nat)
+  ∀(bits: BS/Bits)
+  (L/List BS/Bits)
+= λ{
+  #Zero: λbits []
+  #Succ: λpred λ{
+    #E: []
+    #O: λtail
+      let #Pair{collected rest} = (BS/split-at #Succ{pred} #O{tail})
+      match rest {
+          #E: #Cons{collected []}
+          #O: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #O{rest.tail})}
+          #I: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #I{rest.tail})}
+      }
+    #I: λtail
+      let #Pair{collected rest} = (BS/split-at #Succ{pred} #I{tail})
+      match rest {
+          #E: #Cons{collected []}
+          #O: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #O{rest.tail})}
+          #I: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #I{rest.tail})}
+      }
+  }
+}

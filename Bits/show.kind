@@ -1,0 +1,14 @@
+use Bits/ as BS/
+use String/ as S/
+
+// Converts a Bits value to its string representation.
+// - bits: The Bits value to convert.
+// = A string representation of the Bits value.
+BS/show
+: ∀(bits: BS/Bits)
+  S/String
+= λ{
+  #E: "e"
+  #O: λbits.tail (S/append "0" (BS/show bits.tail))
+  #I: λbits.tail (S/append "1" (BS/show bits.tail))
+}

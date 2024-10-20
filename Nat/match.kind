@@ -1,0 +1,19 @@
+use Nat/ as N/
+
+// Applies a function to a natural number based on its structure.
+// This function allows pattern matching on natural numbers.
+// 1st: A type-level function that determines the return type for each case.
+// 2nd: The value to return in the zero case.
+// 3rd: The function to apply in the successor case.
+// 4th: The natural number to match on.
+// = The result of matching on the input natural number.
+N/match
+: ∀(P: ∀(x: N/Nat) *)
+  ∀(z: (P #Zero{}))
+  ∀(s: ∀(x: N/Nat) (P #Succ{x}))
+  ∀(n: N/Nat)
+  (P n)
+= λP λz λs λ{
+  #Zero: z
+  #Succ: λn.pred (s n.pred)
+}

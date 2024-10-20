@@ -1,0 +1,9 @@
+use BinMap/ as BM/
+
+// Creates an empty BinMap.
+// - A: The type of values that would be stored in the map.
+// = An empty BinMap.
+BM/empty
+: ∀(A: *)
+  (BM/BinMap A)
+= λA (BM/Leaf A)

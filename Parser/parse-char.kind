@@ -1,0 +1,67 @@
+use Parser/ as PS/
+use Char/ as C/
+use Maybe/ as M/
+use String/ as S/
+use Bool/ as B/
+use Nat/ as N/
+use U32/ as U32/
+
+// Parses a unicode escape sequence.
+// = The character corresponding to the parsed Unicode code point.
+PS/parse-unicode-escape : (PS/Parser C/Char)
+= do PS/Monad {
+  ask y = (PS/consume "{")
+  ask digits = (PS/take-while C/is-hex-digit)
+  ask x = (PS/consume "}")
+  (match (S/to-nat-base (U32/to-nat 16) digits) {
+    #None: (PS/fail _ "Invalid hexadecimal number in Unicode escape")
+    #Some: λn (PS/Monad/pure _ (C/from-nat n))
+  })
+}
+
+// Parses an escape sequence.
+// = The parsed escaped character.
+PS/parse-escape-sequence : (PS/Parser C/Char)
+= do PS/Monad {
+  ask mc = (PS/advance-one)
+  (match mc {
+    #None: (PS/fail _ "Unexpected end of input in escape sequence")
+    #Some{c}: match (C/eq c 'n') {
+      #True: (PS/Monad/pure _ '\n')
+      #False: match (C/eq c 'r') {
+        #True: (PS/Monad/pure _ '\r')
+        #False: match (C/eq c 't') {
+          #True: (PS/Monad/pure _ '\t')
+          #False: match (C/eq c '\\') {
+            #True: (PS/Monad/pure _ '\\')
+            #False: match (C/eq c '\'') {
+              #True: (PS/Monad/pure _ '\'')
+              #False: match (C/eq c '"') {
+                #True: (PS/Monad/pure _ '"')
+                #False: match (C/eq c '"') {
+                  #True: PS/parse-unicode-escape
+                  #False: (PS/fail _ (S/append ("Invalid escape character: ") (S/from-char c)))
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+}
+
+// Parses a single character, including escape sequences.
+// = The parsed character.
+PS/parse-char : (PS/Parser C/Char)
+= do PS/Monad {
+  ask mc = (PS/advance-one)
+  (match mc {
+    #None: (PS/fail _ "Unexpected end of input")
+    #Some{c}: match (C/eq c '\\') {
+      #True: PS/parse-escape-sequence
+      #False: (PS/Monad/pure _ c)
+    }
+    
+  })
+}

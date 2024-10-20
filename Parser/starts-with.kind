@@ -1,0 +1,21 @@
+use Parser/ as PS/
+use String/ as S/
+use Bool/ as B/
+use Result/ as R/
+
+// Checks if the input starts with a given string.
+// - prefix: The prefix string to check for.
+// = A Parser that returns True if the input starts with the given string, False otherwise.
+//   Does not consume any input.
+PS/starts-with
+: ∀(prefix: S/String)
+  (PS/Parser B/Bool)
+= λprefix λs
+  let input = (PS/State/input s)
+  let result = (S/starts-with input prefix)
+  #Done{
+    #MkReply{
+      state: s
+      value: result
+    }
+  }

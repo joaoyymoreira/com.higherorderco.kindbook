@@ -1,0 +1,30 @@
+use BinMap/ as BM/
+use BinTree/ as BT/
+use Bits/ as BS/
+use Maybe/ as M/
+
+// Inserts a key-value pair into the BinMap.
+// - A: The type of values stored in the map.
+// - m: The BinMap to insert into.
+// - k: The Bits key to insert.
+// - v: The value to associate with the key.
+// = A new BinMap with the key-value pair inserted.
+BM/set
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  ∀(k: BS/Bits)
+  ∀(v: A)
+  (BM/BinMap A)
+= λA λ{
+  #Leaf: λ{
+		#E: λv #Node{#Some{v} #Leaf{} #Leaf{}}
+		#O: λb λv #Node{#None{} (BM/set A #Leaf{} b v) #Leaf{}}
+		#I: λb λv #Node{#None{} #Leaf{} (BM/set A #Leaf{} b v)}
+	}
+  #Node: λval λlft λrgt λ{
+		#E: λv #Node{#Some{v} lft rgt}
+		#O: λb λv #Node{val (BM/set A lft b v) rgt}
+		#I: λb λv #Node{val lft (BM/set A rgt b v)}
+	}
+}
+

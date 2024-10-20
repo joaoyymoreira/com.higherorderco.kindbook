@@ -1,0 +1,13 @@
+use Bool/ as B/
+
+// Negates a Boolean value.
+// - 1st: The input Boolean value.
+// = The negation of the input.
+B/not
+: ∀(b: B/Bool)
+  B/Bool
+= λ{
+  #True: #False{}
+  #False: #True{}
+}
+

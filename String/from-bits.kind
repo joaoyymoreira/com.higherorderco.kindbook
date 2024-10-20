@@ -1,0 +1,16 @@
+use String/ as S/
+use Bits/ as BS/
+use List/ as L/
+use Nat/ as N/
+
+// Converts a Bits value to a String by grouping bits into chunks of 21,
+// - 1st: The input Bits value to convert.
+// = A String representation of the input Bits.
+S/from-bits
+: ∀(bits: BS/Bits)
+  S/String
+= λbits
+  let chunks = (BS/split-chunks #21 bits)
+  let chars = (L/map BS/Bits U32 BS/to-char chunks)
+  chars
+  

@@ -1,0 +1,43 @@
+use BinMap/ as BM/
+use BinTree/ as BT/
+use Maybe/ as M/
+
+// Helper function for inverting and splitting a BinMap
+BM/invert-split-go
+: ∀(A: *)
+  ∀(x: (M/Maybe A))
+  ∀(a: (BM/BinMap A))
+  ∀(b: (BM/BinMap A))
+  (BM/BinMap A)
+= λA λx λ{
+    #Leaf: λ{
+			#Leaf: #Node{x #Leaf{} #Leaf{}}
+			#Node: λbval λblft λbrgt (BM/invert-split-go A x (#Node{#None{} #Leaf{} #Leaf{}}) (#Node{bval blft brgt}))
+		}
+    #Node: λaval λalft λargt λ{
+			#Leaf: (BM/invert-split-go A x (#Node{aval alft argt}) (#Node{#None{} #Leaf{} #Leaf{}}))
+			#Node: λbval λblft λbrgt #Node{x #Node{aval alft blft} #Node{bval argt brgt}}
+		}
+  }
+
+// Inverts and splits a BinMap
+BM/invert-split
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  (BM/BinMap A)
+= λA λ{
+    #Leaf: #Leaf{}
+    #Node: λval λlft λrgt (BM/invert-split-go A val (BM/invert-split A lft) (BM/invert-split A rgt))
+  }
+
+// Inverts a BinMap
+// Note: This function is not guaranteed to terminate for all inputs
+BM/invert
+: ∀(A: *)
+  ∀(m: (BM/BinMap A))
+  (BM/BinMap A)
+= λA λm
+	let inv = (BM/invert-split A m)
+	use leaf = #Leaf{}
+	use node = λval λlft λrgt λl λr (#Node{val (BM/invert A l) (BM/invert A r)})
+	(BT/match (M/Maybe A) (λx (BM/BinMap A)) leaf node inv)

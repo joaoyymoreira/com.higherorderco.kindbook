@@ -1,0 +1,11 @@
+use Equal/ as E/
+
+// Propositional Equality.
+// - A: The element type.
+// - x: The 1st element.
+// - y: The 2nd element.
+// = A proposition that x equals y.
+E/Equal : ∀(A: *) A -> A -> *
+= λA λx λy data[y]{
+  #Refl{} : (E/Equal A x x)
+}

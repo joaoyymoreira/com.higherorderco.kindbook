@@ -1,0 +1,13 @@
+use Parser/ as PS/
+use Nat/ as N/
+use Result/ as R/
+
+// Returns the current index of the parser state.
+// = A Reply containing the current state and the current index.
+PS/get-index : (PS/Parser N/Nat)
+= λstate
+  let index = (PS/State/index state)
+  #Done{#MkReply{
+    state: state
+    value: index
+  }}

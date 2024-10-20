@@ -1,0 +1,39 @@
+use Nat/ as N/
+use Equal/ as E/
+
+
+// Test: min 0 0 = 0.
+T0 : (E/Equal N/Nat (N/min #Zero{} #Zero{}) #Zero{})
+= #Refl{}
+
+// Test: min 0 5 = 0.
+T1 : (E/Equal N/Nat (N/min #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
+= #Refl{}
+
+// Test: min 5 0 = 0.
+T2 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Zero{})
+= #Refl{}
+
+// Test: min 3 2 = 2.
+T3 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}})
+= #Refl{}
+
+// Test: min 7 8 = 7.
+T4 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
+= #Refl{}
+
+// Test: min 8 7 = 7.
+T5 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
+= #Refl{}
+
+// Test: Commutativity: min a b = min b a.
+T6 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (N/min #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
+= #Refl{}
+
+// Test: Idempotence: min a a = a.
+T7 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+= #Refl{}
+
+// Test: min with equal values.
+T8 : (E/Equal N/Nat (N/min #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
+= #Refl{}

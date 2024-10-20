@@ -1,0 +1,11 @@
+use Nat/ as N/
+
+// Performs right shift operation on a natural number. This function divides
+// 1st: The input natural number.
+// 2nd: The number of positions to shift right.
+// = The right-shifted result as a new natural number.
+N/rshift
+: ∀(n: N/Nat)
+  ∀(shift: N/Nat)
+  N/Nat
+= λn λshift (N/div n (N/exp #Succ{#Succ{#Zero{}}} shift))

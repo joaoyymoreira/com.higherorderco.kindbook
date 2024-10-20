@@ -1,0 +1,12 @@
+use String/ as S/
+use List/ as L/
+use Nat/ as N/
+use Pair/ as P/
+
+// Computes the length of a string while preserving the original string.
+// - 1st: The input string.
+// = A pair containing the original string and its length as a Nat.
+S/length-got
+: ∀(str: S/String)
+  (P/Pair S/String N/Nat)
+= λstr (L/length-got U32 str)

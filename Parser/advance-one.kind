@@ -1,0 +1,26 @@
+use Parser/ as PS/
+use Maybe/ as M/
+use Char/ as C/
+use String/ as S/
+use Nat/ as N/
+use Result/ as R/
+use Pair/ as Pair/
+
+// Advances the parser by one character, consuming it.
+// - state: The current parser state.
+// = A Reply containing the updated state and the consumed character (if any).
+PS/advance-one : (PS/Parser (M/Maybe C/Char))
+= λstate
+  let input = (PS/State/input state)
+  let index = (PS/State/index state)
+  match (S/uncons input) {
+    #None: 
+      let reply = (PS/Reply/new _ state #None)
+      #Done{reply}
+    #Some{pair}:
+      let head = (Pair/get-fst _ _ pair)
+      let tail = (Pair/get-snd _ _ pair)
+      let new_state = (PS/State/new tail (#Succ{index}))
+      let reply = (PS/Reply/new _ new_state (#Some{head}))
+      #Done{reply}
+  }

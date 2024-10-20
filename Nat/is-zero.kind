@@ -1,0 +1,14 @@
+use Nat/ as N/
+use Bool/ as B/
+
+// Checks if a natural number is zero.
+// This function determines whether the given natural number is zero or not.
+// 1st: The natural number to check.
+// = True if the input is zero, False otherwise.
+N/is-zero
+: ∀(n: N/Nat)
+  B/Bool
+= λ{
+  #Zero: #True{}
+  #Succ: λn.pred #False{}
+}

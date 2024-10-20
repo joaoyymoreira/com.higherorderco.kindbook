@@ -1,0 +1,15 @@
+use String/ as S/
+use Maybe/ as M/
+use Pair/ as P/
+
+// Deconstructs a string into its first character and the rest.
+// - str: The input string.
+// = Some (first character, rest of the string) if the string is non-empty,
+//   None if the string is empty.
+S/uncons
+: ∀(str: S/String)
+  (M/Maybe (P/Sigma U32 (λx S/String)))
+= λ{
+    #Nil: #None{}
+    #Cons: λhead λtail #Some{#Pair{head tail}}
+  }

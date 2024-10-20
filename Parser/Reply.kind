@@ -1,0 +1,38 @@
+use Parser/ as PS/
+
+// Represents the reply of a parser.
+// - A: The type of the parsed value.
+// = A record containing the current parser state and the parsed value.
+PS/Reply : ∀(A: *) *
+= λA data[]{
+  #MkReply{
+    state: PS/State
+    value: A
+  } : (PS/Reply A)
+}
+
+// Accessor for the state field of Reply
+PS/Reply/state
+: ∀(A: *)
+  ∀(reply: (PS/Reply A))
+  PS/State
+= λA λ{
+  #MkReply: λreply.state λreply.value reply.state
+}
+
+// Accessor for the value field of Reply
+PS/Reply/value
+: ∀(A: *)
+  ∀(reply: (PS/Reply A))
+  A
+= λA λ{
+  #MkReply: λreply.state λreply.value reply.value
+}
+
+// Helper function to create a new Reply
+PS/Reply/new
+: ∀(A: *)
+  ∀(state: PS/State)
+  ∀(value: A)
+  (PS/Reply A)
+= λA λstate λvalue #MkReply{state value}
