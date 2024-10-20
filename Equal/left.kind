@@ -1,18 +1,10 @@
 // Left equality property.
-// 1st: The type of the values being compared.
-// 2nd: The common value.
-// 3rd: The 1st value to compare.
-// 4th: The 2nd value to compare.
-// 5th: Proof that 3rd is equal to 2nd.
-// 6th: Proof that 4th is equal to 2nd.
-// = Proof that 3rd is equal to 4th.
-Equal/left
-: ∀(A: *)
-  ∀(x: A)
-  ∀(a: A)
-  ∀(b: A)
-  ∀(e1: (Equal A a x))
-  ∀(e2: (Equal A b x))
-  (Equal A a b)
-= λA λx λa λb λe1 λe2
-  (Equal/trans A a x b e1 (Equal/sym A b x e2))
+// - A: The type of the values being compared.
+// - x: The common value.
+// - a: The 1st value to compare.
+// - b: The 2nd value to compare.
+// - e1: Proof that a is equal to x.
+// - e2: Proof that b is equal to x.
+// = Proof that a is equal to b.
+Equal/left : ∀(A: *) ∀(x: A) ∀(a: A) ∀(b: A) (Equal A a x) -> (Equal A b x) -> (Equal A a b)
+| A x a b e1 e2 = (Equal/trans A a x b e1 (Equal/sym A b x e2))

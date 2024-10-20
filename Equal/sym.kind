@@ -1,15 +1,11 @@
 // Symmetry property of equality.
-// 1st: The type of the elements being compared.
-// 2nd: The 1st value.
-// 3rd: The 2nd value.
-// 4th: Proof that 2nd is equal to 3rd.
-// = Proof that 3rd is equal to 2nd.
-Equal/sym
-: ∀(A: *)
-  ∀(x: A)
-  ∀(y: A)
-  ∀(e: (Equal A x y))
-  (Equal A y x)
-= λA λx λy λ{
-  #Refl: #Refl
-}
+// - A: The type of the elements being compared.
+// - x: The 1st value.
+// - y: The 2nd value.
+// - e: Proof that x is equal to y.
+// = Proof that y is equal to x.
+Equal/sym : ∀(A: *) ∀(x: A) ∀(y: A) (Equal A x y) -> (Equal A y x)
+| A x y #Refl = #Refl
+
+#test: (Equal/sym Bool #True #True #Refl) == #Refl
+#test: (Equal/sym U32 3 3 #Refl) == #Refl
