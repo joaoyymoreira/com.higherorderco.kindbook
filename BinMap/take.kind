@@ -38,3 +38,53 @@ BM/take
 				(BM/take A rgt b))
 	}
 }
+
+//TEST//
+
+use BinMap/ as BM/
+use Bits/ as BS/
+use Maybe/ as M/
+use Pair/ as P/
+use Equal/ as E/
+use Nat/ as N/
+use U32/ as U32/
+
+// Test: Taking from an empty BinMap
+T0
+: (E/Equal
+    (M/Maybe (P/Pair (BM/BinMap N/Nat) N/Nat))
+    (BM/take N/Nat (BM/empty N/Nat) #E{})
+    #None{})
+= #Refl{}
+
+// Test: Taking an existing key-value pair
+T1
+: (E/Equal
+    (M/Maybe (P/Pair (BM/BinMap N/Nat) N/Nat))
+    (BM/take N/Nat (BM/set N/Nat (BM/empty N/Nat) #E{} (U32/to-nat 42)) #E{})
+    (#Some{ (#Pair{(#Node{#None{} (BM/Leaf N/Nat) (BM/Leaf N/Nat)}) (U32/to-nat 42)})}))
+= #Refl{}
+
+// Test: Taking a non-existent key
+T2
+: (E/Equal
+    (M/Maybe (P/Pair (BM/BinMap N/Nat) N/Nat))
+    (BM/take N/Nat (BM/set N/Nat (BM/empty N/Nat) #E{} (U32/to-nat 42)) (#O{#E{}}))
+    #None{})
+= #Refl{}
+
+// Test: Taking from a BinMap with multiple values
+T3
+: (E/Equal
+    (M/Maybe (P/Pair (BM/BinMap N/Nat) N/Nat))
+    (BM/take N/Nat (BM/set N/Nat (BM/set N/Nat (BM/empty N/Nat) #E{} (U32/to-nat 42)) (#I{#E{}}) (U32/to-nat 24)) (#I{#E{}}))
+    (#Some{ (#Pair{(#Node{(#Some{(U32/to-nat 42)}) (BM/Leaf N/Nat) (#Node{#None{} (BM/Leaf N/Nat) (BM/Leaf N/Nat)})}) (U32/to-nat 24)})}))
+= #Refl{}
+
+// Test: Taking a value and then taking it again
+T4
+: (E/Equal
+    (M/Maybe (P/Pair (BM/BinMap N/Nat) N/Nat))
+    (BM/take N/Nat (#Node{#None{} (BM/Leaf N/Nat) (BM/Leaf N/Nat)}) #E{})
+    #None{})
+= #Refl{}

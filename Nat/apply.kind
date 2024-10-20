@@ -17,3 +17,37 @@ N/apply
   #Zero: λf λx x
   #Succ: λn.pred λf λx (f (N/apply A n.pred f x))
 }
+
+//TEST//
+
+use Nat/ as N/
+use Function/ as F/
+use Equal/ as E/
+
+// Test: Applying id 0 times to 5 should return 5
+T0
+: (E/Equal
+    N/Nat
+    (N/apply _ #Zero{} (F/id N/Nat) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+= #Refl{}
+
+// Test: Applying Succ 3 times to 0 should return 3
+T1
+: (E/Equal
+    N/Nat
+    (N/apply _ #Succ{#Succ{#Succ{#Zero{}}}} (λx #Succ{x}) #Zero{})
+    #Succ{#Succ{#Succ{#Zero{}}}})
+= #Refl{}
+
+// Test: Applying (_+ 1) 2 times to 3 should return 5
+T2
+: (E/Equal
+    N/Nat
+    (N/apply
+      _
+      #Succ{#Succ{#Zero{}}}
+      (λx (N/add x #Succ{#Zero{}}))
+      #Succ{#Succ{#Succ{#Zero{}}}})
+    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+= #Refl{}

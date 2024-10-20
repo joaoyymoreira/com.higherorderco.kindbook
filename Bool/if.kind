@@ -1,4 +1,4 @@
-use Bool/ as B/
+use Base/Bool/ as B/
 
 // Conditional expression.
 // - 1st: The type of the result.
@@ -9,3 +9,22 @@ use Bool/ as B/
 B/if : ∀(A: *) B/Bool -> A -> A -> A
 | A #True  t f = t
 | A #False t f = f
+
+//TEST//
+
+use Bool/ as B/
+use Equal/ as E/
+use Nat/ as N/
+
+T0 
+: (E/Equal B/Bool (B/if B/Bool #True{} #True{} #False{} ) (#True{}))
+= #Refl{}
+
+T1 
+: (E/Equal B/Bool (B/if B/Bool #False{} #True{} #False{} ) (#False{}))
+= #Refl{}
+
+T2
+: (E/Equal N/Nat (B/if N/Nat #False{} #Succ{#Zero{}} #Zero{} ) (#Zero{}))
+= #Refl{}
+

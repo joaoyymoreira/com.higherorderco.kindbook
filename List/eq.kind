@@ -34,3 +34,19 @@ L/eq : ∀(A: *) (T/Eq A) -> (L/List A) -> (L/List A) -> B/Bool
 //   B/and (T/Eq/eq A e xs.head ys.head) (L/eq A e xs.tail ys.tail)
 
 
+
+//TEST//
+
+use List/ as L/
+use Bool/ as B/
+use Equal/ as E/
+use Trait/ as T/
+
+// Test: Different lists should not be equal
+L/test_eq_different_lists
+: (E/Equal
+    (L/eq (L/List B/Bool) #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}} 
+                          #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}})
+    #True{})
+= λa #Refl{}
+

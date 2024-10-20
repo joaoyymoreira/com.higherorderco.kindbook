@@ -15,3 +15,24 @@ S/to-bits
   use char-to-bits = λx (BS/pad-zeros #21 (U32/to-bits x))
   let bits-list = (L/map U32 BS/Bits char-to-bits s)
   (BS/concat bits-list)
+
+//TEST//
+
+use String/ as S/
+use Bits/ as BS/
+use Equal/ as E/
+
+// Test: Empty string conversion
+T0 
+: (E/Equal BS/Bits (S/to-bits "") #E{})
+= #Refl
+
+// Test: Single character string conversion
+T1 
+: (E/Equal BS/Bits (S/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
+= #Refl
+
+// Test: Two character string conversion
+T2 
+: (E/Equal BS/Bits (S/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+= #Refl

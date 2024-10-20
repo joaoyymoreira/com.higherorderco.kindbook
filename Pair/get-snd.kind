@@ -13,3 +13,34 @@ P/get-snd
 = λA λB λ{
   #Pair: λpair.fst λpair.snd pair.snd
 }
+
+//TEST//
+
+use Pair/ as P/
+use Equal/ as E/
+use Nat/ as N/
+use String/ as S/
+
+// Test: Get second component of a Nat-String pair
+T0
+: (E/Equal
+    S/String
+    (P/get-snd N/Nat (λx S/String) #Pair{#1 "one"})
+    "one")
+= #Refl
+
+// Test: Get second component of a Nat-Nat pair
+T1
+: (E/Equal
+    N/Nat
+    (P/get-snd N/Nat (λx N/Nat) #Pair{#2 #1})
+    #1)
+= #Refl
+
+// Test: Get second component of a String-Nat pair
+T2
+: (E/Equal
+    N/Nat
+    (P/get-snd S/String (λx N/Nat) #Pair{"hello" #3})
+    #3)
+= #Refl

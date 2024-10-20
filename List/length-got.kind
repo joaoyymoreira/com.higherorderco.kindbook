@@ -16,3 +16,33 @@ L/length-got
     let #Pair{rest n} = (L/length-got A tail)
 		#Pair{(#Cons{head rest}) (#Succ{n})}
 }
+//TEST//
+
+use List/ as L/
+use Pair/ as P/
+use Nat/ as N/
+use Equal/ as E/
+
+// Test: Empty list
+T0
+: (E/Equal
+    (P/Pair (L/List N/Nat) N/Nat)
+    (L/length-got N/Nat [])
+    #Pair{[] #0})
+= #Refl
+
+// Test: Single element list
+T1
+: (E/Equal
+    (P/Pair (L/List N/Nat) N/Nat)
+    (L/length-got N/Nat (#Cons{#0 []}))
+    #Pair{(#Cons{#0 []}) #1})
+= #Refl
+
+// Test: Multiple element list
+T2
+: (E/Equal
+    (P/Pair (L/List N/Nat) N/Nat)
+    (L/length-got N/Nat (#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}))
+    #Pair{(#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}) #3})
+= #Refl

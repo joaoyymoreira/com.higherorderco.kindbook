@@ -7,3 +7,26 @@ use Pair/ as P/
 // = The first component of the pair.
 P/get-fst : ∀(A: *) ∀(B: ∀(a: A) *) ∀(pair: (P/Sigma A B)) A
 | A B #Pair{fst snd} = fst
+
+//TEST//
+
+use Pair/ as P/
+use Nat/ as N/
+use String/ as S/
+use Function/ as F/
+use Equal/ as E/
+
+// Test: Get first component of a simple pair
+T0
+: (E/Equal N/Nat (P/get-fst N/Nat (λx N/Nat) (#Pair{#5 #10})) #5)
+= #Refl
+
+// Test: Get first component of a dependent pair
+T1
+: (E/Equal (P/Pair N/Nat N/Nat) (P/get-fst (P/Sigma N/Nat (λx N/Nat)) (λx S/String) (#Pair{#Pair{#3 #4} "pair"})) #Pair{#3 #4})
+= #Refl
+
+// Test: Get first component of a pair with different types
+T2
+: (E/Equal S/String (P/get-fst S/String (λx N/Nat) (#Pair{"hello" #42})) "hello")
+= #Refl

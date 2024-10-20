@@ -13,3 +13,36 @@ BT/is-node
   #Leaf: #False{}
   #Node: λt.val λt.lft λt.rgt #True{}
 }
+
+//TEST//
+
+use BinTree/ as BT/
+use Bool/ as B/
+use Nat/ as N/
+use Equal/ as E/
+
+// Test: is-node on a leaf
+T0
+: (E/Equal B/Bool (BT/is-node N/Nat #Leaf{}) #False{})
+= #Refl{}
+
+// Test: is-node on a simple node
+T1
+: (E/Equal
+    B/Bool
+    (BT/is-node N/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
+    #True{})
+= #Refl{}
+
+// Test: is-node on a more complex tree
+T2
+: (E/Equal
+    B/Bool
+    (BT/is-node N/Nat
+      (#Node{
+        #Succ{#Zero{}}
+        (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
+        (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
+      }))
+    #True{})
+= #Refl{}

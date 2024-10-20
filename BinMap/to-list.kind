@@ -35,3 +35,49 @@ BM/to-list
   ∀(m: (BM/BinMap A))
   (L/List (P/Pair BS/Bits A))
 = λA λm (BM/to-list-go A #Cons{#Pair{#E{} (BM/invert A m)} #Nil{}})
+//TEST//
+
+use BinMap/ as BM/
+use List/ as L/
+use Pair/ as P/
+use Bits/ as BS/
+use Equal/ as E/
+use Bool/ as B/
+use Maybe/ as M/
+
+// Test: Empty map should result in an empty list
+T0
+: (E/Equal
+    (L/List (P/Pair BS/Bits B/Bool))
+    (BM/to-list B/Bool #Leaf{})
+    (#Nil{}))
+= #Refl{}
+
+// Test: BinMap with a single element
+T1
+: (E/Equal
+    (L/List (P/Pair BS/Bits B/Bool))
+    (BM/to-list B/Bool (BM/set B/Bool #Leaf{} #E{} #True{}))
+    (#Cons{(#Pair{#E{} #True{}}) (#Nil{})}))
+= #Refl{}
+
+// Test: Overwrite element
+T2
+: (E/Equal
+    (L/List (P/Pair BS/Bits B/Bool))
+    (BM/to-list B/Bool (BM/set B/Bool (BM/set B/Bool #Leaf{} #E{} #True{}) #E{} #False{}))
+    (#Cons{(#Pair{#E{} #False{}}) (#Nil{})}))
+= #Refl{}
+
+// // Test: Skip None values 
+// // BUG: Constructor Cons not found in pattern match.
+// T3
+// : (E/Equal
+//     (L/List (P/Pair BS/Bits B/Bool))
+//     (BM/to-list B/Bool 
+//       (#Node{
+// 				#None{}
+//         (#Node{#Some{#True{}} #Leaf{} #Leaf{}})
+//         (#Node{#Some{#False{}} #Leaf{} #Leaf{}})}))
+//     (#Cons{(#Pair{(#O{#E{}}) #True{}}) (#Cons{(#Pair{(#I{#E{}}) #False{}}) #Nil{}})}))
+// = #Refl{}

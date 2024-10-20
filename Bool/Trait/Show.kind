@@ -7,3 +7,17 @@ B/Trait/Show/Bool : (T/Show B/Bool) =
     to_string: B/show
   }
 
+
+//TEST//
+
+use Bool/ as B/
+use Equal/ as E/
+
+B/T0
+: (E/Equal B/Bool (B/show #True{}) (#True{}))
+= #Refl{}
+
+B/T1
+: (E/Equal B/Bool (B/show #False{}) #False{})
+= #Refl{}
+

@@ -9,3 +9,29 @@ N/eq : N/Nat -> N/Nat -> B/Bool
 | #Zero     #Zero    = #True
 | #Succ{m}  #Succ{n} = (N/eq m n)
 | x         y        = #False
+
+//TEST//
+
+use Nat/ as N/
+use Bool/ as B/
+use Equal/ as E/
+
+// Test: equality of the same number
+T0
+: (E/Equal B/Bool (N/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{ #Zero{}}})) #True{})
+= #Refl{}
+
+// Test: equality of different numbers
+T1
+: (E/Equal B/Bool (N/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{#Succ{ #Zero{}}}})) #False{})
+= #Refl{}
+
+// Test: equality of zero
+T2
+: (E/Equal B/Bool (N/eq #Zero{} #Zero{}) #True{})
+= #Refl{}
+
+// Test: inequality of the same number
+T3
+: (E/Equal B/Bool (N/neq (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}})) #False{})
+= #Refl{}

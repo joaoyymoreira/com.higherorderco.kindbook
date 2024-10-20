@@ -11,3 +11,43 @@ N/max
   N/Nat
 = λm λn
   (B/if N/Nat (N/gte m n) m n)
+//TEST//
+
+use Nat/ as N/
+use Equal/ as E/
+
+// Test: max 0 0 = 0
+T0 : (E/Equal N/Nat (N/max #Zero{} #Zero{}) #Zero{})
+= #Refl{}
+
+// Test: max 0 5 = 5
+T1 : (E/Equal N/Nat (N/max #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+= #Refl{}
+
+// Test: max 5 0 = 5
+T2 : (E/Equal N/Nat (N/max #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+= #Refl{}
+
+// Test: max 3 2 = 3
+T3 : (E/Equal N/Nat (N/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})
+= #Refl{}
+
+// Test: max 2 3 = 3
+T4 : (E/Equal N/Nat (N/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}})
+= #Refl{}
+
+// Test: max 7 7 = 7
+T5 : (E/Equal N/Nat (N/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
+= #Refl{}
+
+// Test: Commutativity: max a b = max b a
+T6 : (E/Equal N/Nat (N/max #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) (N/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+= #Refl{}
+
+// Test: Idempotence: max a a = a
+T7 : (E/Equal N/Nat (N/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
+= #Refl{}
+
+// Test: Associativity: max a (max b c) = max (max a b) c
+T8 : (E/Equal N/Nat (N/max #Succ{#Succ{#Zero{}}} (N/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) (N/max (N/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+= #Refl{}

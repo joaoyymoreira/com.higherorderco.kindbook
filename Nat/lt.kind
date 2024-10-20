@@ -19,3 +19,45 @@ N/lt
     #Succ: λn.pred (N/lt m.pred n.pred)
   }
 }
+//TEST//
+
+use Nat/ as N/
+use Bool/ as B/
+use Equal/ as E/
+
+// Tests the less than operation for natural numbers.
+
+// Teste: 0 < 0 = False.
+T0 : (E/Equal B/Bool (N/lt #Zero{} #Zero{}) #False{})
+  = #Refl{}
+
+// Teste: 0 < 1 = True.
+T1 : (E/Equal B/Bool (N/lt #Zero{} #Succ{#Zero{}}) #True{})
+  = #Refl{}
+
+// Teste: 1 < 0 = False.
+T2 : (E/Equal B/Bool (N/lt #Succ{#Zero{}} #Zero{}) #False{})
+  = #Refl{}
+
+// Teste: 2 < 5 = True.
+T3 : (E/Equal B/Bool (N/lt #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{})
+  = #Refl{}
+
+// Teste: 5 < 2 = False.
+T4 : (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #False{})
+  = #Refl{}
+
+// Teste: 7 < 7 = False.
+T5 : (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #False{})
+  = #Refl{}
+
+// Teste: Transitividade: se a < b e b < c, então a < c.
+T6
+: ∀(a_lt_b: (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{}))
+  ∀(b_lt_c: (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #True{}))
+  (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #True{})
+= λa_lt_b λb_lt_c #Refl{}
+
+// Teste: Irreflexividade: a < a = False.
+T7 : (E/Equal B/Bool (N/lt #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #False{})
+  = #Refl{}

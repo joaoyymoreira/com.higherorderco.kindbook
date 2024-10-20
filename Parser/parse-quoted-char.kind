@@ -13,3 +13,38 @@ PS/parse-quoted-char : (PS/Parser C/Char)
   ask x = (PS/consume "'")
  (PS/Monad/pure _ c)
 }
+
+//TEST//
+
+use Parser/ as PS/
+use Result/ as R/
+use String/ as S/
+use Char/ as C/
+use Nat/ as N/
+use Bool/ as B/
+use Maybe/ as M/
+use Equal/ as E/
+
+// Test: Parsing a normal quoted character
+T0 : (E/Equal
+  (R/Result (PS/Reply C/Char) PS/Error)
+  (PS/parse-quoted-char (PS/State/new "'a'" #Zero))
+  (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Zero}}}} 'a'}})
+)
+= #Refl
+
+// Test: Parsing an escaped newline character
+T1 : (E/Equal
+  (R/Result (PS/Reply C/Char) PS/Error)
+  (PS/parse-quoted-char (PS/State/new "'\\n'" #Zero))
+  (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Succ{#Zero}}}}} '\n'}})
+)
+= #Refl
+
+// Test: Parsing an invalid quoted character (missing closing quote)
+T2 : (E/Equal
+  (R/Result (PS/Reply C/Char) PS/Error)
+  (PS/parse-quoted-char (PS/State/new "ab" #Zero))
+  (#Fail{#MkError{#Succ{#Succ{#Zero}} "Expected '"}})
+)
+= #Refl
