@@ -1,11 +1,7 @@
-// Checks if a number in bits is zero or empty.
-// - n: The number of bits to use.
-// = True if the number is zero and false otherwise.
-Bits/is-zero
-: ∀(bits: Bits)
-  Bool
-= λ{
-  #E: #True
-  #O: λtail (Bool/and #True (Bits/is-zero tail))
-  #I: λtail #False
-}
+// Checks if a Bits value represents zero.
+// - bits: The Bits value to check.
+// = True if the Bits value represents zero, False otherwise.
+Bits/is-zero : Bits -> Bool
+| #E       = #True
+| #O{tail} = (Bits/is-zero tail)
+| #I{tail} = #False

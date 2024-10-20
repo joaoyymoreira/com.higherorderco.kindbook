@@ -6,14 +6,6 @@ Bool/or : Bool -> Bool -> Bool
 | #True  b = #True
 | #False b = b
 
-TEST_0
-: (Bool/or #True #True) == #True
-= #Refl
-
-TEST_1
-: (Bool/or #True #False) == #True
-= #Refl
-
-TEST_2
-: (Bool/or #False #False) == #False
-= #Refl
+#test: (Bool/or #True #True) == #True
+#test: (Bool/or #True #False) == #True
+#test: (Bool/or #False #False) == #False

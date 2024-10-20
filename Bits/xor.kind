@@ -3,8 +3,8 @@
 // - b: The 2nd Bits value.
 // = A new Bits value representing the bitwise XOR of a and b.
 Bits/xor : Bits -> Bits -> Bits
-| #O{a}  #O{b} = #O{(Bits/xor a b)}
-| #O{a}  #I{b} = #I{(Bits/xor a b)}
-| #I{a}  #O{b} = #I{(Bits/xor a b)}
-| #I{a}  #I{b} = #O{(Bits/xor a b)}
-| a      b     = b
+| #O{a} #O{b} = #O{(Bits/xor a b)}
+| #O{a} #I{b} = #I{(Bits/xor a b)}
+| #I{a} #O{b} = #I{(Bits/xor a b)}
+| #I{a} #I{b} = #O{(Bits/xor a b)}
+| a     b     = b

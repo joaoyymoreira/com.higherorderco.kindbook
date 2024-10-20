@@ -2,12 +2,7 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = A new Bits value representing the product of a and b.
-Bits/mul
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bits
-= λ{
-  #E: λb #E
-  #O: λa.tail λb #O{(Bits/mul a.tail b)}
-  #I: λa.tail λb (Bits/add b #O{(Bits/mul a.tail b)})
-}
+Bits/mul : Bits -> Bits -> Bits
+| #E         b = #E
+| #O{a.tail} b = #O{(Bits/mul a.tail b)}
+| #I{a.tail} b = (Bits/add b #O{(Bits/mul a.tail b)})

@@ -8,19 +8,8 @@ Bool/neq : Bool -> Bool -> Bool
 | #False #True  = #True
 | #False #False = #False
 
-TEST_0 
-: (Bool/neq #True #False) == #True
-= #Refl
-
-TEST_1 
-: (Bool/neq #False #True) == #True
-= #Refl
-
-TEST_2 
-: (Bool/neq #True #True) == #False
-= #Refl
-
-TEST_3 
-: (Bool/neq #False #False) == #False
-= #Refl
+#test: (Bool/neq #True #False) == #True
+#test: (Bool/neq #False #True) == #True
+#test: (Bool/neq #True #True) == #False
+#test: (Bool/neq #False #False) == #False
 

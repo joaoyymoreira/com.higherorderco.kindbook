@@ -2,8 +2,8 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = True if a and b are not equal, False otherwise.
-Bits/neq
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bool
-= λa λb (Bool/not (Bits/eq a b))
+Bits/neq : Bits -> Bits -> Bool
+| #E    #E    = #False
+| #O{x} #O{y} = (Bits/neq x y)
+| #I{x} #I{y} = (Bits/neq x y)
+| a     b     = #True

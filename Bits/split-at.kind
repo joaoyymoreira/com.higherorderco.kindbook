@@ -1,46 +1,16 @@
 // Splits a Bits value at a specified position.
-// - 1st: The position at which to split the Bits.
-// - 2nd: The Bits value to be split.
+// - m: The position at which to split the Bits.
+// - bits: The Bits value to be split.
 // = A Pair of Bits where the first element contains the bits before the split point,
 //   and the second element contains the bits after the split point.
-Bits/split-at
-: ∀(m: Nat)
-  ∀(bits: Bits)
-  (Pair/Pair Bits Bits)
-= λ{
-  #Zero: λbits  #Pair{#E bits}
-  #Succ: λpred λ{
-    #E: #Pair{(Bits/pad-zeros pred #E) #E}
-    #O: λtail
-      let #Pair{collected rest} = (Bits/split-at pred tail)
-      #Pair{#O{collected} rest}
-    #I: λtail
-      let #Pair{collected rest} = (Bits/split-at pred tail)
-      #Pair{#I{collected} rest}
-  }
-}
+Bits/split-at : Nat -> Bits -> (Pair/Pair Bits Bits)
+| #Zero       bits     = #Pair{#E bits}
+| #Succ{pred} #E       = #Pair{(Bits/pad-zeros pred #E) #E}
+| #Succ{pred} #O{tail} = let #Pair{k rest} = (Bits/split-at pred tail) #Pair{#O{k} rest}
+| #Succ{pred} #I{tail} = let #Pair{k rest} = (Bits/split-at pred tail) #Pair{#I{k} rest}
 
-// Test: Split at zero
-TEST_0 
-: (Equal (Pair/Pair Bits Bits) (Bits/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
-= #Refl
-
-// Test: Split at one for non-empty Bits
-TEST_1 
-: (Equal (Pair/Pair Bits Bits) (Bits/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
-= #Refl
-
-// Test: Split at length greater than Bits length
-TEST_2 
-: (Equal (Pair/Pair Bits Bits) (Bits/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
-= #Refl
-
-// Test: Split empty Bits
-TEST_3 
-: (Equal (Pair/Pair Bits Bits) (Bits/split-at #1 #E) (#Pair{#E #E}))
-= #Refl
-
-// Test: Split at exact length of Bits
-TEST_4 
-: (Equal (Pair/Pair Bits Bits) (Bits/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
-= #Refl
+#test: (Bits/split-at #0 (#O{#I{#E}})) == #Pair{#E (#O{#I{#E}})}
+#test: (Bits/split-at #1 (#O{#I{#E}})) == (#Pair{(#O{#E}) (#I{#E})})
+#test: (Bits/split-at #3 (#I{#O{#E}})) == (#Pair{(#I{#O{#E}}) #E})
+#test: (Bits/split-at #1 #E) == (#Pair{#E #E})
+#test: (Bits/split-at #2 (#I{#O{#E}})) == (#Pair{(#I{#O{#E}}) #E})

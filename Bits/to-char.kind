@@ -6,17 +6,7 @@ Bits/to-char
   Char
 = λbits (U32/from-bits bits)
 
-// Test: Convert 'A' (Unicode 65) to Char
-TEST_0
-: (Equal Char (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
-= #Refl
-
-// // Test: Convert null character (Unicode 0) to Char
-// T1
-// : (Equal Char (Bits/to-char #E) '\0')
-// = #Refl
-
-// // Test: Convert space character (Unicode 32) to Char
-// T2
-// : (Equal Char (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
-// = #Refl
+#test: (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) == 'A'
+#test: (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) == ' '
+#test: (Bits/to-char #E) == '\0'
+#test: (Bits/to-char #I{#E}) == '\u0001'

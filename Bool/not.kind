@@ -5,6 +5,4 @@ Bool/not : Bool -> Bool
 | #True  = #False
 | #False = #True
 
-TEST_0
-: (Equal Bool #True (Bool/not #False))
-= #Refl
+#test: (Equal Bool #True (Bool/not #False))

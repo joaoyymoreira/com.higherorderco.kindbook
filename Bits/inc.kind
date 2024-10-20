@@ -1,11 +1,7 @@
-// Increments a binary string by one. Keeps the same length.
+// Increments a binary string by one.
 // - bs: The input binary string.
 // = The incremented binary string.
-Bits/inc
-: ∀(bs: Bits)
-  Bits
-= λ{
-  #E: #E
-  #O: λbs.tail #I{bs.tail}
-  #I: λbs.tail #O{(Bits/inc bs.tail)}
-}
+Bits/inc : Bits -> Bits
+| #E       = #I{#E}
+| #O{tail} = #I{tail}
+| #I{tail} = #O{(Bits/inc tail)}

@@ -1,9 +1,7 @@
-// Returns the length of a Bits structure, that is, how many bits it has.
-Bits/length
-: ∀(bits: Bits)
-  Nat
-= λ{
-  #E: #Zero
-  #O: λbits.tail #Succ{(Bits/length bits.tail)}
-  #I: λbits.tail #Succ{(Bits/length bits.tail)}
-}
+// Calculates the length of a Bits structure.
+// - bits: The Bits value to measure.
+// = The number of bits in the Bits structure.
+Bits/length : Bits -> Nat
+| #E       = #Zero
+| #O{tail} = #Succ{(Bits/length tail)}
+| #I{tail} = #Succ{(Bits/length tail)}

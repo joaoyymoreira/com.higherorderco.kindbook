@@ -7,11 +7,5 @@ Bool/eq : Bool -> Bool -> Bool
 | #False #False = #True
 | a      b      = #False
 
-TEST_0 
-: (Bool/eq #True #True) == #True
-= #Refl
-
-TEST_1 
-: (Bool/eq #False #True) == #False
-= #Refl
-
+#test: (Bool/eq #True #True) == #True
+#test: (Bool/eq #False #True) == #False

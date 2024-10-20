@@ -2,24 +2,13 @@
 // - a: The first Bits value.
 // - b: The second Bits value.
 // = True if a > b, False otherwise.
-Bits/gt
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bool
-= λ{
-  #E: λ{
-    #E: #False
-    #O: λb.tail #False
-    #I: λb.tail #False
-  }
-  #O: λa.tail λ{
-    #E: #True
-    #O: λb.tail (Bits/gt a.tail b.tail)
-    #I: λb.tail #False
-  }
-  #I: λa.tail λ{
-    #E: #True
-    #O: λb.tail #True
-    #I: λb.tail (Bits/gt a.tail b.tail)
-  }
-}
+Bits/gt : Bits -> Bits -> Bool
+| #E     #E     = #False
+| #E     #O{bt} = #False
+| #E     #I{bt} = #False
+| #O{at} #E     = #True
+| #O{at} #O{bt} = (Bits/gt at bt)
+| #O{at} #I{bt} = #False
+| #I{at} #E     = #True
+| #I{at} #O{bt} = #True
+| #I{at} #I{bt} = (Bits/gt at bt)

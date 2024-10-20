@@ -2,12 +2,7 @@
 // - as: The 1st Bits value.
 // - bs: The 2nd Bits value.
 // = A new Bits value representing the concatenation of as and bs.
-Bits/append
-: ∀(as: Bits)
-  ∀(bs: Bits)
-  Bits
-= λ{
-  #E: λbs bs
-  #O: λas.tail λbs #O{(Bits/append as.tail bs)}
-  #I: λas.tail λbs #I{(Bits/append as.tail bs)}
-}
+Bits/append : Bits -> Bits -> Bits
+| #E       bs = bs
+| #O{tail} bs = #O{(Bits/append tail bs)}
+| #I{tail} bs = #I{(Bits/append tail bs)}

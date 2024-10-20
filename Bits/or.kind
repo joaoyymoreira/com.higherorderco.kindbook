@@ -2,20 +2,11 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = A new Bits value representing the bitwise OR of a and b.
-Bits/or
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bits
-= λ{
-  #E: λb b
-  #O: λa.tail λ{
-    #E: #O{a.tail}
-    #O: λb.tail #O{(Bits/or a.tail b.tail)}
-    #I: λb.tail #I{(Bits/or a.tail b.tail)}
-  }
-  #I: λa.tail λ{
-    #E: #I{a.tail}
-    #O: λb.tail #I{(Bits/or a.tail b.tail)}
-    #I: λb.tail #I{(Bits/or a.tail b.tail)}
-  }
-}
+Bits/or : Bits -> Bits -> Bits
+| #E     b     = b
+| #O{a}  #E    = #O{a}
+| #O{a}  #O{b} = #O{(Bits/or a b)}
+| #O{a}  #I{b} = #I{(Bits/or a b)}
+| #I{a}  #E    = #I{a}
+| #I{a}  #O{b} = #I{(Bits/or a b)}
+| #I{a}  #I{b} = #I{(Bits/or a b)}

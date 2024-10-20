@@ -5,19 +5,8 @@
 Bool/nand : Bool -> Bool -> Bool
 | a b = (Bool/not (Bool/and a b))
 
-TEST_0 
-: (Bool/nand #True #False) == #True
-= #Refl
-
-TEST_1 
-: (Bool/nand #True #True) == #False
-= #Refl
-
-TEST_2 
-: (Bool/nand #False #True) == #True
-= #Refl
-
-TEST_3 
-: (Bool/nand #False #False) == #True
-= #Refl
+#test: (Bool/nand #True #False) == #True
+#test: (Bool/nand #True #True) == #False
+#test: (Bool/nand #False #True) == #True
+#test: (Bool/nand #False #False) == #True
 

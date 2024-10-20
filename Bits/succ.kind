@@ -1,17 +1,12 @@
 // Increments a binary string by one, increasing its size if necessary.
-// - bs: The input binary string.
+// - bits: The input binary string.
 // = The incremented binary string, with an additional bit if needed.
-Bits/succ
-: ∀(bs: Bits)
-  Bits
-= λ{
-  #E: #I{#E}
-  #O: λbs.tail #I{bs.tail}
-  #I: λbs.tail #O{(Bits/succ bs.tail)}
-}
+Bits/succ : Bits -> Bits
+| #E       = #I{#E}
+| #O{tail} = #I{tail}
+| #I{tail} = #O{(Bits/succ tail)}
 
-// Examples:
-// Bits/succ #E                = #I{#E}         (0 → 1)
-// Bits/succ (#O{#E})          = #I{#E}         (0 → 1)
-// Bits/succ (#I{#E})          = #O{#I{#E}}     (1 → 10)
-// Bits/succ (#I{#I{#E}})      = #O{#O{#I{#E}}} (11 → 100)
+#test: (Bits/succ #E) == (#I{#E})
+#test: (Bits/succ (#O{#E})) == (#I{#E})
+#test: (Bits/succ (#I{#E})) == (#O{#I{#E}})
+#test: (Bits/succ (#I{#I{#E}})) == (#O{#O{#I{#E}}})

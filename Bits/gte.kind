@@ -2,8 +2,5 @@
 // - a: The first Bits value.
 // - b: The second Bits value.
 // = True if 'a' is greater than or equal to 'b', False otherwise.
-Bits/gte
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bool
-= λa λb (Bool/not (Bits/gt b a))
+Bits/gte : Bits -> Bits -> Bool
+| a b = (Bool/or (Bits/gt a b) (Bits/eq a b))

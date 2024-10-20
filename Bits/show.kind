@@ -1,11 +1,7 @@
 // Converts a Bits value to its string representation.
 // - bits: The Bits value to convert.
 // = A string representation of the Bits value.
-Bits/show
-: ∀(bits: Bits)
-  String
-= λ{
-  #E: "e"
-  #O: λbits.tail (String/append "0" (Bits/show bits.tail))
-  #I: λbits.tail (String/append "1" (Bits/show bits.tail))
-}
+Bits/show : Bits -> String
+| #E       = "e"
+| #O{tail} = (String/append "0" (Bits/show tail))
+| #I{tail} = (String/append "1" (Bits/show tail))

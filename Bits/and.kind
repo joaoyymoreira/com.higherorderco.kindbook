@@ -1,21 +1,12 @@
 // Performs bitwise AND operation on two Bits values.
-// - 1st: The Bits value.
-// - 2nd: The Bits value.
-// = A new Bits value representing the bitwise AND of 1st and 2nd.
-Bits/and
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bits
-= λ{
-  #E: λb #E
-  #O: λ{
-    #E: λa.tail #E
-    #O: λa.tail λb.tail #O{(Bits/and a.tail b.tail)}
-    #I: λa.tail λb.tail #O{(Bits/and a.tail b.tail)}
-  }
-  #I: λ{
-    #E: λa.tail #E
-    #O: λa.tail λb.tail #O{(Bits/and a.tail b.tail)}
-    #I: λa.tail λb.tail #I{(Bits/and a.tail b.tail)}
-  }
-}
+// - a: The 1st Bits value.
+// - b: The 2nd Bits value.
+// = A new Bits value representing the bitwise AND of a and b.
+Bits/and : Bits -> Bits -> Bits
+| #E    b     = #E
+| #O{a} #E    = #E
+| #O{a} #O{b} = #O{(Bits/and a b)}
+| #O{a} #I{b} = #O{(Bits/and a b)}
+| #I{a} #E    = #E
+| #I{a} #O{b} = #O{(Bits/and a b)}
+| #I{a} #I{b} = #I{(Bits/and a b)}

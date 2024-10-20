@@ -2,20 +2,12 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = A new Bits value representing the sum of a and b.
-Bits/add
-: ∀(a: Bits)
-  ∀(b: Bits)
-  Bits
-= λ{
-  #E: λb b
-  #O: λa.tail λ{
-    #E: #O{a.tail}
-    #O: λb.tail #O{(Bits/add a.tail b.tail)}
-    #I: λb.tail #I{(Bits/add a.tail b.tail)}
-  }
-  #I: λa.tail λ{
-    #E: #I{a.tail}
-    #O: λb.tail #I{(Bits/add a.tail b.tail)}
-    #I: λb.tail #O{(Bits/inc (Bits/add a.tail b.tail))}
-  }
-}
+// Note: This function handles carry-over automatically.
+Bits/add : Bits -> Bits -> Bits
+| #E         b          = b
+| #O{a.tail} #E         = #O{a.tail}
+| #O{a.tail} #O{b.tail} = #O{(Bits/add a.tail b.tail)}
+| #O{a.tail} #I{b.tail} = #I{(Bits/add a.tail b.tail)}
+| #I{a.tail} #E         = #I{a.tail}
+| #I{a.tail} #O{b.tail} = #I{(Bits/add a.tail b.tail)}
+| #I{a.tail} #I{b.tail} = #O{(Bits/inc (Bits/add a.tail b.tail))}

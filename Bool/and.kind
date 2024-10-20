@@ -6,18 +6,7 @@ Bool/and : Bool -> Bool -> Bool
 | #True  b = b
 | #False b = #False
 
-TEST_0
-: (Bool/and #True #True) == #True
-= #Refl
-
-TEST_1
-: (Bool/and  #True #False) == #False
-= #Refl
-
-TEST_2
-: (Bool/and #False #True) == #False
-= #Refl
-
-TEST_3
-: (Bool/and #False #False) == #False
-= #Refl
+#test: (Bool/and #True #True) == #True
+#test: (Bool/and  #True #False) == #False
+#test: (Bool/and #False #True) == #False
+#test: (Bool/and #False #False) == #False

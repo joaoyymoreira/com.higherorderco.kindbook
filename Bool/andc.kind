@@ -7,18 +7,7 @@ Bool/andc : Bool -> Bool -> Bool
 | #True  #True  = #False
 | #False b      = #False
 
-TEST_0 
-: (Bool/andc #True #False) == #True
-= #Refl
-
-TEST_1 
-: (Bool/andc #True #True) == #False
-= #Refl
-
-TEST_2 
-: (Bool/andc #False #True) == #False
-= #Refl
-
-TEST_3 
-: (Bool/andc #False #False) == #False
-= #Refl
+#test: (Bool/andc #True #False) == #True
+#test: (Bool/andc #True #True) == #False
+#test: (Bool/andc #False #True) == #False
+#test: (Bool/andc #False #False) == #False

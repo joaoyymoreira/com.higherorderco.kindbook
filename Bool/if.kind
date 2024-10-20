@@ -8,14 +8,6 @@ Bool/if : ∀(A: *) Bool -> A -> A -> A
 | A #True  t f = t
 | A #False t f = f
 
-TEST_0 
-: (Bool/if Bool #True #True #False) == #True
-= #Refl
-
-TEST_1 
-: (Bool/if Bool #False #True #False) == #False
-= #Refl
-
-TEST_2
-: (Bool/if Nat #False #1 #Zero) == #Zero
-= #Refl
+#test: (Bool/if Bool #True #True #False) == #True
+#test: (Bool/if Bool #False #True #False) == #False
+#test: (Bool/if Nat #False #1 #Zero) == #Zero
