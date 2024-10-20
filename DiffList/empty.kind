@@ -1,7 +1,0 @@
-// Creates a new empty DiffList.
-// - A: The type of elements in the list.
-// = An empty DiffList.
-DiffList/empty
-: ∀(A: *)
-  (DiffList/DiffList A)
-= λA λtail tail
