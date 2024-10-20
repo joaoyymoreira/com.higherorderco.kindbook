@@ -5,14 +5,10 @@
 // - some: The case for Some.
 // - m: The Maybe value to match against.
 // = A value of type (P m), determined by the structure of m.
-Maybe/match
-: ∀(A: *)
-  ∀(P: ∀(m: (Maybe A)) *)
-  ∀(none: (P #None))
-  ∀(some: ∀(x: A) (P (#Some{x})))
-  ∀(m: (Maybe A))
-  (P m)
-= λA λP λnone λsome λ{
-  #None: none
-  #Some: λm.value (some m.value)
-}
+Maybe/match : ∀(A: *) ∀(P: (Maybe A) -> *) (P #None) -> (∀(x: A) (P (#Some{x}))) -> ∀(m: (Maybe A)) (P m)
+| A P none some #None        = none
+| A P none some #Some{value} = (some value)
+
+#test: (Maybe/match U32 (λx Bool) #True (λy #False) #None) == #True
+#test: (Maybe/match U32 (λx Bool) #False (λy #True) (#Some{42})) == #True
+#test: (Maybe/match U32 (λx (Maybe U32)) #None (λy (#Some{(+ y 1)})) (#Some{41})) == (#Some{42})

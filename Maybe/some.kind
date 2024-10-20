@@ -1,9 +1,9 @@
-// Constructs a Some value, representing the presence of a value
-// - 1st: The type of the value
-// - 2nd: The value to wrap in Some
-// = A Maybe value containing the given value
-Maybe/Some
-: ∀(A: *)
-  ∀(value: A)
-  (Maybe A)
-= λA λvalue #Some{value}
+// Constructs a Some value, representing the presence of a value.
+// - A: The type of the value.
+// - value: The value to wrap in Some.
+// = A Maybe value containing the given value.
+Maybe/some : ∀(A: *) A -> (Maybe A)
+| A value = #Some{value}
+
+#test: (Maybe/some U32 42) == #Some{42}
+#test: (Maybe/some Bool #True) == #Some{#True}

@@ -1,7 +1,9 @@
-// Constructs a None value, representing the absence of a value
-// - 1st: The type parameter for the Maybe type
-// = A Maybe value representing no value
-Maybe/None
-: ∀(A: *)
-  (Maybe A)
+// Constructs a None value, representing the absence of a value.
+// - A: The type parameter for the Maybe type.
+// = A Maybe value representing no value.
+Maybe/none : ∀(A: *) (Maybe A)
 = λA #None
+
+#test: (Maybe/none U32) == #None
+#test: (Maybe/none Bool) == #None
+#test: (Maybe/none (List U32)) == #None

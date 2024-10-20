@@ -1,16 +1,13 @@
-// Applies a function that returns a Maybe to the value inside a Maybe, if it exists
-// - 1st: The type of the input value
-// - 2nd: The type of the output value
-// - 3rd: The function to apply to the value if it exists
-// - 4th: The input Maybe value
-// = The result of applying f to the inner value, or None if the input is None
-Maybe/Monad/bind
-: ∀(A: *)
-  ∀(B: *)
-  ∀(m: (Maybe A))
-  ∀(f: ∀(x: A) (Maybe B))
-  (Maybe B)
-= λA λB λ{
-  #None: λf #None
-  #Some: λm.value λf (f m.value)
-}
+// Applies a function that returns a Maybe to the value inside a Maybe, if it exists.
+// - A: The type of the input value.
+// - B: The type of the output value.
+// - m: The input Maybe value.
+// - f: The function to apply to the value if it exists.
+// = The result of applying f to the inner value, or None if the input is None.
+Maybe/Monad/bind : ∀(A: *) ∀(B: *) (Maybe A) -> (A -> (Maybe B)) -> (Maybe B)
+| A B #None        f = #None
+| A B #Some{value} f = (f value)
+
+#test: (Maybe/Monad/bind U32 U32 #None (λx #Some{(+ x 1)})) == #None
+#test: (Maybe/Monad/bind U32 U32 #Some{5} (λx #Some{(+ x 1)})) == #Some{6}
+#test: (Maybe/Monad/bind U32 U32 #Some{5} (λx #None)) == #None

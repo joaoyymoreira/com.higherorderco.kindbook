@@ -1,24 +1,11 @@
 // Checks if two Maybe values are equal.
-// - 1st: The type of the value inside Maybe.
-// - 2nd: The Eq instance for type 1st.
-// - 3rd: The first Maybe value.
-// - 4th: The second Maybe value.
-// = True if 3rd and 4th are equal, False otherwise.
-Maybe/eq
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  ∀(x: (Maybe A))
-  ∀(y: (Maybe A))
-  Bool
-= λA λe λ{
-  #None: λ{
-    #None: #True
-    #Some: λy.value #False
-  }
-  #Some: λx.value λ{
-    #None: #False
-    #Some: λy.value
-      use x = Trait/Eq
-      (Trait/Eq/eq A e x.value y.value)
-  }
-}
+// - A: The type of the value inside Maybe.
+// - e: The Eq instance for type A.
+// - x: The first Maybe value.
+// - y: The second Maybe value.
+// = True if x and y are equal, False otherwise.
+Maybe/eq : ∀(A: *) ∀(e: (Trait/Eq A)) (Maybe A) -> (Maybe A) -> Bool
+| A e #None    #None    = #True
+| A e #None    #Some{y} = #False
+| A e #Some{x} #None    = #False
+| A e #Some{x} #Some{y} = (Trait/Eq/eq A e x y)

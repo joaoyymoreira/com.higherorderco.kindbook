@@ -1,14 +1,13 @@
 // Runs a Maybe monad, returning a default value if it is None.
-// - 1st: The type of the value inside the Maybe.
-// - 2nd: The default value to return if ma is None.
-// - 3rd: The Maybe value to run.
-// = The value inside ma if it's Some, otherwise the default value.
-Maybe/run
-: ∀(A: *)
-  ∀(d: A)
-  ∀(m: (Maybe A))
-  A
-= λA λd λ{
-  #None: d
-  #Some: λma.value ma.value
-}
+// - A: The type of the value inside the Maybe.
+// - d: The default value to return if m is None.
+// - m: The Maybe value to run.
+// = The value inside m if it's Some, otherwise the default value.
+Maybe/run : ∀(A: *) A -> (Maybe A) -> A
+| A d #None        = d
+| A d #Some{value} = value
+
+#test: (Maybe/run U32 42 #None) == 42
+#test: (Maybe/run U32 42 #Some{7}) == 7
+#test: (Maybe/run String "default" #None) == "default"
+#test: (Maybe/run String "default" #Some{"hello"}) == "hello"
