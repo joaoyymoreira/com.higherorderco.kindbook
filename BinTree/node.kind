@@ -17,8 +17,8 @@ BinTree/node
 TEST_0
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Zero} (BinTree/leaf Nat) (BinTree/leaf Nat))
-    #Node{#Succ{#Zero} #Leaf #Leaf}
+    (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
+    #Node{#1 #Leaf #Leaf}
   )
 = #Refl
 
@@ -26,10 +26,10 @@ TEST_0
 TEST_1
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Succ{#Zero}}
-      (BinTree/node Nat #Succ{#Zero} (BinTree/leaf Nat) (BinTree/leaf Nat))
+    (BinTree/node Nat #2
+      (BinTree/node Nat #1 (BinTree/leaf Nat) (BinTree/leaf Nat))
       (BinTree/leaf Nat))
-    #Node{#Succ{#Succ{#Zero}} #Node{#Succ{#Zero} #Leaf #Leaf} #Leaf}
+    #Node{#2 #Node{#1 #Leaf #Leaf} #Leaf}
   )
 = #Refl
 
@@ -37,10 +37,10 @@ TEST_1
 TEST_2
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Succ{#Succ{#Zero}}}
+    (BinTree/node Nat #3
       (BinTree/leaf Nat)
-      (BinTree/node Nat #Succ{#Succ{#Succ{#Succ{#Zero}}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}}
+      (BinTree/node Nat #4 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+    #Node{#3 #Leaf #Node{#4 #Leaf #Leaf}}
   )
 = #Refl
 
@@ -48,11 +48,11 @@ TEST_2
 TEST_3
 : (Equal
     (BinTree/BinTree Nat)
-    (BinTree/node Nat #Succ{#Zero}
-      (BinTree/node Nat #Succ{#Succ{#Zero}} (BinTree/leaf Nat) (BinTree/leaf Nat))
-      (BinTree/node Nat #Succ{#Succ{#Succ{#Zero}}} (BinTree/leaf Nat) (BinTree/leaf Nat)))
-    #Node{#Succ{#Zero}
-      #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}
-      #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}}
+    (BinTree/node Nat #1
+      (BinTree/node Nat #2 (BinTree/leaf Nat) (BinTree/leaf Nat))
+      (BinTree/node Nat #3 (BinTree/leaf Nat) (BinTree/leaf Nat)))
+    #Node{#1
+      #Node{#2 #Leaf #Leaf}
+      #Node{#3 #Leaf #Leaf}}
   )
 = #Refl

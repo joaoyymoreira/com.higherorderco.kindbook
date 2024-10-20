@@ -13,33 +13,33 @@ TEST_0 : (Equal Nat (Nat/max #Zero #Zero) #Zero)
 = #Refl
 
 // Test: max 0 5 = 5
-TEST_1 : (Equal Nat (Nat/max #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_1 : (Equal Nat (Nat/max #Zero #5) #5)
 = #Refl
 
 // Test: max 5 0 = 5
-TEST_2 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_2 : (Equal Nat (Nat/max #5 #Zero) #5)
 = #Refl
 
 // Test: max 3 2 = 3
-TEST_3 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Zero}}})
+TEST_3 : (Equal Nat (Nat/max #3 #2) #3)
 = #Refl
 
 // Test: max 2 3 = 3
-TEST_4 : (Equal Nat (Nat/max #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Zero}}})
+TEST_4 : (Equal Nat (Nat/max #2 #3) #3)
 = #Refl
 
 // Test: max 7 7 = 7
-TEST_5 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+TEST_5 : (Equal Nat (Nat/max #7 #7) #7)
 = #Refl
 
 // Test: Commutativity: max a b = max b a
-TEST_6 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}) (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}))
+TEST_6 : (Equal Nat (Nat/max #4 #6) (Nat/max #6 #4))
 = #Refl
 
 // Test: Idempotence: max a a = a
-TEST_7 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}})
+TEST_7 : (Equal Nat (Nat/max #8 #8) #8)
 = #Refl
 
 // Test: Associativity: max a (max b c) = max (max a b) c
-TEST_8 : (Equal Nat (Nat/max #Succ{#Succ{#Zero}} (Nat/max #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})) (Nat/max (Nat/max #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}}))
+TEST_8 : (Equal Nat (Nat/max #2 (Nat/max #3 #4)) (Nat/max (Nat/max #2 #3) #4))
 = #Refl

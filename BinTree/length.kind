@@ -18,7 +18,7 @@ TEST_0
 
 // Test: Length of a single node tree is one
 TEST_1
-: (Equal Nat (BinTree/length _ (#Node{#Succ{#Zero} #Leaf #Leaf})) #Succ{#Zero})
+: (Equal Nat (BinTree/length _ (#Node{#1 #Leaf #Leaf})) #1)
 = #Refl
 
 // Test: Length of a tree with three nodes
@@ -27,12 +27,12 @@ TEST_2
     Nat
     (BinTree/length _
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
         #Leaf
       })
     )
-    #Succ{#Succ{#Zero}}
+    #2
   )
 = #Refl
 
@@ -42,19 +42,19 @@ TEST_3
     Nat
     (BinTree/length _
       (#Node{
-        #Succ{#Zero}
+        #1
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})
+          #2
+          (#Node{#4 #Leaf #Leaf})
+          (#Node{#5 #Leaf #Leaf})
         })
         (#Node{
-          #Succ{#Succ{#Succ{#Zero}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
+          #3
+          (#Node{#6 #Leaf #Leaf})
+          (#Node{#7 #Leaf #Leaf})
         })
       })
     )
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
+    #7
   )
 = #Refl

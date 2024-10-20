@@ -16,9 +16,9 @@ TEST_0 : (Equal Bool (Nat/is-zero #Zero) #True)
   = #Refl
 
 // Test: is-zero of 1 should be False
-TEST_1 : (Equal Bool (Nat/is-zero #Succ{#Zero}) #False)
+TEST_1 : (Equal Bool (Nat/is-zero #1) #False)
   = #Refl
 
 // Test: is-zero of 2 should be False
-TEST_2 : (Equal Bool (Nat/is-zero #Succ{#Succ{#Zero}}) #False)
+TEST_2 : (Equal Bool (Nat/is-zero #2) #False)
   = #Refl

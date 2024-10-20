@@ -11,22 +11,22 @@ Nat/neq
 
 // Test : Different numbers should return True.
 TEST_0
-: (Equal Bool (Nat/neq #Succ{#Zero} #Zero) #True)
+: (Equal Bool (Nat/neq #1 #Zero) #True)
 = #Refl
 
 // Test : Same numbers should return False.
 TEST_1
-: (Equal Bool (Nat/neq #Succ{#Succ{#Zero}} #Succ{#Succ{#Zero}}) #False)
+: (Equal Bool (Nat/neq #2 #2) #False)
 = #Refl
 
 // Test : Zero and a non-zero number should return True.
 TEST_2
-: (Equal Bool (Nat/neq #Zero #Succ{#Succ{#Succ{#Zero}}}) #True)
+: (Equal Bool (Nat/neq #Zero #3) #True)
 = #Refl
 
 // Test : Different non-zero numbers should return True.
 TEST_3
-: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #True)
+: (Equal Bool (Nat/neq #4 #5) #True)
 = #Refl
 
 // Test : Zero and itself should return False.
@@ -36,14 +36,14 @@ TEST_4
 
 // Test : Larger numbers should work correctly.
 TEST_5
-: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}
-                        #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}})
+: (Equal Bool (Nat/neq #10
+                        #11)
                   #True)
 = #Refl
 
 // Test : Larger same numbers should return False.
 TEST_6
-: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}
-                        #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})
+: (Equal Bool (Nat/neq #10
+                        #10)
                   #False)
 = #Refl

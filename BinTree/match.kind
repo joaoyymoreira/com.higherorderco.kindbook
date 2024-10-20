@@ -49,7 +49,7 @@ TEST_0
         (#Node{#Zero #Leaf #Leaf})
         (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Zero}}}}
+    #4
   )
 = #Refl
 
@@ -72,7 +72,7 @@ TEST_1
         (#Node{#Zero #Leaf #Leaf})
         (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
       }))
-    #Succ{#Succ{#Succ{#Zero}}}
+    #3
   )
 = #Refl
 
@@ -82,7 +82,7 @@ leaf-count
   ∀(tree: (BinTree/BinTree A))
   Nat
 = λA λtree
-  (BinTree/match A (λx Nat) #Succ{#Zero} (λval λlft λrgt λl λr (Nat/add l r)) tree)
+  (BinTree/match A (λx Nat) #1 (λval λlft λrgt λl λr (Nat/add l r)) tree)
 
 // Test: Leaf count
 TEST_2
@@ -95,7 +95,7 @@ TEST_2
         (#Node{#Zero #Leaf #Leaf})
         (#Node{#Zero #Leaf (#Node{#Zero #Leaf #Leaf})})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}
+    #5
   )
 = #Refl
 
@@ -112,10 +112,10 @@ TEST_3
     Nat
     (sum-tree
       (#Node{
-        #Succ{#Succ{#Zero}}
-        (#Node{#Succ{#Zero} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
+        #2
+        (#Node{#1 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}
+    #6
   )
 = #Refl

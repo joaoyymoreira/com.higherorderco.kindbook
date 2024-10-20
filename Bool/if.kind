@@ -17,5 +17,5 @@ TEST_1
 = #Refl
 
 TEST_2
-: (Bool/if Nat #False #Succ{#Zero} #Zero) == #Zero
+: (Bool/if Nat #False #1 #Zero) == #Zero
 = #Refl

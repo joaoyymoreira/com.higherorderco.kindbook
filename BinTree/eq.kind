@@ -30,8 +30,8 @@ TEST_0
 : (Equal
     Bool
     (BinTree/eq Nat NT/Eq
-      (#Node{#Succ{#Zero} #Leaf #Leaf})
-      (#Node{#Succ{#Zero} #Leaf #Leaf}))
+      (#Node{#1 #Leaf #Leaf})
+      (#Node{#1 #Leaf #Leaf}))
     #True)
 = #Refl
 
@@ -41,12 +41,12 @@ TEST_1
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
         #Leaf})
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
         #Leaf}))
     #True)
 = #Refl
@@ -56,8 +56,8 @@ TEST_2
 : (Equal
     Bool
     (BinTree/eq Nat NT/Eq
-      (#Node{#Succ{#Zero} #Leaf #Leaf})
-      (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}))
+      (#Node{#1 #Leaf #Leaf})
+      (#Node{#2 #Leaf #Leaf}))
     #False)
 = #Refl
 
@@ -67,7 +67,7 @@ TEST_3
     Bool
     (BinTree/eq Nat NT/Eq
       #Leaf
-      (#Node{#Succ{#Zero} #Leaf #Leaf}))
+      (#Node{#1 #Leaf #Leaf}))
     #False)
 = #Refl
 
@@ -87,13 +87,13 @@ TEST_5
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
         #Leaf})
       (#Node{
-        #Succ{#Zero}
+        #1
         #Leaf
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})}))
+        (#Node{#2 #Leaf #Leaf})}))
     #False)
 = #Refl
 
@@ -103,19 +103,19 @@ TEST_6
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Succ{#Succ{#Zero}}}
+        #3
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Zero} #Leaf #Leaf})
+          #2
+          (#Node{#1 #Leaf #Leaf})
           #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})
+        (#Node{#4 #Leaf #Leaf})})
       (#Node{
-        #Succ{#Succ{#Succ{#Zero}}}
+        #3
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Zero} #Leaf #Leaf})
+          #2
+          (#Node{#1 #Leaf #Leaf})
           #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})}))
+        (#Node{#4 #Leaf #Leaf})}))
     #True)
 = #Refl
 
@@ -125,19 +125,19 @@ TEST_7
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Succ{#Succ{#Zero}}}
+        #3
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Zero} #Leaf #Leaf})
+          #2
+          (#Node{#1 #Leaf #Leaf})
           #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})
+        (#Node{#4 #Leaf #Leaf})})
       (#Node{
-        #Succ{#Succ{#Succ{#Zero}}}
+        #3
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Zero} #Leaf #Leaf})
+          #2
+          (#Node{#1 #Leaf #Leaf})
           #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})}))
+        (#Node{#5 #Leaf #Leaf})}))
     #False)
 = #Refl
 
@@ -147,24 +147,24 @@ TEST_8
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Zero}
+        #1
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})
+          #2
+          (#Node{#3 #Leaf #Leaf})
+          (#Node{#4 #Leaf #Leaf})})
         (#Node{
-          #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Leaf #Leaf})
+          #5
+          (#Node{#6 #Leaf #Leaf})
           #Leaf})})
       (#Node{
-        #Succ{#Zero}
+        #1
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})
+          #2
+          (#Node{#3 #Leaf #Leaf})
+          (#Node{#4 #Leaf #Leaf})})
         (#Node{
-          #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Leaf #Leaf})
+          #5
+          (#Node{#6 #Leaf #Leaf})
           #Leaf})}))
     #True)
 = #Refl
@@ -175,15 +175,15 @@ TEST_9
     Bool
     (BinTree/eq Nat NT/Eq
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})
+        #1
+        (#Node{#2 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})})
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
         (#Node{
-          #Succ{#Succ{#Succ{#Zero}}}
+          #3
           #Leaf
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})}))
+          (#Node{#4 #Leaf #Leaf})})}))
     #False)
 = #Refl

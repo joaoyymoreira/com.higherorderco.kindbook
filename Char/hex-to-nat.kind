@@ -28,12 +28,12 @@ TEST_0
 
 // Test: Convert 'A' to 10.
 TEST_1
-: (Equal (Maybe Nat) (Char/hex-to-nat 'A') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}})
+: (Equal (Maybe Nat) (Char/hex-to-nat 'A') #Some{#10)
 = #Refl
 
 // Test: Convert 'f' to 15.
 TEST_2
-: (Equal (Maybe Nat) (Char/hex-to-nat 'f') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}})
+: (Equal (Maybe Nat) (Char/hex-to-nat 'f') #Some{#15)
 = #Refl
 
 // Test: Invalid hexadecimal character.

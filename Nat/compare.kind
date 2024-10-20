@@ -42,25 +42,25 @@ TEST_0
 
 // Test: compare 0 5 = LT
 TEST_1
-: (Equal Ordering (Nat/compare #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #LT)
+: (Equal Ordering (Nat/compare #Zero #5) #LT)
 = #Refl
 
 // Test: compare 5 0 = GT
 TEST_2
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #GT)
+: (Equal Ordering (Nat/compare #5 #Zero) #GT)
 = #Refl
 
 // Test: compare 3 3 = EQ
 TEST_3
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Zero}}}) #EQ)
+: (Equal Ordering (Nat/compare #3 #3) #EQ)
 = #Refl
 
 // Test: compare 2 7 = LT
 TEST_4
-: (Equal Ordering (Nat/compare #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}) #LT)
+: (Equal Ordering (Nat/compare #2 #7) #LT)
 = #Refl
 
 // Test: compare 8 4 = GT
 TEST_5
-: (Equal Ordering (Nat/compare (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Zero}}}})) #GT)
+: (Equal Ordering (Nat/compare (#8) (#4)) #GT)
 = #Refl

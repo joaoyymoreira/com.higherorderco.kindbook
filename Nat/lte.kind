@@ -16,35 +16,35 @@ TEST_0
 
 // Test: 0 <= 1 is True.
 TEST_1
-: (Equal Bool (Nat/lte #Zero #Succ{#Zero}) #True)
+: (Equal Bool (Nat/lte #Zero #1) #True)
 = #Refl
 
 // Test: 1 <= 0 is False.
 TEST_2
-: (Equal Bool (Nat/lte #Succ{#Zero} #Zero) #False)
+: (Equal Bool (Nat/lte #1 #Zero) #False)
 = #Refl
 
 // Test: 1 <= 1 is True.
 TEST_3
-: (Equal Bool (Nat/lte #Succ{#Zero} #Succ{#Zero}) #True)
+: (Equal Bool (Nat/lte #1 #1) #True)
 = #Refl
 
 // Test: 1 <= 2 is True.
 TEST_4
-: (Equal Bool (Nat/lte #Succ{#Zero} #Succ{#Succ{#Zero}}) #True)
+: (Equal Bool (Nat/lte #1 #2) #True)
 = #Refl
 
 // Test: 2 <= 1 is False.
 TEST_5
-: (Equal Bool (Nat/lte #Succ{#Succ{#Zero}} #Succ{#Zero}) #False)
+: (Equal Bool (Nat/lte #2 #1) #False)
 = #Refl
 
 // Test: 5 <= 10 is True.
 TEST_6
-: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}) #True)
+: (Equal Bool (Nat/lte #5 #10) #True)
 = #Refl
 
 // Test: 10 <= 5 is False.
 TEST_7
-: (Equal Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #False)
+: (Equal Bool (Nat/lte #10 #5) #False)
 = #Refl

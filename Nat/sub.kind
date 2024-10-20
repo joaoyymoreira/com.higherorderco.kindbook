@@ -22,35 +22,35 @@ TEST_0
 
 // Test: 5 - 0 = 5.
 TEST_1
-: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+: (Equal Nat (Nat/sub #5 #Zero) #5)
 = #Refl
 
 // Test: 0 - 5 = 0 (subtraction doesn't go below zero).
 TEST_2
-: (Equal Nat (Nat/sub #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+: (Equal Nat (Nat/sub #Zero #5) #Zero)
 = #Refl
 
 // Test: 5 - 2 = 3.
 TEST_3
-: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Zero}}})
+: (Equal Nat (Nat/sub #5 #2) #3)
 = #Refl
 
 // Test: 10 - 7 = 3.
 TEST_4
-: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} ) #Succ{#Succ{#Succ{#Zero}}})
+: (Equal Nat (Nat/sub #10 #7 ) #3)
 = #Refl
 
 // Test: 8 - 8 = 0.
 TEST_5
-: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) #Zero)
+: (Equal Nat (Nat/sub #8 #8) #Zero)
 = #Refl
 
 // Test: 3 - 5 = 0 (subtraction doesn't go below zero).
 TEST_6
-: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+: (Equal Nat (Nat/sub #3 #5) #Zero)
 = #Refl
 
 // Test: (a - b) - c = a - (b + c).
 TEST_7
-: (Equal Nat (Nat/sub (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Zero}}) (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}})))
+: (Equal Nat (Nat/sub (Nat/sub #10 #3) #2) (Nat/sub #10 (Nat/add #3 #2)))
 = #Refl

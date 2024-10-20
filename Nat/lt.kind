@@ -23,32 +23,32 @@ TEST_0 : (Equal Bool (Nat/lt #Zero #Zero) #False)
   = #Refl
 
 // Teste: 0 < 1 = True.
-TEST_1 : (Equal Bool (Nat/lt #Zero #Succ{#Zero}) #True)
+TEST_1 : (Equal Bool (Nat/lt #Zero #1) #True)
   = #Refl
 
 // Teste: 1 < 0 = False.
-TEST_2 : (Equal Bool (Nat/lt #Succ{#Zero} #Zero) #False)
+TEST_2 : (Equal Bool (Nat/lt #1 #Zero) #False)
   = #Refl
 
 // Teste: 2 < 5 = True.
-TEST_3 : (Equal Bool (Nat/lt #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #True)
+TEST_3 : (Equal Bool (Nat/lt #2 #5) #True)
   = #Refl
 
 // Teste: 5 < 2 = False.
-TEST_4 : (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Zero}}) #False)
+TEST_4 : (Equal Bool (Nat/lt #5 #2) #False)
   = #Refl
 
 // Teste: 7 < 7 = False.
-TEST_5 : (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}) #False)
+TEST_5 : (Equal Bool (Nat/lt #7 #7) #False)
   = #Refl
 
 // Teste: Transitividade: se a < b e b < c, então a < c.
 TEST_6
-: ∀(a_lt_b: (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #True))
-  ∀(b_lt_c: (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) #True))
-  (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) #True)
+: ∀(a_lt_b: (Equal Bool (Nat/lt #3 #5) #True))
+  ∀(b_lt_c: (Equal Bool (Nat/lt #5 #8) #True))
+  (Equal Bool (Nat/lt #3 #8) #True)
 = λa_lt_b λb_lt_c #Refl
 
 // Teste: Irreflexividade: a < a = False.
-TEST_7 : (Equal Bool (Nat/lt #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #False)
+TEST_7 : (Equal Bool (Nat/lt #4 #4) #False)
   = #Refl

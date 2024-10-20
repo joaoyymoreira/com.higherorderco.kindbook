@@ -23,8 +23,8 @@ TEST_0
 TEST_1
 : (Equal
     (Maybe Nat)
-    (BinTree/value Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}))
-    (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}))
+    (BinTree/value Nat (#Node{#5 #Leaf #Leaf}))
+    (#Some{#5))
 = #Refl
 
 // Test: value of a complex tree returns the root node's value
@@ -32,9 +32,9 @@ TEST_2
 : (Equal
     (Maybe Nat)
     (BinTree/value Nat (#Node{
-      #Succ{#Zero}
-      (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
-      (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
+      #1
+      (#Node{#2 #Leaf #Leaf})
+      (#Node{#3 #Leaf #Leaf})
     }))
-    (#Some{#Succ{#Zero}}))
+    (#Some{#1))
 = #Refl

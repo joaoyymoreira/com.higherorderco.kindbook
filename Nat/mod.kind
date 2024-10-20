@@ -31,33 +31,33 @@ Nat/mod
   #Succ: λm.pred (Nat/mod/aux #Zero m.pred n m.pred)
 }
 // Test: 0 % 5 = 0
-TEST_0 : (Equal Nat (Nat/mod #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+TEST_0 : (Equal Nat (Nat/mod #Zero #5) #Zero)
 = #Refl
 
 // Test: 5 % 1 = 0
-TEST_1 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Zero}) #Zero)
+TEST_1 : (Equal Nat (Nat/mod #5 #1) #Zero)
 = #Refl
 
 // Test: 7 % 3 = 1
-TEST_2 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Zero})
+TEST_2 : (Equal Nat (Nat/mod #7 #3) #1)
 = #Refl
 
 // Test: 10 % 4 = 2
-TEST_3 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #Succ{#Succ{#Zero}})
+TEST_3 : (Equal Nat (Nat/mod #10 #4) #2)
 = #Refl
 
 // Test: 15 % 5 = 0
-TEST_4 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+TEST_4 : (Equal Nat (Nat/mod #15 #5) #Zero)
 = #Refl
 
 // Test: 17 % 6 = 5
-TEST_5 : (Equal Nat (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_5 : (Equal Nat (Nat/mod #17 #6) #5)
 = #Refl
 
 // Test: (a % b) % b = a % b
-TEST_6 : (Equal Nat (Nat/mod (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}))
+TEST_6 : (Equal Nat (Nat/mod (Nat/mod #13 #5) #5) (Nat/mod #13 #5))
 = #Refl
 
 // Test: (a + b) % b = a % b
-TEST_7 : (Equal Nat (Nat/mod (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Zero}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Zero}}}))
+TEST_7 : (Equal Nat (Nat/mod (Nat/add #7 #3) #3) (Nat/mod #7 #3))
 = #Refl

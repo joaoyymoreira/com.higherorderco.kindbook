@@ -15,25 +15,25 @@ TEST_0
 
 // Test: half of 1 is 0
 TEST_1
-: (Equal Nat (Nat/half #Succ{#Zero}) #Zero)
+: (Equal Nat (Nat/half #1) #Zero)
 = #Refl
 
 // Test: half of 2 is 1
 TEST_2
-: (Equal Nat (Nat/half #Succ{#Succ{#Zero}}) #Succ{#Zero})
+: (Equal Nat (Nat/half #2) #1)
 = #Refl
 
 // Test: half of 3 is 1
 TEST_3
-: (Equal Nat (Nat/half #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Zero})
+: (Equal Nat (Nat/half #3) #1)
 = #Refl
 
 // Test: half of 4 is 2
 TEST_4
-: (Equal Nat (Nat/half #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #Succ{#Succ{#Zero}})
+: (Equal Nat (Nat/half #4) #2)
 = #Refl
 
 // Test: half of 5 is 2
 TEST_5
-: (Equal Nat (Nat/half #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Zero}})
+: (Equal Nat (Nat/half #5) #2)
 = #Refl

@@ -30,8 +30,8 @@ TEST_1
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+			(#Node{#5 #Leaf #Leaf})) 
+		#5)
 = #Refl
 
 // Test: Tree with multiple nodes
@@ -41,10 +41,10 @@ TEST_2
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Zero} 
-				(#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+			(#Node{#1 
+				(#Node{#2 #Leaf #Leaf}) 
+				(#Node{#3 #Leaf #Leaf})})) 
+		#6)
 = #Refl
 
 // Test: Using multiplication instead of addition
@@ -53,11 +53,11 @@ TEST_3
 	 	Nat 
 		(BinTree/foldr _ _ 
 			Nat/mul 
-			#Succ{#Zero} 
-			(#Node{#Succ{#Succ{#Zero}} 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}})
+			#1 
+			(#Node{#2 
+				(#Node{#3 #Leaf #Leaf}) 
+				(#Node{#4 #Leaf #Leaf})})) 
+		#24)
 = #Refl
 
 // Test: Using a more complex tree structure
@@ -67,14 +67,14 @@ TEST_4
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Zero} 
-				(#Node{#Succ{#Succ{#Zero}} 
-					(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
+			(#Node{#1 
+				(#Node{#2 
+					(#Node{#3 #Leaf #Leaf}) 
 					#Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} 
+				(#Node{#4 
 					#Leaf 
-					(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+					(#Node{#5 #Leaf #Leaf})})})) 
+		#15)
 = #Refl
 
 // Test: Right-associative nature of foldr
@@ -84,10 +84,10 @@ TEST_5
 		(BinTree/foldr _ _ 
 			Nat/sub 
 			#Zero 
-			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}})
+			(#Node{#10 
+				(#Node{#5 #Leaf #Leaf}) 
+				(#Node{#3 #Leaf #Leaf})})) 
+		#8)
 = #Refl
 
 // Test: Using foldr to count nodes
@@ -97,10 +97,10 @@ TEST_6
 		(BinTree/foldr _ _ 
 			(λx λacc #Succ{acc}) 
 			#Zero 
-			(#Node{#Succ{#Zero} 
-				(#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} 
+			(#Node{#1 
+				(#Node{#2 #Leaf #Leaf}) 
+				(#Node{#3 
 					#Leaf 
-					(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})})) 
-			#Succ{#Succ{#Succ{#Succ{#Zero}}}})
+					(#Node{#4 #Leaf #Leaf})})})) 
+			#4)
 = #Refl

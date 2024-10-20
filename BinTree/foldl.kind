@@ -36,8 +36,8 @@ TEST_1
 		(BinTree/foldl _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+			(#Node{#5 #Leaf #Leaf})) 
+		#5)
 = #Refl
 
 // Test: Tree with multiple nodes
@@ -47,10 +47,10 @@ TEST_2
 		(BinTree/foldl _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Zero} 
-				(#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+			(#Node{#1 
+				(#Node{#2 #Leaf #Leaf}) 
+				(#Node{#3 #Leaf #Leaf})})) 
+		#6)
 = #Refl
 
 // Test: Using multiplication instead of addition
@@ -59,11 +59,11 @@ TEST_3
 		Nat 
 		(BinTree/foldl _ _ 
 			Nat/mul 
-			#Succ{#Zero} 
-			(#Node{#Succ{#Succ{#Zero}} 
-				(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}})
+			#1 
+			(#Node{#2 
+				(#Node{#3 #Leaf #Leaf}) 
+				(#Node{#4 #Leaf #Leaf})})) 
+		#24)
 = #Refl
 
 // Test: Using a more complex tree structure
@@ -73,12 +73,12 @@ TEST_4
 		(BinTree/foldl _ _ 
 			Nat/add 
 			#Zero 
-			(#Node{#Succ{#Zero} 
-				(#Node{#Succ{#Succ{#Zero}} 
-					(#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}) 
+			(#Node{#1 
+				(#Node{#2 
+					(#Node{#3 #Leaf #Leaf}) 
 					#Leaf}) 
-				(#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} 
+				(#Node{#4 
 					#Leaf 
-					(#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})})})) 
-		#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+					(#Node{#5 #Leaf #Leaf})})})) 
+		#15)
 = #Refl

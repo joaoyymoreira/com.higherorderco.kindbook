@@ -11,17 +11,17 @@ Nat/gt
 
 // Test: 3 > 2 = True
 TEST_0
-: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}) #True)
+: (Equal Bool (Nat/gt #3 #2) #True)
 = #Refl
 
 // Test: 2 > 3 = False
 TEST_1
-: (Equal Bool (Nat/gt #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) #False)
+: (Equal Bool (Nat/gt #2 #3) #False)
 = #Refl
 
 // Test: 5 > 5 = False
 TEST_2
-: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #False)
+: (Equal Bool (Nat/gt #5 #5) #False)
 = #Refl
 
 // Test: 0 > 0 = False
@@ -31,17 +31,17 @@ TEST_3
 
 // Test: 1 > 0 = True
 TEST_4
-: (Equal Bool (Nat/gt #Succ{#Zero} #Zero) #True)
+: (Equal Bool (Nat/gt #1 #Zero) #True)
 = #Refl
 
 // Test: 0 > 1 = False
 TEST_5
-: (Equal Bool (Nat/gt #Zero #Succ{#Zero}) #False)
+: (Equal Bool (Nat/gt #Zero #1) #False)
 = #Refl
 
 // Test: 10 > 5 = True
 TEST_6
-: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #True)
+: (Equal Bool (Nat/gt #10 #5) #True)
 = #Refl
 
 // Test: 100 > 99 = True
@@ -56,7 +56,7 @@ TEST_7
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+    #10
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
@@ -66,7 +66,7 @@ TEST_7
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+    #9
   ) #True)
 = #Refl
 
@@ -77,11 +77,11 @@ TEST_8
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+    #2
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
-    #Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+    #2
   ) #False)
 = #Refl

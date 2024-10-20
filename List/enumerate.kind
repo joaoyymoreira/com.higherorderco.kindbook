@@ -31,7 +31,7 @@ List/enumerate/example0
 : (Equal
     (List (Pair/Pair Nat (List U32)))
     (List/enumerate (List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil})})}))
-    (#Cons{(Pair/Pair #Zero "0") (#Cons{(Pair/Pair #Succ{#Zero} "1") (#Cons{(Pair/Pair #Succ{#Succ{#Zero}} "2") #Nil})})})
+    (#Cons{(Pair/Pair #Zero "0") (#Cons{(Pair/Pair #1 "1") (#Cons{(Pair/Pair #2 "2") #Nil})})})
 )
 = #Refl 
 

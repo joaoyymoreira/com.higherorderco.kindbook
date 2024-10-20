@@ -47,8 +47,8 @@ Nat/show_rev
 = λ{
   #Zero: λacc acc
   #Succ: λn.pred λacc 
-	let n10 = (Nat/div (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})
-  let rem = (Nat/mod (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})
+	let n10 = (Nat/div (#Succ{n.pred}) #10)
+  let rem = (Nat/mod (#Succ{n.pred}) #10)
   let digit = (Nat/digit_to_char rem)
 	(Nat/show_rev n10 #Cons{digit acc})
 	}
@@ -65,7 +65,7 @@ Nat/show
 	}
 
 // Test: show 42 = "42".
-TEST_0 : (Equal String (Nat/show #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) #Cons{52 #Cons{50 #Nil}})
+TEST_0 : (Equal String (Nat/show #42) #Cons{52 #Cons{50 #Nil}})
 = #Refl
 
 // Test: show 0 = "0".
@@ -73,5 +73,5 @@ TEST_1 : (Equal String (Nat/show #Zero) #Cons{48 #Nil})
 = #Refl
 
 // Test: show 1000 = "1000".
-TEST_2 : (Equal String (Nat/show (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Zero}}})) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil}}}})
+TEST_2 : (Equal String (Nat/show (Nat/exp (Nat/mul #5 #2) #3)) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil}}}})
 = #Refl

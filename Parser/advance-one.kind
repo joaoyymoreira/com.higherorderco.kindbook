@@ -21,7 +21,7 @@ TEST_0
 : (Equal 
   (Parser/Parser (Maybe Char))
   (Parser/advance-one (Parser/State/new "abc" #Zero)) 
-  (#Done{(#MkReply{(Parser/State/new "bc" (#Succ{#Zero})) (#Some{97})})}))
+  (#Done{(#MkReply{(Parser/State/new "bc" (#1)) (#Some{97})})}))
 = #Refl
 
 // Test: Advance one character in an empty string
@@ -37,5 +37,5 @@ TEST_2
 : (Equal 
   (Parser/Parser (Maybe Char))
   (Parser/advance-one (Parser/State/new "!@#" #Zero)) 
-  (#Done{(#MkReply{(Parser/State/new "@#" (#Succ{#Zero})) (#Some{33})})}))
+  (#Done{(#MkReply{(Parser/State/new "@#" (#1)) (#Some{33})})}))
 = #Refl

@@ -20,7 +20,7 @@ TEST_0
 TEST_1
 : (Equal
     Bool
-    (BinTree/is-leaf Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}))
+    (BinTree/is-leaf Nat (#Node{#5 #Leaf #Leaf}))
     #False)
 = #Refl
 
@@ -29,9 +29,9 @@ TEST_2
 : (Equal
     Bool
     (BinTree/is-leaf Nat
-      (#Node{#Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}))
+      (#Node{#1
+        (#Node{#2 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})}))
     #False)
 = #Refl
 
@@ -40,8 +40,8 @@ TEST_3
 : (Equal
     Bool
     (BinTree/is-leaf Nat
-      (#Node{#Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
+      (#Node{#1
+        (#Node{#2 #Leaf #Leaf})
         #Leaf}))
     #False)
 = #Refl
@@ -51,8 +51,8 @@ TEST_4
 : (Equal
     Bool
     (BinTree/is-leaf Nat
-      (#Node{#Succ{#Zero}
+      (#Node{#1
         #Leaf
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}))
+        (#Node{#3 #Leaf #Leaf})}))
     #False)
 = #Refl

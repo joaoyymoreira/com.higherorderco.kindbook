@@ -63,7 +63,7 @@ TEST_0
 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "abc" #Zero))
-  (#Done{#MkReply{#MkState{"bc" #Succ{#Zero}} 'a'}})
+  (#Done{#MkReply{#MkState{"bc" #1 'a'}})
 )
 = #Refl
 
@@ -72,7 +72,7 @@ TEST_1
 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "\\nabc" #Zero))
-  (#Done{#MkReply{#MkState{"abc" #Succ{#Succ{#Zero}}} '\n'}})
+  (#Done{#MkReply{#MkState{"abc" #2 '\n'}})
 )
 = #Refl
 
@@ -90,6 +90,6 @@ TEST_3
 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "\\xabc" #Zero))
-  (#Fail{#MkError{#Succ{#Succ{#Zero}} "Invalid escape character: x"}})
+  (#Fail{#MkError{#2 "Invalid escape character: x"}})
 )
 = #Refl

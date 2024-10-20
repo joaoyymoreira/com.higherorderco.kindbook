@@ -23,15 +23,15 @@ TEST_0
 TEST_1
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero} #Leaf #Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}})
-    (#Some{#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf}}))
+    (BinTree/right Nat #Node{#1 #Leaf #Node{#3 #Leaf #Leaf}})
+    (#Some{#Node{#3 #Leaf #Leaf}}))
 = #Refl
 
 // Test: Right of a node with only left child still returns Some leaf for right.
 TEST_2
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero} #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf} #Leaf})
+    (BinTree/right Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Leaf})
     (#Some{#Leaf}))
 = #Refl
 
@@ -39,17 +39,17 @@ TEST_2
 TEST_3
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero}
-      #Node{#Succ{#Succ{#Zero}} #Leaf #Leaf}
-      #Node{#Succ{#Succ{#Succ{#Zero}}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}
+    (BinTree/right Nat #Node{#1
+      #Node{#2 #Leaf #Leaf}
+      #Node{#3
+        #Node{#4 #Leaf #Leaf}
+        #Node{#5 #Leaf #Leaf}
       }
     })
     (#Some{      
-			#Node{#Succ{#Succ{#Succ{#Zero}}}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf}
-        #Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}
+			#Node{#3
+        #Node{#4 #Leaf #Leaf}
+        #Node{#5 #Leaf #Leaf}
       }}
     ))
 = #Refl
@@ -58,6 +58,6 @@ TEST_3
 TEST_4
 : (Equal
     (Maybe (BinTree/BinTree Nat))
-    (BinTree/right Nat #Node{#Succ{#Zero} #Leaf #Leaf})
+    (BinTree/right Nat #Node{#1 #Leaf #Leaf})
     (#Some{#Leaf}))
 = #Refl

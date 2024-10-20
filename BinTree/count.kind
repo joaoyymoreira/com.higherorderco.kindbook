@@ -8,7 +8,7 @@ BinTree/count : ∀(A: *) (Trait/Eq A) -> A -> (BinTree/BinTree A) -> Nat
 | A e x #Leaf = #Zero
 | A e x #Node{val lft rgt} =
   let is_equal  = (Trait/Eq/eq A e x val)
-  let count_val = (Bool/if Nat is_equal #Succ{#Zero} #Zero)
+  let count_val = (Bool/if Nat is_equal #1 #Zero)
   let count_lft = (BinTree/count A e x lft)
   let count_rgt = (BinTree/count A e x rgt)
   (Nat/add count_val (Nat/add count_lft count_rgt))
@@ -20,7 +20,7 @@ TEST_0
 		(BinTree/count 
 			Nat 
 			NT/Eq 
-			(#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) 
+			(#5) 
 			#Leaf) 
 		#Zero)
 = #Refl
@@ -32,14 +32,14 @@ TEST_1
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+      (#5)
       (#Node{
-        (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+        (#5)
         #Leaf
         #Leaf
       })
     )
-    (#Succ{#Zero})
+    (#1)
   )
 = #Refl
 
@@ -50,26 +50,26 @@ TEST_2
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+      (#5)
       (#Node{
-        (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+        (#5)
         (#Node{
-          (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+          (#5)
           #Leaf
           #Leaf
         })
         (#Node{
-          (#Succ{#Succ{#Succ{#Zero}}})
+          (#3)
           #Leaf
           (#Node{
-            (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+            (#5)
             #Leaf
             #Leaf
           })
         })
       })
     )
-    (#Succ{#Succ{#Succ{#Zero}}})
+    (#3)
   )
 = #Refl
 
@@ -80,19 +80,19 @@ TEST_3
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+      (#7)
       (#Node{
-        (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+        (#5)
         (#Node{
-          (#Succ{#Succ{#Succ{#Zero}}})
+          (#3)
           #Leaf
           #Leaf
         })
         (#Node{
-          (#Succ{#Zero})
+          (#1)
           #Leaf
           (#Node{
-            (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}})
+            (#9)
             #Leaf
             #Leaf
           })
@@ -110,30 +110,30 @@ TEST_4
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Succ{#Zero}})
+      (#2)
       (#Node{
-        (#Succ{#Zero})
+        (#1)
         (#Node{
-          (#Succ{#Succ{#Zero}})
+          (#2)
           #Leaf
           #Leaf
         })
         (#Node{
-          (#Succ{#Succ{#Succ{#Zero}}})
+          (#3)
           (#Node{
-            (#Succ{#Succ{#Zero}})
+            (#2)
             #Leaf
             #Leaf
           })
           (#Node{
-            (#Succ{#Succ{#Succ{#Succ{#Zero}}}})
+            (#4)
             #Leaf
             #Leaf
           })
         })
       })
     )
-    (#Succ{#Succ{#Zero}})
+    (#2)
   )
 = #Refl
 
@@ -144,13 +144,13 @@ TEST_5
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Zero})
+      (#1)
       (#Node{
-        (#Succ{#Zero})
+        (#1)
         (#Node{
-          (#Succ{#Zero})
+          (#1)
           (#Node{
-            (#Succ{#Zero})
+            (#1)
             #Leaf
             #Leaf
           })
@@ -159,7 +159,7 @@ TEST_5
         #Leaf
       })
     )
-    (#Succ{#Succ{#Succ{#Zero}}}))
+    (#3))
 = #Refl
 
 // Test: Count in a right-heavy tree
@@ -169,18 +169,18 @@ TEST_6
     (BinTree/count
       Nat
       NT/Eq
-      (#Succ{#Succ{#Succ{#Zero}}})
+      (#3)
       (#Node{
-        (#Succ{#Zero})
+        (#1)
         #Leaf
         (#Node{
-          (#Succ{#Succ{#Zero}})
+          (#2)
           #Leaf
           (#Node{
-            (#Succ{#Succ{#Succ{#Zero}}})
+            (#3)
             #Leaf
             (#Node{
-              (#Succ{#Succ{#Succ{#Zero}}})
+              (#3)
               #Leaf
               #Leaf
             })
@@ -188,6 +188,6 @@ TEST_6
         })
       })
     )
-    (#Succ{#Succ{#Zero}})
+    (#2)
   )
 = #Refl

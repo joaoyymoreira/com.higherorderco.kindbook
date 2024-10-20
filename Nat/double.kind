@@ -17,28 +17,28 @@ TEST_0
 
 // Test: double 1 = 2
 TEST_1
-: (Equal Nat (Nat/double #Succ{#Zero}) #Succ{#Succ{#Zero}})
+: (Equal Nat (Nat/double #1) #2)
 = #Refl
 
 // Test: double 2 = 4
 TEST_2
-: (Equal Nat (Nat/double #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}})
+: (Equal Nat (Nat/double #2) #4)
 = #Refl
 
 // Test: double 5 = 10
 TEST_3
-: (Equal Nat (Nat/double #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})
+: (Equal Nat (Nat/double #5) #10)
 = #Refl
 
 // Test: double (double 2) = 8
 TEST_4
-: (Equal Nat (Nat/double (Nat/double #Succ{#Succ{#Zero}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}})
+: (Equal Nat (Nat/double (Nat/double #2)) #8)
 = #Refl
 
 // Test: double (3 + 2) = double 3 + double 2
 TEST_5
 : (Equal
     Nat
-    (Nat/double (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}))
-    (Nat/add (Nat/double #Succ{#Succ{#Succ{#Zero}}}) (Nat/double #Succ{#Succ{#Zero}})))
+    (Nat/double (Nat/add #3 #2))
+    (Nat/add (Nat/double #3) (Nat/double #2)))
 = #Refl

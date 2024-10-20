@@ -13,41 +13,41 @@ Nat/div
 }
 // Test: Division of zero by one.
 // = 0
-TEST_0 : (Equal Nat (Nat/div #Zero #Succ{#Zero}) #Zero)
+TEST_0 : (Equal Nat (Nat/div #Zero #1) #Zero)
  = #Refl
 
 // Test: Division of five by one.
 // = 5
-TEST_1 : (Equal Nat (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Zero}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_1 : (Equal Nat (Nat/div #5 #1) #5)
  = #Refl
 
 // Test: Division of five by two.
 // = 2
-TEST_2 : (Equal Nat (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Zero}})
+TEST_2 : (Equal Nat (Nat/div #5 #2) #2)
  = #Refl
 
 // Test: Division of ten by three.
 // = 3
-TEST_3 : (Equal Nat (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Zero}}})
+TEST_3 : (Equal Nat (Nat/div #10 #3) #3)
  = #Refl
 
 // Test: Division of fifteen by five.
 // = 3
-TEST_4 : (Equal Nat (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Zero}}})
+TEST_4 : (Equal Nat (Nat/div #15 #5) #3)
  = #Refl
 
 // Test: Division of one hundred by ten.
 // = 10
-TEST_5 : (Equal Nat (Nat/div (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}})
+TEST_5 : (Equal Nat (Nat/div (#100) (#10)) #10)
  = #Refl
 
 // Test: Division by zero returns zero.
 // = 0
-TEST_6 : (Equal Nat (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Zero)
+TEST_6 : (Equal Nat (Nat/div #5 #Zero) #Zero)
  = #Refl
 
 // Test: Division-multiplication-modulo identity.
 // This test verifies that (a / b) * b + (a % b) = a for non-zero b.
 // = 15
-TEST_7 : (Equal Nat (Nat/add (Nat/mul (Nat/div #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/mod #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+TEST_7 : (Equal Nat (Nat/add (Nat/mul (Nat/div #15 #4) #4) (Nat/mod #15 #4)) #15)
  = #Refl

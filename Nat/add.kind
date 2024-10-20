@@ -11,25 +11,25 @@ TEST_0 : (Equal Nat (Nat/add #Zero #Zero) #Zero)
 = #Refl
 
 // Test: 0 + 5 = 5
-TEST_1 : (Equal Nat (Nat/add #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_1 : (Equal Nat (Nat/add #Zero #5) #5)
 = #Refl
 
 // Test: 5 + 0 = 5
-TEST_2 : (Equal Nat (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_2 : (Equal Nat (Nat/add #5 #Zero) #5)
 = #Refl
 
 // Test: 3 + 2 = 5
-TEST_3 : (Equal Nat (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+TEST_3 : (Equal Nat (Nat/add #3 #2) #5)
 = #Refl
 
 // Test: 7 + 8 = 15
-TEST_4 : (Equal Nat (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}} ) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+TEST_4 : (Equal Nat (Nat/add #7 #8 ) #15)
 = #Refl
 
 // Test: Commutativity: a + b = b + a
-TEST_5 : (Equal Nat (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/add #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Zero}}}))
+TEST_5 : (Equal Nat (Nat/add #3 #4) (Nat/add #4 #3))
 = #Refl
 
 // Test: Associativity: (a + b) + c = a + (b + c)
-TEST_6 : (Equal Nat (Nat/add (Nat/add #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/add #Succ{#Succ{#Zero}} (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})))
+TEST_6 : (Equal Nat (Nat/add (Nat/add #2 #3) #4) (Nat/add #2 (Nat/add #3 #4)))
 = #Refl

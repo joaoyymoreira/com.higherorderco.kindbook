@@ -20,7 +20,7 @@ TEST_0
 TEST_1
 : (Equal
     Bool
-    (BinTree/is-node Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}))
+    (BinTree/is-node Nat (#Node{#5 #Leaf #Leaf}))
     #True)
 = #Refl
 
@@ -30,9 +30,9 @@ TEST_2
     Bool
     (BinTree/is-node Nat
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})
       }))
     #True)
 = #Refl

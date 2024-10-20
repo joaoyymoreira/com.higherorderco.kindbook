@@ -35,13 +35,13 @@ TEST_1
 : (Equal
     (Maybe Nat)
     (List/for-given Maybe MT/Monad Nat Nat
-      (List/Cons _ #Succ{#Zero}
-        (List/Cons _ #Succ{#Succ{#Zero}}
-          (List/Cons _ #Succ{#Succ{#Succ{#Zero}}}
+      (List/Cons _ #1
+        (List/Cons _ #2
+          (List/Cons _ #3
             (List/Nil _))))
       #Zero
       (λs λx (#Some{(Nat/add s x)})))
-    (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+    (#Some{#6)
   )
 = #Refl
 
@@ -50,11 +50,11 @@ TEST_2
 : (Equal
     (Maybe Nat)
     (List/for-given Maybe MT/Monad Nat Nat
-      (List/Cons _ #Succ{#Zero}
+      (List/Cons _ #1
         (List/Cons _ #Zero
-          (List/Cons _ #Succ{#Succ{#Zero}}
+          (List/Cons _ #2
             (List/Nil _))))
-      #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}
+      #10
       (λs λx
         (Bool/if (Maybe Nat)
           (Nat/eq x #Zero)

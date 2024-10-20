@@ -17,45 +17,45 @@ TEST_0
 
 // Test: 0 * 5 = 0.
 TEST_1
-: (Equal Nat (Nat/mul #Zero #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Zero)
+: (Equal Nat (Nat/mul #Zero #5) #Zero)
 = #Refl
 
 // Test: 5 * 0 = 0.
 TEST_2
-: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Zero) #Zero)
+: (Equal Nat (Nat/mul #5 #Zero) #Zero)
 = #Refl
 
 // Test: 1 * 5 = 5.
 TEST_3
-: (Equal Nat (Nat/mul #Succ{#Zero} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+: (Equal Nat (Nat/mul #1 #5) #5)
 = #Refl
 
 // Test: 5 * 1 = 5.
 TEST_4
-: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Zero}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}})
+: (Equal Nat (Nat/mul #5 #1) #5)
 = #Refl
 
 // Test: 3 * 2 = 6.
 TEST_5
-: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Zero}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+: (Equal Nat (Nat/mul #3 #2) #6)
 = #Refl
 
 // Test: 7 * 8 = 56.
 TEST_6
-: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))
+: (Equal Nat (Nat/mul #7 #8) (#56))
 = #Refl
 
 // Test: Commutativity: a * b = b * a.
 TEST_7
-: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/mul #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Zero}}}))
+: (Equal Nat (Nat/mul #3 #4) (Nat/mul #4 #3))
 = #Refl
 
 // Test: Distributivity: a * (b + c) = (a * b) + (a * c).
 TEST_8
-: (Equal Nat (Nat/mul #Succ{#Succ{#Zero}} (Nat/add #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})) (Nat/add (Nat/mul #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) (Nat/mul #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})))
+: (Equal Nat (Nat/mul #2 (Nat/add #3 #4)) (Nat/add (Nat/mul #2 #3) (Nat/mul #2 #4)))
 = #Refl
 
 // Test: Associativity: (a * b) * c = a * (b * c).
 TEST_9
-: (Equal Nat (Nat/mul (Nat/mul #Succ{#Succ{#Zero}} #Succ{#Succ{#Succ{#Zero}}}) #Succ{#Succ{#Succ{#Succ{#Zero}}}}) (Nat/mul #Succ{#Succ{#Zero}} (Nat/mul #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}})))
+: (Equal Nat (Nat/mul (Nat/mul #2 #3) #4) (Nat/mul #2 (Nat/mul #3 #4)))
 = #Refl

@@ -15,7 +15,7 @@ Parser/parse-quoted-char : (Parser/Parser Char)
 TEST_0 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "'a'" #Zero))
-  (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Zero}}}} 'a'}})
+  (#Done{#MkReply{#MkState{[] #3 'a'}})
 )
 = #Refl
 
@@ -23,7 +23,7 @@ TEST_0 : (Equal
 TEST_1 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "'\\n'" #Zero))
-  (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Succ{#Zero}}}}} '\n'}})
+  (#Done{#MkReply{#MkState{[] #4 '\n'}})
 )
 = #Refl
 
@@ -31,6 +31,6 @@ TEST_1 : (Equal
 TEST_2 : (Equal
   (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "ab" #Zero))
-  (#Fail{#MkError{#Succ{#Succ{#Zero}} "Expected '"}})
+  (#Fail{#MkError{#2 "Expected '"}})
 )
 = #Refl

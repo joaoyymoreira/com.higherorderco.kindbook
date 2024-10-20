@@ -18,12 +18,12 @@ TEST_0
 
 // Test: '5' converts to Some 5.
 TEST_1
-: (Equal (Maybe Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}))
+: (Equal (Maybe Nat) (Char/digit-to-nat 53) (#Some{#5))
 = #Refl
 
 // Test: '9' converts to Some 9.
 TEST_2
-: (Equal (Maybe Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}))
+: (Equal (Maybe Nat) (Char/digit-to-nat 57) (#Some{#9))
 = #Refl
 
 // Test: 'a' converts to None.

@@ -12,17 +12,17 @@ Nat/gte
 
 // Test : 5 >= 3 should be True.
 TEST_0
-: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Succ{#Succ{#Succ{#Zero}}}) #True)
+: (Equal Bool (Nat/gte #5 #3) #True)
 = #Refl
 
 // Test : 3 >= 5 should be False.
 TEST_1
-: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Zero}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}) #False)
+: (Equal Bool (Nat/gte #3 #5) #False)
 = #Refl
 
 // Test : 4 >= 4 should be True.
 TEST_2
-: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Zero}}}} #Succ{#Succ{#Succ{#Succ{#Zero}}}}) #True)
+: (Equal Bool (Nat/gte #4 #4) #True)
 = #Refl
 
 // Test : 0 >= 0 should be True.
@@ -32,20 +32,20 @@ TEST_3
 
 // Test : 1 >= 0 should be True.
 TEST_4
-: (Equal Bool (Nat/gte #Succ{#Zero} #Zero) #True)
+: (Equal Bool (Nat/gte #1 #Zero) #True)
 = #Refl
 
 // Test : 0 >= 1 should be False.
 TEST_5
-: (Equal Bool (Nat/gte #Zero #Succ{#Zero}) #False)
+: (Equal Bool (Nat/gte #Zero #1) #False)
 = #Refl
 
 // Test : 2 >= 1 should be True.
 TEST_6
-: (Equal Bool (Nat/gte #Succ{#Succ{#Zero}} #Succ{#Zero}) #True)
+: (Equal Bool (Nat/gte #2 #1) #True)
 = #Refl
 
 // Test : 1 >= 2 should be False.
 TEST_7
-: (Equal Bool (Nat/gte #Succ{#Zero} #Succ{#Succ{#Zero}}) #False)
+: (Equal Bool (Nat/gte #1 #2) #False)
 = #Refl

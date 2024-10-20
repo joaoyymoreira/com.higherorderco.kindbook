@@ -32,25 +32,25 @@ TEST_0
 
 // Test: Describe of Succ{Zero}
 TEST_1
-: (Equal Bool (Nat/describe #Succ{#Zero}) #True)
+: (Equal Bool (Nat/describe #1) #True)
 = #Refl
 
 // Test: Describe of Succ{Succ{Zero}}
 TEST_2
-: (Equal Bool (Nat/describe #Succ{#Succ{#Zero}}) #True)
+: (Equal Bool (Nat/describe #2) #True)
 = #Refl
 
 // Test: Describe of Succ{Succ{Succ{Zero}}}
 TEST_3
-: (Equal Bool (Nat/describe #Succ{#Succ{#Succ{#Zero}}}) #True)
+: (Equal Bool (Nat/describe #3) #True)
 = #Refl
 
 // Test: Equality of describe results for different non-zero numbers
 TEST_4
-: (Equal Bool (Bool/eq (Nat/describe #Succ{#Zero}) (Nat/describe #Succ{#Succ{#Zero}})) #True)
+: (Equal Bool (Bool/eq (Nat/describe #1) (Nat/describe #2)) #True)
 = #Refl
 
 // Test: Inequality of describe results for zero and non-zero
 TEST_5
-: (Equal Bool (Bool/eq (Nat/describe #Zero) (Nat/describe #Succ{#Zero})) #False)
+: (Equal Bool (Bool/eq (Nat/describe #Zero) (Nat/describe #1)) #False)
 = #Refl

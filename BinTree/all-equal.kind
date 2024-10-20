@@ -37,7 +37,7 @@ TEST_1
     (BinTree/all-equal
       Nat
       NT/Eq
-      (#Node{ #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf}))
+      (#Node{ #5 #Leaf #Leaf}))
     #True)
 = #Refl
 
@@ -48,9 +48,9 @@ TEST_2
     (BinTree/all-equal
       Nat
       NT/Eq
-      (#Node{#Succ{#Succ{#Succ{#Zero}}}
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})}))
+      (#Node{#3
+        (#Node{#3 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})}))
     #True)
 = #Refl
 
@@ -61,9 +61,9 @@ TEST_3
     (BinTree/all-equal
       Nat
       NT/Eq
-      (#Node{#Succ{#Succ{#Succ{#Zero}}}
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})}))
+      (#Node{#3
+        (#Node{#3 #Leaf #Leaf})
+        (#Node{#4 #Leaf #Leaf})}))
     #False)
 = #Refl
 
@@ -74,13 +74,13 @@ TEST_4
     (BinTree/all-equal
       Nat
       NT/Eq
-      (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})})}))
+      (#Node{#7
+        (#Node{#7
+          (#Node{#7 #Leaf #Leaf})
+          (#Node{#7 #Leaf #Leaf})})
+        (#Node{#7
+          (#Node{#7 #Leaf #Leaf})
+          (#Node{#7 #Leaf #Leaf})})}))
     #True)
 = #Refl
 
@@ -91,12 +91,12 @@ TEST_5
     (BinTree/all-equal
       Nat
       NT/Eq
-      (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}} #Leaf #Leaf})})}))
+      (#Node{#7
+        (#Node{#7
+          (#Node{#7 #Leaf #Leaf})
+          (#Node{#7 #Leaf #Leaf})})
+        (#Node{#7
+          (#Node{#7 #Leaf #Leaf})
+          (#Node{#8 #Leaf #Leaf})})}))
     #False)
 = #Refl

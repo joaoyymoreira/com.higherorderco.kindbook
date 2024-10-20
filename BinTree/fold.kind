@@ -35,11 +35,11 @@ TEST_1
       (λx λl λr (Nat/add x (Nat/add l r)))
       #Zero
       (#Node{
-        #Succ{#Zero}
-        (#Node{#Succ{#Succ{#Zero}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
+        #1
+        (#Node{#2 #Leaf #Leaf})
+        (#Node{#3 #Leaf #Leaf})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}})
+    #6)
 = #Refl
 
 // Test: Folding a tree with boolean OR operation
@@ -69,15 +69,15 @@ TEST_3
       (λx λl λr (Nat/add x (Nat/add l r)))
       #Zero
       (#Node{
-        #Succ{#Zero}
+        #1
         (#Node{
-          #Succ{#Succ{#Zero}}
-          (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})
+          #2
+          (#Node{#3 #Leaf #Leaf})
+          (#Node{#4 #Leaf #Leaf})
         })
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}} #Leaf #Leaf})
+        (#Node{#5 #Leaf #Leaf})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}})
+    #15)
 = #Refl
 
 // Test: Folding a tree with multiplication
@@ -88,13 +88,13 @@ TEST_4
       Nat
       Nat
       (λx λl λr (Nat/mul x (Nat/mul l r)))
-      #Succ{#Zero}
+      #1
       (#Node{
-        #Succ{#Succ{#Zero}}
-        (#Node{#Succ{#Succ{#Succ{#Zero}}} #Leaf #Leaf})
-        (#Node{#Succ{#Succ{#Succ{#Succ{#Zero}}}} #Leaf #Leaf})
+        #2
+        (#Node{#3 #Leaf #Leaf})
+        (#Node{#4 #Leaf #Leaf})
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}}}}}}}}}}}}}}}}}}})
+    #24)
 = #Refl
 
 // Test: Folding a tree to find the maximum value
@@ -107,17 +107,17 @@ TEST_5
       (λx λl λr (Nat/max x (Nat/max l r)))
       #Zero
       (#Node{
-        #Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}
+        #5
         (#Node{
-          #Succ{#Succ{#Succ{#Zero}}}
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}} #Leaf #Leaf})
+          #3
+          (#Node{#7 #Leaf #Leaf})
           #Leaf
         })
         (#Node{
-          #Succ{#Succ{#Zero}}
+          #2
           #Leaf
-          (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}} #Leaf #Leaf})
+          (#Node{#6 #Leaf #Leaf})
         })
       }))
-    #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero}}}}}}})
+    #7)
 = #Refl
