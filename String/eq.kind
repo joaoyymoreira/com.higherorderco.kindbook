@@ -1,15 +1,11 @@
-use String/ as S/
-use Bool/ as B/
-use U32/ as U32/
-
 // Checks if two strings are equal.
 // - a: The first string to compare.
 // - b: The second string to compare.
 // = A boolean value indicating whether the strings are equal.
-S/eq
-: ∀(a: S/String)
-  ∀(b: S/String)
-  B/Bool
+String/eq
+: ∀(a: String/String)
+  ∀(b: String/String)
+  Bool/Bool
 = λ{
   #Nil: λ{
     #Nil: #True{}
@@ -19,7 +15,7 @@ S/eq
     #Nil: #False{}
     #Cons: λb.head λb.tail
       let head_eq = (U32/eq a.head b.head)
-      let tail_eq = (S/eq a.tail b.tail)
-      (B/and head_eq tail_eq)
+      let tail_eq = (String/eq a.tail b.tail)
+      (Bool/and head_eq tail_eq)
   }
 }

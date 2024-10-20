@@ -1,22 +1,12 @@
-use Bool/ as B/
-use Trait/ as T/
-
 // Instance of Eq for Bool
-B/Trait/Eq/EqBool : (T/Eq B/Bool)
-  = (T/Eq/derive B/Bool B/eq)
+Bool/Trait/Eq/EqBool : (Trait/Eq Bool/Bool)
+  = (Trait/Eq/derive Bool/Bool Bool/eq)
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-T0 
-: (E/Equal B/Bool (B/eq #True{} #True{}) (#True{}))
+TEST_0 
+: (Equal/Equal Bool/Bool (Bool/eq #True{} #True{}) (#True{}))
 = #Refl{}
 
-T1 
-: (E/Equal B/Bool (B/eq #False{} #True{}) (#False{}))
+TEST_1 
+: (Equal/Equal Bool/Bool (Bool/eq #False{} #True{}) (#False{}))
 = #Refl{}
-
 

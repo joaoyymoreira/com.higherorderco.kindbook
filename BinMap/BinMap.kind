@@ -1,13 +1,9 @@
-use BinMap/ as BM/
-use BinTree/ as BT/
-use Maybe/ as M/
-
 // Represents a BinMap as a BinTree of Maybe values.
 // - A: The type of values stored in the map.
-BM/BinMap
+BinMap/BinMap
 : ∀(A: *)
   *
-= λA (BT/BinTree (M/Maybe A))
+= λA (BinTree/BinTree (Maybe/Maybe A))
 
 // Constructs a Node in the BinMap
 // - A: The type of values stored in the map
@@ -15,18 +11,18 @@ BM/BinMap
 // - lft: The left subtree
 // - rgt: The right subtree
 // = A BinMap node
-BM/Node
+BinMap/Node
 : ∀(A: *)
-  ∀(val: (M/Maybe A))
-  ∀(lft: (BM/BinMap A))
-  ∀(rgt: (BM/BinMap A))
-  (BM/BinMap A)
+  ∀(val: (Maybe/Maybe A))
+  ∀(lft: (BinMap/BinMap A))
+  ∀(rgt: (BinMap/BinMap A))
+  (BinMap/BinMap A)
 = λA λval λlft λrgt #Node{val lft rgt}
 
 // Constructs a Leaf in the BinMap
 // - A: The type of values stored in the map
 // = An empty BinMap leaf
-BM/Leaf
+BinMap/Leaf
 : ∀(A: *)
-  (BM/BinMap A)
+  (BinMap/BinMap A)
 = λA #Leaf{}

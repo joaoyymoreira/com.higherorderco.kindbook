@@ -1,23 +1,15 @@
-use Parser/ as P/
-use Parser/State/ as PS/
-use Char/ as C/
-use List/ as L/
-use Nat/ as N/
-use String/ as S/
-use Result/ as R/
-
 // Skips spaces in the text and returns the number of spaces skipped.
 // - s: The parser state.
 // = A Reply containing the updated state and the number of spaces skipped.
-P/skip-spaces
-: (P/Parser N/Nat)
+Pair/skip-spaces
+: (Pair/Parser Nat/Nat)
 = λs
-  let input     = (PS/input s)
+  let input     = (Parser/input s)
   let chars     = input
-  let skipped   = (L/take-while C/Char C/is-space chars)
-  let count     = (S/length skipped)
-  let new-index = (N/add (PS/index s) count)
-  let new-input = (S/drop count chars)
+  let skipped   = (List/take-while Char/Char Char/is-space chars)
+  let count     = (String/length skipped)
+  let new-index = (Nat/add (Parser/index s) count)
+  let new-input = (String/drop count chars)
   // #Done{#MkReply{#MkState{new-input new-index} count}}
   ?a
 

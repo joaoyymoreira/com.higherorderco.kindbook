@@ -1,5 +1,3 @@
-use List/ as L/
-
 // Right-folds a list, combining elements with a function.
 // Equivalently, transforms a list on its Church encoding.
 // - A: Type of elements.
@@ -8,6 +6,6 @@ use List/ as L/
 // - nil: Initial value.
 // - cons: Combining function.
 // = The final result.
-L/fold : ∀(A: *) (L/List A) -> ∀(P: *) P -> (A -> P -> P) -> P
+List/fold : ∀(A: *) (List/List A) -> ∀(P: *) P -> (A -> P -> P) -> P
 | A #Nil{}           P nil cons = nil
-| A #Cons{head tail} P nil cons = (cons head (L/fold A tail P nil cons))
+| A #Cons{head tail} P nil cons = (cons head (List/fold A tail P nil cons))

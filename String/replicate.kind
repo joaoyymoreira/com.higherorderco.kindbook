@@ -1,15 +1,12 @@
-use String/ as S/
-use Nat/ as N/
-
 // Replicates a character n times to create a string.
 // - 1st: The number of times to replicate the character.
 // - 2nd: The character to replicate.
 // = A string consisting of n repetitions of character.
-S/replicate
-: ∀(n: N/Nat)
+String/replicate
+: ∀(n: Nat/Nat)
   ∀(c: U32)
-  S/String
+  String/String
 = λ{
 	#Zero: λc ""
-	#Succ: λpred λc (S/append (S/from-char c) (S/replicate pred c))
+	#Succ: λpred λc (String/append (String/from-char c) (String/replicate pred c))
 }

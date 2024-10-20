@@ -1,71 +1,61 @@
-use Bool/ as B/
-use Char/ as C/
-use List/ as L/
-use Maybe/ as M/
-use Nat/ as N/
-use Pair/ as P/
-use Parser/ as P/
-use Result/ as R/
-use String/ as S/
-
 // Checks if a character is a newline
-P/is-newline
-: ∀(c: C/Char)
-  B/Bool
-= λc (C/eq c 10) // 10 is the ASCII code for newline
+Pair/is-newline
+: ∀(c: Char/Char)
+  Bool/Bool
+= λc (Char/eq c 10) // 10 is the ASCII code for newline
 
 // Checks if a list of characters starts with "//"
-P/is-comment
-: ∀(cs: (L/List C/Char))
-  B/Bool
+Pair/is-comment
+: ∀(cs: (List/List Char/Char))
+  Bool/Bool
 = λ{
   #Cons: λhead λ{
-    #Cons: λsecond λtail (B/and (C/eq head 47) (C/eq second 47))
+    #Cons: λsecond λtail (Bool/and (Char/eq head 47) (Char/eq second 47))
     #Nil: #False{}
   }
   #Nil: #False{}
 }
 
 // Helper function to handle comment skipping
-P/skip-comment
-: ∀(acc: N/Nat)
-  ∀(cs: (L/List C/Char))
-  (P/Pair N/Nat (L/List C/Char))
+Pair/skip-comment
+: ∀(acc: Nat/Nat)
+  ∀(cs: (List/List Char/Char))
+  (Pair/Pair Nat/Nat (List/List Char/Char))
 = λacc λcs
-  let com-len = (L/length _ (L/take-while _ (λc (B/not (P/is-newline c))) cs))
-  let new-acc = (N/add (N/add acc #2) com-len) // +2 for "//"
-  let rem     = (L/drop _ (#Succ{com-len}) cs) // +1 to consume newline
-  (P/skip-trivia-go new-acc rem)
+  let com-len = (List/length _ (List/take-while _ (λc (Bool/not (Pair/is-newline c))) cs))
+  let new-acc = (Nat/add (Nat/add acc #2) com-len) // +2 for "//"
+  let rem     = (List/drop _ (#Succ{com-len}) cs) // +1 to consume newline
+  (Pair/skip-trivia-go new-acc rem)
 
 // Auxiliary function for skip-trivia
 // Accumulates the number of skipped characters
-P/skip-trivia-go
-: ∀(acc: N/Nat)
-  ∀(cs: (L/List C/Char))
-  (P/Pair N/Nat (L/List C/Char))
+Pair/skip-trivia-go
+: ∀(acc: Nat/Nat)
+  ∀(cs: (List/List Char/Char))
+  (Pair/Pair Nat/Nat (List/List Char/Char))
 = λacc λ{
-  #Nil: (P/Pair.new _ _ acc #Nil{})
+  #Nil: (Pair/Pair.new _ _ acc #Nil{})
   #Cons: λc λcs
-    (B/if (P/Pair N/Nat (L/List C/Char))
-      (C/is-space c)
-      (P/skip-trivia-go (#Succ{acc}) cs)
-      (B/if (P/Pair N/Nat (L/List C/Char))
-        (P/is-comment (#Cons{c cs}))
-        (P/skip-comment acc cs)
-        (P/Pair.new _ _ acc (#Cons{c cs}))))
+    (Bool/if (Pair/Pair Nat/Nat (List/List Char/Char))
+      (Char/is-space c)
+      (Pair/skip-trivia-go (#Succ{acc}) cs)
+      (Bool/if (Pair/Pair Nat/Nat (List/List Char/Char))
+        (Pair/is-comment (#Cons{c cs}))
+        (Pair/skip-comment acc cs)
+        (Pair/Pair.new _ _ acc (#Cons{c cs}))))
 }
 
 // Skips whitespace and comments in the text.
 // Returns the number of characters skipped.
-P/skip-trivia
-: (P/Parser N/Nat)
+Pair/skip-trivia
+: (Pair/Parser Nat/Nat)
 = λs
-  let input = (P/State/input s)
+  let input = (Pair/State/input s)
   let chars = input
-  let skipped = (P/skip-trivia-go #Zero{} chars)
-  let skp = (P/Pair/fst _ _ skipped)
-  let rem = (P/Pair/snd _ _ skipped)
-  let new-index = (N/add (P/State/index s) skp)
+  let skipped = (Pair/skip-trivia-go #Zero{} chars)
+  let skp = (Pair/Pair/fst _ _ skipped)
+  let rem = (Pair/Pair/snd _ _ skipped)
+  let new-index = (Nat/add (Pair/State/index s) skp)
   let new-input = rem
   #Done{#MkReply{
     state: #MkState{input: new-input index: new-index}

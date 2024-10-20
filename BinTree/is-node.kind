@@ -1,44 +1,34 @@
-use BinTree/ as BT/
-use Bool/ as B/
-
 // Checks if a binary tree is a node (non-empty).
 // - 1st: The type of elements in the tree.
 // - 2nd: The input binary tree.
 // = True if the tree is a node, False otherwise.
-BT/is-node
+BinTree/is-node
 : ∀(A: *)
-  ∀(t: (BT/BinTree A))
-  B/Bool
+  ∀(t: (BinTree/BinTree A))
+  Bool/Bool
 = λA λ{
   #Leaf: #False{}
   #Node: λt.val λt.lft λt.rgt #True{}
 }
 
-//TEST//
-
-use BinTree/ as BT/
-use Bool/ as B/
-use Nat/ as N/
-use Equal/ as E/
-
 // Test: is-node on a leaf
-T0
-: (E/Equal B/Bool (BT/is-node N/Nat #Leaf{}) #False{})
+TEST_0
+: (Equal/Equal Bool/Bool (BinTree/is-node Nat/Nat #Leaf{}) #False{})
 = #Refl{}
 
 // Test: is-node on a simple node
-T1
-: (E/Equal
-    B/Bool
-    (BT/is-node N/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
+TEST_1
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/is-node Nat/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
     #True{})
 = #Refl{}
 
 // Test: is-node on a more complex tree
-T2
-: (E/Equal
-    B/Bool
-    (BT/is-node N/Nat
+TEST_2
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/is-node Nat/Nat
       (#Node{
         #Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})

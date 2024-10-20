@@ -1,37 +1,24 @@
-use BinTree/ as BT/
-use Bool/ as B/
-use Nat/ as N/
-use Trait/ as T/
-
 // Counts the occurrences of a given value in a binary tree.
 // - A: The type of elements in the tree.
 // - e: An equality instance for type A.
 // - x: The value to count.
 // - t: The binary tree to search.
 // = The number of occurrences of the given value in the tree.
-BT/count : ∀(A: *) (T/Eq A) -> A -> (BT/BinTree A) -> N/Nat
+BinTree/count : ∀(A: *) (Trait/Eq A) -> A -> (BinTree/BinTree A) -> Nat/Nat
 | A e x #Leaf = #Zero
 | A e x #Node{val lft rgt} =
-  let is_equal  = (T/Eq/eq A e x val)
-  let count_val = (B/if N/Nat is_equal #Succ{#Zero} #Zero)
-  let count_lft = (BT/count A e x lft)
-  let count_rgt = (BT/count A e x rgt)
-  (N/add count_val (N/add count_lft count_rgt))
-
-//TEST//
-
-use BinTree/ as BT/
-use Bool/ as B/
-use Nat/ as N/
-use Equal/ as E/
-use Nat/Trait/ as NT/
+  let is_equal  = (Trait/Eq/eq A e x val)
+  let count_val = (Bool/if Nat/Nat is_equal #Succ{#Zero} #Zero)
+  let count_lft = (BinTree/count A e x lft)
+  let count_rgt = (BinTree/count A e x rgt)
+  (Nat/add count_val (Nat/add count_lft count_rgt))
 
 // Test: Count in an empty tree
-T0
-: (E/Equal 
-		N/Nat 
-		(BT/count 
-			N/Nat 
+TEST_0
+: (Equal/Equal 
+		Nat/Nat 
+		(BinTree/count 
+			Nat/Nat 
 			NT/Eq 
 			(#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) 
 			#Leaf{}) 
@@ -39,11 +26,11 @@ T0
 = #Refl{}
 
 // Test: Count in a tree with one matching element
-T1
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_1
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
       (#Node{
@@ -57,11 +44,11 @@ T1
 = #Refl{}
 
 // Test: Count in a tree with multiple matching elements
-T2
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_2
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
       (#Node{
@@ -87,11 +74,11 @@ T2
 = #Refl{}
 
 // Test: Count in a tree with no matching elements
-T3
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_3
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
       (#Node{
@@ -117,11 +104,11 @@ T3
 = #Refl{}
 
 // Test: Count in a balanced tree with mixed elements
-T4
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_4
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Succ{#Zero{}}})
       (#Node{
@@ -151,11 +138,11 @@ T4
 = #Refl{}
 
 // Test: Count in a left-heavy tree
-T5
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_5
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Zero{}})
       (#Node{
@@ -176,11 +163,11 @@ T5
 = #Refl{}
 
 // Test: Count in a right-heavy tree
-T6
-: (E/Equal
-    N/Nat
-    (BT/count
-      N/Nat
+TEST_6
+: (Equal/Equal
+    Nat/Nat
+    (BinTree/count
+      Nat/Nat
       NT/Eq
       (#Succ{#Succ{#Succ{#Zero{}}}})
       (#Node{

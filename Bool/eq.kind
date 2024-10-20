@@ -1,24 +1,17 @@
-use Bool/ as B/
-
 // Checks if two boolean values are equal.
 // - a: The first boolean value.
 // - b: The second boolean value.
 // = True if both values are equal, False otherwise.
-B/eq : B/Bool -> B/Bool -> B/Bool
+Bool/eq : Bool/Bool -> Bool/Bool -> Bool/Bool
 | #True  #True  = #True
 | #False #False = #True
 | a      b      = #False
 
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-T0 
-: (E/Equal B/Bool (B/eq #True{} #True{}) (#True{}))
+TEST_0 
+: (Equal/Equal Bool/Bool (Bool/eq #True{} #True{}) (#True{}))
 = #Refl{}
 
-T1 
-: (E/Equal B/Bool (B/eq #False{} #True{}) (#False{}))
+TEST_1 
+: (Equal/Equal Bool/Bool (Bool/eq #False{} #True{}) (#False{}))
 = #Refl{}
 

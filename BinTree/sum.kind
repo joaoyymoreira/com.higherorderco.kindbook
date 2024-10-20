@@ -1,50 +1,41 @@
-use BinTree/ as BT/
-use Nat/ as N/
-
 // Calculates the sum of all values in a tree of natural numbers.
 // - 1st: The tree to sum.
 // = The sum of all values in the tree.
-BT/sum
-: ∀(t: (BT/BinTree N/Nat))
-  N/Nat
+BinTree/sum
+: ∀(t: (BinTree/BinTree Nat/Nat))
+  Nat/Nat
 = λ{
   #Leaf:
     #Zero{}
   #Node: λt.val λt.lft λt.rgt
-    let lft_sum = (BT/sum t.lft)
-    let rgt_sum = (BT/sum t.rgt)
-    (N/add t.val (N/add lft_sum rgt_sum))
+    let lft_sum = (BinTree/sum t.lft)
+    let rgt_sum = (BinTree/sum t.rgt)
+    (Nat/add t.val (Nat/add lft_sum rgt_sum))
 }
 
-//TEST//
-
-use BinTree/ as BT/
-use Nat/ as N/
-use Equal/ as E/
-
 // Test: Sum of an empty tree
-T0
-: (E/Equal N/Nat (BT/sum #Leaf{}) #Zero{})
+TEST_0
+: (Equal/Equal Nat/Nat (BinTree/sum #Leaf{}) #Zero{})
 = #Refl{}
 
 // Test: Sum of a tree with a single node
-T1
-: (E/Equal N/Nat (BT/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_1
+: (Equal/Equal Nat/Nat (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: Sum of a balanced tree
-T2
-: (E/Equal N/Nat
-    (BT/sum (#Node{#Succ{#Zero{}}
+TEST_2
+: (Equal/Equal Nat/Nat
+    (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
               (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
 = #Refl{}
 
 // Test: Sum of an unbalanced tree
-T3
-: (E/Equal N/Nat
-    (BT/sum (#Node{#Succ{#Zero{}}
+TEST_3
+: (Equal/Equal Nat/Nat
+    (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Succ{#Zero{}}}
                 (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
                 #Leaf{}})
@@ -53,9 +44,9 @@ T3
 = #Refl{}
 
 // Test: Sum of a larger tree
-T4
-: (E/Equal N/Nat
-    (BT/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
+TEST_4
+: (Equal/Equal Nat/Nat
+    (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
               (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}
                 (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
                 (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})})
@@ -66,16 +57,16 @@ T4
 = #Refl{}
 
 // Test: Sum of a tree with zero and small numbers
-T5
-: (E/Equal N/Nat
-    (BT/sum (#Node{#Zero{} (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})}))
+TEST_5
+: (Equal/Equal Nat/Nat
+    (BinTree/sum (#Node{#Zero{} (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})}))
     #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: Sum of a tree with repeated values
-T6
-: (E/Equal N/Nat
-    (BT/sum (#Node{#Succ{#Zero{}}
+TEST_6
+: (Equal/Equal Nat/Nat
+    (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Zero{}}
                 (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
                 (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})})

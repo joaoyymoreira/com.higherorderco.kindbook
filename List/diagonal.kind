@@ -1,17 +1,15 @@
-use List/ as L/
-
 // Computes the diagonal of a list of lists.
 // - A: The type of elements in the lists.
 // - xss: The input list of lists.
 // = A list containing the diagonal elements of the input.
-L/diagonal
+List/diagonal
 : ∀(A: *)
-  ∀(xss: (L/List (L/List A)))
-  (L/List A)
+  ∀(xss: (List/List (List/List A)))
+  (List/List A)
 = λA λxss
-  (L/foldr
-    (L/List A)
-    (L/List A)
-    (L/append A)
+  (List/foldr
+    (List/List A)
+    (List/List A)
+    (List/append A)
     #Nil{}
-    (L/stripe A xss))
+    (List/stripe A xss))

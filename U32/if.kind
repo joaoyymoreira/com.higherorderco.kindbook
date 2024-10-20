@@ -1,5 +1,3 @@
-use U32/ as U32/
-
 // Conditional expression for U32 values.
 // 1st: The type of the result.
 // 2nd: The condition to evaluate.

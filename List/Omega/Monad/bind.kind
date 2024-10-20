@@ -1,6 +1,3 @@
-use List/Omega/ as LO/
-use List/ as L/
-
 // Binds an Omega value with a function that returns an Omega.
 // - A: The type of elements in the input Omega.
 // - B: The type of elements in the output Omega.
@@ -15,8 +12,8 @@ LO/bind
   (LO/Omega B)
 = λA λB λ{
   #MkOmega: λomega.runOmega
-    let mapped = (L/map _ _ (λx (LO/Omega/runOmega _ (f x))) omega.runOmega)
-    #MkOmega{(L/diagonal _ mapped)}
+    let mapped = (List/map _ _ (λx (LO/Omega/runOmega _ (f x))) omega.runOmega)
+    #MkOmega{(List/diagonal _ mapped)}
 }
 
 // Infix operator for bind

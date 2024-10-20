@@ -1,32 +1,27 @@
-use BinMap/ as BM/
-use Bits/ as BS/
-use Maybe/ as M/
-use BinTree/ as BT/
-
 // Initializes an entry in the BinMap if it doesn't already exist.
 // - A: The type of values stored in the map.
 // - m: The BinMap to initialize the entry in.
 // - k: The Bits key for the entry.
 // - v: The value to initialize the entry with.
 // = A new BinMap with the entry initialized if it didn't exist before.
-BM/init
+BinMap/init
 : ∀(A: *)
-  ∀(m: (BM/BinMap A))
-  ∀(k: BS/Bits)
+  ∀(m: (BinMap/BinMap A))
+  ∀(k: Bits/Bits)
   ∀(v: A)
-  (BM/BinMap A)
+  (BinMap/BinMap A)
 = λA λ{
   #Leaf: λ{
 		#E: λv #Node{#Some{v} #Leaf{} #Leaf{}}
-		#O: λb λv #Node{#None{} (BM/init A #Leaf{} b v) #Leaf{}}
-		#I: λb λv #Node{#None{} #Leaf{} (BM/init A #Leaf{} b v)}
+		#O: λb λv #Node{#None{} (BinMap/init A #Leaf{} b v) #Leaf{}}
+		#I: λb λv #Node{#None{} #Leaf{} (BinMap/init A #Leaf{} b v)}
 	}
   #Node: λval λlft λrgt λ{
 		#E: λv 	
 			use none = #Node{#Some{v} #Leaf{} #Leaf{}}
 			use some = λx #Node{#Some{x} #Leaf{} #Leaf{}}
-			(M/match A (λx (BM/BinMap A)) none some val)
-		#O: λb λv #Node{val (BM/init A lft b v) rgt}
-		#I: λb λv #Node{val lft (BM/init A rgt b v)}
+			(Maybe/match A (λx (BinMap/BinMap A)) none some val)
+		#O: λb λv #Node{val (BinMap/init A lft b v) rgt}
+		#I: λb λv #Node{val lft (BinMap/init A rgt b v)}
 	}
 }

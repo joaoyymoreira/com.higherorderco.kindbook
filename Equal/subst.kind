@@ -1,5 +1,3 @@
-use Equal/ as E/
-
 // Substitution property of equality.
 // 1st: The type of the values being compared.
 // 2nd: The predicate.
@@ -8,12 +6,12 @@ use Equal/ as E/
 // 5th: Proof that 3rd is equal to 4th.
 // 6th: Proof that 2nd holds for 3rd.
 // = Proof that 2nd holds for 4th.
-E/subst
+Equal/subst
 : ∀(A: *)
   ∀(P: ∀(z: A) *)
   ∀(x: A)
   ∀(y: A)
-  ∀(e: (E/Equal A x y))
+  ∀(e: (Equal/Equal A x y))
   ∀(p: (P x))
   (P y)
 = λA λP λx λy λ{

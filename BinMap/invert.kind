@@ -1,70 +1,59 @@
-use BinMap/ as BM/
-use BinTree/ as BT/
-use Maybe/ as M/
-
 // Helper function for inverting and splitting a BinMap
-BM/invert-split-go
+BinMap/invert-split-go
 : ∀(A: *)
-  ∀(x: (M/Maybe A))
-  ∀(a: (BM/BinMap A))
-  ∀(b: (BM/BinMap A))
-  (BM/BinMap A)
+  ∀(x: (Maybe/Maybe A))
+  ∀(a: (BinMap/BinMap A))
+  ∀(b: (BinMap/BinMap A))
+  (BinMap/BinMap A)
 = λA λx λ{
     #Leaf: λ{
 			#Leaf: #Node{x #Leaf{} #Leaf{}}
-			#Node: λbval λblft λbrgt (BM/invert-split-go A x (#Node{#None{} #Leaf{} #Leaf{}}) (#Node{bval blft brgt}))
+			#Node: λbval λblft λbrgt (BinMap/invert-split-go A x (#Node{#None{} #Leaf{} #Leaf{}}) (#Node{bval blft brgt}))
 		}
     #Node: λaval λalft λargt λ{
-			#Leaf: (BM/invert-split-go A x (#Node{aval alft argt}) (#Node{#None{} #Leaf{} #Leaf{}}))
+			#Leaf: (BinMap/invert-split-go A x (#Node{aval alft argt}) (#Node{#None{} #Leaf{} #Leaf{}}))
 			#Node: λbval λblft λbrgt #Node{x #Node{aval alft blft} #Node{bval argt brgt}}
 		}
   }
 
 // Inverts and splits a BinMap
-BM/invert-split
+BinMap/invert-split
 : ∀(A: *)
-  ∀(m: (BM/BinMap A))
-  (BM/BinMap A)
+  ∀(m: (BinMap/BinMap A))
+  (BinMap/BinMap A)
 = λA λ{
     #Leaf: #Leaf{}
-    #Node: λval λlft λrgt (BM/invert-split-go A val (BM/invert-split A lft) (BM/invert-split A rgt))
+    #Node: λval λlft λrgt (BinMap/invert-split-go A val (BinMap/invert-split A lft) (BinMap/invert-split A rgt))
   }
 
 // Inverts a BinMap
 // Note: This function is not guaranteed to terminate for all inputs
-BM/invert
+BinMap/invert
 : ∀(A: *)
-  ∀(m: (BM/BinMap A))
-  (BM/BinMap A)
+  ∀(m: (BinMap/BinMap A))
+  (BinMap/BinMap A)
 = λA λm
-	let inv = (BM/invert-split A m)
+	let inv = (BinMap/invert-split A m)
 	use leaf = #Leaf{}
-	use node = λval λlft λrgt λl λr (#Node{val (BM/invert A l) (BM/invert A r)})
-	(BT/match (M/Maybe A) (λx (BM/BinMap A)) leaf node inv)
-//TEST//
-
-use BinMap/ as BM/
-use Bits/ as BS/
-use Equal/ as E/
-use Maybe/ as M/
-
+	use node = λval λlft λrgt λl λr (#Node{val (BinMap/invert A l) (BinMap/invert A r)})
+	(BinTree/match (Maybe/Maybe A) (λx (BinMap/BinMap A)) leaf node inv)
 // Test: Inverting an empty BinMap should return an empty BinMap
-T0
-: (E/Equal (BM/BinMap BS/Bits) (BM/invert BS/Bits (BM/empty BS/Bits)) (BM/empty BS/Bits))
+TEST_0
+: (Equal/Equal (BinMap/BinMap Bits/Bits) (BinMap/invert Bits/Bits (BinMap/empty Bits/Bits)) (BinMap/empty Bits/Bits))
 = #Refl{}
 
 // Test: Inverting a BinMap with a single element should return the same BinMap
-T1
-: (E/Equal
-    (BM/BinMap BS/Bits)
-    (BM/invert BS/Bits (BM/set BS/Bits (BM/empty BS/Bits) #E{} (#O{#E{}})))
-    (BM/set BS/Bits (BM/empty BS/Bits) #E{} (#O{#E{}})))
+TEST_1
+: (Equal/Equal
+    (BinMap/BinMap Bits/Bits)
+    (BinMap/invert Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) #E{} (#O{#E{}})))
+    (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) #E{} (#O{#E{}})))
 = #Refl{}
 
 // Test: Inverting a BinMap twice should return the original BinMap
-T2
-: (E/Equal
-    (BM/BinMap BS/Bits)
-    (BM/invert BS/Bits (BM/invert BS/Bits (BM/set BS/Bits (BM/set BS/Bits (BM/empty BS/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}}))))
-    (BM/set BS/Bits (BM/set BS/Bits (BM/empty BS/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}})))
+TEST_2
+: (Equal/Equal
+    (BinMap/BinMap Bits/Bits)
+    (BinMap/invert Bits/Bits (BinMap/invert Bits/Bits (BinMap/set Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}}))))
+    (BinMap/set Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}})))
 = #Refl{}

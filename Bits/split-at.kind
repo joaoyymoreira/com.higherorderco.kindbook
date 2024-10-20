@@ -1,57 +1,46 @@
-use Bits/ as BS/
-use Nat/ as N/
-use Pair/ as P/
-
 // Splits a Bits value at a specified position.
 // - 1st: The position at which to split the Bits.
 // - 2nd: The Bits value to be split.
 // = A Pair of Bits where the first element contains the bits before the split point,
 //   and the second element contains the bits after the split point.
-BS/split-at
-: ∀(m: N/Nat)
-  ∀(bits: BS/Bits)
-  (P/Pair BS/Bits BS/Bits)
+Bits/split-at
+: ∀(m: Nat/Nat)
+  ∀(bits: Bits/Bits)
+  (Pair/Pair Bits/Bits Bits/Bits)
 = λ{
   #Zero: λbits  #Pair{#E bits}
   #Succ: λpred λ{
-    #E: #Pair{(BS/pad-zeros pred #E) #E}
+    #E: #Pair{(Bits/pad-zeros pred #E) #E}
     #O: λtail
-      let #Pair{collected rest} = (BS/split-at pred tail)
+      let #Pair{collected rest} = (Bits/split-at pred tail)
       #Pair{#O{collected} rest}
     #I: λtail
-      let #Pair{collected rest} = (BS/split-at pred tail)
+      let #Pair{collected rest} = (Bits/split-at pred tail)
       #Pair{#I{collected} rest}
   }
 }
 
-//TEST//
-
-use Bits/ as BS/
-use Nat/ as N/
-use Pair/ as P/
-use Equal/ as E/
-
 // Test: Split at zero
-T0 
-: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
+TEST_0 
+: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
 = #Refl
 
 // Test: Split at one for non-empty Bits
-T1 
-: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
+TEST_1 
+: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
 = #Refl
 
 // Test: Split at length greater than Bits length
-T2 
-: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+TEST_2 
+: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
 = #Refl
 
 // Test: Split empty Bits
-T3 
-: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #1 #E) (#Pair{#E #E}))
+TEST_3 
+: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #1 #E) (#Pair{#E #E}))
 = #Refl
 
 // Test: Split at exact length of Bits
-T4 
-: (E/Equal (P/Pair BS/Bits BS/Bits) (BS/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+TEST_4 
+: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
 = #Refl

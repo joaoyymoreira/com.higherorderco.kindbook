@@ -1,30 +1,27 @@
-use Trait/ as T/
-use List/ as L/
-
 // Represents the Monoid trait for a type A
-T/Monoid
+Trait/Monoid
 : ∀(A: *)
   *
 = λA data[]{
   #Monoid{
     memp: A
     mapp: ∀(x: A) ∀(y: A) A
-  } : (T/Monoid A)
+  } : (Trait/Monoid A)
 }
 
 // Accessor for the memp field
-T/Monoid/memp
+Trait/Monoid/memp
 : ∀(A: *)
-  ∀(m: (T/Monoid A))
+  ∀(m: (Trait/Monoid A))
   A
 = λA λ{
   #Monoid: λm.memp λm.mapp m.memp
 }
 
 // Accessor for the mapp field
-T/Monoid/mapp
+Trait/Monoid/mapp
 : ∀(A: *)
-  ∀(m: (T/Monoid A))
+  ∀(m: (Trait/Monoid A))
   ∀(x: A)
   ∀(y: A)
   A
@@ -33,10 +30,10 @@ T/Monoid/mapp
 }
 
 // Concatenates all elements in a list using the monoid operation
-T/Monoid/concat
+Trait/Monoid/concat
 : ∀(A: *)
-  ∀(m: (T/Monoid A))
-  ∀(xs: (L/List A))
+  ∀(m: (Trait/Monoid A))
+  ∀(xs: (List/List A))
   A
 = λA λm λxs
-  (L/foldr _ _ (T/Monoid/mapp _ m) (T/Monoid/memp _ m) xs)
+  (List/foldr _ _ (Trait/Monoid/mapp _ m) (Trait/Monoid/memp _ m) xs)

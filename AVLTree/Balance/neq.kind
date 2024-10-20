@@ -1,14 +1,11 @@
-use AVLTree/Balance/ as AVL/
-use Bool/ as B/
-
 // Inequality for Balance values.
 // - a: The first Balance value.
 // - b: The second Balance value.
 // = True if 'a' and 'b' are different Balance values, False otherwise.
-AVL/neq
-: ∀(a: AVL/Balance)
-  ∀(b: AVL/Balance)
-  B/Bool
+AVLTree/neq
+: ∀(a: AVLTree/Balance)
+  ∀(b: AVLTree/Balance)
+  Bool/Bool
 = λ{
   #MinusOne: λ{
     #MinusOne:  #False{}

@@ -1,31 +1,28 @@
-use Queue/ as Q/
-use List/ as L/
-
 // A queue that stores a list of elements to be dequeued
 // and a list of elements that have been enqueued.
 // When dequeueing, if `front` is empty then `back` is reversed
 // and replaces `front`.
-Q/Queue
+Queue/Queue
 : ∀(A: *)
   *
 = λA data[]{
-  #MkQueue{ front:(L/List A) back:(L/List A) } : (Q/Queue A)
+  #MkQueue{ front:(List/List A) back:(List/List A) } : (Queue/Queue A)
 }
 
 // Accessor for the front field
-Q/Queue/front
+Queue/Queue/front
 : ∀(A: *)
-  ∀(q: (Q/Queue A))
-  (L/List A)
+  ∀(q: (Queue/Queue A))
+  (List/List A)
 = λA λ{
   #MkQueue: λq.front λq.back q.front
 }
 
 // Accessor for the back field
-Q/Queue/back
+Queue/Queue/back
 : ∀(A: *)
-  ∀(q: (Q/Queue A))
-  (L/List A)
+  ∀(q: (Queue/Queue A))
+  (List/List A)
 = λA λ{
   #MkQueue: λq.front λq.back q.back
 }

@@ -1,7 +1,4 @@
-use Nat/ as N/
-use Trait/ as T/
-
 // Instance of Ord trait for Nat
-N/Trait/Ord : (T/Ord N/Nat) = 
-  use x = T/Ord
-  (T/Ord/derive _ N/compare)
+Nat/Trait/Ord : (Trait/Ord Nat/Nat) = 
+  use x = Trait/Ord
+  (Trait/Ord/derive _ Nat/compare)

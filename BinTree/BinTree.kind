@@ -1,10 +1,8 @@
-use BinTree/ as BT/
-
 // Defines a binary tree datatype.
 // - Node: Contains a value and two subtrees.
 // - Leaf: Represents an empty tree.
-BT/BinTree : * -> *
+BinTree/BinTree : * -> *
 = λA data[]{
-  #Node{ val:A lft:(BT/BinTree A) rgt:(BT/BinTree A) } : (BT/BinTree A)
-  #Leaf{} : (BT/BinTree A)
+  #Node{ val:A lft:(BinTree/BinTree A) rgt:(BinTree/BinTree A) } : (BinTree/BinTree A)
+  #Leaf{} : (BinTree/BinTree A)
 }

@@ -1,19 +1,15 @@
-use List/ as L/
-use Ordering/ as O/
-use Trait/ as T/
-
 // Compares two lists lexicographically.
 // - A: The type of elements in the lists.
 // - ord: The Ord instance for type A.
 // - xs: The first list.
 // - ys: The second list.
 // = LT if xs < ys, EQ if xs = ys, GT if xs > ys.
-L/compare
+List/compare
 : ∀(A: *)
-  ∀(ord: (T/Ord A))
-  ∀(xs: (L/List A))
-  ∀(ys: (L/List A))
-  O/Ordering
+  ∀(ord: (Trait/Ord A))
+  ∀(xs: (List/List A))
+  ∀(ys: (List/List A))
+  Ordering/Ordering
 = λA λord λ{
   #Nil: λ{
     #Nil: #EQ{}
@@ -22,11 +18,11 @@ L/compare
   #Cons: λxs.head λxs.tail λ{
     #Nil: #GT{}
     #Cons: λys.head λys.tail
-      let head_cmp = (T/Ord/compare A ord xs.head ys.head)
-      (O/match
-        O/Ordering
+      let head_cmp = (Trait/Ord/compare A ord xs.head ys.head)
+      (Ordering/match
+        Ordering/Ordering
         #LT{}
-        (L/compare A ord xs.tail ys.tail)
+        (List/compare A ord xs.tail ys.tail)
         #GT{}
         head_cmp)
   }

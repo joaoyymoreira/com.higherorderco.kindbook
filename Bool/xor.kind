@@ -1,13 +1,11 @@
-use Bool/ as B/
-
 // Performs logical XOR operation on two bools.
 // - 1st: The bool.
 // - 2nd: The bool.
 // = True if 1st and 2nd are different, False otherwise.
-B/xor
-: ∀(a: B/Bool)
-  ∀(b: B/Bool)
-  B/Bool
+Bool/xor
+: ∀(a: Bool/Bool)
+  ∀(b: Bool/Bool)
+  Bool/Bool
 = λ{
   #True: λ{
     #True: #False{}
@@ -16,25 +14,19 @@ B/xor
   #False: λb b
 }
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-B/T0
-: (E/Equal B/Bool (B/xor #True{} #True{}) #False{})
+Bool/T0
+: (Equal/Equal Bool/Bool (Bool/xor #True{} #True{}) #False{})
 = #Refl{}
 
-B/T1
-: (E/Equal B/Bool (B/xor #True{} #False{}) #True{})
+Bool/T1
+: (Equal/Equal Bool/Bool (Bool/xor #True{} #False{}) #True{})
 = #Refl{}
 
-B/T2
-: (E/Equal B/Bool (B/xor #False{} #False{}) #False{})
+Bool/T2
+: (Equal/Equal Bool/Bool (Bool/xor #False{} #False{}) #False{})
 = #Refl{}
 
-B/T3
-: (E/Equal B/Bool (B/xor #False{} #True{}) #True{})
+Bool/T3
+: (Equal/Equal Bool/Bool (Bool/xor #False{} #True{}) #True{})
 = #Refl{}
 

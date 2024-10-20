@@ -1,5 +1,3 @@
-use U32/ as U32/
-
 // Returns the maximum of two U32 numbers.
 // - a: The first U32 number.
 // - b: The second U32 number.

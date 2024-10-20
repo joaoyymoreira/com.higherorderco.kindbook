@@ -1,23 +1,19 @@
-use String/ as S/
-use List/ as L/
-use Bool/ as B/
-
 // Joins a list of strings with a separator.
 // - sep: The separator string.
 // - xs: The list of strings to join.
 // = A single string with all input strings concatenated, separated by the given separator.
-S/join
-: ∀(sep: S/String)
-  ∀(xs: (L/List S/String))
-  S/String
+String/join
+: ∀(sep: String/String)
+  ∀(xs: (List/List String/String))
+  String/String
 = λsep λxs
-  (L/foldr _ _ (S/join/go sep) "" xs)
+  (List/foldr _ _ (String/join/go sep) "" xs)
 
-// Helper function for S/join
+// Helper function for String/join
 // Combines a string with the accumulated result
-S/join/go
-: ∀(sep: S/String)
-  ∀(s: S/String)
-  ∀(acc: S/String)
-  S/String
-= λsep λs λacc (B/if S/String (S/eq acc "") s (S/append s (S/append sep acc)))
+String/join/go
+: ∀(sep: String/String)
+  ∀(s: String/String)
+  ∀(acc: String/String)
+  String/String
+= λsep λs λacc (Bool/if String/String (String/eq acc "") s (String/append s (String/append sep acc)))

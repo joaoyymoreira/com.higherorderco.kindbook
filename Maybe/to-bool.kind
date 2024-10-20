@@ -1,14 +1,11 @@
-use Maybe/ as M/
-use Bool/ as B/
-
 // Converts a Maybe value to a Bool.
 // - 1st: The type of the value wrapped by Maybe.
 // - 2nd: The Maybe value to convert.
 // = True if the input is Some, False if it's None.
-M/to-bool
+Maybe/to-bool
 : ∀(A: *)
-  ∀(m: (M/Maybe A))
-  B/Bool
+  ∀(m: (Maybe/Maybe A))
+  Bool/Bool
 = λA λ{
   #None: #False{}
   #Some: λma.value #True{}

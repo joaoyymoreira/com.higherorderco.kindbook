@@ -1,8 +1,5 @@
-use AVLTree/Balance/ as AVL/
-use Trait/ as T/
-
 // Instance of Eq for Balance
-AVL/Trait/Eq : (T/Eq AVL/Balance) =
-  (T/Eq/derive
-    AVL/Balance
-    AVL/Balance/eq)
+AVLTree/Trait/Eq : (Trait/Eq AVLTree/Balance) =
+  (Trait/Eq/derive
+    AVLTree/Balance
+    AVLTree/Balance/eq)

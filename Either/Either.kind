@@ -1,43 +1,33 @@
-use Either/ as E/
-
 // Represents a value of one of two possible types.
 // 1st: The type of the left value.
 // 2nd: The type of the right value.
 // = Returns left or right value.
-E/Either
+Equal/Either
 : ∀(A: *)
   ∀(B: *)
   *
 = λA λB data[]{
-  #Lft{ value: A } : (E/Either A B)
-  #Rgt{ value: B } : (E/Either A B)
+  #Lft{ value: A } : (Equal/Either A B)
+  #Rgt{ value: B } : (Equal/Either A B)
 }
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as EQ/
-use Nat/ as N/
-use Either/ as E/
-
 // Test 1: Construct a Left value
-E/test-left
-: (E/Either N/Nat B/Bool)
+Equal/test-left
+: (Equal/Either Nat/Nat Bool/Bool)
 = #Lft{#Zero{}} 
 
 // Test 2: Construct a Right value
-E/test-right
-: (E/Either N/Nat B/Bool)
+Equal/test-right
+: (Equal/Either Nat/Nat Bool/Bool)
 = #Rgt{#True{}} 
 
 // Test 3: Equality check for Left
-E/T0
-: (EQ/Equal B/Bool (E/test-right) (#Rgt{#True{}}))
+Equal/T0
+: (EQ/Equal Bool/Bool (Equal/test-right) (#Rgt{#True{}}))
 = #Refl{}
 
 // Test 4: Equality check for Right
-E/T1
-: (EQ/Equal B/Bool (E/test-left) (#Lft{#Zero{}}))
+Equal/T1
+: (EQ/Equal Bool/Bool (Equal/test-left) (#Lft{#Zero{}}))
 = #Refl{}
 

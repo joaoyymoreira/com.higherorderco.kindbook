@@ -1,33 +1,22 @@
-use Bits/ as BS/
-use Char/ as C/
-use U32/ as U32/
-
 // Converts a Bits value to its corresponding Unicode character.
 // 1st: The Bits value to convert.
 // = The Unicode character corresponding to the given Bits value.
-BS/to-char
-: ∀(bits: BS/Bits)
-  C/Char
+Bits/to-char
+: ∀(bits: Bits/Bits)
+  Char/Char
 = λbits (U32/from-bits bits)
 
-//TEST//
-
-use Bits/ as BS/
-use Char/ as C/
-use Equal/ as E/
-use U32/ as U32/
-
 // Test: Convert 'A' (Unicode 65) to Char
-T0
-: (E/Equal C/Char (BS/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
+TEST_0
+: (Equal/Equal Char/Char (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
 = #Refl
 
 // // Test: Convert null character (Unicode 0) to Char
 // T1
-// : (E/Equal C/Char (BS/to-char #E) '\0')
+// : (Equal/Equal Char/Char (Bits/to-char #E) '\0')
 // = #Refl
 
 // // Test: Convert space character (Unicode 32) to Char
 // T2
-// : (E/Equal C/Char (BS/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
+// : (Equal/Equal Char/Char (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
 // = #Refl

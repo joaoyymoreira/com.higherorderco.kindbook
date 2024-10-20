@@ -1,15 +1,12 @@
-use List/ as L/
-use Nat/ as N/
-
 // Computes the length of a list.
 // - A: The type of elements in the list.
 // - xs: The input list.
 // = The number of elements in the list.
-L/length
+List/length
 : ∀(A: *)
-  ∀(xs: (L/List A))
-  N/Nat
+  ∀(xs: (List/List A))
+  Nat/Nat
 = λA λ{
   #Nil: #Zero{}
-  #Cons: λxs.head λxs.tail #Succ{(L/length _ xs.tail)}
+  #Cons: λxs.head λxs.tail #Succ{(List/length _ xs.tail)}
 }

@@ -1,62 +1,52 @@
-use Char/ as C/
-use Bool/ as B/
-use U32/ as U32/
-
 // Checks if a character is a digit (0-9).
 // 1st: The character to check.
 // = True if the character is a digit, False otherwise.
-C/is-digit
-: ∀(c: C/Char)
-  B/Bool
+Char/is-digit
+: ∀(c: Char/Char)
+  Bool/Bool
 = λc
-  (B/and (U32/gte c 48) (U32/lte c 57))
-//TEST//
-
-use Char/ as C/
-use Bool/ as B/
-use Equal/ as E/
-
+  (Bool/and (U32/gte c 48) (U32/lte c 57))
 // Test: '0' is a digit
-T0 
-: (E/Equal B/Bool (C/is-digit '0') #True{}) 
+TEST_0 
+: (Equal/Equal Bool/Bool (Char/is-digit '0') #True{}) 
 = #Refl{}
 
 // Test: '9' is a digit
-T1 
-: (E/Equal B/Bool (C/is-digit '9') #True{}) 
+TEST_1 
+: (Equal/Equal Bool/Bool (Char/is-digit '9') #True{}) 
 = #Refl{}
 
 // Test: '5' is a digit
-T2 
-: (E/Equal B/Bool (C/is-digit '5') #True{}) 
+TEST_2 
+: (Equal/Equal Bool/Bool (Char/is-digit '5') #True{}) 
 = #Refl{}
 
 // Test: 'a' is not a digit
-T3 
-: (E/Equal B/Bool (C/is-digit 'a') #False{}) 
+TEST_3 
+: (Equal/Equal Bool/Bool (Char/is-digit 'a') #False{}) 
 = #Refl{}
 
 // Test: 'A' is not a digit
-T4 
-: (E/Equal B/Bool (C/is-digit 'A') #False{}) 
+TEST_4 
+: (Equal/Equal Bool/Bool (Char/is-digit 'A') #False{}) 
 = #Refl{}
 
 // Test: ' ' (space) is not a digit
 // T5 
-// : (E/Equal B/Bool (C/is-digit ' ') #False{}) 
+// : (Equal/Equal Bool/Bool (Char/is-digit ' ') #False{}) 
 // = #Refl{}
 
 // Test: '-' is not a digit
-T6 
-: (E/Equal B/Bool (C/is-digit '-') #False{}) 
+TEST_6 
+: (Equal/Equal Bool/Bool (Char/is-digit '-') #False{}) 
 = #Refl{}
 
 // Test: '/' is not a digit (just before '0' in ASCII)
-T7 
-: (E/Equal B/Bool (C/is-digit '/') #False{}) 
+TEST_7 
+: (Equal/Equal Bool/Bool (Char/is-digit '/') #False{}) 
 = #Refl{}
 
 // Test: ':' is not a digit (just after '9' in ASCII)
-T8 
-: (E/Equal B/Bool (C/is-digit ':') #False{}) 
+TEST_8 
+: (Equal/Equal Bool/Bool (Char/is-digit ':') #False{}) 
 = #Refl{}

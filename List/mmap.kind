@@ -1,6 +1,3 @@
-use List/ as L/
-use Trait/ as T/
-
 // Applies a function to each element of a list, passing the mapped value to a monadic function.
 // This allows for lazy evaluation of the mapped values.
 // - M: The monad type constructor.
@@ -10,20 +7,20 @@ use Trait/ as T/
 // - f: The function to apply to each element.
 // - xs: The elements to apply f to.
 // = A new list with the mapped values from g applied to the results of f.
-L/mmap
+List/mmap
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(a: A) (M B))
-  ∀(xs: (L/List A))
-  (M (L/List B))
+  ∀(xs: (List/List A))
+  (M (List/List B))
 = λM λm λA λB λf λ{
-  #Nil: (T/Monad/pure M m _ #Nil{})
+  #Nil: (Trait/Monad/pure M m _ #Nil{})
   #Cons: λxs.head λxs.tail
-    let bind = (T/Monad/bind M m)
-    let pure = (T/Monad/pure M m)
+    let bind = (Trait/Monad/bind M m)
+    let pure = (Trait/Monad/pure M m)
     (bind _ _ (f xs.head) λy
-    (bind _ _ (L/mmap M m A B f xs.tail) λys
+    (bind _ _ (List/mmap M m A B f xs.tail) λys
     (pure _ (#Cons{y ys}))))
 }

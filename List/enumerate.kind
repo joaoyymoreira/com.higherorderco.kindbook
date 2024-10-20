@@ -1,20 +1,16 @@
-use List/ as L/
-use Nat/ as N/
-use Pair/ as P/
-
 // Helper function for enumerate
 // Recursively builds the enumerated list starting from a given index
-L/enumerate-go
+List/enumerate-go
 : ∀(A: *)
-  ∀(n: N/Nat)
-  ∀(xs: (L/List A))
-  (L/List (P/Pair N/Nat A))
+  ∀(n: Nat/Nat)
+  ∀(xs: (List/List A))
+  (List/List (Pair/Pair Nat/Nat A))
 = λA λn λ{
   #Nil: #Nil{}
   #Cons: λxs.head λxs.tail
     #Cons{
       #Pair{n xs.head}
-      (L/enumerate-go A (#Succ{n}) xs.tail)
+      (List/enumerate-go A (#Succ{n}) xs.tail)
     }
 }
 
@@ -22,27 +18,20 @@ L/enumerate-go
 // - A: The type of elements in the input list
 // - xs: The input list
 // = A new list where each element is paired with its index
-L/enumerate
+List/enumerate
 : ∀(A: *)
-  ∀(xs: (L/List A))
-  (L/List (P/Pair N/Nat A))
-= λA λxs (L/enumerate-go A #Zero{} xs)
-
-//TEST//
-
-use List/ as L/
-use Nat/ as N/
-use Pair/ as P/
-use Equal/ as E/
+  ∀(xs: (List/List A))
+  (List/List (Pair/Pair Nat/Nat A))
+= λA λxs (List/enumerate-go A #Zero{} xs)
 
 // Examples and properties of the enumerate function
 
 // Example: enumerate ["0", "1", "2"] ≡ [(0, "0"), (1, "1"), (2, "2")]
-L/enumerate/example0
-: (E/Equal
-    (L/List (P/Pair N/Nat (L/List U32)))
-    (L/enumerate (L/List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil{}})})}))
-    (#Cons{(P/Pair #Zero{} "0") (#Cons{(P/Pair #Succ{#Zero{}} "1") (#Cons{(P/Pair #Succ{#Succ{#Zero{}}} "2") #Nil{}})})})
+List/enumerate/example0
+: (Equal/Equal
+    (List/List (Pair/Pair Nat/Nat (List/List U32)))
+    (List/enumerate (List/List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil{}})})}))
+    (#Cons{(Pair/Pair #Zero{} "0") (#Cons{(Pair/Pair #Succ{#Zero{}} "1") (#Cons{(Pair/Pair #Succ{#Succ{#Zero{}}} "2") #Nil{}})})})
 )
 = #Refl{} 
 
@@ -55,14 +44,12 @@ L/enumerate/example0
 // Could not read source file.
 // ✗ List/enumerate/example0
 
-
-
 // Property: enumerate [] ≡ []
-L/enumerate/empty
+List/enumerate/empty
 : ∀(A: *)
-  (E/Equal
-    (L/List (P/Pair N/Nat A))
-    (L/enumerate A #Nil{})
+  (Equal/Equal
+    (List/List (Pair/Pair Nat/Nat A))
+    (List/enumerate A #Nil{})
     #Nil{}
   )
 = λA #Refl{}

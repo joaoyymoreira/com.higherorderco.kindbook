@@ -1,46 +1,39 @@
-use Nat/ as N/
-
 // Calculates half of a nat.
 // - n: The number to halve.
 // = The largest nat not exceeding n/2.
-N/half : N/Nat -> N/Nat
-| #Succ{#Succ{n}} = #Succ{(N/half n)} 
+Nat/half : Nat/Nat -> Nat/Nat
+| #Succ{#Succ{n}} = #Succ{(Nat/half n)} 
 | #Succ{n}        = #Zero
 | #Zero           = #Zero
-
-//TEST//
-
-use Nat/ as N/
-use Equal/ as E/
 
 // Test cases for the half function
 
 // Test: half of 0 is 0
-T0
-: (E/Equal N/Nat (N/half #Zero{}) #Zero{})
+TEST_0
+: (Equal/Equal Nat/Nat (Nat/half #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: half of 1 is 0
-T1
-: (E/Equal N/Nat (N/half #Succ{#Zero{}}) #Zero{})
+TEST_1
+: (Equal/Equal Nat/Nat (Nat/half #Succ{#Zero{}}) #Zero{})
 = #Refl{}
 
 // Test: half of 2 is 1
-T2
-: (E/Equal N/Nat (N/half #Succ{#Succ{#Zero{}}}) #Succ{#Zero{}})
+TEST_2
+: (Equal/Equal Nat/Nat (Nat/half #Succ{#Succ{#Zero{}}}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: half of 3 is 1
-T3
-: (E/Equal N/Nat (N/half #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Zero{}})
+TEST_3
+: (Equal/Equal Nat/Nat (Nat/half #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: half of 4 is 2
-T4
-: (E/Equal N/Nat (N/half #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #Succ{#Succ{#Zero{}}})
+TEST_4
+: (Equal/Equal Nat/Nat (Nat/half #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #Succ{#Succ{#Zero{}}})
 = #Refl{}
 
 // Test: half of 5 is 2
-T5
-: (E/Equal N/Nat (N/half #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Zero{}}})
+TEST_5
+: (Equal/Equal Nat/Nat (Nat/half #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Zero{}}})
 = #Refl{}

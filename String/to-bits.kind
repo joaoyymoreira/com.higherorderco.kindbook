@@ -1,38 +1,26 @@
-use String/ as S/
-use Bits/ as BS/
-use Char/ as C/
-use U32/ as U32/
-use List/ as L/
-
 // Converts a string to its binary representation with padded char bits.
 // - 1st: The input string.
 // = The binary representation of the string as Bits, with each char
 //   represented by exactly 21 bits.
-S/to-bits
-: ∀(s: S/String)
-  BS/Bits
+String/to-bits
+: ∀(s: String/String)
+  Bits/Bits
 = λs
-  use char-to-bits = λx (BS/pad-zeros #21 (U32/to-bits x))
-  let bits-list = (L/map U32 BS/Bits char-to-bits s)
-  (BS/concat bits-list)
-
-//TEST//
-
-use String/ as S/
-use Bits/ as BS/
-use Equal/ as E/
+  use char-to-bits = λx (Bits/pad-zeros #21 (U32/to-bits x))
+  let bits-list = (List/map U32 Bits/Bits char-to-bits s)
+  (Bits/concat bits-list)
 
 // Test: Empty string conversion
-T0 
-: (E/Equal BS/Bits (S/to-bits "") #E{})
+TEST_0 
+: (Equal/Equal Bits/Bits (String/to-bits "") #E{})
 = #Refl
 
 // Test: Single character string conversion
-T1 
-: (E/Equal BS/Bits (S/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
+TEST_1 
+: (Equal/Equal Bits/Bits (String/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
 = #Refl
 
 // Test: Two character string conversion
-T2 
-: (E/Equal BS/Bits (S/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+TEST_2 
+: (Equal/Equal Bits/Bits (String/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
 = #Refl

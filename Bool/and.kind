@@ -1,31 +1,24 @@
-use Bool/ as B/
-
 // Performs logical AND operation on two boolean values.
 // - 1st: The boolean value.
 // - 2nd: The boolean value.
 // = True if both 1st and 2nd are true, False otherwise.
-B/and : B/Bool -> B/Bool -> B/Bool
+Bool/and : Bool/Bool -> Bool/Bool -> Bool/Bool
 | #True  b = b
 | #False b = b
 
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-B/T0
-: (E/Equal B/Bool (B/and #True{}  #True{}) (#True{}))
+Bool/T0
+: (Equal/Equal Bool/Bool (Bool/and #True{}  #True{}) (#True{}))
 = #Refl{}
 
-B/T1
-: (E/Equal B/Bool (B/and  #True{} #False{}) #False{})
+Bool/T1
+: (Equal/Equal Bool/Bool (Bool/and  #True{} #False{}) #False{})
 = #Refl{}
 
-B/T2
-: (E/Equal B/Bool (B/and #False{}  #True{} ) #False{})
+Bool/T2
+: (Equal/Equal Bool/Bool (Bool/and #False{}  #True{} ) #False{})
 = #Refl{}
 
-B/T3
-: (E/Equal B/Bool (B/and  #False{} #False{}) #False{})
+Bool/T3
+: (Equal/Equal Bool/Bool (Bool/and  #False{} #False{}) #False{})
 = #Refl{}
 

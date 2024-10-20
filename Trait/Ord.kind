@@ -1,85 +1,81 @@
-use Trait/ as T/
-use Ordering/ as O/
-use Bool/ as B/
-
 // Represents the Ord trait for a type A
-T/Ord
+Trait/Ord
 : ∀(A: *)
   *
 = λA data[]{
   #Ord{
-    compare: ∀(x: A) ∀(y: A) O/Ordering
-    lt: ∀(x: A) ∀(y: A) B/Bool
-    gt: ∀(x: A) ∀(y: A) B/Bool
-    lte: ∀(x: A) ∀(y: A) B/Bool
-    gte: ∀(x: A) ∀(y: A) B/Bool
-  } : (T/Ord A)
+    compare: ∀(x: A) ∀(y: A) Ordering/Ordering
+    lt: ∀(x: A) ∀(y: A) Bool/Bool
+    gt: ∀(x: A) ∀(y: A) Bool/Bool
+    lte: ∀(x: A) ∀(y: A) Bool/Bool
+    gte: ∀(x: A) ∀(y: A) Bool/Bool
+  } : (Trait/Ord A)
 }
 
 // Accessor for the compare field
-T/Ord/compare
+Trait/Ord/compare
 : ∀(A: *)
-  ∀(o: (T/Ord A))
+  ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  O/Ordering
+  Ordering/Ordering
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.compare x y)
 }
 
 // Accessor for the lt field
-T/Ord/lt
+Trait/Ord/lt
 : ∀(A: *)
-  ∀(o: (T/Ord A))
+  ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  B/Bool
+  Bool/Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lt x y)
 }
 
 // Accessor for the gt field
-T/Ord/gt
+Trait/Ord/gt
 : ∀(A: *)
-  ∀(o: (T/Ord A))
+  ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  B/Bool
+  Bool/Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gt x y)
 }
 
 // Accessor for the lte field
-T/Ord/lte
+Trait/Ord/lte
 : ∀(A: *)
-  ∀(o: (T/Ord A))
+  ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  B/Bool
+  Bool/Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lte x y)
 }
 
 // Accessor for the gte field
-T/Ord/gte
+Trait/Ord/gte
 : ∀(A: *)
-  ∀(o: (T/Ord A))
+  ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  B/Bool
+  Bool/Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gte x y)
 }
 
 // Derives an Ord instance from a compare function
-T/Ord/derive
+Trait/Ord/derive
 : ∀(A: *)
-  ∀(compare: ∀(x: A) ∀(y: A) O/Ordering)
-  (T/Ord A)
+  ∀(compare: ∀(x: A) ∀(y: A) Ordering/Ordering)
+  (Trait/Ord A)
 = λA λcompare #Ord{
   compare: compare
-  lt: λx λy (O/eq (compare x y) #LT{})
-  gt: λx λy (O/eq (compare x y) #GT{})
-  lte: λx λy (O/neq (compare x y) #GT{})
-  gte: λx λy (O/neq (compare x y) #LT{})
+  lt: λx λy (Ordering/eq (compare x y) #LT{})
+  gt: λx λy (Ordering/eq (compare x y) #GT{})
+  lte: λx λy (Ordering/neq (compare x y) #GT{})
+  gte: λx λy (Ordering/neq (compare x y) #LT{})
 }

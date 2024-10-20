@@ -1,51 +1,44 @@
-use Nat/ as N/
-
 // Doubles a natural number.
 // 1st: The number to double.
 // = The double of the input number.
-N/double
-: ∀(n: N/Nat)
-  N/Nat
+Nat/double
+: ∀(n: Nat/Nat)
+  Nat/Nat
 = λ{
   #Zero: #Zero{}
-  #Succ: λn.pred #Succ{#Succ{(N/double n.pred)}}
+  #Succ: λn.pred #Succ{#Succ{(Nat/double n.pred)}}
 }
-//TEST//
-
-use Nat/ as N/
-use Equal/ as E/
-
 // Tests for the double function.
 
 // Test: double 0 = 0
-T0
-: (E/Equal N/Nat (N/double #Zero{}) #Zero{})
+TEST_0
+: (Equal/Equal Nat/Nat (Nat/double #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: double 1 = 2
-T1
-: (E/Equal N/Nat (N/double #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
+TEST_1
+: (Equal/Equal Nat/Nat (Nat/double #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
 = #Refl{}
 
 // Test: double 2 = 4
-T2
-: (E/Equal N/Nat (N/double #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
+TEST_2
+: (Equal/Equal Nat/Nat (Nat/double #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
 = #Refl{}
 
 // Test: double 5 = 10
-T3
-: (E/Equal N/Nat (N/double #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
+TEST_3
+: (Equal/Equal Nat/Nat (Nat/double #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
 = #Refl{}
 
 // Test: double (double 2) = 8
-T4
-: (E/Equal N/Nat (N/double (N/double #Succ{#Succ{#Zero{}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
+TEST_4
+: (Equal/Equal Nat/Nat (Nat/double (Nat/double #Succ{#Succ{#Zero{}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
 = #Refl{}
 
 // Test: double (3 + 2) = double 3 + double 2
-T5
-: (E/Equal
-    N/Nat
-    (N/double (N/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}))
-    (N/add (N/double #Succ{#Succ{#Succ{#Zero{}}}}) (N/double #Succ{#Succ{#Zero{}}})))
+TEST_5
+: (Equal/Equal
+    Nat/Nat
+    (Nat/double (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}))
+    (Nat/add (Nat/double #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/double #Succ{#Succ{#Zero{}}})))
 = #Refl{}

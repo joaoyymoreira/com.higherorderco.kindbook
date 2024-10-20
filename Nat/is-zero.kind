@@ -1,33 +1,24 @@
-use Nat/ as N/
-use Bool/ as B/
-
 // Checks if a natural number is zero.
 // This function determines whether the given natural number is zero or not.
 // 1st: The natural number to check.
 // = True if the input is zero, False otherwise.
-N/is-zero
-: ∀(n: N/Nat)
-  B/Bool
+Nat/is-zero
+: ∀(n: Nat/Nat)
+  Bool/Bool
 = λ{
   #Zero: #True{}
   #Succ: λn.pred #False{}
 }
-//TEST//
-
-use Nat/ as N/
-use Bool/ as B/
-use Equal/ as E/
-
-// Tests for the N/is-zero function.
+// Tests for the Nat/is-zero function.
 
 // Test: is-zero of Zero should be True
-T0 : (E/Equal B/Bool (N/is-zero #Zero{}) #True{})
+TEST_0 : (Equal/Equal Bool/Bool (Nat/is-zero #Zero{}) #True{})
   = #Refl{}
 
 // Test: is-zero of 1 should be False
-T1 : (E/Equal B/Bool (N/is-zero #Succ{#Zero{}}) #False{})
+TEST_1 : (Equal/Equal Bool/Bool (Nat/is-zero #Succ{#Zero{}}) #False{})
   = #Refl{}
 
 // Test: is-zero of 2 should be False
-T2 : (E/Equal B/Bool (N/is-zero #Succ{#Succ{#Zero{}}}) #False{})
+TEST_2 : (Equal/Equal Bool/Bool (Nat/is-zero #Succ{#Succ{#Zero{}}}) #False{})
   = #Refl{}

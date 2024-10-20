@@ -1,11 +1,9 @@
-use Ordering/ as O/
-
-O/match
+Ordering/match
 : ∀(A: *)
   ∀(lt: A)
   ∀(eq: A)
   ∀(gt: A)
-  ∀(ord: O/Ordering)
+  ∀(ord: Ordering/Ordering)
   A
 = λA λlt λeq λgt λ{
   #LT: lt

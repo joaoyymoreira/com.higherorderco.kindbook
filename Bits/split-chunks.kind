@@ -1,69 +1,57 @@
-use Bits/ as BS/
-use Nat/ as N/
-use List/ as L/
-use Pair/ as P/
-
 // Splits a Bits value into chunks of a specified length.
 // - 1st: The length of each chunk.
 // - 2nd: The Bits value to be split.
 // = A List of Bits, where each element is a chunk of the specified length.
-BS/split-chunks
-: ∀(d: N/Nat)
-  ∀(bits: BS/Bits)
-  (L/List BS/Bits)
+Bits/split-chunks
+: ∀(d: Nat/Nat)
+  ∀(bits: Bits/Bits)
+  (List/List Bits/Bits)
 = λ{
   #Zero: λbits []
   #Succ: λpred λ{
     #E: []
     #O: λtail
-      let #Pair{collected rest} = (BS/split-at #Succ{pred} #O{tail})
+      let #Pair{collected rest} = (Bits/split-at #Succ{pred} #O{tail})
       match rest {
           #E: #Cons{collected []}
-          #O: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #O{rest.tail})}
-          #I: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #I{rest.tail})}
+          #O: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #O{rest.tail})}
+          #I: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #I{rest.tail})}
       }
     #I: λtail
-      let #Pair{collected rest} = (BS/split-at #Succ{pred} #I{tail})
+      let #Pair{collected rest} = (Bits/split-at #Succ{pred} #I{tail})
       match rest {
           #E: #Cons{collected []}
-          #O: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #O{rest.tail})}
-          #I: λrest.tail #Cons{collected (BS/split-chunks #Succ{pred} #I{rest.tail})}
+          #O: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #O{rest.tail})}
+          #I: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #I{rest.tail})}
       }
   }
 }
 
-//TEST//
-
-use Bits/ as BS/
-use Nat/ as N/
-use List/ as L/
-use Equal/ as E/
-
 // Test: Split empty Bits
-T0 
-: (E/Equal (L/List BS/Bits) (BS/split-chunks #3 #E) [])
+TEST_0 
+: (Equal/Equal (List/List Bits/Bits) (Bits/split-chunks #3 #E) [])
 = #Refl
 
 // Test: Split Bits into chunks of length 2
-T1 
-: (E/Equal
-  (L/List BS/Bits)
-  (BS/split-chunks #2 (N/to-bits #45))
+TEST_1 
+: (Equal/Equal
+  (List/List Bits/Bits)
+  (Bits/split-chunks #2 (Nat/to-bits #45))
   (#Cons{#I{#O{#E}} #Cons{#I{#I{#E}} #Cons{#O{#I{#E}} []}}}))
 = #Refl
 
 // Test: Split Bits into chunks of length 3
-T2 
-: (E/Equal
-  (L/List BS/Bits)
-  (BS/split-chunks #3 (N/to-bits #123))
+TEST_2 
+: (Equal/Equal
+  (List/List Bits/Bits)
+  (Bits/split-chunks #3 (Nat/to-bits #123))
   (#Cons{#I{#I{#O{#E}}} #Cons{#I{#I{#I{#E}}} #Cons{#I{#O{#E}} []}}}))
 = #Refl
 
 // Test: Split Bits with chunk size larger than Bits length
-T3 
-: (E/Equal
-  (L/List BS/Bits)
-  (BS/split-chunks #8 (N/to-bits #15))
+TEST_3 
+: (Equal/Equal
+  (List/List Bits/Bits)
+  (Bits/split-chunks #8 (Nat/to-bits #15))
   (#Cons{#I{#I{#I{#I{#O{#O{#O{#E}}}}}}} []}))
 = #Refl

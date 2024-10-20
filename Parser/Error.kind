@@ -1,47 +1,34 @@
-use Parser/ as PS/
-use Nat/ as N/
-use String/ as S/
-
 // Represents a parser error with an index and an error message.
 // - index: The position in the input where the error occurred.
 // - error: A string describing the error.
-PS/Error : * = data[]{
+Parser/Error : * = data[]{
   #MkError{
-    index: N/Nat
-    error: S/String
-  } : PS/Error
+    index: Nat/Nat
+    error: String/String
+  } : Parser/Error
 }
 // Accessor for the index field
-PS/Error/index
-: ∀(e: PS/Error)
-  N/Nat
+Parser/Error/index
+: ∀(e: Parser/Error)
+  Nat/Nat
 = λ{
   #MkError: λe.index λe.error e.index
 }
 // Accessor for the error field
-PS/Error/error
-: ∀(e: PS/Error)
-  S/String
+Parser/Error/error
+: ∀(e: Parser/Error)
+  String/String
 = λ{
   #MkError: λe.index λe.error e.error
 }
 
-//TEST//
-
-use Parser/ as PS/
-use Pair/ as P/
-use String/ as S/
-use Nat/ as N/
-use Equal/ as E/
-
 // Test: Verify that Error constructor and field accessors work correctly
 
-
-T0
-: (E/Equal use x = PS/Error
-    (P/Pair N/Nat S/String)
+TEST_0
+: (Equal/Equal use x = Parser/Error
+    (Pair/Pair Nat/Nat String/String)
     (#Pair{
-      (PS/Error/index (#MkError{#5 "Test error"})) 
-      (PS/Error/error (#MkError{#5 "Test error"}))})
+      (Parser/Error/index (#MkError{#5 "Test error"})) 
+      (Parser/Error/error (#MkError{#5 "Test error"}))})
     (#Pair{#5 "Test error"}))
 = #Refl

@@ -1,5 +1,3 @@
-use Equal/ as E/
-
 // Left equality property.
 // 1st: The type of the values being compared.
 // 2nd: The common value.
@@ -8,13 +6,13 @@ use Equal/ as E/
 // 5th: Proof that 3rd is equal to 2nd.
 // 6th: Proof that 4th is equal to 2nd.
 // = Proof that 3rd is equal to 4th.
-E/left
+Equal/left
 : ∀(A: *)
   ∀(x: A)
   ∀(a: A)
   ∀(b: A)
-  ∀(e1: (E/Equal A a x))
-  ∀(e2: (E/Equal A b x))
-  (E/Equal A a b)
+  ∀(e1: (Equal/Equal A a x))
+  ∀(e2: (Equal/Equal A b x))
+  (Equal/Equal A a b)
 = λA λx λa λb λe1 λe2
-  (E/trans A a x b e1 (E/sym A b x e2))
+  (Equal/trans A a x b e1 (Equal/sym A b x e2))

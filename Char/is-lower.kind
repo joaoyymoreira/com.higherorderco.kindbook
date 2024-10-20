@@ -1,36 +1,26 @@
-use Char/ as C/
-use Bool/ as B/
-use U32/ as U32/
-
 // Checks if a character is a lowercase letter.
 // 1st: The character to check.
 // = True if the character is lowercase, False otherwise.
-C/is-lower
-: ∀(code: C/Char)
-  B/Bool
-= λcode (B/and (U32/gte code 97) (U32/lte code 122))
-//TEST//
-
-use Char/ as C/
-use Bool/ as B/
-use Equal/ as E/
-
+Char/is-lower
+: ∀(code: Char/Char)
+  Bool/Bool
+= λcode (Bool/and (U32/gte code 97) (U32/lte code 122))
 // Test: Lowercase 'a' is considered lowercase
-T0 
-: (E/Equal B/Bool (C/is-lower 'a') #True{}) 
+TEST_0 
+: (Equal/Equal Bool/Bool (Char/is-lower 'a') #True{}) 
 = #Refl{}
 
 // Test: Uppercase 'A' is not considered lowercase
-T1 
-: (E/Equal B/Bool (C/is-lower 'A') #False{}) 
+TEST_1 
+: (Equal/Equal Bool/Bool (Char/is-lower 'A') #False{}) 
 = #Refl{}
 
 // Test: Digit '5' is not considered lowercase
-T2 
-: (E/Equal B/Bool (C/is-lower '5') #False{}) 
+TEST_2 
+: (Equal/Equal Bool/Bool (Char/is-lower '5') #False{}) 
 = #Refl{}
 
 // Test: Special character '@' is not considered lowercase
-T3 
-: (E/Equal B/Bool (C/is-lower '@') #False{}) 
+TEST_3 
+: (Equal/Equal Bool/Bool (Char/is-lower '@') #False{}) 
 = #Refl{}

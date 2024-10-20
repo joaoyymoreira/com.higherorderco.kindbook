@@ -1,65 +1,52 @@
-use Parser/ as PS/
-use Char/ as C/
-use List/ as L/
-use String/ as S/
-use Maybe/ as M/
-
 // Parses multiple characters until a closing quote is encountered.
 // = A list of characters representing the parsed string content.
-PS/parse-chars : (PS/Parser S/String)
-= do PS/Monad {
-  ask c = (PS/parse-char)
-  (match (C/eq '"' c) {
-    #True: (PS/Monad/pure _ [])
-    #False: do PS/Monad {
-      ask cs = (PS/parse-chars)
-      (PS/Monad/pure _ #Cons{c cs})
+Parser/parse-chars : (Parser/Parser String/String)
+= do Parser/Monad {
+  ask c = (Parser/parse-char)
+  (match (Char/eq '"' c) {
+    #True: (Parser/Monad/pure _ [])
+    #False: do Parser/Monad {
+      ask cs = (Parser/parse-chars)
+      (Parser/Monad/pure _ #Cons{c cs})
     }
   })
 }
 // Parses a quoted string.
 // = A String value representing the parsed quoted string.
-PS/parse-string : (PS/Parser S/String)
-= do PS/Monad {
-  ask y = (PS/consume "\"")
-  ask chars = (PS/parse-chars)
-  (PS/Monad/pure _ (chars))
+Parser/parse-string : (Parser/Parser String/String)
+= do Parser/Monad {
+  ask y = (Parser/consume "\"")
+  ask chars = (Parser/parse-chars)
+  (Parser/Monad/pure _ (chars))
 }
-//TEST//
-
-use Parser/ as PS/
-use String/ as S/
-use Result/ as R/
-use Equal/ as E/
-
 // Test: Parse a normal string
-T0 
-: (E/Equal
-  (PS/Parser S/String)
-  (PS/parse-string (PS/State/new "\"abc\"" #Zero))
+TEST_0 
+: (Equal/Equal
+  (Parser/Parser String/String)
+  (Parser/parse-string (Parser/State/new "\"abc\"" #Zero))
   (#Done{#MkReply{#MkState{[] (U32/to-nat 5)} "abc"}}))
 = #Refl
 
 // Test: Parse a string with escape character
-T1 
-: (E/Equal
-  (PS/Parser S/String)
-  (PS/parse-string (PS/State/new "\"a\\nb\"" #Zero))
+TEST_1 
+: (Equal/Equal
+  (Parser/Parser String/String)
+  (Parser/parse-string (Parser/State/new "\"a\\nb\"" #Zero))
   (#Done{#MkReply{#MkState{[] (U32/to-nat 6)} "a\nb"}}))
 = #Refl
 
 // Test: Parse an empty string
-T2 
-: (E/Equal
-  (PS/Parser S/String)
-  (PS/parse-string (PS/State/new "\"\"" #Zero))
+TEST_2 
+: (Equal/Equal
+  (Parser/Parser String/String)
+  (Parser/parse-string (Parser/State/new "\"\"" #Zero))
   (#Done{#MkReply{#MkState{[] (U32/to-nat 2)} []}}))
 = #Refl
 
 // Test: Parse an invalid string (unclosed quote)
-T3 
-: (E/Equal
-  (PS/Parser S/String)
-  (PS/parse-string (PS/State/new "\"abc" #Zero))
+TEST_3 
+: (Equal/Equal
+  (Parser/Parser String/String)
+  (Parser/parse-string (Parser/State/new "\"abc" #Zero))
   (#Fail{#MkError{(U32/to-nat 4) "Unexpected end of input"}}))
 = #Refl

@@ -1,5 +1,3 @@
-use Function/ as F/
-
 // Flips the order of the first two arguments of a function.
 // - A: The type of the first argument.
 // - B: The type of the second argument.
@@ -8,7 +6,7 @@ use Function/ as F/
 // - y: The second argument to f, which becomes the first.
 // - x: The first argument to f, which becomes the second.
 // = The result of applying f with its first two arguments swapped.
-F/flip
+Function/flip
 : ∀(A: *)
   ∀(B: *)
   ∀(C: *)

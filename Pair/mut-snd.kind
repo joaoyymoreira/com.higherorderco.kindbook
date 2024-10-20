@@ -1,5 +1,3 @@
-use Pair/ as P/
-
 // Applies a function to the second element of a pair.
 // This function creates a new pair with the first element unchanged and the second element transformed.
 // 1st: The type of the first element in the pair.
@@ -8,14 +6,14 @@ use Pair/ as P/
 // 4th: Function to apply to the second element.
 // 5th: Input pair.
 // = A new pair with the first element unchanged and the second element transformed.
-P/mut-snd
+Pair/mut-snd
 : ∀(A: *)
   ∀(B: *)
   ∀(C: *)
   ∀(f: ∀(b: B) C)
-  ∀(pair: (P/Pair A B))
-  (P/Pair A C)
+  ∀(pair: (Pair/Pair A B))
+  (Pair/Pair A C)
 = λA λB λC λf λpair
-  let x = (P/Sigma/fst _ _ pair)
-  let y = (P/Sigma/snd _ _ pair)
+  let x = (Pair/Sigma/fst _ _ pair)
+  let y = (Pair/Sigma/snd _ _ pair)
   #Pair{ x (f y) }

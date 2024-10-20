@@ -1,5 +1,3 @@
-use List/ as L/
-
 // Performs a left fold over a list.
 // - 1st: The type of the accumulator.
 // - 2nd: The type of elements in the input list.
@@ -7,16 +5,16 @@ use List/ as L/
 // - 4th: The initial value (for the empty list case).
 // - 5th: The list to fold over.
 // = The result of folding the list.
-L/foldl
+List/foldl
 : ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(acc: A) ∀(elem: B) A)
   ∀(z: A)
-  ∀(xs: (L/List B))
+  ∀(xs: (List/List B))
   A
 = λA λB λf λz λ{
   #Nil: z
   #Cons: λxs.head λxs.tail 
 		let acc = (f z xs.head)
-		(L/foldl A B f acc xs.tail)
+		(List/foldl A B f acc xs.tail)
 	}

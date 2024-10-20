@@ -1,22 +1,14 @@
-use Parser/ as P/
-use List/ as L/
-use Bool/ as B/
-use Char/ as C/
-use Nat/ as N/
-use String/ as S/
-use Result/ as R/
-
 // Consumes characters from the input as long as they satisfy the given predicate.
 // - pred: A function that takes a Char (U32) and returns a Bool, used as the predicate.
 // = A Parser that returns a String containing the consumed characters.
-P/take-while
-: ∀(pred: ∀(c: C/Char) B/Bool)
-  (P/Parser S/String)
+Pair/take-while
+: ∀(pred: ∀(c: Char/Char) Bool/Bool)
+  (Pair/Parser String/String)
 = λpred λs
-  let input     = (P/State/input s)
-  let consumed  = (L/take-while C/Char pred input)
-  let count     = (S/length consumed)
-  let new-index = (N/add (P/State/index s) count)
-  let new-input = (S/drop count input)
+  let input     = (Pair/State/input s)
+  let consumed  = (List/take-while Char/Char pred input)
+  let count     = (String/length consumed)
+  let new-index = (Nat/add (Pair/State/index s) count)
+  let new-input = (String/drop count input)
   // (#Done{#MkReply{#MkState{new-input new-index} consumed}})
   ?a

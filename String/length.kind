@@ -1,11 +1,7 @@
-use String/ as S/
-use List/ as L/
-use Nat/ as N/
-
 // Computes the length of a string.
 // - 1st: The input string.
 // = The number of characters in the string.
-S/length
-: ∀(str: S/String)
-  N/Nat
-= λstr (L/length U32 str)
+String/length
+: ∀(str: String/String)
+  Nat/Nat
+= λstr (List/length U32 str)

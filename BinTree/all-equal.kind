@@ -1,64 +1,52 @@
-use BinTree/ as BT/
-use Bool/ as B/
-use Trait/ as T/
-
 // Checks if all values in a binary tree are equal.
 // - 1st: The type of elements in the tree.
 // - 2nd: An equality function for type.
 // - 3rd: The binary tree to check.
 // = True if all values in the tree are equal, False otherwise.
-BT/all-equal
+BinTree/all-equal
 : ∀(A: *)
-  ∀(e: (T/Eq A))
-  ∀(t: (BT/BinTree A))
-  B/Bool
+  ∀(e: (Trait/Eq A))
+  ∀(t: (BinTree/BinTree A))
+  Bool/Bool
 = λA λe λ{
   #Leaf: #True{}
   #Node: λx λl λr
-    (BT/fold A B/Bool
+    (BinTree/fold A Bool/Bool
       (λy λle λre
-        (B/and
-          (B/and
-            (T/Eq/eq A e x y)
+        (Bool/and
+          (Bool/and
+            (Trait/Eq/eq A e x y)
             le)
           re))
       #True{}
       (#Node{x l r}))
 }
 
-//TEST//
-
-use BinTree/ as BT/
-use Bool/ as B/
-use Equal/ as E/
-use Nat/ as N/
-use Nat/Trait/ as NT/
-
 // Test: Empty tree is considered all equal
-T0
-: (E/Equal
-    B/Bool
-    (BT/all-equal N/Nat NT/Eq (#Leaf{}))
+TEST_0
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal Nat/Nat NT/Eq (#Leaf{}))
     #True{})
 = #Refl{}
 
 // Test: Single node tree is all equal
-T1
-: (E/Equal
-    B/Bool
-    (BT/all-equal
-      N/Nat
+TEST_1
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal
+      Nat/Nat
       NT/Eq
       (#Node{ #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
     #True{})
 = #Refl{}
 
 // Test: Tree with all equal values
-T2
-: (E/Equal
-    B/Bool
-    (BT/all-equal
-      N/Nat
+TEST_2
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal
+      Nat/Nat
       NT/Eq
       (#Node{#Succ{#Succ{#Succ{#Zero{}}}}
         (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
@@ -67,11 +55,11 @@ T2
 = #Refl{}
 
 // Test: Tree with different values
-T3
-: (E/Equal
-    B/Bool
-    (BT/all-equal
-      N/Nat
+TEST_3
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal
+      Nat/Nat
       NT/Eq
       (#Node{#Succ{#Succ{#Succ{#Zero{}}}}
         (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
@@ -80,11 +68,11 @@ T3
 = #Refl{}
 
 // Test: Larger tree with all equal values
-T4
-: (E/Equal
-    B/Bool
-    (BT/all-equal
-      N/Nat
+TEST_4
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal
+      Nat/Nat
       NT/Eq
       (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}
         (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}
@@ -97,11 +85,11 @@ T4
 = #Refl{}
 
 // Test: Larger tree with one different value
-T5
-: (E/Equal
-    B/Bool
-    (BT/all-equal
-      N/Nat
+TEST_5
+: (Equal/Equal
+    Bool/Bool
+    (BinTree/all-equal
+      Nat/Nat
       NT/Eq
       (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}
         (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}

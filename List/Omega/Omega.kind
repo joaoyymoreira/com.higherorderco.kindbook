@@ -1,21 +1,18 @@
-use List/ as L/
-use Omega/ as O/
-
 // Represents a potentially infinite list of elements.
 // - A: The type of elements in the Omega.
 // = A record containing a List A, which can be thought of as a prefix of an infinite list.
-O/Omega
+Ordering/Omega
 : ∀(A: *)
   *
 = λA data[]{
-  #MkOmega{ runOmega: (L/List A) } : (O/Omega A)
+  #MkOmega{ runOmega: (List/List A) } : (Ordering/Omega A)
 }
 
 // Accessor for the runOmega field
-O/Omega/runOmega
+Ordering/Omega/runOmega
 : ∀(A: *)
-  ∀(omega: (O/Omega A))
-  (L/List A)
+  ∀(omega: (Ordering/Omega A))
+  (List/List A)
 = λA λ{
   #MkOmega: λomega.runOmega omega.runOmega
 }

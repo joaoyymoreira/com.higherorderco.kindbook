@@ -16,7 +16,6 @@ Pair : *
 //| #Pair{#Tic{} v1} #Pair{#Foo{} v2} = ?y
 //| a                b                = ?z
 
-
 bug : Pair -> Pair -> U32
 = λ{
   #Pair: λ{

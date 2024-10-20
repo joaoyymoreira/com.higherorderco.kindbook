@@ -1,9 +1,6 @@
-use Char/ as C/
-use String/ as S/
-
-S/cons
-: ∀(head: C/Char)
-  ∀(tail: S/String)
-  S/String
+String/cons
+: ∀(head: Char/Char)
+  ∀(tail: String/String)
+  String/String
 = λhead λtail
   #Cons{ head tail }

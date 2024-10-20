@@ -1,5 +1,3 @@
-use BinTree/ as BT/
-
 // Dependent eliminator for binary trees.
 // - A: The type of elements in the tree.
 // - P: The motive (type family) for the elimination.
@@ -7,17 +5,17 @@ use BinTree/ as BT/
 // - node: The function to apply for the node case.
 // - tree: The tree to eliminate (scrutinee).
 // = The result of the elimination, whose type depends on the input tree.
-BT/match
+BinTree/match
 : ∀(A: *)
-  ∀(P: ∀(tree: (BT/BinTree A)) *)
+  ∀(P: ∀(tree: (BinTree/BinTree A)) *)
   ∀(leaf: (P #Leaf{}))
   ∀(node: ∀(val: A)
-          ∀(lft: (BT/BinTree A))
-          ∀(rgt: (BT/BinTree A))
+          ∀(lft: (BinTree/BinTree A))
+          ∀(rgt: (BinTree/BinTree A))
           ∀(p_lft: (P lft))
           ∀(p_rgt: (P rgt))
           (P (#Node{val lft rgt})))
-  ∀(tree: (BT/BinTree A))
+  ∀(tree: (BinTree/BinTree A))
   (P tree)
 = λA λP λleaf λnode λ{
   #Leaf: leaf
@@ -26,32 +24,26 @@ BT/match
       tree.val
       tree.lft
       tree.rgt
-      (BT/match A P leaf node tree.lft)
-      (BT/match A P leaf node tree.rgt))
+      (BinTree/match A P leaf node tree.lft)
+      (BinTree/match A P leaf node tree.rgt))
 }
-
-//TEST//
-
-use BinTree/ as BT/
-use Nat/ as N/
-use Equal/ as E/
 
 // Test cases for BinTree match function
 
 // Counts the number of nodes in a binary tree
 count-nodes
 : ∀(A: *)
-  ∀(tree: (BT/BinTree A))
-  N/Nat
+  ∀(tree: (BinTree/BinTree A))
+  Nat/Nat
 = λA λtree
-  (BT/match A (λx N/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(N/add l r)}) tree)
+  (BinTree/match A (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/add l r)}) tree)
 
 // Test: Counting nodes
-T0
-: (E/Equal
-    N/Nat
+TEST_0
+: (Equal/Equal
+    Nat/Nat
     (count-nodes
-      N/Nat
+      Nat/Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -64,17 +56,17 @@ T0
 // Calculates the depth of a binary tree
 tree-depth
 : ∀(A: *)
-  ∀(tree: (BT/BinTree A))
-  N/Nat
+  ∀(tree: (BinTree/BinTree A))
+  Nat/Nat
 = λA λtree
-  (BT/match A (λx N/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(N/max l r)}) tree)
+  (BinTree/match A (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/max l r)}) tree)
 
 // Test: Tree depth
-T1
-: (E/Equal
-    N/Nat
+TEST_1
+: (Equal/Equal
+    Nat/Nat
     (tree-depth
-      N/Nat
+      Nat/Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -87,17 +79,17 @@ T1
 // Counts the number of leaves in a binary tree
 leaf-count
 : ∀(A: *)
-  ∀(tree: (BT/BinTree A))
-  N/Nat
+  ∀(tree: (BinTree/BinTree A))
+  Nat/Nat
 = λA λtree
-  (BT/match A (λx N/Nat) #Succ{#Zero{}} (λval λlft λrgt λl λr (N/add l r)) tree)
+  (BinTree/match A (λx Nat/Nat) #Succ{#Zero{}} (λval λlft λrgt λl λr (Nat/add l r)) tree)
 
 // Test: Leaf count
-T2
-: (E/Equal
-    N/Nat
+TEST_2
+: (Equal/Equal
+    Nat/Nat
     (leaf-count
-      N/Nat
+      Nat/Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -109,15 +101,15 @@ T2
 
 // Sums all values in a binary tree of natural numbers
 sum-tree
-: ∀(tree: (BT/BinTree N/Nat))
-  N/Nat
+: ∀(tree: (BinTree/BinTree Nat/Nat))
+  Nat/Nat
 = λtree
-  (BT/match N/Nat (λx N/Nat) #Zero{} (λval λlft λrgt λl λr (N/add val (N/add l r))) tree)
+  (BinTree/match Nat/Nat (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr (Nat/add val (Nat/add l r))) tree)
 
 // Test: Sum of values (for Nat trees)
-T3
-: (E/Equal
-    N/Nat
+TEST_3
+: (Equal/Equal
+    Nat/Nat
     (sum-tree
       (#Node{
         #Succ{#Succ{#Zero{}}}

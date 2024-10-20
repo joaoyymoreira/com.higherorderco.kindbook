@@ -1,21 +1,17 @@
-use Parser/ as PS/
-use Result/ as R/
-use Function/ as F/
-
 // Applies a function to the result of a parser if it succeeds.
 // - A: The type of the original parser's result.
 // - B: The type of the new parser's result.
 // - fn: The function to apply to the parsed value.
 // - p: The parser to run.
 // = A new parser that applies fn to the result of p if it succeeds.
-PS/map
+Parser/map
 : ∀(A: *)
   ∀(B: *)
   ∀(fn: A -> B)
-  ∀(p: (PS/Parser A))
-  (PS/Parser B)
+  ∀(p: (Parser/Parser A))
+  (Parser/Parser B)
 = λA λB λfn λp λs
   match (p s) {
-    #Done: λr #Done{#MkReply{(PS/Reply/state A r) (fn (PS/Reply/value A r))}}
+    #Done: λr #Done{#MkReply{(Parser/Reply/state A r) (fn (Parser/Reply/value A r))}}
     #Fail: λe #Fail{e}
   }

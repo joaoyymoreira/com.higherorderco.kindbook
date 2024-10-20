@@ -1,14 +1,11 @@
-use List/ as L/
-use Bool/ as B/
-
 // Checks if a list is empty.
 // - A: The type of elements in the list.
 // - xs: The input list to check.
 // = True if the list is empty, False otherwise.
-L/empty
+List/empty
 : ∀(A: *)
-  ∀(xs: (L/List A))
-  B/Bool
+  ∀(xs: (List/List A))
+  Bool/Bool
 = λA λ{
   #Nil: #True{}
   #Cons: λxs.head λxs.tail #False{}

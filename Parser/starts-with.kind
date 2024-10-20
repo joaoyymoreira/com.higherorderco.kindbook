@@ -1,57 +1,45 @@
-use Parser/ as PS/
-use String/ as S/
-use Bool/ as B/
-use Result/ as R/
-
 // Checks if the input starts with a given string.
 // - prefix: The prefix string to check for.
 // = A Parser that returns True if the input starts with the given string, False otherwise.
 //   Does not consume any input.
-PS/starts-with
-: ∀(prefix: S/String)
-  (PS/Parser B/Bool)
+Parser/starts-with
+: ∀(prefix: String/String)
+  (Parser/Parser Bool/Bool)
 = λprefix λs
-  let input = (PS/State/input s)
-  let result = (S/starts-with input prefix)
+  let input = (Parser/State/input s)
+  let result = (String/starts-with input prefix)
   #Done{
     #MkReply{
       state: s
       value: result
     }
   }
-//TEST//
-
-use Parser/ as PS/
-use String/ as S/
-use Bool/ as B/
-use Equal/ as E/
-
 // Test: Starts with matching prefix
-T0 : (E/Equal
-  (R/Result (PS/Reply B/Bool) PS/Error)
-  (PS/starts-with "hello" (PS/State/new "hello world" #0))
+TEST_0 : (Equal/Equal
+  (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+  (Parser/starts-with "hello" (Parser/State/new "hello world" #0))
   #Done{#MkReply{
-    state: (PS/State/new "hello world" #0)
+    state: (Parser/State/new "hello world" #0)
     value: #True
   }}
 ) = #Refl
 
 // // Test: Starts with non-matching prefix
-// T1 : (E/Equal
-//   (R/Result (PS/Reply B/Bool) PS/Error)
-//   (PS/starts-with "hello" (PS/State/new "goodbye world" #0))
+// T1 : (Equal/Equal
+//   (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+//   (Parser/starts-with "hello" (Parser/State/new "goodbye world" #0))
 //   #Done{#MkReply{
-//     state: (PS/State/new "goodbye world" #0)
+//     state: (Parser/State/new "goodbye world" #0)
 //     value: #False
 //   }}
 // ) = #Refl
 
 // Test: Starts with empty string
-T2 : (E/Equal
-  (R/Result (PS/Reply B/Bool) PS/Error)
-  (PS/starts-with "" (PS/State/new "any string" #0))
+TEST_2 : (Equal/Equal
+  (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+  (Parser/starts-with "" (Parser/State/new "any string" #0))
   #Done{#MkReply{
-    state: (PS/State/new "any string" #0)
+    state: (Parser/State/new "any string" #0)
     value: #True
   }}
 ) = #Refl

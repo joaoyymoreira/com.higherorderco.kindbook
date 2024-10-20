@@ -1,13 +1,11 @@
-use Bits/ as BS/
-
 // Performs bitwise NOT operation on a Bits value.
 // - bits: The input Bits value.
 // = A new Bits value representing the bitwise NOT of the input.
-BS/not
-: ∀(bits: BS/Bits)
-  BS/Bits
+Bits/not
+: ∀(bits: Bits/Bits)
+  Bits/Bits
 = λ{
   #E: #E{}
-  #O: λbits.tail #I{(BS/not bits.tail)}
-  #I: λbits.tail #O{(BS/not bits.tail)}
+  #O: λbits.tail #I{(Bits/not bits.tail)}
+  #I: λbits.tail #O{(Bits/not bits.tail)}
 }

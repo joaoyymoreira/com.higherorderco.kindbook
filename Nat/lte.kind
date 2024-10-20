@@ -1,59 +1,50 @@
-use Nat/ as N/
-use Bool/ as B/
-
 // Checks if one natural number is less than or equal to another.
 // 1st: The natural number.
 // 2nd: The natural number.
 // = True if the 1st number is less than or equal to the 2nd, False otherwise.
-N/lte
-: ∀(m: N/Nat)
-  ∀(n: N/Nat)
-  B/Bool
-= λm λn (B/or (N/lt m n) (N/eq m n))
-//TEST//
-
-use Nat/ as N/
-use Bool/ as B/
-use Equal/ as E/
-
+Nat/lte
+: ∀(m: Nat/Nat)
+  ∀(n: Nat/Nat)
+  Bool/Bool
+= λm λn (Bool/or (Nat/lt m n) (Nat/eq m n))
 // Test cases for lte function.
 
 // Test: 0 <= 0 is True.
-T0
-: (E/Equal B/Bool (N/lte #Zero{} #Zero{}) #True{})
+TEST_0
+: (Equal/Equal Bool/Bool (Nat/lte #Zero{} #Zero{}) #True{})
 = #Refl{}
 
 // Test: 0 <= 1 is True.
-T1
-: (E/Equal B/Bool (N/lte #Zero{} #Succ{#Zero{}}) #True{})
+TEST_1
+: (Equal/Equal Bool/Bool (Nat/lte #Zero{} #Succ{#Zero{}}) #True{})
 = #Refl{}
 
 // Test: 1 <= 0 is False.
-T2
-: (E/Equal B/Bool (N/lte #Succ{#Zero{}} #Zero{}) #False{})
+TEST_2
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Zero{}} #Zero{}) #False{})
 = #Refl{}
 
 // Test: 1 <= 1 is True.
-T3
-: (E/Equal B/Bool (N/lte #Succ{#Zero{}} #Succ{#Zero{}}) #True{})
+TEST_3
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Zero{}} #Succ{#Zero{}}) #True{})
 = #Refl{}
 
 // Test: 1 <= 2 is True.
-T4
-: (E/Equal B/Bool (N/lte #Succ{#Zero{}} #Succ{#Succ{#Zero{}}}) #True{})
+TEST_4
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Zero{}} #Succ{#Succ{#Zero{}}}) #True{})
 = #Refl{}
 
 // Test: 2 <= 1 is False.
-T5
-: (E/Equal B/Bool (N/lte #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #False{})
+TEST_5
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #False{})
 = #Refl{}
 
 // Test: 5 <= 10 is True.
-T6
-: (E/Equal B/Bool (N/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) #True{})
+TEST_6
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) #True{})
 = #Refl{}
 
 // Test: 10 <= 5 is False.
-T7
-: (E/Equal B/Bool (N/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
+TEST_7
+: (Equal/Equal Bool/Bool (Nat/lte #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
 = #Refl{}

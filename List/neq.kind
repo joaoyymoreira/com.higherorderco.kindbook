@@ -1,36 +1,25 @@
-use List/ as L/
-use Bool/ as B/
-use Trait/ as T/
-
 // Checks if two lists are not equal.
 // - A: The type of elements in the lists.
 // - e: An equality function for type A.
 // - xs: The first list.
 // - ys: The second list.
 // = True if the lists are not equal, False otherwise.
-L/neq
+List/neq
 : ∀(A: *)
-  ∀(e: (T/Eq A))
-  ∀(xs: (L/List A))
-  ∀(ys: (L/List A))
-  B/Bool
+  ∀(e: (Trait/Eq A))
+  ∀(xs: (List/List A))
+  ∀(ys: (List/List A))
+  Bool/Bool
 = λA λe λxs λys
-  (B/not (L/eq A e xs ys))
-
-
-//TEST//
-
-use List/ as L/
-use Bool/ as B/
-use Equal/ as E/
+  (Bool/not (List/eq A e xs ys))
 
 // Test case for neq function with boolean lists
-L/test-neq-bool-lists
-: (E/Equal
-    B/Bool
-    (L/neq
-      (B/Eq/derive B/eq)
-      (B/Cons #True{} (B/Cons #False{} B/Nil))
-      (B/Cons #True{} (B/Cons #True{} B/Nil)))
+List/test-neq-bool-lists
+: (Equal/Equal
+    Bool/Bool
+    (List/neq
+      (Bool/Eq/derive Bool/eq)
+      (Bool/Cons #True{} (Bool/Cons #False{} Bool/Nil))
+      (Bool/Cons #True{} (Bool/Cons #True{} Bool/Nil)))
     #True{})
 = #Refl{}

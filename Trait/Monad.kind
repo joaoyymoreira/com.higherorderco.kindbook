@@ -1,20 +1,18 @@
-use Trait/ as T/
-
 // Represents the Monad trait for a type constructor M
-T/Monad
+Trait/Monad
 : ∀(M: ∀(A: *) *)
   *
 = λM data[]{
   #Monad{
     bind: ∀(A: *) ∀(B: *) ∀(ma: (M A)) ∀(f: ∀(a: A) (M B)) (M B)
     pure: ∀(A: *) ∀(a: A) (M A)
-  } : (T/Monad M)
+  } : (Trait/Monad M)
 }
 
 // Accessor for the bind field
-T/Monad/bind
+Trait/Monad/bind
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(ma: (M A))
@@ -25,9 +23,9 @@ T/Monad/bind
 }
 
 // Accessor for the pure field
-T/Monad/pure
+Trait/Monad/pure
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(a: A)
   (M A)
@@ -36,13 +34,13 @@ T/Monad/pure
 }
 
 // Sequence operator (>>)
-T/Monad/seq
+Trait/Monad/seq
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(ma: (M A))
   ∀(mb: (M B))
   (M B)
 = λM λm λA λB λma λmb
-  (T/Monad/bind M m _ _ ma (λx mb))
+  (Trait/Monad/bind M m _ _ ma (λx mb))

@@ -1,10 +1,8 @@
-use Maybe/ as M/
-
 // Represents an optional value.
 // - None: Represents the absence of a value.
 // - Some: Represents the presence of a value.
-M/Maybe : * -> *
+Maybe/Maybe : * -> *
 = λA data[]{
-  #None : (M/Maybe A)
-  #Some{ value: A } : (M/Maybe A)
+  #None : (Maybe/Maybe A)
+  #Some{ value: A } : (Maybe/Maybe A)
 }

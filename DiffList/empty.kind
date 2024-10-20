@@ -1,10 +1,7 @@
-use DiffList/ as DL/
-use List/ as L/
-
 // Creates a new empty DiffList.
 // - A: The type of elements in the list.
 // = An empty DiffList.
-DL/empty
+DiffList/empty
 : ∀(A: *)
-  (DL/DiffList A)
+  (DiffList/DiffList A)
 = λA λtail tail

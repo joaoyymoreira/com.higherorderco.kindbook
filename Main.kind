@@ -1,22 +1,14 @@
-use Pair/ as P/
-
-main : (P/Pair U32 U32)
+main : (Pair/Pair U32 U32)
 = #Pair { foo 13 }
 
-
-
-
-
-
-//use Bool/ as B/
+//use Bool/ as Bool/
 //use U32/ as U32/
-//use Parser/ as PS/
-//use Pair/ as P/
+//use Parser/ as Parser/
+//use Pair/ as Pair/
 
-//foo : (P/Parser U/Unit) = ?oxi
+//foo : (Pair/Parser Unit/Unit) = ?oxi
 
-
-//affer : (PS/Parser U32)
+//affer : (Parser/Parser U32)
 //= when U32/eq 50 {
   //'(' : do Parser/Monad {
     //ask foo
@@ -27,7 +19,6 @@ main : (P/Pair U32 U32)
   //_   : ?d
 //}
 
-
 //main : U32
 //= when U32/eq 35 {
   //0  : 0
@@ -37,48 +28,43 @@ main : (P/Pair U32 U32)
   //_  : 999
 //}
 
+//use Bool/ as Bool/
 
-//use Bool/ as B/
-
-//Foo : B/Bool -> B/Bool
+//Foo : Bool/Bool -> Bool/Bool
 //| #True{} = #False
 //| other   = #True
 
-//Main : B/Bool
+//Main : Bool/Bool
 //= (Foo #False{})
-
-
 
 //| #True{} = ?a
 
-
-
-//use Nat/ as N/
-//use String/ as S/
+//use Nat/ as Nat/
+//use String/ as String/
 
 //Main
-//: S/View
+//: String/View
 //= #View{ "\nI'm a (λx x) \nThat's nice!\n" }
 
 //use Block/ as BK/
-//use Bool/ as B/
+//use Bool/ as Bool/
 //use Empty/ as EM/
 //use Equal/ as EQ/
 //use Maybe/ as MB/
-//use Pair/ as P/
-//use Trait/ as T/
+//use Pair/ as Pair/
+//use Trait/ as Trait/
 
 //IsTrue
-//: ∀(b: B/Bool)
+//: ∀(b: Bool/Bool)
   //*
 //= λb data[b]{
   //#Indeed{} : (IsTrue #True)
 //}
 
 //Main
-//: ∀(x: B/Bool)
+//: ∀(x: Bool/Bool)
   //∀(t: (IsTrue x))
-  //B/Bool
+  //Bool/Bool
 //= λ{
   //#True: λ{
     //#Indeed: #True
@@ -89,8 +75,8 @@ main : (P/Pair U32 U32)
 //}
 
 //Main
-//: ∀(p: (P/Pair U32 B/Bool))
-  //∀(k: (MB/Maybe (P/Pair U32 B/Bool)))
+//: ∀(p: (Pair/Pair U32 Bool/Bool))
+  //∀(k: (MB/Maybe (Pair/Pair U32 Bool/Bool)))
   //(MB/Maybe U32)
 //= λp λk do MB/Monad {
   //ask x = #Some{50}
@@ -99,60 +85,44 @@ main : (P/Pair U32 U32)
   ////ret (+ x y)
 //}
 
-
-
-
-
-
-
-
-//use Maybe/ as M/
+//use Maybe/ as Maybe/
 
 //Main
-//: (M/Maybe U32)
-//= do M/Monad/ {
+//: (Maybe/Maybe U32)
+//= do Maybe/Monad/ {
   //ask x = #Some { 50 }
   //ask y = #Some { 20 }
   //ret ?a
 //}
 
-//use List/ as L/
-//use Nat/ as N/
-//use String/ as S/
+//use List/ as List/
+//use Nat/ as Nat/
+//use String/ as String/
 
 //Main
-//: S/String
+//: String/String
 //= "foo bar"
 
-
-
-
-
-//use Pair/ as P/
-//use Bool/ as B/
+//use Pair/ as Pair/
+//use Bool/ as Bool/
 
 //Main
-//: ∀(f: ∀(x: B/Bool) B/Bool)
-  //N/Nat
+//: ∀(f: ∀(x: Bool/Bool) Bool/Bool)
+  //Nat/Nat
 //= λf match (f #True{}) {
   //#True: ?a
   //#False: ?b
 //}
 
-
-
-////∀(fx: B/Bool) (P 
+////∀(fx: Bool/Bool) (P 
 
 //Aux
-//: ∀(P: ∀(x: B/Bool) *)
-  //∀(Fx: B/Bool)
+//: ∀(P: ∀(x: Bool/Bool) *)
+  //∀(Fx: Bool/Bool)
   //(P Fx)
 //= λP λ{
   //#True: ?t
   //#False: ?f
 //}
   
-
-
-
 

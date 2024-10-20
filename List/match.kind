@@ -1,5 +1,3 @@
-use List/ as L/
-
 // Dependent eliminator for lists.
 // - A: The type of elements in the list.
 // - P: The motive (type family) for the elimination.
@@ -7,12 +5,12 @@ use List/ as L/
 // - cons: The function to apply for the cons case.
 // - xs: The list to eliminate (scrutinee).
 // = The result of the elimination, whose type depends on the input list.
-L/match
+List/match
 : ∀(A: *)
-  ∀(P: ∀(xs: (L/List A)) *)
+  ∀(P: ∀(xs: (List/List A)) *)
   ∀(nil: (P #Nil{}))
-  ∀(cons: ∀(x: A) ∀(xs: (L/List A)) (P (#Cons{x xs})))
-  ∀(xs: (L/List A))
+  ∀(cons: ∀(x: A) ∀(xs: (List/List A)) (P (#Cons{x xs})))
+  ∀(xs: (List/List A))
   (P xs)
 = λA λP λnil λcons λ{
   #Nil: nil

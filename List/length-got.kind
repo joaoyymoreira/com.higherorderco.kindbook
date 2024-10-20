@@ -1,48 +1,37 @@
-use List/ as L/
-use Pair/ as P/
-use Nat/ as N/
-
 // Computes the length of a list while preserving the original list.
 // - 1st: The type of elements in the list.
 // - 2nd: The input list.
 // = A pair containing the original list and its length as a Nat.
-L/length-got
+List/length-got
 : ∀(A: *)
-  ∀(xs: (L/List A))
-  (P/Pair (L/List A) N/Nat)
+  ∀(xs: (List/List A))
+  (Pair/Pair (List/List A) Nat/Nat)
 = λA λ{
   #Nil: #Pair{[] #0}
   #Cons: λhead λtail
-    let #Pair{rest n} = (L/length-got A tail)
+    let #Pair{rest n} = (List/length-got A tail)
 		#Pair{(#Cons{head rest}) (#Succ{n})}
 }
-//TEST//
-
-use List/ as L/
-use Pair/ as P/
-use Nat/ as N/
-use Equal/ as E/
-
 // Test: Empty list
-T0
-: (E/Equal
-    (P/Pair (L/List N/Nat) N/Nat)
-    (L/length-got N/Nat [])
+TEST_0
+: (Equal/Equal
+    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
+    (List/length-got Nat/Nat [])
     #Pair{[] #0})
 = #Refl
 
 // Test: Single element list
-T1
-: (E/Equal
-    (P/Pair (L/List N/Nat) N/Nat)
-    (L/length-got N/Nat (#Cons{#0 []}))
+TEST_1
+: (Equal/Equal
+    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
+    (List/length-got Nat/Nat (#Cons{#0 []}))
     #Pair{(#Cons{#0 []}) #1})
 = #Refl
 
 // Test: Multiple element list
-T2
-: (E/Equal
-    (P/Pair (L/List N/Nat) N/Nat)
-    (L/length-got N/Nat (#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}))
+TEST_2
+: (Equal/Equal
+    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
+    (List/length-got Nat/Nat (#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}))
     #Pair{(#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}) #3})
 = #Refl

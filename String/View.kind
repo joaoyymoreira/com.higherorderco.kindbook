@@ -1,7 +1,5 @@
-use String/ as S/
-
-S/View
+String/View
 : *
 = data[]{
-  #View{ text: S/String }: S/View
+  #View{ text: String/String }: String/View
 }

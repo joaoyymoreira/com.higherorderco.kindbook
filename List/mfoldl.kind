@@ -1,6 +1,3 @@
-use List/ as L/
-use Trait/ as T/
-
 // Performs a monadic left fold over a list.
 // - M: The monad to operate in.
 // - A: The type of elements in the input list.
@@ -10,18 +7,18 @@ use Trait/ as T/
 // - z: The initial value (for the empty list case).
 // - xs: The list to fold over.
 // = A monadic value containing the result of folding the list.
-L/mfoldl
+List/mfoldl
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(b: B) ∀(a: A) (M B))
   ∀(z: B)
-  ∀(xs: (L/List A))
+  ∀(xs: (List/List A))
   (M B)
 = λM λm λA λB λf λz λ{
-  #Nil: (T/Monad/pure M m _ z)
+  #Nil: (Trait/Monad/pure M m _ z)
   #Cons: λxs.head λxs.tail
-    (T/Monad/bind M m _ _ (f z xs.head) λz1
-    (L/mfoldl M m A B f z1 xs.tail))
+    (Trait/Monad/bind M m _ _ (f z xs.head) λz1
+    (List/mfoldl M m A B f z1 xs.tail))
 }

@@ -1,8 +1,6 @@
-use Pair/ as P/
-
 // Simple pair type
-P/Pair
+Pair/Pair
 : ∀(A: *)
   ∀(B: *)
   *
-= λA λB (P/Sigma A (λx B))
+= λA λB (Pair/Sigma A (λx B))

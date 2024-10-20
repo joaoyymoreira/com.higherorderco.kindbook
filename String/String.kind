@@ -1,5 +1,2 @@
-use List/ as L/
-use String/ as S/
-
 // Represents a string of characters
-S/String : * = (L/List U32)
+String/String : * = (List/List U32)

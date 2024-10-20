@@ -1,35 +1,26 @@
-use Bool/ as B/
-
 // Performs logical NAND operation on two boolean values.
 // 1st: The 1st boolean value.
 // 2nd: The 2nd boolean value.
 // = True if at least one of the inputs is False, False if both inputs are True.
-B/nand
-: ∀(a: B/Bool)
-  ∀(b: B/Bool)
-  B/Bool
-= λa λb (B/not (B/and a b))
+Bool/nand
+: ∀(a: Bool/Bool)
+  ∀(b: Bool/Bool)
+  Bool/Bool
+= λa λb (Bool/not (Bool/and a b))
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-
-T0 
-: (E/Equal B/Bool (B/nand #True{} #False{}) (#True{}))
+TEST_0 
+: (Equal/Equal Bool/Bool (Bool/nand #True{} #False{}) (#True{}))
 = #Refl{}
 
-T1 
-: (E/Equal B/Bool (B/nand #True{} #True{}) (#False{}))
+TEST_1 
+: (Equal/Equal Bool/Bool (Bool/nand #True{} #True{}) (#False{}))
 = #Refl{}
 
-T2 
-: (E/Equal B/Bool (B/nand #False{} #True{}) (#True{}))
+TEST_2 
+: (Equal/Equal Bool/Bool (Bool/nand #False{} #True{}) (#True{}))
 = #Refl{}
 
-T3 
-: (E/Equal B/Bool (B/nand #False{} #False{}) (#True{}))
+TEST_3 
+: (Equal/Equal Bool/Bool (Bool/nand #False{} #False{}) (#True{}))
 = #Refl{}
 

@@ -1,12 +1,9 @@
-use String/ as S/
-use List/ as L/
-
 // Converts a list of characters to a string.
 // - 1st: The input list of characters (U32 values).
 // = A string composed of the characters in the list.
-// Note: Since S/String is already defined as (L/List U32),
+// Note: Since String/String is already defined as (List/List U32),
 // this function is essentially an identity function in Kind.
-S/from-list
-: ∀(chars: (L/List U32))
-  S/String
+String/from-list
+: ∀(chars: (List/List U32))
+  String/String
 = λchars chars

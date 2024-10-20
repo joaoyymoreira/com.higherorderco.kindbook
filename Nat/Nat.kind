@@ -1,10 +1,8 @@
-use Nat/ as N/
-
 // Represents nats.
 // - Zero: The zero nat.
 // - Succ: The successor of a nat.
-N/Nat : *
+Nat/Nat : *
 = data[]{
-  #Zero : N/Nat
-  #Succ{ pred: N/Nat } : N/Nat
+  #Zero : Nat/Nat
+  #Succ{ pred: Nat/Nat } : Nat/Nat
 }

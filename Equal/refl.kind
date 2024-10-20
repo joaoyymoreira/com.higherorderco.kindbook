@@ -1,8 +1,6 @@
-use Equal/ as E/
-
 // Equality proof by reflexivity.
 // - A: The value type.
 // - x: The value term.
 // = A proof that x equals itself.
-E/refl : ∀(A: *) ∀(x: A) (E/Equal A x x)
+Equal/refl : ∀(A: *) ∀(x: A) (Equal/Equal A x x)
 | A x = #Refl{}

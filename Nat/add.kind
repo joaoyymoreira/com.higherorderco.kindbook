@@ -1,42 +1,35 @@
-use Nat/ as N/
-
 // Performs addition of nats.
 // - m: The 1st nat.
 // - n: The 2nd nat.
 // = The sum of the two nats.
-N/add : N/Nat -> N/Nat -> N/Nat
+Nat/add : Nat/Nat -> Nat/Nat -> Nat/Nat
 | #Zero    n = n
-| #Succ{m} n = #Succ{(N/add m n)}
-
-//TEST//
-
-use Nat/ as N/
-use Equal/ as E/
+| #Succ{m} n = #Succ{(Nat/add m n)}
 
 // Test: 0 + 0 = 0
-T0 : (E/Equal N/Nat (N/add #Zero{} #Zero{}) #Zero{})
+TEST_0 : (Equal/Equal Nat/Nat (Nat/add #Zero{} #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: 0 + 5 = 5
-T1 : (E/Equal N/Nat (N/add #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_1 : (Equal/Equal Nat/Nat (Nat/add #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 5 + 0 = 5
-T2 : (E/Equal N/Nat (N/add #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_2 : (Equal/Equal Nat/Nat (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 3 + 2 = 5
-T3 : (E/Equal N/Nat (N/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_3 : (Equal/Equal Nat/Nat (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 7 + 8 = 15
-T4 : (E/Equal N/Nat (N/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} ) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}})
+TEST_4 : (Equal/Equal Nat/Nat (Nat/add #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} ) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}})
 = #Refl{}
 
 // Test: Commutativity: a + b = b + a
-T5 : (E/Equal N/Nat (N/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (N/add #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
+TEST_5 : (Equal/Equal Nat/Nat (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/add #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
 = #Refl{}
 
 // Test: Associativity: (a + b) + c = a + (b + c)
-T6 : (E/Equal N/Nat (N/add (N/add #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (N/add #Succ{#Succ{#Zero{}}} (N/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
+TEST_6 : (Equal/Equal Nat/Nat (Nat/add (Nat/add #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/add #Succ{#Succ{#Zero{}}} (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
 = #Refl{}

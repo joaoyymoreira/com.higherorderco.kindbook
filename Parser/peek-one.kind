@@ -1,14 +1,9 @@
-use Parser/ as PS/
-use Maybe/ as M/
-use Result/ as R/
-use String/ as S/
-
 // Peeks at the next character in the input without consuming it.
 // - s: The current parser state.
 // = A Reply containing the current state and the next character (if any).
-PS/peek-one : (PS/Parser (M/Maybe U32))
+Parser/peek-one : (Parser/Parser (Maybe/Maybe U32))
 = λs
-  let next_char = (S/head (PS/State/input s))
+  let next_char = (String/head (Parser/State/input s))
   #Done{
     #MkReply{
       state: s
@@ -16,22 +11,14 @@ PS/peek-one : (PS/Parser (M/Maybe U32))
     }
   }
 
-//TEST//
-
-use Parser/ as PS/
-use Result/ as R/
-use Maybe/ as M/
-use Equal/ as E/
-use String/ as S/
-
 // Test: Peek one character from a non-empty string
-T0
-: (E/Equal
-    (R/Result (PS/Reply (M/Maybe U32)) PS/Error)
-    (PS/peek-one (PS/State/new "abc" #Zero))
+TEST_0
+: (Equal/Equal
+    (Result/Result (Parser/Reply (Maybe/Maybe U32)) Parser/Error)
+    (Parser/peek-one (Parser/State/new "abc" #Zero))
     (#Done{
       #MkReply{
-        state: (PS/State/new "abc" #Zero)
+        state: (Parser/State/new "abc" #Zero)
         value: (#Some{'a'})
       }
     })
@@ -39,13 +26,13 @@ T0
 = #Refl
 
 // Test: Peek one character from an empty string
-T1
-: (E/Equal
-    (R/Result (PS/Reply (M/Maybe U32)) PS/Error)
-    (PS/peek-one (PS/State/new (S/from-list []) #Zero))
+TEST_1
+: (Equal/Equal
+    (Result/Result (Parser/Reply (Maybe/Maybe U32)) Parser/Error)
+    (Parser/peek-one (Parser/State/new (String/from-list []) #Zero))
     (#Done{
       #MkReply{
-        state: (PS/State/new (S/from-list []) #Zero)
+        state: (Parser/State/new (String/from-list []) #Zero)
         value: #None
       }
     })
@@ -53,13 +40,13 @@ T1
 = #Refl
 
 // Test: Peek one character from a string with special characters
-T2
-: (E/Equal
-    (R/Result (PS/Reply (M/Maybe U32)) PS/Error)
-    (PS/peek-one (PS/State/new "!@#" #Zero))
+TEST_2
+: (Equal/Equal
+    (Result/Result (Parser/Reply (Maybe/Maybe U32)) Parser/Error)
+    (Parser/peek-one (Parser/State/new "!@#" #Zero))
     (#Done{
       #MkReply{
-        state: (PS/State/new "!@#" #Zero)
+        state: (Parser/State/new "!@#" #Zero)
         value: (#Some{'!'})
       }
     })

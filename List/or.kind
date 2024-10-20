@@ -1,10 +1,7 @@
-use List/ as L/
-use Bool/ as B/
-
 // Performs the boolean "or" operation between all elements of a list.
 // - xs: The input list of boolean values.
 // = True if any element is True, False otherwise.
-L/or
-: ∀(xs: (L/List B/Bool))
-  B/Bool
-= λxs (L/foldr _ B/Bool B/or #False{} xs)
+List/or
+: ∀(xs: (List/List Bool/Bool))
+  Bool/Bool
+= λxs (List/foldr _ Bool/Bool Bool/or #False{} xs)

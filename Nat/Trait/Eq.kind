@@ -1,7 +1,4 @@
-use Nat/ as N/
-use Trait/ as T/
-
 // Instance of Eq for Nat
-N/Trait/Eq: (T/Eq N/Nat) = 
-  use x = T/Eq
-  (T/Eq/derive N/Nat N/eq)
+Nat/Trait/Eq: (Trait/Eq Nat/Nat) = 
+  use x = Trait/Eq
+  (Trait/Eq/derive Nat/Nat Nat/eq)

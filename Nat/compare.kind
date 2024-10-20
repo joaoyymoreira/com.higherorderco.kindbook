@@ -1,15 +1,12 @@
-use Nat/ as N/
-use Ordering/ as O/
-
 // Compares two natural numbers. This function determines the relative order
 // of two given natural numbers.
 // - 1st: The first natural number to compare.
 // - 2nd: The second natural number to compare.
 // = An Ordering value: LT if 1st < 2nd, EQ if 1st = 2nd, GT if 1st > 2nd.
-N/compare
-: ∀(m: N/Nat)
-  ∀(n: N/Nat)
-  O/Ordering
+Nat/compare
+: ∀(m: Nat/Nat)
+  ∀(n: Nat/Nat)
+  Ordering/Ordering
 = λ{
   #Zero: λ{
     #Zero: #EQ{}
@@ -17,59 +14,53 @@ N/compare
   }
   #Succ: λm.pred λ{
     #Zero: #GT{}
-    #Succ: λn.pred (N/compare m.pred n.pred)
+    #Succ: λn.pred (Nat/compare m.pred n.pred)
   }
 }
-//TEST//
-
-use Nat/ as N/
-use Ordering/ as O/
-use Equal/ as E/
-
 // // Test: Transitivity: if a < b and b < c, then a < c
 // T6
-// : ∀(a: N/Nat)
-//   ∀(b: N/Nat)
-//   ∀(c: N/Nat)
-//   ∀(ab_lt: (E/Equal O/Ordering (N/compare a b) #LT{}))
-//   ∀(bc_lt: (E/Equal O/Ordering (N/compare b c) #LT{}))
-//   (E/Equal O/Ordering (N/compare a c) #LT{})
+// : ∀(a: Nat/Nat)
+//   ∀(b: Nat/Nat)
+//   ∀(c: Nat/Nat)
+//   ∀(ab_lt: (Equal/Equal Ordering/Ordering (Nat/compare a b) #LT{}))
+//   ∀(bc_lt: (Equal/Equal Ordering/Ordering (Nat/compare b c) #LT{}))
+//   (Equal/Equal Ordering/Ordering (Nat/compare a c) #LT{})
 // = λa λb λc λab_lt λbc_lt #Refl{}
 
 // // Test: Antisymmetry: if compare a b = EQ, then a = b
 // T7
-// : ∀(a: N/Nat)
-//   ∀(b: N/Nat)
-//   ∀(eq: (E/Equal O/Ordering (N/compare a b) #EQ{}))
-//   (E/Equal N/Nat a b)
+// : ∀(a: Nat/Nat)
+//   ∀(b: Nat/Nat)
+//   ∀(eq: (Equal/Equal Ordering/Ordering (Nat/compare a b) #EQ{}))
+//   (Equal/Equal Nat/Nat a b)
 // = λa λb λeq #Refl{}
 
 // Test: compare 0 0 = EQ
-T0
-: (E/Equal O/Ordering (N/compare #Zero{} #Zero{}) #EQ{})
+TEST_0
+: (Equal/Equal Ordering/Ordering (Nat/compare #Zero{} #Zero{}) #EQ{})
 = #Refl{}
 
 // Test: compare 0 5 = LT
-T1
-: (E/Equal O/Ordering (N/compare #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #LT{})
+TEST_1
+: (Equal/Equal Ordering/Ordering (Nat/compare #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #LT{})
 = #Refl{}
 
 // Test: compare 5 0 = GT
-T2
-: (E/Equal O/Ordering (N/compare #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #GT{})
+TEST_2
+: (Equal/Equal Ordering/Ordering (Nat/compare #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #GT{})
 = #Refl{}
 
 // Test: compare 3 3 = EQ
-T3
-: (E/Equal O/Ordering (N/compare #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #EQ{})
+TEST_3
+: (Equal/Equal Ordering/Ordering (Nat/compare #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #EQ{})
 = #Refl{}
 
 // Test: compare 2 7 = LT
-T4
-: (E/Equal O/Ordering (N/compare #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #LT{})
+TEST_4
+: (Equal/Equal Ordering/Ordering (Nat/compare #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #LT{})
 = #Refl{}
 
 // Test: compare 8 4 = GT
-T5
-: (E/Equal O/Ordering (N/compare (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) #GT{})
+TEST_5
+: (Equal/Equal Ordering/Ordering (Nat/compare (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) #GT{})
 = #Refl{}

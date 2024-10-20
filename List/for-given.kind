@@ -1,6 +1,3 @@
-use List/ as L/
-use Trait/ as T/
-
 // Applies a monadic function to each element of a list, threading a state through the computation.
 // - M: The monad type constructor.
 // - m: The Monad instance for M.
@@ -10,68 +7,58 @@ use Trait/ as T/
 // - s: The initial state.
 // - f: The monadic function that takes the current state and list element, and returns a new state.
 // = A monadic value containing the final state after processing all elements.
-L/for-given
+List/for-given
 : ∀(M: ∀(A: *) *)
-  ∀(m: (T/Monad M))
+  ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(S: *)
-  ∀(xs: (L/List A))
+  ∀(xs: (List/List A))
   ∀(s: S)
   ∀(f: ∀(s: S) ∀(a: A) (M S))
   (M S)
 = λM λm λA λS λ{
-  #Nil: λs λf (T/Monad/pure M m S s)
+  #Nil: λs λf (Trait/Monad/pure M m S s)
   #Cons: λhead λtail λs λf 
-    (T/Monad/bind M m S S (f s head) (λx (L/for-given M m A S tail x f)))
+    (Trait/Monad/bind M m S S (f s head) (λx (List/for-given M m A S tail x f)))
 }
 
-//TEST//
-
-use List/ as L/
-use Trait/ as T/
-use Equal/ as E/
-use Maybe/Trait/ as MT/
-use Maybe/ as M/
-use Bool/ as B/
-use Nat/ as N/
-
 // Test: Empty list with Maybe monad
-T0
-: (E/Equal
-    (M/Maybe N/Nat)
-    (L/for-given M/Maybe MT/Monad N/Nat N/Nat (L/Nil N/Nat) #Zero{} (λs λx (#Some{(N/add s x)})))
+TEST_0
+: (Equal/Equal
+    (Maybe/Maybe Nat/Nat)
+    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat (List/Nil Nat/Nat) #Zero{} (λs λx (#Some{(Nat/add s x)})))
     (#Some{#Zero{}}))
 = #Refl{}
 
 // Test: Non-empty list with Maybe monad
-T1
-: (E/Equal
-    (M/Maybe N/Nat)
-    (L/for-given M/Maybe MT/Monad N/Nat N/Nat
-      (L/Cons _ #Succ{#Zero{}}
-        (L/Cons _ #Succ{#Succ{#Zero{}}}
-          (L/Cons _ #Succ{#Succ{#Succ{#Zero{}}}}
-            (L/Nil _))))
+TEST_1
+: (Equal/Equal
+    (Maybe/Maybe Nat/Nat)
+    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat
+      (List/Cons _ #Succ{#Zero{}}
+        (List/Cons _ #Succ{#Succ{#Zero{}}}
+          (List/Cons _ #Succ{#Succ{#Succ{#Zero{}}}}
+            (List/Nil _))))
       #Zero{}
-      (λs λx (#Some{(N/add s x)})))
+      (λs λx (#Some{(Nat/add s x)})))
     (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
   )
 = #Refl{}
 
 // Test: Maybe monad with potential failure
-T2
-: (E/Equal
-    (M/Maybe N/Nat)
-    (L/for-given M/Maybe MT/Monad N/Nat N/Nat
-      (L/Cons _ #Succ{#Zero{}}
-        (L/Cons _ #Zero{}
-          (L/Cons _ #Succ{#Succ{#Zero{}}}
-            (L/Nil _))))
+TEST_2
+: (Equal/Equal
+    (Maybe/Maybe Nat/Nat)
+    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat
+      (List/Cons _ #Succ{#Zero{}}
+        (List/Cons _ #Zero{}
+          (List/Cons _ #Succ{#Succ{#Zero{}}}
+            (List/Nil _))))
       #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
       (λs λx
-        (B/if (M/Maybe N/Nat)
-          (N/eq x #Zero{})
+        (Bool/if (Maybe/Maybe Nat/Nat)
+          (Nat/eq x #Zero{})
           (#None{})
-          (#Some{(N/sub s x)}))))
+          (#Some{(Nat/sub s x)}))))
     (#None{}))
 = #Refl{}

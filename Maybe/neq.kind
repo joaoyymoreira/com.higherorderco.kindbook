@@ -1,18 +1,14 @@
-use Maybe/ as M/
-use Bool/ as B/
-use Trait/ as T/
-
 // Checks if two Maybe values are not equal.
 // - 1st: The type of the value inside Maybe.
 // - 2nd: The Eq instance for type 1st.
 // - 3rd: The first Maybe value.
 // - 4th: The second Maybe value.
 // = True if 3rd and 4th are not equal, False otherwise.
-M/neq
+Maybe/neq
 : ∀(A: *)
-  ∀(e: (T/Eq A))
-  ∀(x: (M/Maybe A))
-  ∀(y: (M/Maybe A))
-  B/Bool
+  ∀(e: (Trait/Eq A))
+  ∀(x: (Maybe/Maybe A))
+  ∀(y: (Maybe/Maybe A))
+  Bool/Bool
 = λA λe λx λy
-  (B/not (M/eq A e x y))
+  (Bool/not (Maybe/eq A e x y))

@@ -1,23 +1,18 @@
-use Parser/ as PS/
-use Result/ as R/
-use String/ as S/
-use Maybe/ as M/
-
 // Runs a parser on the given input string.
 // - A: The type of the parsed value.
 // - parser: The parser to run.
 // - input: The input string to parse.
 // = Either (Some parsed-value) if successful, or None if parsing failed.
-PS/run
+Parser/run
 : ∀(A: *)
-  ∀(parser: (PS/Parser A))
-  ∀(input: S/String)
-  (M/Maybe A)
+  ∀(parser: (Parser/Parser A))
+  ∀(input: String/String)
+  (Maybe/Maybe A)
 = λA λparser λinput
-  let initial_state = (PS/new_parser_state input)
+  let initial_state = (Parser/new_parser_state input)
   let result = (parser initial_state)
   match result {
-    #Done: λreply #Some{(PS/Reply/value A reply)}
+    #Done: λreply #Some{(Parser/Reply/value A reply)}
     #Fail: λerror #None
   }
 

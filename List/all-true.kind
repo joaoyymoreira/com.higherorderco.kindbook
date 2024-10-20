@@ -1,15 +1,12 @@
-use List/ as L/
-use Bool/ as B/
-
 // Checks if all elements of a list satisfy a given predicate.
 // - A: The type of elements in the list.
 // - p: The predicate function to apply to each element.
 // - xs: The input list.
 // = True if all elements satisfy the predicate, False otherwise.
-L/all-true
+List/all-true
 : ∀(A: *)
-  ∀(p: ∀(a: A) B/Bool)
-  ∀(xs: (L/List A))
-  B/Bool
+  ∀(p: ∀(a: A) Bool/Bool)
+  ∀(xs: (List/List A))
+  Bool/Bool
 = λA λp λxs
-  (L/foldr _ _ (λx λacc (B/and (p x) acc)) #True{} xs)
+  (List/foldr _ _ (λx λacc (Bool/and (p x) acc)) #True{} xs)

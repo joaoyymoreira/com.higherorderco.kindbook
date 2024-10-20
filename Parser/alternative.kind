@@ -1,17 +1,13 @@
-use Parser/ as PS/
-use Result/ as R/
-use Function/ as F/
-
 // Combines two parsers, trying the second if the first fails.
 // - A: The type of the value to be parsed.
 // - p: The first parser to try.
 // - q: The parser to try if the first fails.
 // = A new parser that succeeds if either of the input parsers succeeds.
-PS/alternative
+Parser/alternative
 : ∀(A: *)
-  ∀(p: (PS/Parser A))
-  ∀(q: (PS/Parser A))
-  (PS/Parser A)
+  ∀(p: (Parser/Parser A))
+  ∀(q: (Parser/Parser A))
+  (Parser/Parser A)
 = λA λp λq λs
   match (p s) {
     #Done: λr #Done{r}
@@ -19,9 +15,9 @@ PS/alternative
   }
 
 // Infix operator for alternative.
-PS/alt
+Parser/alt
 : ∀(A: *)
-  ∀(p: (PS/Parser A))
-  ∀(q: (PS/Parser A))
-  (PS/Parser A)
-= PS/alternative
+  ∀(p: (Parser/Parser A))
+  ∀(q: (Parser/Parser A))
+  (Parser/Parser A)
+= Parser/alternative

@@ -1,65 +1,52 @@
-use Char/ as C/
-use Nat/ as N/
-use U32/ as U32/
-use Maybe/ as M/
-
 // Converts a digit character to its corresponding natural number.
 // 1st: The input character.
 // = Some n if 1st is a digit, where n is the corresponding natural number, None otherwise.
-C/digit-to-nat
-: ∀(c: C/Char)
-  (M/Maybe N/Nat)
+Char/digit-to-nat
+: ∀(c: Char/Char)
+  (Maybe/Maybe Nat/Nat)
 = λc
   let n = (- c 48)
-  (U32/if (M/Maybe N/Nat)
+  (U32/if (Maybe/Maybe Nat/Nat)
     (& (<= 0 n) (<= n 9))
     #Some{(U32/to-nat n)}
     #None{}
   )
-//TEST//
-
-use Char/ as C/
-use Nat/ as N/
-use U32/ as U32/
-use Maybe/ as M/
-use Equal/ as E/
-
 // Test: '0' converts to Some 0.
-T0
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 48) (#Some{#Zero{}}))
+TEST_0
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 48) (#Some{#Zero{}}))
 = #Refl{}
 
 // Test: '5' converts to Some 5.
-T1
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
+TEST_1
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
 = #Refl{}
 
 // Test: '9' converts to Some 9.
-T2
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}))
+TEST_2
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}))
 = #Refl{}
 
 // Test: 'a' converts to None.
-T3
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 97) #None{})
+TEST_3
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 97) #None{})
 = #Refl{}
 
 // Test: '!' converts to None.
-T4
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 33) #None{})
+TEST_4
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 33) #None{})
 = #Refl{}
 
 // Test: ' ' (space) converts to None.
-T5
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 32) #None{})
+TEST_5
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 32) #None{})
 = #Refl{}
 
 // Test: '\n' (newline) converts to None.
-T6
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 10) #None{})
+TEST_6
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 10) #None{})
 = #Refl{}
 
 // Test: '١' (Arabic-Indic digit one) converts to None.
-T7
-: (E/Equal (M/Maybe N/Nat) (C/digit-to-nat 1633) #None{})
+TEST_7
+: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 1633) #None{})
 = #Refl{}

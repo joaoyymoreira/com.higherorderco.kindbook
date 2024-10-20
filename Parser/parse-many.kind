@@ -1,40 +1,35 @@
-use Parser/ as PS/
-use List/ as L/
-use Result/ as R/
-use Function/ as F/
-
 // Parses as many occurrences of the given parser as possible.
 // - A: The type of elements parsed by the given parser.
 // - p: The parser to be repeatedly applied.
 // = A parser that returns a list of all successfully parsed elements.
-PS/parse_many
+Parser/parse_many
 : ∀(A: *)
-  ∀(p: (PS/Parser A))
-  (PS/Parser (L/List A))
-= λA λp (PS/parse_many_go A p #Nil{})
+  ∀(p: (Parser/Parser A))
+  (Parser/Parser (List/List A))
+= λA λp (Parser/parse_many_go A p #Nil{})
 
 // Helper function to accumulate parsed results.
 // - A: The type of elements parsed by the given parser.
 // - p: The parser to be repeatedly applied.
 // - acc: The accumulator list of already parsed elements.
 // = A parser that returns the final list of all parsed elements.
-PS/parse_many_go
+Parser/parse_many_go
 : ∀(A: *)
-  ∀(p: (PS/Parser A))
-  ∀(acc:( L/List A))
-  (PS/Parser (L/List A))
+  ∀(p: (Parser/Parser A))
+  ∀(acc:( List/List A))
+  (Parser/Parser (List/List A))
 = λA λp λacc λs
   match (p s) {
     #Done: λr
-      let value = (PS/Reply/value A r)
-      let state = (PS/Reply/state A r)
+      let value = (Parser/Reply/value A r)
+      let state = (Parser/Reply/state A r)
       use new_acc = #Cons{value acc}
-      (PS/parse_many_go A p new_acc state)
+      (Parser/parse_many_go A p new_acc state)
     #Fail: λe
       #Done{
         #MkReply{
           state: s
-          value: (L/reverse A acc)
+          value: (List/reverse A acc)
         }
       }
   }

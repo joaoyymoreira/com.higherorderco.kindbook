@@ -1,10 +1,7 @@
-use OrdMap/ as OM/
-use AVLTree/ as AVL/
-
 // Creates an empty OrdMap.
 // = An empty OrdMap.
-OM/empty
+OrdMap/empty
 : ∀(K: *)
   ∀(V: *)
-  (OM/OrdMap K V)
-= λK λV (AVL/empty K V)
+  (OrdMap/OrdMap K V)
+= λK λV (AVLTree/empty K V)

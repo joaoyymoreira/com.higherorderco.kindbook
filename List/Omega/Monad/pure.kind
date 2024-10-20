@@ -1,6 +1,3 @@
-use List/ as L/
-use List/Omega/ as LO/
-
 // Creates an Omega value containing a single element.
 // - A: The type of the element.
 // - x: The element to be wrapped in an Omega.
@@ -10,4 +7,4 @@ LO/Monad/pure
   ∀(x: A)
   (LO/Omega A)
 = λA λx
-  #MkOmega{ (L/Cons x (L/Nil _)) }
+  #MkOmega{ (List/Cons x (List/Nil _)) }

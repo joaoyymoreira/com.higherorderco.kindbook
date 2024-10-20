@@ -1,23 +1,18 @@
-use BinMap/ as BM/
-use BinTree/ as BT/
-use Bits/ as BS/
-use Maybe/ as M/
-
 // Retrieves a value from the BinMap given a key.
 // - A: The type of values stored in the map.
 // - m: The BinMap to search in.
 // - k: The Bits key to look up.
 // = The value associated with the key, wrapped in Maybe.
-BM/get
+BinMap/get
 : ∀(A: *)
-  ∀(m: (BM/BinMap A))
-  ∀(k: BS/Bits)
-  (M/Maybe A)
+  ∀(m: (BinMap/BinMap A))
+  ∀(k: Bits/Bits)
+  (Maybe/Maybe A)
 = λA λ{
   #Leaf: λk #None{}
   #Node: λval λlft λrgt λ{
 		#E: val
-		#O: λb (BM/get A lft b)
-		#I: λb (BM/get A rgt b)
+		#O: λb (BinMap/get A lft b)
+		#I: λb (BinMap/get A rgt b)
 	}
 }

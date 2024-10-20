@@ -1,5 +1,3 @@
-use Pair/ as P/
-
 // Maps functions over both components of a dependent pair.
 // This function applies f to the first component and g to the second component.
 // - A: The type of the first component of the input pair.
@@ -10,16 +8,16 @@ use Pair/ as P/
 // - g: Function to apply to the second component, which can depend on the first.
 // - pair: The input dependent pair.
 // = A new dependent pair with both components transformed.
-P/map
+Pair/map
 : ∀(A: *)
   ∀(B: ∀(a: A) *)
   ∀(C: *)
   ∀(D: ∀(c: C) *)
   ∀(f: ∀(a: A) C)
   ∀(g: ∀(x: A) ∀(y: (B x)) (D (f x)))
-  ∀(pair: (P/Sigma A B))
-  (P/Sigma C D)
+  ∀(pair: (Pair/Sigma A B))
+  (Pair/Sigma C D)
 = λA λB λC λD λf λg λpair
-  let x = (P/Sigma/fst A B pair)
-  let y = (P/Sigma/snd A B pair)
-  (P/Sigma/new C D (f x) (g x y))
+  let x = (Pair/Sigma/fst A B pair)
+  let y = (Pair/Sigma/snd A B pair)
+  (Pair/Sigma/new C D (f x) (g x y))

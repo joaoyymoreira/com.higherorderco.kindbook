@@ -1,23 +1,14 @@
-use Parser/ as P/
-use Bool/ as B/
-use Char/ as C/
-use List/ as L/
-use Maybe/ as M/
-use Nat/ as N/
-use Result/ as R/
-use String/ as S/
-
 // Inspects the next 'count' characters in the text without consuming them.
 // - count: The number of characters to peek.
 // = A Parser that returns a Maybe String containing the peeked characters, or None if there aren't enough characters.
-P/peek_many
-: ∀(count: N/Nat)
-  (P/Parser (M/Maybe S/String))
+Pair/peek_many
+: ∀(count: Nat/Nat)
+  (Pair/Parser (Maybe/Maybe String/String))
 = λcount λstate
-  let chars  = (P/State/input state)
-  let peeked = (L/take C/Char count chars)
-  let #Pair{str-peeked length-peeked} = (S/length-got peeked)
-  let enough = (N/eq (length-peeked) count)
-  let result = (B/if (M/Maybe S/String) enough #Some{str-peeked} #None)
+  let chars  = (Pair/State/input state)
+  let peeked = (List/take Char/Char count chars)
+  let #Pair{str-peeked length-peeked} = (String/length-got peeked)
+  let enough = (Nat/eq (length-peeked) count)
+  let result = (Bool/if (Maybe/Maybe String/String) enough #Some{str-peeked} #None)
   // #Done{#MkReply{state result}}
   ?b

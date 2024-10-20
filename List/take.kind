@@ -1,21 +1,18 @@
-use List/ as L/
-use Nat/ as N/
-
 // Takes the first n elements from a list.
 // If n is greater than the length of the list, returns the entire list.
 // - A: The type of elements in the list.
 // - n: The number of elements to take.
 // - xs: The input list.
 // = A list containing the first n elements of xs, or all of xs if n > length xs.
-L/take
+List/take
 : ∀(A: *)
-  ∀(n: N/Nat)
-  ∀(xs: (L/List A))
-  (L/List A)
+  ∀(n: Nat/Nat)
+  ∀(xs: (List/List A))
+  (List/List A)
 = λA λ{
   #Zero: λxs []
   #Succ: λpred λ{
     #Nil: [] 
-    #Cons: λhead λtail #Cons{head (L/take A pred tail)}
+    #Cons: λhead λtail #Cons{head (List/take A pred tail)}
   }
 } 

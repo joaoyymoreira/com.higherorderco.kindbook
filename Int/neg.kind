@@ -1,12 +1,9 @@
-use Int/ as I/
-use Nat/ as N/
-
 // Negates an integer.
 // - x: The integer to negate.
 // = The negation of x.
-I/neg
-: ∀(x: I/Int)
-  I/Int
+Int/neg
+: ∀(x: Int/Int)
+  Int/Int
 = λ{
   #Pos: λ{
     #Zero: #Pos{#Zero{}}

@@ -1,15 +1,13 @@
-use Equal/ as E/
-
 // Erases the content of an equality proof.
 // 1st: The type of the elements being compared.
 // 2nd: The first element.
 // 3rd: The second element.
 // 4th: The equality proof to erase.
 // = An erased equality proof.
-E/erase
+Equal/erase
 : ∀(A: *)
   ∀(x: A)
   ∀(y: A)
-  ∀(e: (E/Equal A x y))
-  (E/Equal A x y)
+  ∀(e: (Equal/Equal A x y))
+  (Equal/Equal A x y)
 = λA λx λy λe e

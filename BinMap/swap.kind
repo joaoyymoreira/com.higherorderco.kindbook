@@ -1,104 +1,88 @@
-use BinMap/ as BM/
-use Bits/ as BS/
-use Maybe/ as M/
-use Pair/ as P/
-use BinTree/ as BT/
-
 // Swaps a value in the BinMap for a new value, returning the old value if it existed.
 // - A: The type of values stored in the BinMap.
 // - m: The BinMap to swap in.
 // - k: The Bits key to swap.
 // - v: The new value to insert.
 // = A pair containing the new BinMap and Maybe the old value if the key existed.
-BM/swap
+BinMap/swap
 : ∀(A: *)
-  ∀(m: (BM/BinMap A))
-  ∀(k: BS/Bits)
+  ∀(m: (BinMap/BinMap A))
+  ∀(k: Bits/Bits)
   ∀(v: A)
-  (P/Pair (BM/BinMap A) (M/Maybe A))
+  (Pair/Pair (BinMap/BinMap A) (Maybe/Maybe A))
 = λA  λ{
   #Leaf: λ{
 		#E: λv #Pair{#Node{#Some{v} #Leaf{} #Leaf{}} #None{}} 
 		#O: λb λv 
-			let left = (BM/swap A #Leaf{} b v)
-			#Pair{#Node{#None{} (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) left) #Leaf{}} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) left)}
+			let left = (BinMap/swap A #Leaf{} b v)
+			#Pair{#Node{#None{} (Pair/Sigma/fst (BinMap/BinMap A) (λx (Maybe/Maybe A)) left) #Leaf{}} (Pair/Sigma/snd (BinMap/BinMap A) (λx (Maybe/Maybe A)) left)}
 		#I: λb λv 
-			let right = (BM/swap A #Leaf{} b v)
-			#Pair{#Node{#None{} #Leaf{} (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) right)} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) right)}
+			let right = (BinMap/swap A #Leaf{} b v)
+			#Pair{#Node{#None{} #Leaf{} (Pair/Sigma/fst (BinMap/BinMap A) (λx (Maybe/Maybe A)) right)} (Pair/Sigma/snd (BinMap/BinMap A) (λx (Maybe/Maybe A)) right)}
 	}
   #Node: λval λlft λrgt λ{
 		#E: λv
 			use none = #Pair{#Node{#Some{v} lft rgt} #None{}}
 			use some = λx #Pair{#Node{#Some{v} lft rgt} #Some{x}}
-			(M/match A (λx (P/Pair (BM/BinMap A) (M/Maybe A))) none some val)
+			(Maybe/match A (λx (Pair/Pair (BinMap/BinMap A) (Maybe/Maybe A))) none some val)
 		#O: λb λv 
-			let left = (BM/swap A lft b v)
-			#Pair{#Node{val (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) left) rgt} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) left)}
+			let left = (BinMap/swap A lft b v)
+			#Pair{#Node{val (Pair/Sigma/fst (BinMap/BinMap A) (λx (Maybe/Maybe A)) left) rgt} (Pair/Sigma/snd (BinMap/BinMap A) (λx (Maybe/Maybe A)) left)}
 		#I: λb λv 			
-			let right = (BM/swap A rgt b v)
-			#Pair{#Node{val lft (P/Sigma/fst (BM/BinMap A) (λx (M/Maybe A)) right)} (P/Sigma/snd (BM/BinMap A) (λx (M/Maybe A)) right)}
+			let right = (BinMap/swap A rgt b v)
+			#Pair{#Node{val lft (Pair/Sigma/fst (BinMap/BinMap A) (λx (Maybe/Maybe A)) right)} (Pair/Sigma/snd (BinMap/BinMap A) (λx (Maybe/Maybe A)) right)}
 	}
 }
 
-//TEST//
-
-use BinMap/ as BM/
-use Bits/ as BS/
-use Maybe/ as M/
-use BinTree/ as BT/
-use Pair/ as P/
-use Equal/ as E/
-use Nat/ as N/
-
 // Test: Swapping in an empty map
-T0
-: (E/Equal
-	(P/Pair (BM/BinMap N/Nat) (M/Maybe N/Nat))
-	(BM/swap N/Nat (BM/new N/Nat) #E{} #Succ{#Succ{#Zero{}}})
+TEST_0
+: (Equal/Equal
+	(Pair/Pair (BinMap/BinMap Nat/Nat) (Maybe/Maybe Nat/Nat))
+	(BinMap/swap Nat/Nat (BinMap/new Nat/Nat) #E{} #Succ{#Succ{#Zero{}}})
   (#Pair{
       #Node{#Some{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}
       #None{}}))
 = #Refl{}
 
 // Test: Swapping at the root of a non-empty map
-T1
+TEST_1
 : let initial_map = #Node{#Some{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}
-  (E/Equal
-	(P/Pair (BM/BinMap N/Nat) (M/Maybe N/Nat))
-	(BM/swap N/Nat initial_map #E{} (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+  (Equal/Equal
+	(Pair/Pair (BinMap/BinMap Nat/Nat) (Maybe/Maybe Nat/Nat))
+	(BinMap/swap Nat/Nat initial_map #E{} (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
   (#Pair{
       #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}
       #Some{#Succ{#Succ{#Zero{}}}}}))
 = #Refl{}
 
 // Test: Swapping in the left subtree
-T2
+TEST_2
 : let initial_map = #Node{#None{} #Node{#Some{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}} #Leaf{}}
-  (E/Equal
-	(P/Pair (BM/BinMap N/Nat) (M/Maybe N/Nat))
-	(BM/swap N/Nat initial_map (#O{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+  (Equal/Equal
+	(Pair/Pair (BinMap/BinMap Nat/Nat) (Maybe/Maybe Nat/Nat))
+	(BinMap/swap Nat/Nat initial_map (#O{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
   (#Pair{
       #Node{#None{} #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}} #Leaf{}}
       #Some{#Succ{#Succ{#Succ{#Zero{}}}}}}))
 = #Refl{}
 
 // Test: Swapping in the right subtree
-T3
+TEST_3
 : let initial_map = #Node{#None{} #Leaf{} #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Leaf{} #Leaf{}}}
-  (E/Equal
-	(P/Pair (BM/BinMap N/Nat) (M/Maybe N/Nat))
-	(BM/swap N/Nat initial_map (#I{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
+  (Equal/Equal
+	(Pair/Pair (BinMap/BinMap Nat/Nat) (Maybe/Maybe Nat/Nat))
+	(BinMap/swap Nat/Nat initial_map (#I{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
   (#Pair{
       #Node{#None{} #Leaf{} #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Leaf{} #Leaf{}}}
       #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}))
 = #Refl{}
 
 // Test: Swapping a non-existent key
-T4
+TEST_4
 : let initial_map = #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Leaf{} #Leaf{}}
-  (E/Equal
-	(P/Pair (BM/BinMap N/Nat) (M/Maybe N/Nat))
-	(BM/swap N/Nat initial_map (#O{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}))
+  (Equal/Equal
+	(Pair/Pair (BinMap/BinMap Nat/Nat) (Maybe/Maybe Nat/Nat))
+	(BinMap/swap Nat/Nat initial_map (#O{#E{}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}))
   (#Pair{
       #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Node{#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}} #Leaf{} #Leaf{}} #Leaf{}}
       #None{}}))

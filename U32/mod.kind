@@ -1,5 +1,3 @@
-use U32/ as U32/
-
 // Calculates the modulo (remainder) of two 32-bit unsigned integers.
 // 1st: The dividend.
 // 2nd: The divisor.

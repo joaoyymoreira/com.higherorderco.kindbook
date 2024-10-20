@@ -1,5 +1,3 @@
-use Maybe/ as M/
-
 // Constructs a Some value, representing the presence of a value
 // - 1st: The type of the value
 // - 2nd: The value to wrap in Some
@@ -7,5 +5,5 @@ use Maybe/ as M/
 Maybe/Some
 : ∀(A: *)
   ∀(value: A)
-  (M/Maybe A)
+  (Maybe/Maybe A)
 = λA λvalue #Some{value}

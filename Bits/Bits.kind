@@ -1,12 +1,10 @@
-use Bits/ as BS/
-
 // Represents a binary string.
 // - O: Represents a zero bit.
 // - I: Represents a one bit.
 // - E: Represents the end of the binary string.
-BS/Bits : *
+Bits/Bits : *
 = data[]{
-  #O{ tail: BS/Bits } : BS/Bits
-  #I{ tail: BS/Bits } : BS/Bits
-  #E{} : BS/Bits
+  #O{ tail: Bits/Bits } : Bits/Bits
+  #I{ tail: Bits/Bits } : Bits/Bits
+  #E{} : Bits/Bits
 }

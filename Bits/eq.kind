@@ -1,12 +1,9 @@
-use Bits/ as BS/
-use Bool/ as B/
-
 // Checks if two Bits values are equal.
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = True if a and b are equal, False otherwise.
-BS/eq : BS/Bits -> BS/Bits -> B/Bool
+Bits/eq : Bits/Bits -> Bits/Bits -> Bool/Bool
 | #E    #E    = #True
-| #O{x} #O{y} = (BS/eq x y)
-| #I{x} #I{y} = (BS/eq x y)
+| #O{x} #O{y} = (Bits/eq x y)
+| #I{x} #I{y} = (Bits/eq x y)
 | a     b     = #False

@@ -1,14 +1,10 @@
-use String/ as S/
-use List/ as L/
-use Nat/ as N/
-
 // Drops the first n characters from a string.
 // - n: The number of characters to drop.
 // - s: The input string.
 // = A new string with the first n characters removed, or an empty string if n is greater than or equal to the string length.
-S/drop
-: ∀(n: N/Nat)
-  ∀(s: S/String)
-  S/String
+String/drop
+: ∀(n: Nat/Nat)
+  ∀(s: String/String)
+  String/String
 = λn λs 
-  (L/drop U32 n s)
+  (List/drop U32 n s)

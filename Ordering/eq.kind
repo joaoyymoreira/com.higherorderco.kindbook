@@ -1,14 +1,11 @@
-use Ordering/ as O/
-use Bool/ as B/
-
 // Checks if two Ordering values are equal.
 // - a: The first Ordering value.
 // - b: The second Ordering value.
 // = True if a and b are equal, False otherwise.
-O/eq
-: ∀(a: O/Ordering)
-  ∀(b: O/Ordering)
-  B/Bool
+Ordering/eq
+: ∀(a: Ordering/Ordering)
+  ∀(b: Ordering/Ordering)
+  Bool/Bool
 = λ{
   #LT: λ{
     #LT: #True{}

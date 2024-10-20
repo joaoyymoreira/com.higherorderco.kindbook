@@ -1,30 +1,28 @@
-use Pair/ as P/
-
 // Dependent pair type (Sigma type)
-P/Sigma
+Pair/Sigma
 : ∀(A: *)
   ∀(B: ∀(a: A) *)
   *
 = λA λB data[]{
-  #Pair{ fst:A snd:(B fst) } : (P/Sigma A B)
+  #Pair{ fst:A snd:(B fst) } : (Pair/Sigma A B)
 }
 
 // Accessor for the fst field
-P/Sigma/fst
+Pair/Sigma/fst
 : ∀(A: *)
   ∀(B: ∀(a: A) *)
-  ∀(pair: (P/Sigma A B))
+  ∀(pair: (Pair/Sigma A B))
   A
 = λA λB λ{
   #Pair: λpair.fst λpair.snd pair.fst
 }
 
 // Accessor for the snd field
-P/Sigma/snd
+Pair/Sigma/snd
 : ∀(A: *)
   ∀(B: ∀(a: A) *)
-  ∀(pair: (P/Sigma A B))
-  (B (P/Sigma/fst A B pair))
+  ∀(pair: (Pair/Sigma A B))
+  (B (Pair/Sigma/fst A B pair))
 = λA λB λ{
   #Pair: λpair.fst λpair.snd pair.snd
 }

@@ -1,12 +1,9 @@
-use List/ as L/
-use Trait/ as T/
-
-L/Trait/Eq
+List/Trait/Eq
 : ∀(A: *)
-  ∀(e: (T/Eq A))
-  (T/Eq (L/List A))
+  ∀(e: (Trait/Eq A))
+  (Trait/Eq (List/List A))
 = λA λe
-  (T/Eq/derive
-    (L/List A)
-    (L/eq A e))
+  (Trait/Eq/derive
+    (List/List A)
+    (List/eq A e))
 

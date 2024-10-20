@@ -1,13 +1,10 @@
-use Maybe/ as M/
-use Bool/ as B/
-
 // Compares two Maybe values using a provided equality function.
 // - A: The type of the values inside the Maybe.
 // - eq-fn: The equality function for comparing values of type A.
 // - ma: The first Maybe value.
 // - mb: The second Maybe value.
 // = True if the Maybe values are equal, False otherwise.
-M/eq-with : ∀(A: *) (A -> A -> B/Bool) -> (M/Maybe A) -> (M/Maybe A) -> B/Bool
+Maybe/eq-with : ∀(A: *) (A -> A -> Bool/Bool) -> (Maybe/Maybe A) -> (Maybe/Maybe A) -> Bool/Bool
 | A eq #None    #None    = #True
 | A eq #Some{x} #Some{y} = (eq x y)
 | A eq ma       mb       = #False

@@ -1,16 +1,14 @@
-use List/ as L/
-
 // Appends two lists.
 // - 1st: The type of elements in the lists.
 // - 2nd: The first list.
 // - 3rd: The second list.
 // = A new list containing all elements from both input lists.
-L/append
+List/append
 : ∀(A: *)
-  ∀(xs: (L/List A))
-  ∀(ys: (L/List A))
-  (L/List A)
+  ∀(xs: (List/List A))
+  ∀(ys: (List/List A))
+  (List/List A)
 = λA λ{
 	#Nil: λys ys 
-	#Cons: λhead λtail λys #Cons{head (L/append A tail ys)}
+	#Cons: λhead λtail λys #Cons{head (List/append A tail ys)}
 }

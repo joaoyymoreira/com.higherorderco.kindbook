@@ -1,12 +1,10 @@
-use String/ as S/
-
 // Represents the Show trait for a type A
 Trait/Show
 : ∀(A: *)
   *
 = λA data[]{
   #Show{
-    to_string: ∀(x: A) S/String
+    to_string: ∀(x: A) String/String
   } : (Trait/Show A)
 }
 
@@ -15,7 +13,7 @@ Trait/Show/to_string
 : ∀(A: *)
   ∀(s: (Trait/Show A))
   ∀(x: A)
-  S/String
+  String/String
 = λA λ{
   #Show: λs.to_string λx (s.to_string x)
 }
@@ -25,5 +23,5 @@ Trait/Show/show
 : ∀(A: *)
   ∀(s: (Trait/Show A))
   ∀(x: A)
-  S/String
+  String/String
 = Trait/Show/to_string

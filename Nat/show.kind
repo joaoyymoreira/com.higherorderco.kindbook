@@ -1,12 +1,8 @@
-use Nat/ as N/
-use String/ as S/
-use List/ as L/
-
 // Converts a digit (0-9) to its corresponding character code.
 // 1st: The digit to convert.
 // = The character code representing the digit.
-N/digit_to_char
-: ∀(n: N/Nat)
+Nat/digit_to_char
+: ∀(n: Nat/Nat)
   U32
 = λ{
   #Zero: 48
@@ -44,44 +40,38 @@ N/digit_to_char
 // 1st: The natural number to convert.
 // 2nd: The accumulator for the reversed string.
 // = The reversed string representation of the number.
-N/show_rev
-: ∀(n: N/Nat)
-  ∀(acc: S/String)
-  S/String
+Nat/show_rev
+: ∀(n: Nat/Nat)
+  ∀(acc: String/String)
+  String/String
 = λ{
   #Zero: λacc acc
   #Succ: λn.pred λacc 
-	let n10 = (N/div (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
-  let rem = (N/mod (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
-  let digit = (N/digit_to_char rem)
-	(N/show_rev n10 #Cons{digit acc})
+	let n10 = (Nat/div (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
+  let rem = (Nat/mod (#Succ{n.pred}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
+  let digit = (Nat/digit_to_char rem)
+	(Nat/show_rev n10 #Cons{digit acc})
 	}
 
 // Converts a natural number to its string representation.
 // 1st: The natural number to convert.
 // = The string representation of the number.
-N/show
-: ∀(n: N/Nat)
-  S/String
+Nat/show
+: ∀(n: Nat/Nat)
+  String/String
 = λ{
   #Zero: #Cons{48 #Nil{}}
-  #Succ: λn.pred (N/show_rev (#Succ{n.pred}) #Nil{})
+  #Succ: λn.pred (Nat/show_rev (#Succ{n.pred}) #Nil{})
 	}
 
-//TEST//
-
-use Nat/ as N/
-use String/ as S/
-use Equal/ as E/
-
 // Test: show 42 = "42".
-T0 : (E/Equal S/String (N/show #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) #Cons{52 #Cons{50 #Nil{}}})
+TEST_0 : (Equal/Equal String/String (Nat/show #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) #Cons{52 #Cons{50 #Nil{}}})
 = #Refl{}
 
 // Test: show 0 = "0".
-T1 : (E/Equal S/String (N/show #Zero{}) #Cons{48 #Nil{}})
+TEST_1 : (Equal/Equal String/String (Nat/show #Zero{}) #Cons{48 #Nil{}})
 = #Refl{}
 
 // Test: show 1000 = "1000".
-T2 : (E/Equal S/String (N/show (N/exp (N/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil{}}}}})
+TEST_2 : (Equal/Equal String/String (Nat/show (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil{}}}}})
 = #Refl{}

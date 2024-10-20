@@ -1,33 +1,25 @@
-use Bool/ as B/
-
 // Performs logical OR operation on two bools.
 // - 1st: The bool.
 // - 2nd: The bool.
 // = True if either 1st or 2nd is true, False otherwise.
-B/or
-: ∀(a: B/Bool)
-  ∀(b: B/Bool)
-  B/Bool
+Bool/or
+: ∀(a: Bool/Bool)
+  ∀(b: Bool/Bool)
+  Bool/Bool
 = λ{
   #True: λb #True{}
   #False: λb b
 }
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-B/T0
-: (E/Equal B/Bool (B/or #True{} #True{}) #True{})
+Bool/T0
+: (Equal/Equal Bool/Bool (Bool/or #True{} #True{}) #True{})
 = #Refl{}
 
-B/T1
-: (E/Equal B/Bool (B/or #True{} #False{}) #True{})
+Bool/T1
+: (Equal/Equal Bool/Bool (Bool/or #True{} #False{}) #True{})
 = #Refl{}
 
-B/T2
-: (E/Equal B/Bool (B/or #False{} #False{}) #False{})
+Bool/T2
+: (Equal/Equal Bool/Bool (Bool/or #False{} #False{}) #False{})
 = #Refl{}
 

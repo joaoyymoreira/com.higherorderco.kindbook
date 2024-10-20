@@ -1,9 +1,3 @@
-use BinMap/ as BM/
-use Bits/ as BS/
-use Maybe/ as M/
-use BinTree/ as BT/
-use Pair/ as P/
-
 //got : ∀ {A : Set} → BinMap A → Bits → Pair (Maybe A) (BinMap A)
 //got (Node val l r) E     = val , Node val l r
 //got (Node val l r) (O k) = let v , l = got l k in v , Node val l r
@@ -17,19 +11,19 @@ use Pair/ as P/
 // = A pair containing:
 //   1. The value associated with the key, wrapped in Maybe.
 //   2. A copy of the original BinMap.
-BM/got
+BinMap/got
 : ∀(A: *)
-  ∀(map: (BM/BinMap A))
-  ∀(key: BS/Bits)
-  (P/Pair (BM/BinMap A) (M/Maybe A))
+  ∀(map: (BinMap/BinMap A))
+  ∀(key: Bits/Bits)
+  (Pair/Pair (BinMap/BinMap A) (Maybe/Maybe A))
 = λA λ{
   #Leaf: λkey #Pair{ #Leaf{} #None{} }
   #Node: λval λlft λrgt λ{
     #E: #Pair{ #Node{ val lft rgt } val }
-    #O: λkey match (BM/got A lft key) {
+    #O: λkey match (BinMap/got A lft key) {
       #Pair: λlft λval #Pair { #Node{ val lft rgt } val }
     }
-    #I: λkey match (BM/got A rgt key) {
+    #I: λkey match (BinMap/got A rgt key) {
       #Pair: λrgt λval #Pair { #Node{ val lft rgt } val }
     }
   }

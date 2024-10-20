@@ -1,46 +1,39 @@
-use Nat/ as N/
-
 // Returns the predecessor of a natural number.
 // 1st: The input natural number.
 // = The predecessor of n, or Zero if n is already Zero.
-N/pred
-: ∀(n: N/Nat)
-  N/Nat
+Nat/pred
+: ∀(n: Nat/Nat)
+  Nat/Nat
 = λ{
   #Zero: #Zero{}
   #Succ: λn.pred n.pred
 }
-//TEST//
-
-use Nat/ as N/
-use Equal/ as E/
-
 // Tests the predecessor function for natural numbers.
 
 // Test: pred 0 = 0.
-T0 : (E/Equal N/Nat (N/pred #Zero{}) #Zero{})
+TEST_0 : (Equal/Equal Nat/Nat (Nat/pred #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: pred 1 = 0.
-T1 : (E/Equal N/Nat (N/pred #Succ{#Zero{}}) #Zero{})
+TEST_1 : (Equal/Equal Nat/Nat (Nat/pred #Succ{#Zero{}}) #Zero{})
 = #Refl{}
 
 // Test: pred 2 = 1.
-T2 : (E/Equal N/Nat (N/pred #Succ{#Succ{#Zero{}}}) #Succ{#Zero{}})
+TEST_2 : (Equal/Equal Nat/Nat (Nat/pred #Succ{#Succ{#Zero{}}}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: pred 5 = 4.
-T3 : (E/Equal N/Nat (N/pred #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
+TEST_3 : (Equal/Equal Nat/Nat (Nat/pred #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
 = #Refl{}
 
 // Test: pred (pred 3) = 1.
-T4 : (E/Equal N/Nat (N/pred (N/pred #Succ{#Succ{#Succ{#Zero{}}}})) #Succ{#Zero{}})
+TEST_4 : (Equal/Equal Nat/Nat (Nat/pred (Nat/pred #Succ{#Succ{#Succ{#Zero{}}}})) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: pred (pred 1) = 0.
-T5 : (E/Equal N/Nat (N/pred (N/pred #Succ{#Zero{}})) #Zero{})
+TEST_5 : (Equal/Equal Nat/Nat (Nat/pred (Nat/pred #Succ{#Zero{}})) #Zero{})
 = #Refl{}
 
 // Test: pred (pred 0) = 0.
-T6 : (E/Equal N/Nat (N/pred (N/pred #Zero{})) #Zero{})
+TEST_6 : (Equal/Equal Nat/Nat (Nat/pred (Nat/pred #Zero{})) #Zero{})
 = #Refl{}

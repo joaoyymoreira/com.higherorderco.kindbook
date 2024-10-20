@@ -1,23 +1,15 @@
-use Bool/ as B/
-
 // Negates a Boolean value.
 // - 1st: The input Boolean value.
 // = The negation of the input.
-B/not
-: ∀(b: B/Bool)
-  B/Bool
+Bool/not
+: ∀(b: Bool/Bool)
+  Bool/Bool
 = λ{
   #True: #False{}
   #False: #True{}
 }
 
-
-//TEST//
-
-use Bool/ as B/
-use Equal/ as E/
-
-B/not-/T0
-: (E/Equal B/Bool #True{} (B/not #False{}))
+Bool/not-/T0
+: (Equal/Equal Bool/Bool #True{} (Bool/not #False{}))
 = #Refl{}
 

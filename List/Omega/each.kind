@@ -1,13 +1,10 @@
-use List/ as L/
-use List/Omega/ as LO/
-
 // Creates an Omega from a list.
 // - A: The type of elements in the list.
 // - xs: The input list.
 // = An Omega containing all elements from the input list.
 LO/each
 : ∀(A: *)
-  ∀(xs: (L/List A))
+  ∀(xs: (List/List A))
   (LO/Omega A)
 = λA λxs
   #MkOmega{xs}

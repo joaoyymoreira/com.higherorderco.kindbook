@@ -1,10 +1,7 @@
-use Maybe/ as M/
-use Trait/ as T/
-
 // Implementation of the Monad instance for Maybe
-M/Trait/Monad
-: (T/Monad M/Maybe)
+Maybe/Trait/Monad
+: (Trait/Monad Maybe/Maybe)
 = #Monad{
-  bind: M/Monad/bind
-  pure: M/Monad/pure
+  bind: Maybe/Monad/bind
+  pure: Maybe/Monad/pure
 }

@@ -1,45 +1,36 @@
-use Char/ as C/
-use Bool/ as B/
-
 // Checks if a character is a special character (printable but not alphanumeric).
 // - 1st: The character to check.
 // = True if the character is a special character, False otherwise.
-C/is-special
-: ∀(code: C/Char)
-  B/Bool
+Char/is-special
+: ∀(code: Char/Char)
+  Bool/Bool
 = λcode
-  let is_print = (C/is-print code)
-  let is_alpha = (C/is-alpha code)
-  let is_digit = (C/is-digit code)
-  let is_alphanumeric = (B/or is_alpha is_digit)
-  (B/and is_print (B/not is_alphanumeric))
-//TEST//
-
-use Char/ as C/
-use Bool/ as B/
-use Equal/ as E/
-
+  let is_print = (Char/is-print code)
+  let is_alpha = (Char/is-alpha code)
+  let is_digit = (Char/is-digit code)
+  let is_alphanumeric = (Bool/or is_alpha is_digit)
+  (Bool/and is_print (Bool/not is_alphanumeric))
 // Test: Special character (e.g., '@') should return True
-T0 
-: (E/Equal B/Bool (C/is-special 64) #True{}) 
+TEST_0 
+: (Equal/Equal Bool/Bool (Char/is-special 64) #True{}) 
 = #Refl{}
 
 // Test: Alphabetic character should return False
-T1 
-: (E/Equal B/Bool (C/is-special 65) #False{}) 
+TEST_1 
+: (Equal/Equal Bool/Bool (Char/is-special 65) #False{}) 
 = #Refl{}
 
 // Test: Digit should return False
-T2 
-: (E/Equal B/Bool (C/is-special 53) #False{}) 
+TEST_2 
+: (Equal/Equal Bool/Bool (Char/is-special 53) #False{}) 
 = #Refl{}
 
 // Test: Non-printable character should return False
-T3 
-: (E/Equal B/Bool (C/is-special 0) #False{}) 
+TEST_3 
+: (Equal/Equal Bool/Bool (Char/is-special 0) #False{}) 
 = #Refl{}
 
 // Test: Another special character (e.g., '#') should return True
-T4 
-: (E/Equal B/Bool (C/is-special 35) #True{}) 
+TEST_4 
+: (Equal/Equal Bool/Bool (Char/is-special 35) #True{}) 
 = #Refl{}

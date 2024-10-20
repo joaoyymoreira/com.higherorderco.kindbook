@@ -1,5 +1,3 @@
-use Pair/ as P/
-
 // Sets the first component of a pair to a new value.
 // This function creates a new pair with an updated first component.
 // 1st: The type of the original first component.
@@ -8,14 +6,14 @@ use Pair/ as P/
 // 4th: The new value for the first component.
 // 5th: The original pair.
 // = A new pair with the updated first component and the original second component.
-P/set-fst
+Pair/set-fst
 : ∀(A: *)
   ∀(B: *)
   ∀(C: *)
   ∀(z: C)
-  ∀(pair: (P/Pair A B))
-  (P/Pair C B)
+  ∀(pair: (Pair/Pair A B))
+  (Pair/Pair C B)
 = λA λB λC λz λpair
-  let x = (P/Sigma/fst _ _ pair)
-  let y = (P/Sigma/snd _ _ pair)
+  let x = (Pair/Sigma/fst _ _ pair)
+  let y = (Pair/Sigma/snd _ _ pair)
   #Pair{ z y }

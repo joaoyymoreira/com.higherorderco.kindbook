@@ -1,5 +1,3 @@
-use U32/ as U32/
-
 // Performs right shift operation on a U32 value.
 // 1st: The U32 value.
 // 2nd: The number of positions to shift right.

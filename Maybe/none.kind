@@ -1,9 +1,7 @@
-use Maybe/ as M/
-
 // Constructs a None value, representing the absence of a value
 // - 1st: The type parameter for the Maybe type
 // = A Maybe value representing no value
-M/None
+Maybe/None
 : ∀(A: *)
-  (M/Maybe A)
+  (Maybe/Maybe A)
 = λA #None{}

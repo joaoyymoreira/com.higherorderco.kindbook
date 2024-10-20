@@ -1,18 +1,10 @@
-use BinMap/ as BM/
-
 // Creates an empty BinMap.
 // = An empty BinMap.
-BM/new
+BinMap/new
 : ∀(A: *)
-  (BM/BinMap A)
-= λA (BM/Leaf A)
-//TEST//
-
-use BinMap/ as BM/
-use Equal/ as E/
-use Nat/ as N/
-
+  (BinMap/BinMap A)
+= λA (BinMap/Leaf A)
 // Test that creating a new BinMap results in a Leaf
-T0
-: (E/Equal (BM/BinMap N/Nat) (BM/new N/Nat) (BM/Leaf N/Nat))
+TEST_0
+: (Equal/Equal (BinMap/BinMap Nat/Nat) (BinMap/new Nat/Nat) (BinMap/Leaf Nat/Nat))
 = #Refl{}

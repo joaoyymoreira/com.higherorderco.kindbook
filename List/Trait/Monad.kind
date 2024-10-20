@@ -1,9 +1,5 @@
-use List/ as L/
-use Trait/ as T/
-use List/Monad/ as LM/
-
 // Instance of Monad for List
-L/Trait/Monad : (T/Monad L/List) = #Monad{
+List/Trait/Monad : (Trait/Monad List/List) = #Monad{
   bind: λA λB λma λf (LM/bind A B ma f)
   pure: λA λa (LM/pure A a)
 }

@@ -1,30 +1,24 @@
-use Parser/ as P/
-use Char/ as C/
-use String/ as S/
-use Bool/ as B/
-use Result/ as R/
-
 // Checks if a character is valid for a name.
 // - c: The character to check.
 // = A boolean indicating whether the character is valid for a name (alphanumeric, underscore, hyphen, or dot).
-P/is-name-char : C/Char -> B/Bool
+Pair/is-name-char : Char/Char -> Bool/Bool
 = λc
-  (B/or (C/is-alpha c)
-  (B/or (C/is-digit c)
-  (B/or (C/eq c 95) // '_'
-  (B/or (C/eq c 45) // '-'
-        (C/eq c 46))))) // '.'
+  (Bool/or (Char/is-alpha c)
+  (Bool/or (Char/is-digit c)
+  (Bool/or (Char/eq c 95) // '_'
+  (Bool/or (Char/eq c 45) // '-'
+        (Char/eq c 46))))) // '.'
 
 // Parses a name from the input.
 // = A Parser that returns a String containing the parsed name, or fails if no valid name is found.
-P/parse-name : (P/Parser S/String)
+Pair/parse-name : (Pair/Parser String/String)
 = λs
-  let name = (P/take-while P/is-name-char s)
+  let name = (Pair/take-while Pair/is-name-char s)
   match name {
     #Done: λr
-      let value = (P/Reply/value S/String r)
+      let value = (Pair/Reply/value String/String r)
       match value {
-        #Nil: (P/fail _ "Expected a name" s)
+        #Nil: (Pair/fail _ "Expected a name" s)
         #Cons: λhead λtail #Done{r}
       }
     #Fail: λe #Fail{e}

@@ -1,19 +1,17 @@
-use Trait/ as T/
-
 // Represents the Add trait for a type A
-T/Add
+Trait/Add
 : ∀(A: *)
   *
 = λA data[]{
   #MkAdd{
     add: ∀(x: A) ∀(y: A) A
-  } : (T/Add A)
+  } : (Trait/Add A)
 }
 
 // Accessor for the add field
-T/Add/add
+Trait/Add/add
 : ∀(A: *)
-  ∀(add: (T/Add A))
+  ∀(add: (Trait/Add A))
   ∀(x: A)
   ∀(y: A)
   A
