@@ -9,14 +9,13 @@ Bool/if : ∀(A: *) Bool -> A -> A -> A
 | A #False t f = f
 
 TEST_0 
-: (Equal Bool (Bool/if Bool #True{} #True{} #False{} ) (#True{}))
-= #Refl{}
+: (Bool/if Bool #True #True #False) == #True
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/if Bool #False{} #True{} #False{} ) (#False{}))
-= #Refl{}
+: (Bool/if Bool #False #True #False) == #False
+= #Refl
 
 TEST_2
-: (Equal Nat (Bool/if Nat #False{} #Succ{#Zero{}} #Zero{} ) (#Zero{}))
-= #Refl{}
-
+: (Bool/if Nat #False #Succ{#Zero} #Zero) == #Zero
+= #Refl

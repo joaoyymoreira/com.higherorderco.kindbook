@@ -1,32 +1,24 @@
-// Performs logical And with complement 1st & ~2nd.
-// 1st: The 1st boolean value.
-// 2nd: The 2nd boolean value.
-// = True if '1st' is true and '2nd' is false, False otherwise.
-Bool/andc
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #True: λ{
-    #False: #True{}
-    #True: #False{}
-  }
-  #False: λb #False{}
-}
+// Performs logical AND with complement (a & ~b).
+// - a: The 1st boolean value.
+// - b: The 2nd boolean value.
+// = True if 'a' is true and 'b' is false, False otherwise.
+Bool/andc : Bool -> Bool -> Bool
+| #True  #False = #True
+| #True  #True  = #False
+| #False b      = #False
 
 TEST_0 
-: (Equal Bool (Bool/andc #True{} #False{}) (#True{}))
-= #Refl{}
+: (Bool/andc #True #False) == #True
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/andc #True{} #True{}) (#False{}))
-= #Refl{}
+: (Bool/andc #True #True) == #False
+= #Refl
 
 TEST_2 
-: (Equal Bool (Bool/andc #False{} #True{}) (#False{}))
-= #Refl{}
+: (Bool/andc #False #True) == #False
+= #Refl
 
 TEST_3 
-: (Equal Bool (Bool/andc #False{} #False{}) (#False{}))
-= #Refl{}
-
+: (Bool/andc #False #False) == #False
+= #Refl

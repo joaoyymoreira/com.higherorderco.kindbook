@@ -2,25 +2,22 @@
 // 1st: The 1st boolean value.
 // 2nd: The 2nd boolean value.
 // = True if at least one of the inputs is False, False if both inputs are True.
-Bool/nand
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λa λb (Bool/not (Bool/and a b))
+Bool/nand : Bool -> Bool -> Bool
+| a b = (Bool/not (Bool/and a b))
 
 TEST_0 
-: (Equal Bool (Bool/nand #True{} #False{}) (#True{}))
-= #Refl{}
+: (Bool/nand #True #False) == #True
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/nand #True{} #True{}) (#False{}))
-= #Refl{}
+: (Bool/nand #True #True) == #False
+= #Refl
 
 TEST_2 
-: (Equal Bool (Bool/nand #False{} #True{}) (#True{}))
-= #Refl{}
+: (Bool/nand #False #True) == #True
+= #Refl
 
 TEST_3 
-: (Equal Bool (Bool/nand #False{} #False{}) (#True{}))
-= #Refl{}
+: (Bool/nand #False #False) == #True
+= #Refl
 

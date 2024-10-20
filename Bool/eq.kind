@@ -8,10 +8,10 @@ Bool/eq : Bool -> Bool -> Bool
 | a      b      = #False
 
 TEST_0 
-: (Equal Bool (Bool/eq #True{} #True{}) (#True{}))
-= #Refl{}
+: (Bool/eq #True #True) == #True
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/eq #False{} #True{}) (#False{}))
-= #Refl{}
+: (Bool/eq #False #True) == #False
+= #Refl
 

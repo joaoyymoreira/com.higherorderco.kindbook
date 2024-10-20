@@ -1,32 +1,23 @@
-// Performs logical XOR operation on two bools.
-// - 1st: The bool.
-// - 2nd: The bool.
-// = True if 1st and 2nd are different, False otherwise.
-Bool/xor
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #True: λ{
-    #True: #False{}
-    #False: #True{}
-  }
-  #False: λb b
-}
+// Performs logical XOR operation on two boolean values.
+// - a: The first boolean value.
+// - b: The second boolean value.
+// = True if a and b are different, False otherwise.
+Bool/xor : Bool -> Bool -> Bool
+| #True  b = (Bool/not b)
+| #False b = b
 
-Bool/T0
-: (Equal Bool (Bool/xor #True{} #True{}) #False{})
-= #Refl{}
+TEST_0
+: (Bool/xor #True #True) == #False
+= #Refl
 
-Bool/T1
-: (Equal Bool (Bool/xor #True{} #False{}) #True{})
-= #Refl{}
+TEST_1
+: (Bool/xor #True #False) == #True
+= #Refl
 
-Bool/T2
-: (Equal Bool (Bool/xor #False{} #False{}) #False{})
-= #Refl{}
+TEST_2
+: (Bool/xor #False #False) == #False
+= #Refl
 
-Bool/T3
-: (Equal Bool (Bool/xor #False{} #True{}) #True{})
-= #Refl{}
-
+TEST_3
+: (Bool/xor #False #True) == #True
+= #Refl

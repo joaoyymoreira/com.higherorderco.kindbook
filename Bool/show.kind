@@ -1,19 +1,6 @@
 // Converts a Bool to its string representation.
 // - 1st: The Bool value to convert.
 // = A string representation of the Bool value.
-Bool/show
-: ∀(b: Bool)
-  String
-= λ{
-  #True: "true"
-  #False: "false"
-}
-
-Bool/T0
-: (Equal Bool (Bool/show #True{}) (#True{}))
-= #Refl{}
-
-Bool/T1
-: (Equal Bool (Bool/show #False{}) #False{})
-= #Refl{}
-
+Bool/show : Bool -> String
+| #True  = "True"
+| #False = "False"

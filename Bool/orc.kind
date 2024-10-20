@@ -1,16 +1,7 @@
-// Performs logical OR with complement 1st | ~2nd.
-// 1st: The boolean value.
-// 2nd: The boolean value.
-// = True if either '1st' is true or '2nd' is false (or both).
-Bool/orc
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #False: λ{
-    #True: #False{}
-    #False: #True{}
-  }
-  #True: λb #True{}
-}
-
+// Performs logical OR with complement (a | ~b).
+// - a: The 1st boolean value.
+// - b: The 2nd boolean value.
+// = True if 'a' is true or 'b' is false, False otherwise.
+Bool/orc : Bool -> Bool -> Bool
+| #True  b = #True
+| #False b = (Bool/not b)

@@ -1,35 +1,26 @@
 // Performs logical NOT EQUAL operation on two boolean values.
-// - 1st: The first boolean value.
-// - 2nd: The second boolean value.
-// = True if 1st and 2nd are different, False otherwise.
-Bool/neq
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #True: λ{
-    #True: #False{}
-    #False: #True{}
-  }
-  #False: λ{
-    #True: #True{}
-    #False: #False{}
-  }
-}
+// - a: The first boolean value.
+// - b: The second boolean value.
+// = True if a and b are different, False otherwise.
+Bool/neq : Bool -> Bool -> Bool
+| #True  #True  = #False
+| #True  #False = #True
+| #False #True  = #True
+| #False #False = #False
 
 TEST_0 
-: (Equal Bool (Bool/neq #True{} #False{}) (#True{}))
-= #Refl{}
+: (Bool/neq #True #False) == #True
+= #Refl
 
 TEST_1 
-: (Equal Bool (Bool/neq #False{} #True{}) (#True{}))
-= #Refl{}
+: (Bool/neq #False #True) == #True
+= #Refl
 
 TEST_2 
-: (Equal Bool (Bool/neq #True{} #True{}) (#False{}))
-= #Refl{}
+: (Bool/neq #True #True) == #False
+= #Refl
 
 TEST_3 
-: (Equal Bool (Bool/neq #False{} #False{}) (#False{}))
-= #Refl{}
+: (Bool/neq #False #False) == #False
+= #Refl
 

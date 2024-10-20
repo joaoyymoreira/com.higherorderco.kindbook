@@ -1,19 +1,7 @@
 // Performs logical XNOR operation on two bools.
-// 1st: The boolean value.
-// 2nd: The boolean value.
-// = True if 1st and 2nd are the same, False otherwise.
-Bool/xnor
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #True: λ{
-    #True: #True{}
-    #False: #False{}
-  }
-  #False: λ{
-    #True: #False{}
-    #False: #True{}
-  }
-}
-
+// - a: The 1st bool.
+// - b: The 2nd bool.
+// = True if a and b are the same, False otherwise.
+Bool/xnor : Bool -> Bool -> Bool
+| #True  b = b
+| #False b = (Bool/not b)

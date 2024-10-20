@@ -1,25 +1,19 @@
-// Performs logical OR operation on two bools.
-// - 1st: The bool.
-// - 2nd: The bool.
-// = True if either 1st or 2nd is true, False otherwise.
-Bool/or
-: ∀(a: Bool)
-  ∀(b: Bool)
-  Bool
-= λ{
-  #True: λb #True{}
-  #False: λb b
-}
+// Performs logical OR operation on two boolean values.
+// - a: The first boolean value.
+// - b: The second boolean value.
+// = True if either a or b is true, False otherwise.
+Bool/or : Bool -> Bool -> Bool
+| #True  b = #True
+| #False b = b
 
-Bool/T0
-: (Equal Bool (Bool/or #True{} #True{}) #True{})
-= #Refl{}
+TEST_0
+: (Bool/or #True #True) == #True
+= #Refl
 
-Bool/T1
-: (Equal Bool (Bool/or #True{} #False{}) #True{})
-= #Refl{}
+TEST_1
+: (Bool/or #True #False) == #True
+= #Refl
 
-Bool/T2
-: (Equal Bool (Bool/or #False{} #False{}) #False{})
-= #Refl{}
-
+TEST_2
+: (Bool/or #False #False) == #False
+= #Refl

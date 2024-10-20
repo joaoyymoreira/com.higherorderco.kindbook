@@ -1,24 +1,23 @@
 // Performs logical AND operation on two boolean values.
-// - 1st: The boolean value.
-// - 2nd: The boolean value.
-// = True if both 1st and 2nd are true, False otherwise.
+// - a: the 1st bool.
+// - b: The 2nd bool.
+// = True if both are true, False otherwise.
 Bool/and : Bool -> Bool -> Bool
 | #True  b = b
-| #False b = b
+| #False b = #False
 
-Bool/T0
-: (Equal Bool (Bool/and #True{}  #True{}) (#True{}))
-= #Refl{}
+TEST_0
+: (Bool/and #True #True) == #True
+= #Refl
 
-Bool/T1
-: (Equal Bool (Bool/and  #True{} #False{}) #False{})
-= #Refl{}
+TEST_1
+: (Bool/and  #True #False) == #False
+= #Refl
 
-Bool/T2
-: (Equal Bool (Bool/and #False{}  #True{} ) #False{})
-= #Refl{}
+TEST_2
+: (Bool/and #False #True) == #False
+= #Refl
 
-Bool/T3
-: (Equal Bool (Bool/and  #False{} #False{}) #False{})
-= #Refl{}
-
+TEST_3
+: (Bool/and #False #False) == #False
+= #Refl
