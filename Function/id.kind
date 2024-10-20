@@ -2,8 +2,10 @@
 // - A: The type of the input and output.
 // - x: The input value.
 // = The same value x, unchanged.
-Function/id
-: ∀(A: *)
-  ∀(x: A)
-  A
-= λA λx x
+Function/id : ∀(A: *) A -> A
+| A x = x
+
+#test: (Function/id Bool #True) == #True
+#test: (Function/id U32 42) == 42
+#test: (Function/id (Maybe U32) #Some{7}) == #Some{7}
+#test: (Function/id (Maybe U32) #None) == #None

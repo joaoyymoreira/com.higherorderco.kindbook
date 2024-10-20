@@ -6,12 +6,8 @@
 // - y: The second argument to f, which becomes the first.
 // - x: The first argument to f, which becomes the second.
 // = The result of applying f with its first two arguments swapped.
-Function/flip
-: ∀(A: *)
-  ∀(B: *)
-  ∀(C: *)
-  ∀(f: ∀(a: A) ∀(b: B) C)
-  ∀(y: B)
-  ∀(x: A)
-  C
-= λA λB λC λf λy λx (f x y)
+Function/flip : ∀(A: *) ∀(B: *) ∀(C: *) (A -> B -> C) -> B -> A -> C
+| A B C f y x = (f x y)
+
+#test: (Function/flip Nat Nat Nat Nat/add #2 #3) == #5
+#test: (Function/flip Bool Nat Bool (λb λn if b { #True } else { #False }) #1 #True) == #True
