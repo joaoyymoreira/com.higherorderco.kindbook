@@ -1,7 +1,0 @@
-// Represents integers.
-// - Pos: Represents non-negative integers.
-// - NegSuc: Represents negative integers.
-Int : * = data[]{
-  #Pos{ value: Nat } : Int
-  #NegSuc{ value: Nat } : Int
-}
