@@ -3,9 +3,9 @@
 // 2nd: The boolean value.
 // = True if 1st and 2nd are the same, False otherwise.
 Bool/xnor
-: ∀(a: Bool/Bool)
-  ∀(b: Bool/Bool)
-  Bool/Bool
+: ∀(a: Bool)
+  ∀(b: Bool)
+  Bool
 = λ{
   #True: λ{
     #True: #True{}

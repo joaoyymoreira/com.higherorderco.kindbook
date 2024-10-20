@@ -6,7 +6,7 @@
 // = The result of applying function to argument, n times.
 Nat/apply
 : ∀(A: *)
-  ∀(n: Nat/Nat)
+  ∀(n: Nat)
   ∀(f: ∀(a: A) A)
   ∀(x: A)
   A
@@ -17,24 +17,24 @@ Nat/apply
 
 // Test: Applying id 0 times to 5 should return 5
 TEST_0
-: (Equal/Equal
-    Nat/Nat
-    (Nat/apply _ #Zero{} (Function/id Nat/Nat) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal
+    Nat
+    (Nat/apply _ #Zero{} (Function/id Nat) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
     #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: Applying Succ 3 times to 0 should return 3
 TEST_1
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (Nat/apply _ #Succ{#Succ{#Succ{#Zero{}}}} (λx #Succ{x}) #Zero{})
     #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: Applying (_+ 1) 2 times to 3 should return 5
 TEST_2
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (Nat/apply
       _
       #Succ{#Succ{#Zero{}}}

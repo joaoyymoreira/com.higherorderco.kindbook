@@ -3,8 +3,8 @@
 // = Some (first character, rest of the string) if the string is non-empty,
 //   None if the string is empty.
 String/uncons
-: ∀(str: String/String)
-  (Maybe/Maybe (Pair/Sigma U32 (λx String/String)))
+: ∀(str: String)
+  (Maybe (Pair/Sigma U32 (λx String)))
 = λ{
     #Nil: #None{}
     #Cons: λhead λtail #Some{#Pair{head tail}}

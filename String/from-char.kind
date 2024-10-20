@@ -3,5 +3,5 @@
 // = A string containing only the input character.
 String/from-char
 : ∀(chars: U32)
-  String/String
+  String
 = λchars (String/from-list (#Cons{chars #Nil{}}))

@@ -4,8 +4,8 @@
 // = A list of lists, containing all initial segments of xs.
 List/inits
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (List/List (List/List A))
+  ∀(xs: (List A))
+  (List (List A))
 = λA λxs
   #Cons{
     #Nil{}
@@ -15,16 +15,16 @@ List/inits
 // Helper function to generate the tail of the inits list
 List/inits/tail
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (List/List (List/List A))
+  ∀(xs: (List A))
+  (List (List A))
 = λA λ{
   #Nil: #Nil{}
   #Cons: λxs.head λxs.tail
     #Cons{
       #Cons{xs.head #Nil{}}
       (List/map
-        (List/List A)
-        (List/List A)
+        (List A)
+        (List A)
         (λy #Cons{xs.head y})
         (List/inits/tail A xs.tail)
       )

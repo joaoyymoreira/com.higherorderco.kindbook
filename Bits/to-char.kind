@@ -2,21 +2,21 @@
 // 1st: The Bits value to convert.
 // = The Unicode character corresponding to the given Bits value.
 Bits/to-char
-: ∀(bits: Bits/Bits)
-  Char/Char
+: ∀(bits: Bits)
+  Char
 = λbits (U32/from-bits bits)
 
 // Test: Convert 'A' (Unicode 65) to Char
 TEST_0
-: (Equal/Equal Char/Char (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
+: (Equal Char (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) 'A')
 = #Refl
 
 // // Test: Convert null character (Unicode 0) to Char
 // T1
-// : (Equal/Equal Char/Char (Bits/to-char #E) '\0')
+// : (Equal Char (Bits/to-char #E) '\0')
 // = #Refl
 
 // // Test: Convert space character (Unicode 32) to Char
 // T2
-// : (Equal/Equal Char/Char (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
+// : (Equal Char (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) ' ')
 // = #Refl

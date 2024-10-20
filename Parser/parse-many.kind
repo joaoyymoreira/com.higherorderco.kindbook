@@ -5,7 +5,7 @@
 Parser/parse_many
 : ∀(A: *)
   ∀(p: (Parser/Parser A))
-  (Parser/Parser (List/List A))
+  (Parser/Parser (List A))
 = λA λp (Parser/parse_many_go A p #Nil{})
 
 // Helper function to accumulate parsed results.
@@ -16,8 +16,8 @@ Parser/parse_many
 Parser/parse_many_go
 : ∀(A: *)
   ∀(p: (Parser/Parser A))
-  ∀(acc:( List/List A))
-  (Parser/Parser (List/List A))
+  ∀(acc:( List A))
+  (Parser/Parser (List A))
 = λA λp λacc λs
   match (p s) {
     #Done: λr

@@ -2,8 +2,8 @@
 // 1st: The character to check.
 // = True if the character is a binary digit, False otherwise.
 Char/is-binary-digit
-: ∀(c: Char/Char)
-  Bool/Bool
+: ∀(c: Char)
+  Bool
 = λc
   let is_zero = (Char/eq c '0')
   let is_one = (Char/eq c '1')
@@ -12,20 +12,20 @@ Char/is-binary-digit
 
 // Test: '0' is a binary digit.
 TEST_0
-: (Equal/Equal Bool/Bool (Char/is-binary-digit '0') #True{}) 
+: (Equal Bool (Char/is-binary-digit '0') #True{}) 
 = #Refl{}
 
 // Test: '1' is a binary digit.
 TEST_1
-: (Equal/Equal Bool/Bool (Char/is-binary-digit '1') #True{}) 
+: (Equal Bool (Char/is-binary-digit '1') #True{}) 
 = #Refl{}
 
 // Test: '2' is not a binary digit.
 TEST_2
-: (Equal/Equal Bool/Bool (Char/is-binary-digit '2') #False{}) 
+: (Equal Bool (Char/is-binary-digit '2') #False{}) 
 = #Refl{}
 
 // Test: 'a' is not a binary digit.
 TEST_3
-: (Equal/Equal Bool/Bool (Char/is-binary-digit 'a') #False{}) 
+: (Equal Bool (Char/is-binary-digit 'a') #False{}) 
 = #Refl{}

@@ -4,11 +4,11 @@ Trait/Ord
   *
 = λA data[]{
   #Ord{
-    compare: ∀(x: A) ∀(y: A) Ordering/Ordering
-    lt: ∀(x: A) ∀(y: A) Bool/Bool
-    gt: ∀(x: A) ∀(y: A) Bool/Bool
-    lte: ∀(x: A) ∀(y: A) Bool/Bool
-    gte: ∀(x: A) ∀(y: A) Bool/Bool
+    compare: ∀(x: A) ∀(y: A) Ordering
+    lt: ∀(x: A) ∀(y: A) Bool
+    gt: ∀(x: A) ∀(y: A) Bool
+    lte: ∀(x: A) ∀(y: A) Bool
+    gte: ∀(x: A) ∀(y: A) Bool
   } : (Trait/Ord A)
 }
 
@@ -18,7 +18,7 @@ Trait/Ord/compare
   ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  Ordering/Ordering
+  Ordering
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.compare x y)
 }
@@ -29,7 +29,7 @@ Trait/Ord/lt
   ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  Bool/Bool
+  Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lt x y)
 }
@@ -40,7 +40,7 @@ Trait/Ord/gt
   ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  Bool/Bool
+  Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gt x y)
 }
@@ -51,7 +51,7 @@ Trait/Ord/lte
   ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  Bool/Bool
+  Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lte x y)
 }
@@ -62,7 +62,7 @@ Trait/Ord/gte
   ∀(o: (Trait/Ord A))
   ∀(x: A)
   ∀(y: A)
-  Bool/Bool
+  Bool
 = λA λ{
   #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gte x y)
 }
@@ -70,7 +70,7 @@ Trait/Ord/gte
 // Derives an Ord instance from a compare function
 Trait/Ord/derive
 : ∀(A: *)
-  ∀(compare: ∀(x: A) ∀(y: A) Ordering/Ordering)
+  ∀(compare: ∀(x: A) ∀(y: A) Ordering)
   (Trait/Ord A)
 = λA λcompare #Ord{
   compare: compare

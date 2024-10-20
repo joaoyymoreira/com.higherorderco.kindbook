@@ -3,47 +3,47 @@
 // 2nd: The natural number to compare.
 // = True if the numbers are not equal, False otherwise.
 Nat/neq
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Bool/Bool
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Bool
 = λm λn (Bool/not (Nat/eq m n))
 // Test cases for neq function
 
 // Test : Different numbers should return True.
 TEST_0
-: (Equal/Equal Bool/Bool (Nat/neq #Succ{#Zero{}} #Zero{}) #True{})
+: (Equal Bool (Nat/neq #Succ{#Zero{}} #Zero{}) #True{})
 = #Refl{}
 
 // Test : Same numbers should return False.
 TEST_1
-: (Equal/Equal Bool/Bool (Nat/neq #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Zero{}}}) #False{})
+: (Equal Bool (Nat/neq #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Zero{}}}) #False{})
 = #Refl{}
 
 // Test : Zero and a non-zero number should return True.
 TEST_2
-: (Equal/Equal Bool/Bool (Nat/neq #Zero{} #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
+: (Equal Bool (Nat/neq #Zero{} #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
 = #Refl{}
 
 // Test : Different non-zero numbers should return True.
 TEST_3
-: (Equal/Equal Bool/Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{})
+: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{})
 = #Refl{}
 
 // Test : Zero and itself should return False.
 TEST_4
-: (Equal/Equal Bool/Bool (Nat/neq #Zero{} #Zero{}) #False{})
+: (Equal Bool (Nat/neq #Zero{} #Zero{}) #False{})
 = #Refl{}
 
 // Test : Larger numbers should work correctly.
 TEST_5
-: (Equal/Equal Bool/Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
+: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
                         #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}})
                   #True{})
 = #Refl{}
 
 // Test : Larger same numbers should return False.
 TEST_6
-: (Equal/Equal Bool/Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
+: (Equal Bool (Nat/neq #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
                         #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
                   #False{})
 = #Refl{}

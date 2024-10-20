@@ -2,6 +2,6 @@
 // - n: The natural number to convert.
 // = The corresponding integer representation.
 Int/from-nat
-: ∀(n: Nat/Nat)
-  Int/Int
+: ∀(n: Nat)
+  Int
 = λn #Pos{n}

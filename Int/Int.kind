@@ -1,7 +1,7 @@
 // Represents integers.
 // - Pos: Represents non-negative integers.
 // - NegSuc: Represents negative integers.
-Int/Int : * = data[]{
-  #Pos{ value: Nat/Nat } : Int/Int
-  #NegSuc{ value: Nat/Nat } : Int/Int
+Int : * = data[]{
+  #Pos{ value: Nat } : Int
+  #NegSuc{ value: Nat } : Int
 }

@@ -12,9 +12,9 @@ List/zip-with
   ∀(B: *)
   ∀(C: *)
   ∀(f: ∀(a: A) ∀(b: B) C)
-  ∀(xs: (List/List A))
-  ∀(ys: (List/List B))
-  (List/List C)
+  ∀(xs: (List A))
+  ∀(ys: (List B))
+  (List C)
 = λA λB λC λf λ{
   #Nil: λys #Nil{}
   #Cons: λxs.head λxs.tail λ{

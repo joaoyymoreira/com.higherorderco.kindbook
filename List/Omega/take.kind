@@ -5,9 +5,9 @@
 // = A finite list containing the first n elements of omega, or all elements if n > length of omega's prefix.
 LO/take
 : ∀(A: *)
-  ∀(n: Nat/Nat)
+  ∀(n: Nat)
   ∀(omega: (LO/Omega A))
-  (List/List A)
+  (List A)
 = λA λ{
   #Zero: λomega
     #Nil{}

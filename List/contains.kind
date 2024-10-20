@@ -8,8 +8,8 @@ List/contains
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
   ∀(x: A)
-  ∀(xs: (List/List A))
-  Bool/Bool
+  ∀(xs: (List A))
+  Bool
 = λA λe λx λ{
   #Nil: #False{}
   #Cons: λxs.head λxs.tail

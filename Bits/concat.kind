@@ -3,8 +3,8 @@
 // - The least significant bits are positioned to the left of the list.
 // = The result is a single Bits value.
 Bits/concat
-: ∀(xs: (List/List Bits/Bits))
-  Bits/Bits
+: ∀(xs: (List Bits))
+  Bits
 = λ{
   #Nil: #E{}
   #Cons: λ{

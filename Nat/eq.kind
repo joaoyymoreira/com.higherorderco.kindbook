@@ -2,27 +2,27 @@
 // - m: The natural number.
 // - n: The natural number.
 // = True if the numbers are equal, False otherwise.
-Nat/eq : Nat/Nat -> Nat/Nat -> Bool/Bool
+Nat/eq : Nat -> Nat -> Bool
 | #Zero     #Zero    = #True
 | #Succ{m}  #Succ{n} = (Nat/eq m n)
 | x         y        = #False
 
 // Test: equality of the same number
 TEST_0
-: (Equal/Equal Bool/Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{ #Zero{}}})) #True{})
+: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{ #Zero{}}})) #True{})
 = #Refl{}
 
 // Test: equality of different numbers
 TEST_1
-: (Equal/Equal Bool/Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{#Succ{ #Zero{}}}})) #False{})
+: (Equal Bool (Nat/eq (#Succ{#Succ{ #Zero{}}}) (#Succ{#Succ{#Succ{ #Zero{}}}})) #False{})
 = #Refl{}
 
 // Test: equality of zero
 TEST_2
-: (Equal/Equal Bool/Bool (Nat/eq #Zero{} #Zero{}) #True{})
+: (Equal Bool (Nat/eq #Zero{} #Zero{}) #True{})
 = #Refl{}
 
 // Test: inequality of the same number
 TEST_3
-: (Equal/Equal Bool/Bool (Nat/neq (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}})) #False{})
+: (Equal Bool (Nat/neq (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}}) (#Succ{#Succ{#Succ{#Succ{ #Zero{}}}}})) #False{})
 = #Refl{}

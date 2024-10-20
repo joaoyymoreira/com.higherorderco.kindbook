@@ -1,5 +1,5 @@
 // Instance of Monad for List
-List/Trait/Monad : (Trait/Monad List/List) = #Monad{
+List/Trait/Monad : (Trait/Monad List) = #Monad{
   bind: λA λB λma λf (LM/bind A B ma f)
   pure: λA λa (LM/pure A a)
 }

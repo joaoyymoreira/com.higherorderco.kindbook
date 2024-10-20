@@ -5,9 +5,9 @@
 // = Just the element at index i if i < length xs, otherwise None.
 List/lookup
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  ∀(i: Nat/Nat)
-  (Maybe/Maybe A)
+  ∀(xs: (List A))
+  ∀(i: Nat)
+  (Maybe A)
 = λA λ{
   #Nil: λi #None{}
   #Cons: λxs.head λxs.tail λ{

@@ -4,8 +4,8 @@
 // = The number of elements in the list.
 List/length
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  Nat/Nat
+  ∀(xs: (List A))
+  Nat
 = λA λ{
   #Nil: #Zero{}
   #Cons: λxs.head λxs.tail #Succ{(List/length _ xs.tail)}

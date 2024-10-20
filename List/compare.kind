@@ -7,9 +7,9 @@
 List/compare
 : ∀(A: *)
   ∀(ord: (Trait/Ord A))
-  ∀(xs: (List/List A))
-  ∀(ys: (List/List A))
-  Ordering/Ordering
+  ∀(xs: (List A))
+  ∀(ys: (List A))
+  Ordering
 = λA λord λ{
   #Nil: λ{
     #Nil: #EQ{}
@@ -20,7 +20,7 @@ List/compare
     #Cons: λys.head λys.tail
       let head_cmp = (Trait/Ord/compare A ord xs.head ys.head)
       (Ordering/match
-        Ordering/Ordering
+        Ordering
         #LT{}
         (List/compare A ord xs.tail ys.tail)
         #GT{}

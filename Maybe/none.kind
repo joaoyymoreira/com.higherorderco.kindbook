@@ -3,5 +3,5 @@
 // = A Maybe value representing no value
 Maybe/None
 : ∀(A: *)
-  (Maybe/Maybe A)
+  (Maybe A)
 = λA #None{}

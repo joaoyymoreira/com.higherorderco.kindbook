@@ -3,43 +3,43 @@
 // 2nd: The second natural number.
 // = The larger of the two input numbers.
 Nat/max
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Nat/Nat
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Nat
 = λm λn
-  (Bool/if Nat/Nat (Nat/gte m n) m n)
+  (Bool/if Nat (Nat/gte m n) m n)
 // Test: max 0 0 = 0
-TEST_0 : (Equal/Equal Nat/Nat (Nat/max #Zero{} #Zero{}) #Zero{})
+TEST_0 : (Equal Nat (Nat/max #Zero{} #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: max 0 5 = 5
-TEST_1 : (Equal/Equal Nat/Nat (Nat/max #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_1 : (Equal Nat (Nat/max #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: max 5 0 = 5
-TEST_2 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_2 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: max 3 2 = 3
-TEST_3 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})
+TEST_3 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: max 2 3 = 3
-TEST_4 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}})
+TEST_4 : (Equal Nat (Nat/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: max 7 7 = 7
-TEST_5 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
+TEST_5 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}})
 = #Refl{}
 
 // Test: Commutativity: max a b = max b a
-TEST_6 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+TEST_6 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}) (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
 = #Refl{}
 
 // Test: Idempotence: max a a = a
-TEST_7 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
+TEST_7 : (Equal Nat (Nat/max #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
 = #Refl{}
 
 // Test: Associativity: max a (max b c) = max (max a b) c
-TEST_8 : (Equal/Equal Nat/Nat (Nat/max #Succ{#Succ{#Zero{}}} (Nat/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) (Nat/max (Nat/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
+TEST_8 : (Equal Nat (Nat/max #Succ{#Succ{#Zero{}}} (Nat/max #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) (Nat/max (Nat/max #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}))
 = #Refl{}

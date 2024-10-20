@@ -8,15 +8,15 @@ BinTree/leaf
 
 // Test: leaf creates an empty tree
 TEST_0
-: (Equal/Equal (BinTree/BinTree Nat/Nat) (BinTree/leaf Nat/Nat) #Leaf{})
+: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf{})
 = #Refl{}
 
 // Test: leaf is polymorphic
 TEST_1
-: (Equal/Equal (BinTree/BinTree Nat/Nat) (BinTree/leaf Nat/Nat) #Leaf{})
+: (Equal (BinTree/BinTree Nat) (BinTree/leaf Nat) #Leaf{})
 = #Refl{}
 
 // Test: leaf {String} is equivalent to Leaf
 TEST_2
-: (Equal/Equal (BinTree/BinTree String/String) (BinTree/leaf String/String) #Leaf{})
+: (Equal (BinTree/BinTree String) (BinTree/leaf String) #Leaf{})
 = #Refl{}

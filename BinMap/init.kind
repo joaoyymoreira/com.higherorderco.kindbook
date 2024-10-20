@@ -7,7 +7,7 @@
 BinMap/init
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
-  ∀(k: Bits/Bits)
+  ∀(k: Bits)
   ∀(v: A)
   (BinMap/BinMap A)
 = λA λ{

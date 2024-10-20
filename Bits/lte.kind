@@ -3,7 +3,7 @@
 // - b: The second Bits value.
 // = True if 'a' is less than or equal to 'b', False otherwise.
 Bits/lte
-: ∀(a: Bits/Bits)
-  ∀(b: Bits/Bits)
-  Bool/Bool
+: ∀(a: Bits)
+  ∀(b: Bits)
+  Bool
 = λa λb (Bool/not (Bits/lt b a))

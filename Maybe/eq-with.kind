@@ -4,7 +4,7 @@
 // - ma: The first Maybe value.
 // - mb: The second Maybe value.
 // = True if the Maybe values are equal, False otherwise.
-Maybe/eq-with : ∀(A: *) (A -> A -> Bool/Bool) -> (Maybe/Maybe A) -> (Maybe/Maybe A) -> Bool/Bool
+Maybe/eq-with : ∀(A: *) (A -> A -> Bool) -> (Maybe A) -> (Maybe A) -> Bool
 | A eq #None    #None    = #True
 | A eq #Some{x} #Some{y} = (eq x y)
 | A eq ma       mb       = #False

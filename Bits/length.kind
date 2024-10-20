@@ -1,7 +1,7 @@
 // Returns the length of a Bits structure, that is, how many bits it has.
 Bits/length
-: ∀(bits: Bits/Bits)
-  Nat/Nat
+: ∀(bits: Bits)
+  Nat
 = λ{
   #E: #Zero{}
   #O: λbits.tail #Succ{(Bits/length bits.tail)}

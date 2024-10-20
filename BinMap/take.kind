@@ -6,15 +6,15 @@
 BinMap/take
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
-  ∀(k: Bits/Bits)
-  (Maybe/Maybe (Pair/Pair (BinMap/BinMap A) A))
+  ∀(k: Bits)
+  (Maybe (Pair/Pair (BinMap/BinMap A) A))
 = λA λ{
   #Leaf: λk #None{}
   #Node: λval λlft λrgt λ{
 		#E: 
 			use none = #None{}
 			use some = λs #Some{#Pair{#Node{#None{} lft rgt} s}}
-			(Maybe/match A (λx (Maybe/Maybe (Pair/Pair (BinMap/BinMap A) A))) none some val)
+			(Maybe/match A (λx (Maybe (Pair/Pair (BinMap/BinMap A) A))) none some val)
 		#O: λb
 			(Maybe/map 
 				(Pair/Pair (BinMap/BinMap A) A) 
@@ -35,40 +35,40 @@ BinMap/take
 
 // Test: Taking from an empty BinMap
 TEST_0
-: (Equal/Equal
-    (Maybe/Maybe (Pair/Pair (BinMap/BinMap Nat/Nat) Nat/Nat))
-    (BinMap/take Nat/Nat (BinMap/empty Nat/Nat) #E{})
+: (Equal
+    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (BinMap/take Nat (BinMap/empty Nat) #E{})
     #None{})
 = #Refl{}
 
 // Test: Taking an existing key-value pair
 TEST_1
-: (Equal/Equal
-    (Maybe/Maybe (Pair/Pair (BinMap/BinMap Nat/Nat) Nat/Nat))
-    (BinMap/take Nat/Nat (BinMap/set Nat/Nat (BinMap/empty Nat/Nat) #E{} (U32/to-nat 42)) #E{})
-    (#Some{ (#Pair{(#Node{#None{} (BinMap/Leaf Nat/Nat) (BinMap/Leaf Nat/Nat)}) (U32/to-nat 42)})}))
+: (Equal
+    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (BinMap/take Nat (BinMap/set Nat (BinMap/empty Nat) #E{} (U32/to-nat 42)) #E{})
+    (#Some{ (#Pair{(#Node{#None{} (BinMap/Leaf Nat) (BinMap/Leaf Nat)}) (U32/to-nat 42)})}))
 = #Refl{}
 
 // Test: Taking a non-existent key
 TEST_2
-: (Equal/Equal
-    (Maybe/Maybe (Pair/Pair (BinMap/BinMap Nat/Nat) Nat/Nat))
-    (BinMap/take Nat/Nat (BinMap/set Nat/Nat (BinMap/empty Nat/Nat) #E{} (U32/to-nat 42)) (#O{#E{}}))
+: (Equal
+    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (BinMap/take Nat (BinMap/set Nat (BinMap/empty Nat) #E{} (U32/to-nat 42)) (#O{#E{}}))
     #None{})
 = #Refl{}
 
 // Test: Taking from a BinMap with multiple values
 TEST_3
-: (Equal/Equal
-    (Maybe/Maybe (Pair/Pair (BinMap/BinMap Nat/Nat) Nat/Nat))
-    (BinMap/take Nat/Nat (BinMap/set Nat/Nat (BinMap/set Nat/Nat (BinMap/empty Nat/Nat) #E{} (U32/to-nat 42)) (#I{#E{}}) (U32/to-nat 24)) (#I{#E{}}))
-    (#Some{ (#Pair{(#Node{(#Some{(U32/to-nat 42)}) (BinMap/Leaf Nat/Nat) (#Node{#None{} (BinMap/Leaf Nat/Nat) (BinMap/Leaf Nat/Nat)})}) (U32/to-nat 24)})}))
+: (Equal
+    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (BinMap/take Nat (BinMap/set Nat (BinMap/set Nat (BinMap/empty Nat) #E{} (U32/to-nat 42)) (#I{#E{}}) (U32/to-nat 24)) (#I{#E{}}))
+    (#Some{ (#Pair{(#Node{(#Some{(U32/to-nat 42)}) (BinMap/Leaf Nat) (#Node{#None{} (BinMap/Leaf Nat) (BinMap/Leaf Nat)})}) (U32/to-nat 24)})}))
 = #Refl{}
 
 // Test: Taking a value and then taking it again
 TEST_4
-: (Equal/Equal
-    (Maybe/Maybe (Pair/Pair (BinMap/BinMap Nat/Nat) Nat/Nat))
-    (BinMap/take Nat/Nat (#Node{#None{} (BinMap/Leaf Nat/Nat) (BinMap/Leaf Nat/Nat)}) #E{})
+: (Equal
+    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (BinMap/take Nat (#Node{#None{} (BinMap/Leaf Nat) (BinMap/Leaf Nat)}) #E{})
     #None{})
 = #Refl{}

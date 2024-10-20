@@ -3,9 +3,9 @@
 // - b: The 2nd Bits value.
 // = A new Bits value representing the product of a and b.
 Bits/mul
-: ∀(a: Bits/Bits)
-  ∀(b: Bits/Bits)
-  Bits/Bits
+: ∀(a: Bits)
+  ∀(b: Bits)
+  Bits
 = λ{
   #E: λb #E{}
   #O: λa.tail λb #O{(Bits/mul a.tail b)}

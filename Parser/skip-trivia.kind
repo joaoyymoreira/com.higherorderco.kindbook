@@ -1,13 +1,13 @@
 // Checks if a character is a newline
 Pair/is-newline
-: ∀(c: Char/Char)
-  Bool/Bool
+: ∀(c: Char)
+  Bool
 = λc (Char/eq c 10) // 10 is the ASCII code for newline
 
 // Checks if a list of characters starts with "//"
 Pair/is-comment
-: ∀(cs: (List/List Char/Char))
-  Bool/Bool
+: ∀(cs: (List Char))
+  Bool
 = λ{
   #Cons: λhead λ{
     #Cons: λsecond λtail (Bool/and (Char/eq head 47) (Char/eq second 47))
@@ -18,9 +18,9 @@ Pair/is-comment
 
 // Helper function to handle comment skipping
 Pair/skip-comment
-: ∀(acc: Nat/Nat)
-  ∀(cs: (List/List Char/Char))
-  (Pair/Pair Nat/Nat (List/List Char/Char))
+: ∀(acc: Nat)
+  ∀(cs: (List Char))
+  (Pair/Pair Nat (List Char))
 = λacc λcs
   let com-len = (List/length _ (List/take-while _ (λc (Bool/not (Pair/is-newline c))) cs))
   let new-acc = (Nat/add (Nat/add acc #2) com-len) // +2 for "//"
@@ -30,16 +30,16 @@ Pair/skip-comment
 // Auxiliary function for skip-trivia
 // Accumulates the number of skipped characters
 Pair/skip-trivia-go
-: ∀(acc: Nat/Nat)
-  ∀(cs: (List/List Char/Char))
-  (Pair/Pair Nat/Nat (List/List Char/Char))
+: ∀(acc: Nat)
+  ∀(cs: (List Char))
+  (Pair/Pair Nat (List Char))
 = λacc λ{
   #Nil: (Pair/Pair.new _ _ acc #Nil{})
   #Cons: λc λcs
-    (Bool/if (Pair/Pair Nat/Nat (List/List Char/Char))
+    (Bool/if (Pair/Pair Nat (List Char))
       (Char/is-space c)
       (Pair/skip-trivia-go (#Succ{acc}) cs)
-      (Bool/if (Pair/Pair Nat/Nat (List/List Char/Char))
+      (Bool/if (Pair/Pair Nat (List Char))
         (Pair/is-comment (#Cons{c cs}))
         (Pair/skip-comment acc cs)
         (Pair/Pair.new _ _ acc (#Cons{c cs}))))
@@ -48,7 +48,7 @@ Pair/skip-trivia-go
 // Skips whitespace and comments in the text.
 // Returns the number of characters skipped.
 Pair/skip-trivia
-: (Pair/Parser Nat/Nat)
+: (Pair/Parser Nat)
 = λs
   let input = (Pair/State/input s)
   let chars = input

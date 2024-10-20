@@ -4,8 +4,8 @@
 // = A new list of lists where each sublist contains elements from the diagonal.
 List/stripe
 : ∀(A: *)
-  ∀(xss: (List/List (List/List A)))
-  (List/List (List/List A))
+  ∀(xss: (List (List A)))
+  (List (List A))
 = λA λ{
   #Nil: #Nil{}
   #Cons: λ{

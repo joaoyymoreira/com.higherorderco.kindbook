@@ -2,8 +2,8 @@
 // - bits: The Bits value to convert.
 // = A string representation of the Bits value.
 Bits/show
-: ∀(bits: Bits/Bits)
-  String/String
+: ∀(bits: Bits)
+  String
 = λ{
   #E: "e"
   #O: λbits.tail (String/append "0" (Bits/show bits.tail))

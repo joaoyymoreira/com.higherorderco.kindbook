@@ -4,7 +4,7 @@
 // = An Omega containing all elements from the input list.
 LO/each
 : ∀(A: *)
-  ∀(xs: (List/List A))
+  ∀(xs: (List A))
   (LO/Omega A)
 = λA λxs
   #MkOmega{xs}

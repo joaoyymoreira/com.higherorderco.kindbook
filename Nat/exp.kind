@@ -3,9 +3,9 @@
 // 2nd: The exponent.
 // = The result of raising the base to the power of the exponent.
 Nat/exp
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Nat/Nat
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Nat
 = λm λ{
   #Zero: #Succ{#Zero{}}
   #Succ: λn.pred (Nat/mul m (Nat/exp m n.pred))
@@ -13,41 +13,41 @@ Nat/exp
 // Tests the exponentiation function for natural numbers.
 
 // Test: 2⁰ = 1
-TO : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Zero{}) #Succ{#Zero{}})
+TO : (Equal Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Zero{}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: 2¹ = 2
-TEST_1 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
+TEST_1 : (Equal Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
 = #Refl{}
 
 // Test: 2² = 4
-TEST_2 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
+TEST_2 : (Equal Nat (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
 = #Refl{}
 
 // Test: 3² = 9
-TEST_3 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}})
+TEST_3 : (Equal Nat (Nat/exp #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}})
 = #Refl{}
 
 // Test: 5¹ = 5
-TEST_4 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+TEST_4 : (Equal Nat (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 10⁰ = 1
-TEST_5 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Zero{}) #Succ{#Zero{}})
+TEST_5 : (Equal Nat (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Zero{}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: 3³ = 27
-TEST_6 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+TEST_6 : (Equal Nat (Nat/exp #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}})
 = #Refl{}
 
 // Test: 1⁵ = 1
-TEST_6 : (Equal/Equal Nat/Nat (Nat/exp #Succ{#Zero{}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Zero{}})
+TEST_6 : (Equal Nat (Nat/exp #Succ{#Zero{}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: 0² = 0
-TEST_7 : (Equal/Equal Nat/Nat (Nat/exp #Zero{} #Succ{#Succ{#Zero{}}}) #Zero{})
+TEST_7 : (Equal Nat (Nat/exp #Zero{} #Succ{#Succ{#Zero{}}}) #Zero{})
 = #Refl{}
 
 // Test: Exponentiation property: (a^b)^c = a^(b*c)
-TEST_8 : (Equal/Equal Nat/Nat (Nat/exp (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}}) (Nat/exp #Succ{#Succ{#Zero{}}} (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}})))
+TEST_8 : (Equal Nat (Nat/exp (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}}) (Nat/exp #Succ{#Succ{#Zero{}}} (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}})))
 = #Refl{}

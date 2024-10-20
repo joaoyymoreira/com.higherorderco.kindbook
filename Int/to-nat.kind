@@ -3,8 +3,8 @@
 // = The corresponding natural number representation.
 //   For negative integers, returns 0.
 Int/to-nat
-: ∀(i: Int/Int)
-  Nat/Nat
+: ∀(i: Int)
+  Nat
 = λ{
   #Pos: λi.value i.value
   #NegSuc: λi.value #Zero{}

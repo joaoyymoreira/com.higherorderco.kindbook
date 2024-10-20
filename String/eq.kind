@@ -3,9 +3,9 @@
 // - b: The second string to compare.
 // = A boolean value indicating whether the strings are equal.
 String/eq
-: ∀(a: String/String)
-  ∀(b: String/String)
-  Bool/Bool
+: ∀(a: String)
+  ∀(b: String)
+  Bool
 = λ{
   #Nil: λ{
     #Nil: #True{}

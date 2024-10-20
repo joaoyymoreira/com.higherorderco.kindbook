@@ -5,9 +5,9 @@
 // = A list containing the longest prefix of xs of elements that satisfy p.
 List/take-while
 : ∀(A: *)
-  ∀(fn: ∀(a: A) Bool/Bool)
-  ∀(xs: (List/List A))
-  (List/List A)
+  ∀(fn: ∀(a: A) Bool)
+  ∀(xs: (List A))
+  (List A)
 = λA λfn λ{
   #Nil: []
   #Cons: λxs.head λxs.tail

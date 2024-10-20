@@ -5,7 +5,7 @@ HVM/RNet : *
 = data[]{ #RN{} : HVM/RNet }
 
 HVM/HVM : * -> *
-| K = ∀(net: HVM/RNet) (Maybe/Maybe (Pair/Pair HVM/RNet K))
+| K = ∀(net: HVM/RNet) (Maybe (Pair/Pair HVM/RNet K))
 
 // Initialization
 // --------------
@@ -16,7 +16,7 @@ HVM/net_new : HVM/RNet
 // Running
 // -------
 
-HVM/run : ∀(X: *) (HVM/HVM X) -> (Maybe/Maybe X)
+HVM/run : ∀(X: *) (HVM/HVM X) -> (Maybe X)
 = λA λhvm match (hvm HVM/net_new) {
   #None: #None
   #Some{x}: #None

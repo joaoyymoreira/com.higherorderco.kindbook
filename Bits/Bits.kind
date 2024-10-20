@@ -2,9 +2,9 @@
 // - O: Represents a zero bit.
 // - I: Represents a one bit.
 // - E: Represents the end of the binary string.
-Bits/Bits : *
+Bits : *
 = data[]{
-  #O{ tail: Bits/Bits } : Bits/Bits
-  #I{ tail: Bits/Bits } : Bits/Bits
-  #E{} : Bits/Bits
+  #O{ tail: Bits } : Bits
+  #I{ tail: Bits } : Bits
+  #E{} : Bits
 }

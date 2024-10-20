@@ -5,6 +5,6 @@
 U32/gte
 : ∀(a: U32)
   ∀(b: U32)
-  Bool/Bool
+  Bool
 = λa λb
   (U32/to-bool (>= a b))

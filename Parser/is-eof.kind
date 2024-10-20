@@ -1,6 +1,6 @@
 // Checks if the parser has reached the end of the input.
 // = A Reply containing a Bool: True if at the end of input, False otherwise.
-Parser/is-eof : (Parser/Parser Bool/Bool)
+Parser/is-eof : (Parser/Parser Bool)
 = λstate
   let input = (Parser/State/input state)
   let result = (String/is-empty input)
@@ -14,14 +14,14 @@ Parser/is-eof : (Parser/Parser Bool/Bool)
 // Accessor for the input field of State
 Parser/State/input
 : ∀(s: Parser/State)
-  String/String
+  String
 = λ{
   #MkState: λs.input λs.index s.input
 }
 // Test: is-eof returns True for an empty string
 TEST_0
-: (Equal/Equal
-    (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+: (Equal
+    (Result (Parser/Reply Bool) Parser/Error)
     (Parser/is-eof (Parser/State/new [] #Zero))
     (#Done{
       #MkReply{
@@ -34,8 +34,8 @@ TEST_0
 
 // Test: is-eof returns False for a non-empty string
 TEST_1
-: (Equal/Equal
-    (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+: (Equal
+    (Result (Parser/Reply Bool) Parser/Error)
     (Parser/is-eof (Parser/State/new (String/from-list [97u32 98u32 99u32]) #Zero))
     (#Done{
       #MkReply{

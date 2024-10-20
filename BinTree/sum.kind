@@ -2,8 +2,8 @@
 // - 1st: The tree to sum.
 // = The sum of all values in the tree.
 BinTree/sum
-: ∀(t: (BinTree/BinTree Nat/Nat))
-  Nat/Nat
+: ∀(t: (BinTree/BinTree Nat))
+  Nat
 = λ{
   #Leaf:
     #Zero{}
@@ -15,17 +15,17 @@ BinTree/sum
 
 // Test: Sum of an empty tree
 TEST_0
-: (Equal/Equal Nat/Nat (BinTree/sum #Leaf{}) #Zero{})
+: (Equal Nat (BinTree/sum #Leaf{}) #Zero{})
 = #Refl{}
 
 // Test: Sum of a tree with a single node
 TEST_1
-: (Equal/Equal Nat/Nat (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal Nat (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: Sum of a balanced tree
 TEST_2
-: (Equal/Equal Nat/Nat
+: (Equal Nat
     (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
               (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
@@ -34,7 +34,7 @@ TEST_2
 
 // Test: Sum of an unbalanced tree
 TEST_3
-: (Equal/Equal Nat/Nat
+: (Equal Nat
     (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Succ{#Zero{}}}
                 (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})
@@ -45,7 +45,7 @@ TEST_3
 
 // Test: Sum of a larger tree
 TEST_4
-: (Equal/Equal Nat/Nat
+: (Equal Nat
     (BinTree/sum (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
               (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}
                 (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
@@ -58,14 +58,14 @@ TEST_4
 
 // Test: Sum of a tree with zero and small numbers
 TEST_5
-: (Equal/Equal Nat/Nat
+: (Equal Nat
     (BinTree/sum (#Node{#Zero{} (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})}))
     #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: Sum of a tree with repeated values
 TEST_6
-: (Equal/Equal Nat/Nat
+: (Equal Nat
     (BinTree/sum (#Node{#Succ{#Zero{}}
               (#Node{#Succ{#Zero{}}
                 (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})

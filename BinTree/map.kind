@@ -23,64 +23,64 @@ BinTree/map
 
 // Test: Mapping identity function over a tree
 TEST_0
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
-    (BinTree/map _ _ (Function/id Nat/Nat) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
+: (Equal
+    (BinTree/BinTree Nat)
+    (BinTree/map _ _ (Function/id Nat) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
 = #Refl{}
 
 // Test: Mapping increment function over a tree
 TEST_1
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (Nat/add #Succ{#Zero{}}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     (#Node{#Succ{#Succ{#Zero{}}} (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}})}))
 = #Refl{}
 
 // Test: Mapping over an empty tree
 TEST_2
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (Nat/add #Succ{#Zero{}}) #Leaf{})
     #Leaf{})
 = #Refl{}
 
 // Test: Composing two map operations
 TEST_3
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (Nat/add #Succ{#Succ{#Zero{}}}) (BinTree/map _ _ (Nat/add #Succ{#Zero{}}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) #Leaf{}})))
     (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}) #Leaf{}}))
 = #Refl{}
 
 // Test: Mapping a constant function over a tree
 TEST_4
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (λx #Zero{}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     (#Node{#Zero{} (#Node{#Zero{} #Leaf{} #Leaf{}}) (#Node{#Zero{} #Leaf{} #Leaf{}})}))
 = #Refl{}
 
 // Test: Mapping multiplication by 2 over a tree
 TEST_5
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (Nat/mul #Succ{#Succ{#Zero{}}}) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     (#Node{#Succ{#Succ{#Zero{}}} (#Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}} #Leaf{} #Leaf{}})}))
 = #Refl{}
 
 // Test: Mapping boolean negation over a tree of booleans
 TEST_6
-: (Equal/Equal
-    (BinTree/BinTree Bool/Bool)
+: (Equal
+    (BinTree/BinTree Bool)
     (BinTree/map _ _ Bool/not (#Node{#True{} (#Node{#False{} #Leaf{} #Leaf{}}) (#Node{#True{} #Leaf{} #Leaf{}})}))
     (#Node{#False{} (#Node{#True{} #Leaf{} #Leaf{}}) (#Node{#False{} #Leaf{} #Leaf{}})}))
 = #Refl{}
 
 // Test: Mapping a complex function over a tree
 TEST_7
-: (Equal/Equal
-    (BinTree/BinTree Nat/Nat)
+: (Equal
+    (BinTree/BinTree Nat)
     (BinTree/map _ _ (λx (Nat/add #Succ{#Zero{}} (Nat/mul #Succ{#Succ{#Zero{}}} x))) (#Node{#Succ{#Zero{}} (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
     (#Node{#Succ{#Succ{#Succ{#Zero{}}}} (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}) (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Leaf{} #Leaf{}})}))
 = #Refl{}

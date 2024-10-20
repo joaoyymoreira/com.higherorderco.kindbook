@@ -2,41 +2,41 @@
 // 1st: The input character.
 // = Some n if 1st is a digit, where n is the corresponding U32 number, None otherwise.
 Char/digit-to-u32
-: ∀(c: Char/Char)
-  (Maybe/Maybe U32)
+: ∀(c: Char)
+  (Maybe U32)
 = λc
   let n = (- c 48)
-  (U32/if (Maybe/Maybe U32)
+  (U32/if (Maybe U32)
     (& (>= n 0) (<= n 9))
     (#Some{n})
     #None{}
   )
 // Test: '0' converts to Some 0.
 TEST_0
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 48) (#Some{0}))
+: (Equal (Maybe U32) (Char/digit-to-u32 48) (#Some{0}))
 = #Refl{}
 
 // Test: '5' converts to Some 5.
 TEST_1
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 53) (#Some{5}))
+: (Equal (Maybe U32) (Char/digit-to-u32 53) (#Some{5}))
 = #Refl{}
 
 // Test: '9' converts to Some 9.
 TEST_2
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 57) (#Some{9}))
+: (Equal (Maybe U32) (Char/digit-to-u32 57) (#Some{9}))
 = #Refl{}
 
 // Test: 'a' converts to None.
 TEST_3
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 97) #None{})
+: (Equal (Maybe U32) (Char/digit-to-u32 97) #None{})
 = #Refl{}
 
 // Test: '!' converts to None.
 TEST_4
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 33) #None{})
+: (Equal (Maybe U32) (Char/digit-to-u32 33) #None{})
 = #Refl{}
 
 // Test: ' ' (space) converts to None.
 TEST_5
-: (Equal/Equal (Maybe/Maybe U32) (Char/digit-to-u32 32) #None{})
+: (Equal (Maybe U32) (Char/digit-to-u32 32) #None{})
 = #Refl{}

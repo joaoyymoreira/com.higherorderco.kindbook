@@ -20,13 +20,13 @@ BinTree/foldr
 
 // Test: Empty tree
 TEST_0 
-: (Equal/Equal Nat/Nat (BinTree/foldr _ _ Nat/add #Zero{} #Leaf{}) #Zero{})
+: (Equal Nat (BinTree/foldr _ _ Nat/add #Zero{} #Leaf{}) #Zero{})
 = #Refl{}
 
 // Test: Single node tree
 TEST_1 
-: (Equal/Equal 
-		Nat/Nat 
+: (Equal 
+		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero{} 
@@ -36,8 +36,8 @@ TEST_1
 
 // Test: Tree with multiple nodes
 TEST_2 
-: (Equal/Equal 
-		Nat/Nat 
+: (Equal 
+		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero{} 
@@ -49,8 +49,8 @@ TEST_2
 
 // Test: Using multiplication instead of addition
 TEST_3 
-: (Equal/Equal
-	 	Nat/Nat 
+: (Equal
+	 	Nat 
 		(BinTree/foldr _ _ 
 			Nat/mul 
 			#Succ{#Zero{}} 
@@ -62,8 +62,8 @@ TEST_3
 
 // Test: Using a more complex tree structure
 TEST_4 
-: (Equal/Equal 
-		Nat/Nat 
+: (Equal 
+		Nat 
 		(BinTree/foldr _ _ 
 			Nat/add 
 			#Zero{} 
@@ -79,8 +79,8 @@ TEST_4
 
 // Test: Right-associative nature of foldr
 TEST_5 
-: (Equal/Equal 
-		Nat/Nat 
+: (Equal 
+		Nat 
 		(BinTree/foldr _ _ 
 			Nat/sub 
 			#Zero{} 
@@ -92,8 +92,8 @@ TEST_5
 
 // Test: Using foldr to count nodes
 TEST_6 
-: (Equal/Equal 
-		Nat/Nat 
+: (Equal 
+		Nat 
 		(BinTree/foldr _ _ 
 			(λx λacc #Succ{acc}) 
 			#Zero{} 

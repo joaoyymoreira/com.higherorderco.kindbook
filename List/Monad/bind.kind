@@ -7,9 +7,9 @@
 List/Monad/bind
 : ∀(A: *)
   ∀(B: *)
-  ∀(xs: (List/List A))
-  ∀(fn: ∀(a: A) (List/List B))
-  (List/List B)
+  ∀(xs: (List A))
+  ∀(fn: ∀(a: A) (List B))
+  (List B)
 = λA λB λxs λfn
-  (List/foldr A (List/List B) (λhead λtail (List/append B (fn head) tail)) (#Nil{}) xs)
+  (List/foldr A (List B) (λhead λtail (List/append B (fn head) tail)) (#Nil{}) xs)
 

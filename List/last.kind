@@ -5,8 +5,8 @@
 //   None if the list is empty.
 List/last
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (Maybe/Maybe A)
+  ∀(xs: (List A))
+  (Maybe A)
 = λA λ{
   #Nil: #None{}
   #Cons: λxs.head λ{

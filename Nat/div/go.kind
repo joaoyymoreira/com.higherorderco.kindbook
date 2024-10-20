@@ -18,11 +18,11 @@
 //
 //   go m n j k = (k + (n + m - j)) / (1 + m)
 Nat/div/go
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  ∀(j: Nat/Nat)
-  ∀(k: Nat/Nat)
-  Nat/Nat
+: ∀(m: Nat)
+  ∀(n: Nat)
+  ∀(j: Nat)
+  ∀(k: Nat)
+  Nat
 = λm λ{
   #Zero: λj λk k
   #Succ: λn.pred λ{

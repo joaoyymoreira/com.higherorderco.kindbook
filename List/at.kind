@@ -5,9 +5,9 @@
 // = A Maybe element of type A.
 List/at
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  ∀(i: Nat/Nat)
-  (Maybe/Maybe A)
+  ∀(xs: (List A))
+  ∀(i: Nat)
+  (Maybe A)
 = λA λ{
   #Nil: λi #None{}
   #Cons: λxs.head λxs.tail λ{

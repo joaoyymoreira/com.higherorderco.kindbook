@@ -8,8 +8,8 @@ List/iterate
 : ∀(A: *)
   ∀(f: ∀(a: A) A)
   ∀(x: A)
-  ∀(n: Nat/Nat)
-  (List/List A)
+  ∀(n: Nat)
+  (List A)
 = λA λf λx λ{
   #Zero: #Nil{}
   #Succ: λn.pred #Cons{x (List/iterate _ f (f x) n.pred)}

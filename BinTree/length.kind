@@ -5,7 +5,7 @@
 BinTree/length
 : ∀(A: *)
   ∀(t: (BinTree/BinTree A))
-  Nat/Nat
+  Nat
 = λA λ{
   #Leaf: #Zero{}
   #Node: λt.val λt.lft λt.rgt
@@ -13,18 +13,18 @@ BinTree/length
 }
 // Test: Length of an empty tree is zero
 TEST_0
-: (Equal/Equal Nat/Nat (BinTree/length _ #Leaf{}) #Zero{})
+: (Equal Nat (BinTree/length _ #Leaf{}) #Zero{})
 = #Refl{}
 
 // Test: Length of a single node tree is one
 TEST_1
-: (Equal/Equal Nat/Nat (BinTree/length _ (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})) #Succ{#Zero{}})
+: (Equal Nat (BinTree/length _ (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: Length of a tree with three nodes
 TEST_2
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/length _
       (#Node{
         #Succ{#Zero{}}
@@ -38,8 +38,8 @@ TEST_2
 
 // Test: Length of a balanced tree with seven nodes
 TEST_3
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/length _
       (#Node{
         #Succ{#Zero{}}

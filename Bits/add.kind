@@ -3,9 +3,9 @@
 // - b: The 2nd Bits value.
 // = A new Bits value representing the sum of a and b.
 Bits/add
-: ∀(a: Bits/Bits)
-  ∀(b: Bits/Bits)
-  Bits/Bits
+: ∀(a: Bits)
+  ∀(b: Bits)
+  Bits
 = λ{
   #E: λb b
   #O: λa.tail λ{

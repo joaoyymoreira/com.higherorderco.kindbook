@@ -35,11 +35,11 @@ Parser/Reply/new
   (Parser/Reply A)
 = λA λstate λvalue #MkReply{state value}
 // Test: Verify Reply record field access
-TEST_0 : (Equal/Equal use x = (Parser/Reply)
-      (Pair/Pair Parser/State Nat/Nat)
+TEST_0 : (Equal use x = (Parser/Reply)
+      (Pair/Pair Parser/State Nat)
       (#Pair{
-        (Parser/Reply/state Nat/Nat (#MkReply{(#MkState{"abc" #0}) #42}))
-        (Parser/Reply/value Nat/Nat (#MkReply{(#MkState{"abc" #0}) #42}))})
+        (Parser/Reply/state Nat (#MkReply{(#MkState{"abc" #0}) #42}))
+        (Parser/Reply/value Nat (#MkReply{(#MkState{"abc" #0}) #42}))})
       (#Pair{
         (#MkState{"abc" #0})
         #42}))

@@ -6,9 +6,9 @@
 //   None if no such element exists in the list.
 List/find
 : ∀(A: *)
-  ∀(pred: ∀(a: A) Bool/Bool)
-  ∀(xs: (List/List A))
-  (Maybe/Maybe A)
+  ∀(pred: ∀(a: A) Bool)
+  ∀(xs: (List A))
+  (Maybe A)
 = λA λpred λ{
   #Nil: #None{}
   #Cons: λxs.head λxs.tail

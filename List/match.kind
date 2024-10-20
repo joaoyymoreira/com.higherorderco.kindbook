@@ -7,10 +7,10 @@
 // = The result of the elimination, whose type depends on the input list.
 List/match
 : ∀(A: *)
-  ∀(P: ∀(xs: (List/List A)) *)
+  ∀(P: ∀(xs: (List A)) *)
   ∀(nil: (P #Nil{}))
-  ∀(cons: ∀(x: A) ∀(xs: (List/List A)) (P (#Cons{x xs})))
-  ∀(xs: (List/List A))
+  ∀(cons: ∀(x: A) ∀(xs: (List A)) (P (#Cons{x xs})))
+  ∀(xs: (List A))
   (P xs)
 = λA λP λnil λcons λ{
   #Nil: nil

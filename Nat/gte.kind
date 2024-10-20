@@ -4,48 +4,48 @@
 // 2nd: The second natural number.
 // = True if the first number is greater than or equal to the second, False otherwise.
 Nat/gte
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Bool/Bool
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Bool
 = λm λn (Nat/lte n m)
 // Tests for the greater than or equal to function on natural numbers.
 
 // Test : 5 >= 3 should be True.
 TEST_0
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
+: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
 = #Refl{}
 
 // Test : 3 >= 5 should be False.
 TEST_1
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
+: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
 = #Refl{}
 
 // Test : 4 >= 4 should be True.
 TEST_2
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #True{})
+: (Equal Bool (Nat/gte #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #True{})
 = #Refl{}
 
 // Test : 0 >= 0 should be True.
 TEST_3
-: (Equal/Equal Bool/Bool (Nat/gte #Zero{} #Zero{}) #True{})
+: (Equal Bool (Nat/gte #Zero{} #Zero{}) #True{})
 = #Refl{}
 
 // Test : 1 >= 0 should be True.
 TEST_4
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Zero{}} #Zero{}) #True{})
+: (Equal Bool (Nat/gte #Succ{#Zero{}} #Zero{}) #True{})
 = #Refl{}
 
 // Test : 0 >= 1 should be False.
 TEST_5
-: (Equal/Equal Bool/Bool (Nat/gte #Zero{} #Succ{#Zero{}}) #False{})
+: (Equal Bool (Nat/gte #Zero{} #Succ{#Zero{}}) #False{})
 = #Refl{}
 
 // Test : 2 >= 1 should be True.
 TEST_6
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #True{})
+: (Equal Bool (Nat/gte #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #True{})
 = #Refl{}
 
 // Test : 1 >= 2 should be False.
 TEST_7
-: (Equal/Equal Bool/Bool (Nat/gte #Succ{#Zero{}} #Succ{#Succ{#Zero{}}}) #False{})
+: (Equal Bool (Nat/gte #Succ{#Zero{}} #Succ{#Succ{#Zero{}}}) #False{})
 = #Refl{}

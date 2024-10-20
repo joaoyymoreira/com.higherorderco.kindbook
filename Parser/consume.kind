@@ -2,12 +2,12 @@
 // - target: The target string to consume.
 // = A Parser that returns unit if successful, or fails if the target string is not found at the current position.
 Pair/consume
-: ∀(target: String/String)
-  (Pair/Parser Unit/Unit)
+: ∀(target: String)
+  (Pair/Parser Unit)
 = λtarget λstate
   let input = (Pair/State/input state)
   let index = (Pair/State/index state)
-  (Bool/if (Result/Result (Pair/Reply Unit/Unit) Pair/Error)
+  (Bool/if (Result (Pair/Reply Unit) Pair/Error)
     (String/starts-with input target)
     (#Done{
       #MkReply{

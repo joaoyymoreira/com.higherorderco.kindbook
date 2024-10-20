@@ -4,8 +4,8 @@
 // = An empty list if the input is None, or a singleton list containing the value if it's Some.
 Maybe/to-list
 : ∀(A: *)
-  ∀(m: (Maybe/Maybe A))
-  (List/List A)
+  ∀(m: (Maybe A))
+  (List A)
 = λA λ{
   #None: #Nil{}
   #Some: λma.value #Cons{ma.value #Nil{}}

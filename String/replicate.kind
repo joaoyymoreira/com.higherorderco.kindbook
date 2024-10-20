@@ -3,9 +3,9 @@
 // - 2nd: The character to replicate.
 // = A string consisting of n repetitions of character.
 String/replicate
-: ∀(n: Nat/Nat)
+: ∀(n: Nat)
   ∀(c: U32)
-  String/String
+  String
 = λ{
 	#Zero: λc ""
 	#Succ: λpred λc (String/append (String/from-char c) (String/replicate pred c))

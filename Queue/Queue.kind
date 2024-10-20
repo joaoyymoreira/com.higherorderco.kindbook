@@ -2,27 +2,27 @@
 // and a list of elements that have been enqueued.
 // When dequeueing, if `front` is empty then `back` is reversed
 // and replaces `front`.
-Queue/Queue
+Queue
 : ∀(A: *)
   *
 = λA data[]{
-  #MkQueue{ front:(List/List A) back:(List/List A) } : (Queue/Queue A)
+  #MkQueue{ front:(List A) back:(List A) } : (Queue A)
 }
 
 // Accessor for the front field
-Queue/Queue/front
+Queue/front
 : ∀(A: *)
-  ∀(q: (Queue/Queue A))
-  (List/List A)
+  ∀(q: (Queue A))
+  (List A)
 = λA λ{
   #MkQueue: λq.front λq.back q.front
 }
 
 // Accessor for the back field
-Queue/Queue/back
+Queue/back
 : ∀(A: *)
-  ∀(q: (Queue/Queue A))
-  (List/List A)
+  ∀(q: (Queue A))
+  (List A)
 = λA λ{
   #MkQueue: λq.front λq.back q.back
 }

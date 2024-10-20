@@ -4,19 +4,19 @@
 // - 3rd: The value to return if the condition is true.
 // - 4th: The value to return if the condition is false.
 // = Either 3rd or 4th, depending on the condition.
-Bool/if : ∀(A: *) Bool/Bool -> A -> A -> A
+Bool/if : ∀(A: *) Bool -> A -> A -> A
 | A #True  t f = t
 | A #False t f = f
 
 TEST_0 
-: (Equal/Equal Bool/Bool (Bool/if Bool/Bool #True{} #True{} #False{} ) (#True{}))
+: (Equal Bool (Bool/if Bool #True{} #True{} #False{} ) (#True{}))
 = #Refl{}
 
 TEST_1 
-: (Equal/Equal Bool/Bool (Bool/if Bool/Bool #False{} #True{} #False{} ) (#False{}))
+: (Equal Bool (Bool/if Bool #False{} #True{} #False{} ) (#False{}))
 = #Refl{}
 
 TEST_2
-: (Equal/Equal Nat/Nat (Bool/if Nat/Nat #False{} #Succ{#Zero{}} #Zero{} ) (#Zero{}))
+: (Equal Nat (Bool/if Nat #False{} #Succ{#Zero{}} #Zero{} ) (#Zero{}))
 = #Refl{}
 

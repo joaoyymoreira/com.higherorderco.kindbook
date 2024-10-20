@@ -13,8 +13,8 @@ List/mmap
   ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(a: A) (M B))
-  ∀(xs: (List/List A))
-  (M (List/List B))
+  ∀(xs: (List A))
+  (M (List B))
 = λM λm λA λB λf λ{
   #Nil: (Trait/Monad/pure M m _ #Nil{})
   #Cons: λxs.head λxs.tail

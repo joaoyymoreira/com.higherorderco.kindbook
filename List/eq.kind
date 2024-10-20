@@ -4,7 +4,7 @@
 // - xs: The first list.
 // - ys: The second list.
 // = True if the lists are equal, False otherwise.
-List/eq : ∀(A: *) (Trait/Eq A) -> (List/List A) -> (List/List A) -> Bool/Bool
+List/eq : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
 = λA λe λ{
   #Nil: λ{
     #Nil: #True
@@ -21,7 +21,7 @@ List/eq : ∀(A: *) (Trait/Eq A) -> (List/List A) -> (List/List A) -> Bool/Bool
 
 // -- TODO: flatten the case tree into equational clauses
 
-// List/eq : ∀ A → (Trait/Eq A) → (List/List A) → (List/List A) → Bool/Bool
+// List/eq : ∀ A → (Trait/Eq A) → (List A) → (List A) → Bool
 // List/eq A e #Nil #Nil = #True
 
 // List/eq A e #Nil (#Cons ys.head ys.tail) = #False
@@ -31,8 +31,8 @@ List/eq : ∀(A: *) (Trait/Eq A) -> (List/List A) -> (List/List A) -> Bool/Bool
 
 // Test: Different lists should not be equal
 List/test_eq_different_lists
-: (Equal/Equal
-    (List/eq (List/List Bool/Bool) #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}} 
+: (Equal
+    (List/eq (List Bool) #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}} 
                           #Cons{#True{} #Cons{#True{} #Cons{#True{} #Nil{}}}})
     #True{})
 = λa #Refl{}

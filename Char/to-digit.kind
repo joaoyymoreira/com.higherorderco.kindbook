@@ -3,9 +3,9 @@
 // 2nd: The character to convert.
 // = Some n if the character is a valid digit in the given base, where n is the corresponding numeric value, None if the character is not a valid digit in the given base.
 Char/to-digit
-: ∀(base: Nat/Nat)
-  ∀(code: Char/Char)
-  (Maybe/Maybe Nat/Nat)
+: ∀(base: Nat)
+  ∀(code: Char)
+  (Maybe Nat)
 = λbase λcode
   let is_base_2 = (Nat/eq base (U32/to-nat 2))
   let is_base_8 = (Nat/eq base (U32/to-nat 8))
@@ -17,16 +17,16 @@ Char/to-digit
   let is_decimal = (Bool/and is_base_10 (Char/is-digit code))
   let is_hex = (Bool/and is_base_16 (Char/is-hex-digit code))
   
-  (Bool/if (Maybe/Maybe Nat/Nat)
+  (Bool/if (Maybe Nat)
     is_binary
     (Char/digit-to-nat code)
-    (Bool/if (Maybe/Maybe Nat/Nat)
+    (Bool/if (Maybe Nat)
       is_octal
       (Char/digit-to-nat code)
-      (Bool/if (Maybe/Maybe Nat/Nat)
+      (Bool/if (Maybe Nat)
         is_decimal
         (Char/digit-to-nat code)
-        (Bool/if (Maybe/Maybe Nat/Nat)
+        (Bool/if (Maybe Nat)
           is_hex
           (Char/hex-to-nat code)
           #None{}
@@ -36,30 +36,30 @@ Char/to-digit
   )
 // Test: Convert '5' to digit in base 10.
 TEST_0 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) '5') (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) '5') (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
 = #Refl{}
 
 // Test: Convert 'A' to digit in base 16.
 TEST_1 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}) 'A') (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}))
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}) 'A') (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}))
 = #Refl{}
 
 // Test: Convert 'G' to digit in base 16 (invalid hexadecimal digit).
 TEST_2 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}) 'G') #None{})
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}) 'G') #None{})
 = #Refl{}
 
 // Test: Convert '9' to digit in base 8 (invalid octal digit).
 TEST_3 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) '9') #None{})
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) '9') #None{})
 = #Refl{}
 
 // Test: Convert '0' to digit in base 2.
 TEST_4 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Zero{}}}) '0') (#Some{#Zero{}}))
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Zero{}}}) '0') (#Some{#Zero{}}))
 = #Refl{}
 
 // Test: Convert 'F' to digit in base 10 (invalid decimal digit).
 TEST_5 
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) 'F') #None{})
+: (Equal (Maybe Nat) (Char/to-digit (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}) 'F') #None{})
 = #Refl{}

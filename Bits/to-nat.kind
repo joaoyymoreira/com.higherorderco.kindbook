@@ -3,9 +3,9 @@
 // 2nd: The weight or power of 2 to be applied for the current bit position.
 // = The Nat representation of the input Bits after recursive processing.
 Bits/to-nat-go
-: ∀(bits: Bits/Bits)
-  ∀(weight: Nat/Nat)
-  Nat/Nat
+: ∀(bits: Bits)
+  ∀(weight: Nat)
+  Nat
 = λ{
   #E: λweight #Zero{}
   #O: λb.tail λweight (Bits/to-nat-go b.tail (Nat/mul #Succ{#Succ{#Zero{}}} weight))
@@ -16,50 +16,50 @@ Bits/to-nat-go
 // 1st: The Bits to convert.
 // = The Nat representation of the input Bits.
 Bits/to-nat
-: ∀(bits: Bits/Bits)
-  Nat/Nat
+: ∀(bits: Bits)
+  Nat
 = λbits (Bits/to-nat-go bits #Succ{#Zero{}})
 // Test: Empty bits should convert to zero
 TEST_0 
-: (Equal/Equal Nat/Nat (Bits/to-nat #E{}) #Zero{})
+: (Equal Nat (Bits/to-nat #E{}) #Zero{})
 = #Refl{}
 
 // Test: Single zero bit should convert to zero
 TEST_1 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#O{#E{}})) #Zero{})
+: (Equal Nat (Bits/to-nat (#O{#E{}})) #Zero{})
 = #Refl{}
 
 // Test: Single one bit should convert to one
 TEST_2 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#I{#E{}})) #Succ{#Zero{}})
+: (Equal Nat (Bits/to-nat (#I{#E{}})) #Succ{#Zero{}})
 = #Refl{}
 
 // Test: Two bits '01' should convert to two
 TEST_3 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#O{#I{#E{}}})) #Succ{#Succ{#Zero{}}})
+: (Equal Nat (Bits/to-nat (#O{#I{#E{}}})) #Succ{#Succ{#Zero{}}})
 = #Refl{}
 
 // Test: Two bits '11' should convert to three
 TEST_4 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#I{#I{#E{}}})) #Succ{#Succ{#Succ{#Zero{}}}})
+: (Equal Nat (Bits/to-nat (#I{#I{#E{}}})) #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: Three bits '001' should convert to four
 TEST_5 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#O{#O{#I{#E{}}}})) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
+: (Equal Nat (Bits/to-nat (#O{#O{#I{#E{}}}})) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
 = #Refl{}
 
 // Test: Three bits '101' should convert to five
 TEST_6 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#I{#O{#I{#E{}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal Nat (Bits/to-nat (#I{#O{#I{#E{}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: Four bits '0101' should convert to ten
 TEST_7 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#O{#I{#O{#I{#E{}}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
+: (Equal Nat (Bits/to-nat (#O{#I{#O{#I{#E{}}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
 = #Refl{}
 
 // Test: Five bits '10011' should convert to twenty-five
 TEST_8 
-: (Equal/Equal Nat/Nat (Bits/to-nat (#I{#O{#O{#I{#I{#E{}}}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}})
+: (Equal Nat (Bits/to-nat (#I{#O{#O{#I{#I{#E{}}}}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}})
 = #Refl{}

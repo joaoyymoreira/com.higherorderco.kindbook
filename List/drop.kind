@@ -5,9 +5,9 @@
 // = The list without its first n elements.
 List/drop
 : ∀(A: *)
-  ∀(n: Nat/Nat)
-  ∀(xs: (List/List A))
-  (List/List A)
+  ∀(n: Nat)
+  ∀(xs: (List A))
+  (List A)
 = λA λ{
   #Zero: λxs xs
   #Succ: λn.pred λ{

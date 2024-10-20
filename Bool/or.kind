@@ -3,23 +3,23 @@
 // - 2nd: The bool.
 // = True if either 1st or 2nd is true, False otherwise.
 Bool/or
-: ∀(a: Bool/Bool)
-  ∀(b: Bool/Bool)
-  Bool/Bool
+: ∀(a: Bool)
+  ∀(b: Bool)
+  Bool
 = λ{
   #True: λb #True{}
   #False: λb b
 }
 
 Bool/T0
-: (Equal/Equal Bool/Bool (Bool/or #True{} #True{}) #True{})
+: (Equal Bool (Bool/or #True{} #True{}) #True{})
 = #Refl{}
 
 Bool/T1
-: (Equal/Equal Bool/Bool (Bool/or #True{} #False{}) #True{})
+: (Equal Bool (Bool/or #True{} #False{}) #True{})
 = #Refl{}
 
 Bool/T2
-: (Equal/Equal Bool/Bool (Bool/or #False{} #False{}) #False{})
+: (Equal Bool (Bool/or #False{} #False{}) #False{})
 = #Refl{}
 

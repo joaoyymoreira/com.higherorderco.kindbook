@@ -8,8 +8,8 @@ Equal/sym
 : ∀(A: *)
   ∀(x: A)
   ∀(y: A)
-  ∀(e: (Equal/Equal A x y))
-  (Equal/Equal A y x)
+  ∀(e: (Equal A x y))
+  (Equal A y x)
 = λA λx λy λ{
   #Refl: #Refl{}
 }

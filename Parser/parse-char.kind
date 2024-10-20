@@ -1,6 +1,6 @@
 // Parses a unicode escape sequence.
 // = The character corresponding to the parsed Unicode code point.
-Parser/parse-unicode-escape : (Parser/Parser Char/Char)
+Parser/parse-unicode-escape : (Parser/Parser Char)
 = do Parser/Monad {
   ask y = (Parser/consume "{")
   ask digits = (Parser/take-while Char/is-hex-digit)
@@ -13,7 +13,7 @@ Parser/parse-unicode-escape : (Parser/Parser Char/Char)
 
 // Parses an escape sequence.
 // = The parsed escaped character.
-Parser/parse-escape-sequence : (Parser/Parser Char/Char)
+Parser/parse-escape-sequence : (Parser/Parser Char)
 = do Parser/Monad {
   ask mc = (Parser/advance-one)
   (match mc {
@@ -45,7 +45,7 @@ Parser/parse-escape-sequence : (Parser/Parser Char/Char)
 
 // Parses a single character, including escape sequences.
 // = The parsed character.
-Parser/parse-char : (Parser/Parser Char/Char)
+Parser/parse-char : (Parser/Parser Char)
 = do Parser/Monad {
   ask mc = (Parser/advance-one)
   (match mc {
@@ -60,8 +60,8 @@ Parser/parse-char : (Parser/Parser Char/Char)
 
 // Test: Parsing a normal character
 TEST_0 
-: (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+: (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "abc" #Zero))
   (#Done{#MkReply{#MkState{"bc" #Succ{#Zero}} 'a'}})
 )
@@ -69,8 +69,8 @@ TEST_0
 
 // Test: Parsing an escaped newline character
 TEST_1 
-: (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+: (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "\\nabc" #Zero))
   (#Done{#MkReply{#MkState{"abc" #Succ{#Succ{#Zero}}} '\n'}})
 )
@@ -78,8 +78,8 @@ TEST_1
 
 // // Test: Parsing a Unicode escape sequence
 // T2 
-// : (Equal/Equal
-//   (Result/Result (Parser/Reply Char/Char) Parser/Error)
+// : (Equal
+//   (Result (Parser/Reply Char) Parser/Error)
 //   (Parser/parse-char (Parser/State/new "\\u{1F600}abc" #Zero))
 //   (#Done{#MkReply{#MkState{"abc" #9} '😀'}})
 // )
@@ -87,8 +87,8 @@ TEST_1
 
 // Test: Parsing an invalid escape sequence
 TEST_3 
-: (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+: (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-char (Parser/State/new "\\xabc" #Zero))
   (#Fail{#MkError{#Succ{#Succ{#Zero}} "Invalid escape character: x"}})
 )

@@ -5,9 +5,9 @@
 // = A new list containing only elements that satisfy the predicate.
 List/filter
 : ∀(A: *)
-  ∀(fn: ∀(a: A) Bool/Bool)
-  ∀(xs: (List/List A))
-  (List/List A)
+  ∀(fn: ∀(a: A) Bool)
+  ∀(xs: (List A))
+  (List A)
 = λA λfn λ{
   #Nil: #Nil{}
   #Cons: λxs.head λxs.tail

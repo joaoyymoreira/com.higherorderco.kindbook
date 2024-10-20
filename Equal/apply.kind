@@ -12,6 +12,6 @@ Equal/apply
   ∀(f: ∀(x: A) B)
   ∀(x: A)
   ∀(y: A)
-  ∀(e: (Equal/Equal A x y))
-  (Equal/Equal B (f x) (f y))
+  ∀(e: (Equal A x y))
+  (Equal B (f x) (f y))
 | A B f x y #Refl = #Refl

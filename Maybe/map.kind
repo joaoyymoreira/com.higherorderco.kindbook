@@ -8,8 +8,8 @@ Maybe/map
 : ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(x: A) B)
-  ∀(m: (Maybe/Maybe A))
-  (Maybe/Maybe B)
+  ∀(m: (Maybe A))
+  (Maybe B)
 = λA λB λf λ{
     #None: #None{}
     #Some: λm.value #Some{(f m.value)}

@@ -3,50 +3,50 @@
 // 2nd: The natural number.
 // = True if the 1st number is greater than the 2nd, False otherwise.
 Nat/gt
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Bool/Bool
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Bool
 = λm λn (Nat/lt n m)
 // Tests the greater than function for natural numbers.
 
 // Test: 3 > 2 = True
 TEST_0
-: (Equal/Equal Bool/Bool (Nat/gt #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #True{})
+: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #True{})
 = #Refl{}
 
 // Test: 2 > 3 = False
 TEST_1
-: (Equal/Equal Bool/Bool (Nat/gt #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #False{})
+: (Equal Bool (Nat/gt #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #False{})
 = #Refl{}
 
 // Test: 5 > 5 = False
 TEST_2
-: (Equal/Equal Bool/Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
+: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #False{})
 = #Refl{}
 
 // Test: 0 > 0 = False
 TEST_3
-: (Equal/Equal Bool/Bool (Nat/gt #Zero{} #Zero{}) #False{})
+: (Equal Bool (Nat/gt #Zero{} #Zero{}) #False{})
 = #Refl{}
 
 // Test: 1 > 0 = True
 TEST_4
-: (Equal/Equal Bool/Bool (Nat/gt #Succ{#Zero{}} #Zero{}) #True{})
+: (Equal Bool (Nat/gt #Succ{#Zero{}} #Zero{}) #True{})
 = #Refl{}
 
 // Test: 0 > 1 = False
 TEST_5
-: (Equal/Equal Bool/Bool (Nat/gt #Zero{} #Succ{#Zero{}}) #False{})
+: (Equal Bool (Nat/gt #Zero{} #Succ{#Zero{}}) #False{})
 = #Refl{}
 
 // Test: 10 > 5 = True
 TEST_6
-: (Equal/Equal Bool/Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{})
+: (Equal Bool (Nat/gt #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #True{})
 = #Refl{}
 
 // Test: 100 > 99 = True
 TEST_7
-: (Equal/Equal Bool/Bool (Nat/gt
+: (Equal Bool (Nat/gt
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
@@ -72,7 +72,7 @@ TEST_7
 
 // Test: 42 > 42 = False
 TEST_8
-: (Equal/Equal Bool/Bool (Nat/gt
+: (Equal Bool (Nat/gt
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{
     #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{

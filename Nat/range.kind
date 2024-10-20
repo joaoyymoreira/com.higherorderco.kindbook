@@ -3,10 +3,10 @@
 // 2nd: The number after the last number in the range.
 // = A list of natural numbers from start to (2nd - 1).
 Nat/range
-: ∀(start: Nat/Nat)
-  ∀(end: Nat/Nat)
-  (List/List Nat/Nat)
+: ∀(start: Nat)
+  ∀(end: Nat)
+  (List Nat)
 = λstart λend
-  (Bool/if (List/List Nat/Nat) (Nat/lt start end)
+  (Bool/if (List Nat) (Nat/lt start end)
     (#Cons{start (Nat/range (#Succ{start}) end)})
     #Nil{})

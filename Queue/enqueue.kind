@@ -6,28 +6,28 @@
   // #MkQueue{ front back: #Cons{a back} }
 Queue/enqueue
 : ∀(A: *)
-  ∀(q: (Queue/Queue A))
+  ∀(q: (Queue A))
   ∀(a: A)
-  (Queue/Queue A)
+  (Queue A)
 = λA λ{
   #MkQueue: λfront λback λa #MkQueue{front #Cons{a back}}
 }
 // Test: Enqueue to an empty queue
 TEST_0
-: (Equal/Equal (Queue/Queue U32) (Queue/enqueue U32 #MkQueue{#Nil{} #Nil{}} 1) #MkQueue{#Nil{} #Cons{1 #Nil{}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Nil{} #Nil{}} 1) #MkQueue{#Nil{} #Cons{1 #Nil{}}})
 = #Refl{}
 
 // Test: Enqueue to a queue with elements in front
 TEST_1
-: (Equal/Equal (Queue/Queue U32) (Queue/enqueue U32 #MkQueue{#Cons{1 #Cons{2 #Nil{}}} #Nil{}} 3) #MkQueue{#Cons{1 #Cons{2 #Nil{}}} #Cons{3 #Nil{}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Cons{1 #Cons{2 #Nil{}}} #Nil{}} 3) #MkQueue{#Cons{1 #Cons{2 #Nil{}}} #Cons{3 #Nil{}}})
 = #Refl{}
 
 // Test: Enqueue to a queue with elements in back
 TEST_2
-: (Equal/Equal (Queue/Queue U32) (Queue/enqueue U32 #MkQueue{#Nil{} #Cons{2 #Cons{1 #Nil{}}}} 3) #MkQueue{#Nil{} #Cons{3 #Cons{2 #Cons{1 #Nil{}}}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Nil{} #Cons{2 #Cons{1 #Nil{}}}} 3) #MkQueue{#Nil{} #Cons{3 #Cons{2 #Cons{1 #Nil{}}}}})
 = #Refl{}
 
 // Test: Enqueue to a queue with elements in both front and back
 TEST_3
-: (Equal/Equal (Queue/Queue U32) (Queue/enqueue U32 #MkQueue{ #Cons{1 #Nil{}} #Cons{3 #Cons{2 #Nil{}}}} 4) #MkQueue{ #Cons{1 #Nil{}} #Cons{4 #Cons{3 #Cons{2 #Nil{}}}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{ #Cons{1 #Nil{}} #Cons{3 #Cons{2 #Nil{}}}} 4) #MkQueue{ #Cons{1 #Nil{}} #Cons{4 #Cons{3 #Cons{2 #Nil{}}}}})
 = #Refl{}

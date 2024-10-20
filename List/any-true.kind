@@ -5,8 +5,8 @@
 // = True if any element satisfies the predicate, False otherwise.
 List/any-true
 : ∀(A: *)
-  ∀(p: ∀(a: A) Bool/Bool)
-  ∀(xs: (List/List A))
-  Bool/Bool
+  ∀(p: ∀(a: A) Bool)
+  ∀(xs: (List A))
+  Bool
 = λA λp λxs
   (List/foldr _ _ (λx λacc (Bool/or (p x) acc)) #False{} xs)

@@ -12,7 +12,7 @@ List/for-given
   ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(S: *)
-  ∀(xs: (List/List A))
+  ∀(xs: (List A))
   ∀(s: S)
   ∀(f: ∀(s: S) ∀(a: A) (M S))
   (M S)
@@ -24,17 +24,17 @@ List/for-given
 
 // Test: Empty list with Maybe monad
 TEST_0
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat (List/Nil Nat/Nat) #Zero{} (λs λx (#Some{(Nat/add s x)})))
+: (Equal
+    (Maybe Nat)
+    (List/for-given Maybe MT/Monad Nat Nat (List/Nil Nat) #Zero{} (λs λx (#Some{(Nat/add s x)})))
     (#Some{#Zero{}}))
 = #Refl{}
 
 // Test: Non-empty list with Maybe monad
 TEST_1
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat
+: (Equal
+    (Maybe Nat)
+    (List/for-given Maybe MT/Monad Nat Nat
       (List/Cons _ #Succ{#Zero{}}
         (List/Cons _ #Succ{#Succ{#Zero{}}}
           (List/Cons _ #Succ{#Succ{#Succ{#Zero{}}}}
@@ -47,16 +47,16 @@ TEST_1
 
 // Test: Maybe monad with potential failure
 TEST_2
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (List/for-given Maybe/Maybe MT/Monad Nat/Nat Nat/Nat
+: (Equal
+    (Maybe Nat)
+    (List/for-given Maybe MT/Monad Nat Nat
       (List/Cons _ #Succ{#Zero{}}
         (List/Cons _ #Zero{}
           (List/Cons _ #Succ{#Succ{#Zero{}}}
             (List/Nil _))))
       #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}
       (λs λx
-        (Bool/if (Maybe/Maybe Nat/Nat)
+        (Bool/if (Maybe Nat)
           (Nat/eq x #Zero{})
           (#None{})
           (#Some{(Nat/sub s x)}))))

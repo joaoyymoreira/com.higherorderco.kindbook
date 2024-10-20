@@ -3,27 +3,27 @@
 // - 2nd: The second string.
 // = A new string that is the concatenation of the two input strings.
 String/append
-: ∀(a: String/String)
-  ∀(b: String/String)
-  String/String
+: ∀(a: String)
+  ∀(b: String)
+  String
 = λa λb (List/append U32 a b)
 
 // Test: Concatenating two non-empty strings
 TEST_0 
-: (Equal/Equal String/String (String/append "Hello" "-World") "Hello-World")
+: (Equal String (String/append "Hello" "-World") "Hello-World")
 = #Refl
 
 // Test: Concatenating with an empty string
 TEST_1 
-: (Equal/Equal String/String (String/append "Hello" "") "Hello")
+: (Equal String (String/append "Hello" "") "Hello")
 = #Refl
 
 // Test: Concatenating an empty string with a non-empty string
 TEST_2 
-: (Equal/Equal String/String (String/append "" "World") "World")
+: (Equal String (String/append "" "World") "World")
 = #Refl
 
 // Test: Using the append function twice
 TEST_3 
-: (Equal/Equal String/String (String/append "Hello" (String/append "-" "World")) "Hello-World")
+: (Equal String (String/append "Hello" (String/append "-" "World")) "Hello-World")
 = #Refl

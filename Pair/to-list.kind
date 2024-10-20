@@ -6,7 +6,7 @@
 Pair/to-list
 : ∀(A: *)
   ∀(pair: (Pair/Pair A A))
-  (List/List A)
+  (List A)
 = λA λpair
   let x = (Pair/Sigma/fst _ _ pair)
   let y = (Pair/Sigma/snd _ _ pair)

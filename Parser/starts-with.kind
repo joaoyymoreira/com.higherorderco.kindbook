@@ -3,8 +3,8 @@
 // = A Parser that returns True if the input starts with the given string, False otherwise.
 //   Does not consume any input.
 Parser/starts-with
-: ∀(prefix: String/String)
-  (Parser/Parser Bool/Bool)
+: ∀(prefix: String)
+  (Parser/Parser Bool)
 = λprefix λs
   let input = (Parser/State/input s)
   let result = (String/starts-with input prefix)
@@ -15,8 +15,8 @@ Parser/starts-with
     }
   }
 // Test: Starts with matching prefix
-TEST_0 : (Equal/Equal
-  (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+TEST_0 : (Equal
+  (Result (Parser/Reply Bool) Parser/Error)
   (Parser/starts-with "hello" (Parser/State/new "hello world" #0))
   #Done{#MkReply{
     state: (Parser/State/new "hello world" #0)
@@ -25,8 +25,8 @@ TEST_0 : (Equal/Equal
 ) = #Refl
 
 // // Test: Starts with non-matching prefix
-// T1 : (Equal/Equal
-//   (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+// T1 : (Equal
+//   (Result (Parser/Reply Bool) Parser/Error)
 //   (Parser/starts-with "hello" (Parser/State/new "goodbye world" #0))
 //   #Done{#MkReply{
 //     state: (Parser/State/new "goodbye world" #0)
@@ -35,8 +35,8 @@ TEST_0 : (Equal/Equal
 // ) = #Refl
 
 // Test: Starts with empty string
-TEST_2 : (Equal/Equal
-  (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
+TEST_2 : (Equal
+  (Result (Parser/Reply Bool) Parser/Error)
   (Parser/starts-with "" (Parser/State/new "any string" #0))
   #Done{#MkReply{
     state: (Parser/State/new "any string" #0)

@@ -7,10 +7,10 @@
 Maybe/to-result
 : ∀(A: *)
   ∀(B: *)
-  ∀(ma: (Maybe/Maybe A))
+  ∀(ma: (Maybe A))
   ∀(b: B)
-  (Result/Result A B)
+  (Result A B)
 = λA λB λ{
-  #None: λb (Result/Result/Fail _ _ b)
-  #Some: λma.value λb (Result/Result/Done _ _ ma.value)
+  #None: λb (Result/Fail _ _ b)
+  #Some: λma.value λb (Result/Done _ _ ma.value)
 }

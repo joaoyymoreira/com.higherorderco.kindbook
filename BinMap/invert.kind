@@ -1,7 +1,7 @@
 // Helper function for inverting and splitting a BinMap
 BinMap/invert-split-go
 : ∀(A: *)
-  ∀(x: (Maybe/Maybe A))
+  ∀(x: (Maybe A))
   ∀(a: (BinMap/BinMap A))
   ∀(b: (BinMap/BinMap A))
   (BinMap/BinMap A)
@@ -36,24 +36,24 @@ BinMap/invert
 	let inv = (BinMap/invert-split A m)
 	use leaf = #Leaf{}
 	use node = λval λlft λrgt λl λr (#Node{val (BinMap/invert A l) (BinMap/invert A r)})
-	(BinTree/match (Maybe/Maybe A) (λx (BinMap/BinMap A)) leaf node inv)
+	(BinTree/match (Maybe A) (λx (BinMap/BinMap A)) leaf node inv)
 // Test: Inverting an empty BinMap should return an empty BinMap
 TEST_0
-: (Equal/Equal (BinMap/BinMap Bits/Bits) (BinMap/invert Bits/Bits (BinMap/empty Bits/Bits)) (BinMap/empty Bits/Bits))
+: (Equal (BinMap/BinMap Bits) (BinMap/invert Bits (BinMap/empty Bits)) (BinMap/empty Bits))
 = #Refl{}
 
 // Test: Inverting a BinMap with a single element should return the same BinMap
 TEST_1
-: (Equal/Equal
-    (BinMap/BinMap Bits/Bits)
-    (BinMap/invert Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) #E{} (#O{#E{}})))
-    (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) #E{} (#O{#E{}})))
+: (Equal
+    (BinMap/BinMap Bits)
+    (BinMap/invert Bits (BinMap/set Bits (BinMap/empty Bits) #E{} (#O{#E{}})))
+    (BinMap/set Bits (BinMap/empty Bits) #E{} (#O{#E{}})))
 = #Refl{}
 
 // Test: Inverting a BinMap twice should return the original BinMap
 TEST_2
-: (Equal/Equal
-    (BinMap/BinMap Bits/Bits)
-    (BinMap/invert Bits/Bits (BinMap/invert Bits/Bits (BinMap/set Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}}))))
-    (BinMap/set Bits/Bits (BinMap/set Bits/Bits (BinMap/empty Bits/Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}})))
+: (Equal
+    (BinMap/BinMap Bits)
+    (BinMap/invert Bits (BinMap/invert Bits (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}}))))
+    (BinMap/set Bits (BinMap/set Bits (BinMap/empty Bits) (#O{#E{}}) (#I{#E{}})) (#I{#E{}}) (#O{#E{}})))
 = #Refl{}

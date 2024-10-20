@@ -6,7 +6,7 @@ main : (Pair/Pair U32 U32)
 //use Parser/ as Parser/
 //use Pair/ as Pair/
 
-//foo : (Pair/Parser Unit/Unit) = ?oxi
+//foo : (Pair/Parser Unit) = ?oxi
 
 //affer : (Parser/Parser U32)
 //= when U32/eq 50 {
@@ -30,11 +30,11 @@ main : (Pair/Pair U32 U32)
 
 //use Bool/ as Bool/
 
-//Foo : Bool/Bool -> Bool/Bool
+//Foo : Bool -> Bool
 //| #True{} = #False
 //| other   = #True
 
-//Main : Bool/Bool
+//Main : Bool
 //= (Foo #False{})
 
 //| #True{} = ?a
@@ -55,16 +55,16 @@ main : (Pair/Pair U32 U32)
 //use Trait/ as Trait/
 
 //IsTrue
-//: ∀(b: Bool/Bool)
+//: ∀(b: Bool)
   //*
 //= λb data[b]{
   //#Indeed{} : (IsTrue #True)
 //}
 
 //Main
-//: ∀(x: Bool/Bool)
+//: ∀(x: Bool)
   //∀(t: (IsTrue x))
-  //Bool/Bool
+  //Bool
 //= λ{
   //#True: λ{
     //#Indeed: #True
@@ -75,8 +75,8 @@ main : (Pair/Pair U32 U32)
 //}
 
 //Main
-//: ∀(p: (Pair/Pair U32 Bool/Bool))
-  //∀(k: (MB/Maybe (Pair/Pair U32 Bool/Bool)))
+//: ∀(p: (Pair/Pair U32 Bool))
+  //∀(k: (MB/Maybe (Pair/Pair U32 Bool)))
   //(MB/Maybe U32)
 //= λp λk do MB/Monad {
   //ask x = #Some{50}
@@ -88,7 +88,7 @@ main : (Pair/Pair U32 U32)
 //use Maybe/ as Maybe/
 
 //Main
-//: (Maybe/Maybe U32)
+//: (Maybe U32)
 //= do Maybe/Monad/ {
   //ask x = #Some { 50 }
   //ask y = #Some { 20 }
@@ -100,25 +100,25 @@ main : (Pair/Pair U32 U32)
 //use String/ as String/
 
 //Main
-//: String/String
+//: String
 //= "foo bar"
 
 //use Pair/ as Pair/
 //use Bool/ as Bool/
 
 //Main
-//: ∀(f: ∀(x: Bool/Bool) Bool/Bool)
-  //Nat/Nat
+//: ∀(f: ∀(x: Bool) Bool)
+  //Nat
 //= λf match (f #True{}) {
   //#True: ?a
   //#False: ?b
 //}
 
-////∀(fx: Bool/Bool) (P 
+////∀(fx: Bool) (P 
 
 //Aux
-//: ∀(P: ∀(x: Bool/Bool) *)
-  //∀(Fx: Bool/Bool)
+//: ∀(P: ∀(x: Bool) *)
+  //∀(Fx: Bool)
   //(P Fx)
 //= λP λ{
   //#True: ?t

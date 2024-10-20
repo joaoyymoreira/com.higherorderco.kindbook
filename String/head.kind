@@ -2,7 +2,7 @@
 // - str: The input string.
 // = A Maybe Char, containing the first character if the string is non-empty, or None if it's empty.
 String/head
-: ∀(str: String/String)
-  (Maybe/Maybe U32)
+: ∀(str: String)
+  (Maybe U32)
 = λstr
   (List/head _ str)

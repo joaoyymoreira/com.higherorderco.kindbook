@@ -4,10 +4,10 @@
 // - 3rd: The input string to pad.
 // = A new string padded to length n with character c on the left side.
 String/pad-left
-: ∀(n: Nat/Nat)
+: ∀(n: Nat)
   ∀(c: U32)
-  ∀(s: String/String)
-  String/String
+  ∀(s: String)
+  String
 = λn λc λs
   let #Pair{str len} = (List/length-got U32 s)
   match (Nat/lt len n) {
@@ -18,20 +18,20 @@ String/pad-left
 //ERROR: kind: Constructor Cons not found in pattern match.
 // Test: Pad a short string with spaces
 TEST_0 
-: (Equal/Equal String/String "abc" "abc")
+: (Equal String "abc" "abc")
 = #Refl
 
 //// Test: Pad an empty string
 //T1 
-//: (Equal/Equal String/String (String/pad-left #3 'x' "") "xxx")
+//: (Equal String (String/pad-left #3 'x' "") "xxx")
 //= #Refl
 
 //// Test: No padding needed (string length equal to desired length)
 //T2 
-//: (Equal/Equal String/String (String/pad-left #3 'y' "123") "123")
+//: (Equal String (String/pad-left #3 'y' "123") "123")
 //= #Refl
 
 //// Test: No padding needed (string length greater than desired length)
 //T3 
-//: (Equal/Equal String/String (String/pad-left #2 'z' "hello") "hello")
+//: (Equal String (String/pad-left #2 'z' "hello") "hello")
 //= #Refl

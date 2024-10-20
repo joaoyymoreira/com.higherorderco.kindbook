@@ -7,8 +7,8 @@
 Maybe/neq
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
-  ∀(x: (Maybe/Maybe A))
-  ∀(y: (Maybe/Maybe A))
-  Bool/Bool
+  ∀(x: (Maybe A))
+  ∀(y: (Maybe A))
+  Bool
 = λA λe λx λy
   (Bool/not (Maybe/eq A e x y))

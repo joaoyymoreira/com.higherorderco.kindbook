@@ -7,9 +7,9 @@
 List/starts-with
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
-  ∀(prefix: (List/List A))
-  ∀(xs: (List/List A))
-  Bool/Bool
+  ∀(prefix: (List A))
+  ∀(xs: (List A))
+  Bool
 = λA λe λprefix λxs
   let #Pair{prefix-list prefix-length}= (List/length-got A prefix)
   let xs-prefix = (List/take A prefix-length xs)

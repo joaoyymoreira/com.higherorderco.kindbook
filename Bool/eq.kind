@@ -2,16 +2,16 @@
 // - a: The first boolean value.
 // - b: The second boolean value.
 // = True if both values are equal, False otherwise.
-Bool/eq : Bool/Bool -> Bool/Bool -> Bool/Bool
+Bool/eq : Bool -> Bool -> Bool
 | #True  #True  = #True
 | #False #False = #True
 | a      b      = #False
 
 TEST_0 
-: (Equal/Equal Bool/Bool (Bool/eq #True{} #True{}) (#True{}))
+: (Equal Bool (Bool/eq #True{} #True{}) (#True{}))
 = #Refl{}
 
 TEST_1 
-: (Equal/Equal Bool/Bool (Bool/eq #False{} #True{}) (#False{}))
+: (Equal Bool (Bool/eq #False{} #True{}) (#False{}))
 = #Refl{}
 

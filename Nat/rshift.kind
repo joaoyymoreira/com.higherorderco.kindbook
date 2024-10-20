@@ -3,40 +3,40 @@
 // 2nd: The number of positions to shift right.
 // = The right-shifted result as a new natural number.
 Nat/rshift
-: ∀(n: Nat/Nat)
-  ∀(shift: Nat/Nat)
-  Nat/Nat
+: ∀(n: Nat)
+  ∀(shift: Nat)
+  Nat
 = λn λshift (Nat/div n (Nat/exp #Succ{#Succ{#Zero{}}} shift))
 // Tests the right shift function for natural numbers.
 
 // Test: 0 >> 1 = 0.
-TEST_0 : (Equal/Equal Nat/Nat (Nat/rshift #Zero{} #Succ{#Zero{}}) #Zero{})
+TEST_0 : (Equal Nat (Nat/rshift #Zero{} #Succ{#Zero{}}) #Zero{})
   = #Refl{}
 
 // Test: 1 >> 1 = 0.
-TEST_1 : (Equal/Equal Nat/Nat (Nat/rshift #Succ{#Zero{}} #Succ{#Zero{}}) #Zero{})
+TEST_1 : (Equal Nat (Nat/rshift #Succ{#Zero{}} #Succ{#Zero{}}) #Zero{})
   = #Refl{}
 
 // Test: 2 >> 1 = 1.
-TEST_2 : (Equal/Equal Nat/Nat (Nat/rshift #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #Succ{#Zero{}})
+TEST_2 : (Equal Nat (Nat/rshift #Succ{#Succ{#Zero{}}} #Succ{#Zero{}}) #Succ{#Zero{}})
   = #Refl{}
 
 // Test: 4 >> 1 = 2.
-TEST_3 : (Equal/Equal Nat/Nat (Nat/rshift #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
+TEST_3 : (Equal Nat (Nat/rshift #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
   = #Refl{}
 
 // Test: 8 >> 2 = 2.
-TEST_4 : (Equal/Equal Nat/Nat (Nat/rshift #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}})
+TEST_4 : (Equal Nat (Nat/rshift #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}})
   = #Refl{}
 
 // Test: 16 >> 3 = 2.
-TEST_5 : (Equal/Equal Nat/Nat (Nat/rshift (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}})
+TEST_5 : (Equal Nat (Nat/rshift (Nat/exp #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}})
   = #Refl{}
 
 // Test: 100 >> 2 = 25.
-TEST_6 : (Equal/Equal Nat/Nat (Nat/rshift (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}}) (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}))
+TEST_6 : (Equal Nat (Nat/rshift (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Zero{}}}) (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}))
   = #Refl{}
 
 // Test: 1000 >> 3 = 125.
-TEST_7 : (Equal/Equal Nat/Nat (Nat/rshift (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
+TEST_7 : (Equal Nat (Nat/rshift (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/exp #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
   = #Refl{}

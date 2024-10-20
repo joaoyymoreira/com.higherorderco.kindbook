@@ -1,2 +1,2 @@
 // Represents a string of characters
-String/String : * = (List/List U32)
+String : * = (List U32)

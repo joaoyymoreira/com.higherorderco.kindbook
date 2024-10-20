@@ -4,4 +4,4 @@
 //   - Done: a Reply containing the parsed value and new state.
 //   - Fail: an Error containing the index and message.
 Parser/Parser : * -> *
-= λA (Parser/State -> (Result/Result (Parser/Reply A) Parser/Error))
+= λA (Parser/State -> (Result (Parser/Reply A) Parser/Error))

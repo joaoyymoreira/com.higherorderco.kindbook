@@ -2,7 +2,7 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = True if a and b are equal, False otherwise.
-Bits/eq : Bits/Bits -> Bits/Bits -> Bool/Bool
+Bits/eq : Bits -> Bits -> Bool
 | #E    #E    = #True
 | #O{x} #O{y} = (Bits/eq x y)
 | #I{x} #I{y} = (Bits/eq x y)

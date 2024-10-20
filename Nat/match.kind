@@ -6,10 +6,10 @@
 // 4th: The natural number to match on.
 // = The result of matching on the input natural number.
 Nat/match
-: ∀(P: ∀(x: Nat/Nat) *)
+: ∀(P: ∀(x: Nat) *)
   ∀(z: (P #Zero{}))
-  ∀(s: ∀(x: Nat/Nat) (P #Succ{x}))
-  ∀(n: Nat/Nat)
+  ∀(s: ∀(x: Nat) (P #Succ{x}))
+  ∀(n: Nat)
   (P n)
 = λP λz λs λ{
   #Zero: z
@@ -17,40 +17,40 @@ Nat/match
 }
 // A simple function that returns a string description of a natural number
 Nat/describe
-: ∀(n: Nat/Nat)
-  Bool/Bool
+: ∀(n: Nat)
+  Bool
 = (Nat/match
-    λx(Bool/Bool)
+    λx(Bool)
     #False{}
     λpred #True{}
   )
 
 // Test: Describe of Zero{}
 TEST_0
-: (Equal/Equal Bool/Bool (Nat/describe #Zero{}) #False{})
+: (Equal Bool (Nat/describe #Zero{}) #False{})
 = #Refl{}
 
 // Test: Describe of Succ{Zero}
 TEST_1
-: (Equal/Equal Bool/Bool (Nat/describe #Succ{#Zero{}}) #True{})
+: (Equal Bool (Nat/describe #Succ{#Zero{}}) #True{})
 = #Refl{}
 
 // Test: Describe of Succ{Succ{Zero}}
 TEST_2
-: (Equal/Equal Bool/Bool (Nat/describe #Succ{#Succ{#Zero{}}}) #True{})
+: (Equal Bool (Nat/describe #Succ{#Succ{#Zero{}}}) #True{})
 = #Refl{}
 
 // Test: Describe of Succ{Succ{Succ{Zero}}}
 TEST_3
-: (Equal/Equal Bool/Bool (Nat/describe #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
+: (Equal Bool (Nat/describe #Succ{#Succ{#Succ{#Zero{}}}}) #True{})
 = #Refl{}
 
 // Test: Equality of describe results for different non-zero numbers
 TEST_4
-: (Equal/Equal Bool/Bool (Bool/eq (Nat/describe #Succ{#Zero{}}) (Nat/describe #Succ{#Succ{#Zero{}}})) #True{})
+: (Equal Bool (Bool/eq (Nat/describe #Succ{#Zero{}}) (Nat/describe #Succ{#Succ{#Zero{}}})) #True{})
 = #Refl{}
 
 // Test: Inequality of describe results for zero and non-zero
 TEST_5
-: (Equal/Equal Bool/Bool (Bool/eq (Nat/describe #Zero{}) (Nat/describe #Succ{#Zero{}})) #False{})
+: (Equal Bool (Bool/eq (Nat/describe #Zero{}) (Nat/describe #Succ{#Zero{}})) #False{})
 = #Refl{}

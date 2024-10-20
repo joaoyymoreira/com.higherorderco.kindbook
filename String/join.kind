@@ -3,17 +3,17 @@
 // - xs: The list of strings to join.
 // = A single string with all input strings concatenated, separated by the given separator.
 String/join
-: ∀(sep: String/String)
-  ∀(xs: (List/List String/String))
-  String/String
+: ∀(sep: String)
+  ∀(xs: (List String))
+  String
 = λsep λxs
   (List/foldr _ _ (String/join/go sep) "" xs)
 
 // Helper function for String/join
 // Combines a string with the accumulated result
 String/join/go
-: ∀(sep: String/String)
-  ∀(s: String/String)
-  ∀(acc: String/String)
-  String/String
-= λsep λs λacc (Bool/if String/String (String/eq acc "") s (String/append s (String/append sep acc)))
+: ∀(sep: String)
+  ∀(s: String)
+  ∀(acc: String)
+  String
+= λsep λs λacc (Bool/if String (String/eq acc "") s (String/append s (String/append sep acc)))

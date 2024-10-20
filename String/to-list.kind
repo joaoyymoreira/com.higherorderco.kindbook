@@ -2,6 +2,6 @@
 // - str: The input string.
 // = A list of characters representing the string.
 String/to-list
-: ∀(str: String/String)
-  (List/List U32)
+: ∀(str: String)
+  (List U32)
 = λstr str

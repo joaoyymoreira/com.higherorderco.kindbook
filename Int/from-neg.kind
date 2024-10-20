@@ -3,8 +3,8 @@
 // = The corresponding negative integer representation.
 //   Note: Zero is treated as a positive number (Pos Zero).
 Int/from-neg
-: ∀(n: Nat/Nat)
-  Int/Int
+: ∀(n: Nat)
+  Int
 = λ{
   #Zero: #Pos{#Zero{}}
   #Succ: λn.pred #NegSuc{n.pred}

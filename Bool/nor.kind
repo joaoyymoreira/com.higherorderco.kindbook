@@ -2,6 +2,6 @@
 // - a: The first boolean value.
 // - b: The second boolean value.
 // = True if both inputs are False, False otherwise.
-Bool/nor : Bool/Bool -> Bool/Bool -> Bool/Bool
+Bool/nor : Bool -> Bool -> Bool
 | #True  b = #False
 | #False b = (Bool/not b)

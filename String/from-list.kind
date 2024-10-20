@@ -1,9 +1,9 @@
 // Converts a list of characters to a string.
 // - 1st: The input list of characters (U32 values).
 // = A string composed of the characters in the list.
-// Note: Since String/String is already defined as (List/List U32),
+// Note: Since String is already defined as (List U32),
 // this function is essentially an identity function in Kind.
 String/from-list
-: ∀(chars: (List/List U32))
-  String/String
+: ∀(chars: (List U32))
+  String
 = λchars chars

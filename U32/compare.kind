@@ -6,7 +6,7 @@
 U32/compare
 : ∀(a: U32)
   ∀(b: U32)
-  Ordering/Ordering
+  Ordering
 = λ{
   0: λ{
     0: #EQ{}

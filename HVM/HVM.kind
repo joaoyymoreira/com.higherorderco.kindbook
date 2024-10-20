@@ -20,8 +20,8 @@ HVM/Pol : *
 
 HVM/Term : HVM/Pol -> *
 = λpol data[pol]{
-  #Var{ uid: Bits/Bits } : (HVM/Term #Pos)
-  #Sub{ uid: Bits/Bits } : (HVM/Term #Neg)
+  #Var{ uid: Bits } : (HVM/Term #Pos)
+  #Sub{ uid: Bits } : (HVM/Term #Neg)
   #Nul{} : (HVM/Term #Pos)
   #Era{} : (HVM/Term #Neg)
   #Lam{ var: (HVM/Term #Neg) bod: (HVM/Term #Pos) } : (HVM/Term #Pos)
@@ -34,7 +34,7 @@ HVM/Dex : *
 = (Pair/Pair (HVM/Term #Neg) (HVM/Term #Pos))
 
 HVM/Bag : *
-= (List/List HVM/Dex)
+= (List HVM/Dex)
 
 HVM/Net : *
 = data[]{
@@ -57,7 +57,7 @@ HVM/RTag : *
 }
 
 HVM/RLoc : *
-= Bits/Bits
+= Bits
 
 HVM/RTerm : *
 = data[]{
@@ -77,15 +77,15 @@ HVM/RNet : *
 = data[]{
   #RN{
     bag_buf: HVM/RBag
-    bag_len: Bits/Bits
-    bag_pop: Bits/Bits
+    bag_len: Bits
+    bag_pop: Bits
     mem_buf: HVM/RMem
-    mem_len: Bits/Bits
+    mem_len: Bits
   } : HVM/RNet
 }
 
 HVM/HVM : * -> *
-| A = ∀(net: HVM/RNet) (Maybe/Maybe (Pair/Pair HVM/RNet A))
+| A = ∀(net: HVM/RNet) (Maybe (Pair/Pair HVM/RNet A))
 
 // HVM Monad
 // ---------
@@ -96,7 +96,7 @@ HVM/pure : ∀(A: *) A -> (HVM/HVM A)
 HVM/bind : ∀(A: *) ∀(B: *) (HVM/HVM A) -> (A -> (HVM/HVM B)) -> (HVM/HVM B)
 | A B ma fn net = (HVM/bind/go A B (ma net) fn)
 
-HVM/bind/go : ∀(A: *) ∀(B: *) (Maybe/Maybe (Pair/Pair HVM/RNet A)) -> (A -> (HVM/HVM B)) -> (Maybe/Maybe (Pair/Pair HVM/RNet B))
+HVM/bind/go : ∀(A: *) ∀(B: *) (Maybe (Pair/Pair HVM/RNet A)) -> (A -> (HVM/HVM B)) -> (Maybe (Pair/Pair HVM/RNet B))
 | A B #None{}             fn = #None
 | A B #Some{#Pair{net a}} fn = (fn a net)
 
@@ -109,7 +109,7 @@ HVM/Monad : (Trait/Monad HVM/HVM)
 // Utils
 // -----
 
-HVM/is_sub : HVM/RTerm -> Bool/Bool
+HVM/is_sub : HVM/RTerm -> Bool
 | #RT{#VAR{} loc} = #False
 | #RT{#SUB{} loc} = #True
 | #RT{#NUL{} loc} = #False
@@ -125,11 +125,11 @@ HVM/get_typ : HVM/RTerm -> HVM/RTag
 HVM/get_loc : HVM/RTerm -> HVM/RLoc
 | #RT{typ loc} = loc
 
-HVM/at : Nat/Nat -> Bits/Bits -> Bits/Bits
+HVM/at : Nat -> Bits -> Bits
 | #Zero{}  x = x
 | #Succ{n} x = (Bits/succ (HVM/at n x))
 
-HVM/get : Bits/Bits -> (HVM/HVM HVM/RTerm)
+HVM/get : Bits -> (HVM/HVM HVM/RTerm)
 | loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf got} = (BinMap/got _ mem_buf loc)
   match got {
@@ -137,24 +137,24 @@ HVM/get : Bits/Bits -> (HVM/HVM HVM/RTerm)
     #Some: λterm #Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } term }}
   }
 
-HVM/set : Bits/Bits -> HVM/RTerm -> (HVM/HVM Unit/Unit)
+HVM/set : Bits -> HVM/RTerm -> (HVM/HVM Unit)
 | loc term #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/set _ mem_buf loc term)
   use new_net = #RN{ bag_buf bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net #Unit } }
 
-HVM/del : Bits/Bits -> (HVM/HVM Unit/Unit)
+HVM/del : Bits -> (HVM/HVM Unit)
 | loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/del _ mem_buf loc)
   use new_net = #RN{ bag_buf bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net #Unit } }
 
-HVM/swap : Bits/Bits -> HVM/RTerm -> (HVM/HVM (Maybe/Maybe HVM/RTerm))
+HVM/swap : Bits -> HVM/RTerm -> (HVM/HVM (Maybe HVM/RTerm))
 | loc term #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf old} = (BinMap/swap _ mem_buf loc term)
   #Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } old } }
 
-HVM/take : Bits/Bits -> (HVM/HVM HVM/RTerm)
+HVM/take : Bits -> (HVM/HVM HVM/RTerm)
 | loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   match (BinMap/take _ mem_buf loc) {
     #None: #None
@@ -163,7 +163,7 @@ HVM/take : Bits/Bits -> (HVM/HVM HVM/RTerm)
     }
   }
 
-HVM/load : Bits/Bits -> (HVM/HVM HVM/RTerm)
+HVM/load : Bits -> (HVM/HVM HVM/RTerm)
 | loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf got} = (BinMap/swap _ mem_buf loc (#RT{ #SUB loc }))
   match got {
@@ -174,7 +174,7 @@ HVM/load : Bits/Bits -> (HVM/HVM HVM/RTerm)
     }
   }
 
-HVM/init : Bits/Bits -> HVM/RTerm -> (HVM/HVM Unit/Unit)
+HVM/init : Bits -> HVM/RTerm -> (HVM/HVM Unit)
 | loc term #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/init _ mem_buf loc term)
   use new_net = #RN{ bag_buf bag_len bag_pop mem_buf mem_len }
@@ -208,14 +208,14 @@ HVM/net_new : HVM/RNet
 // Allocation
 // ----------
 
-HVM/alloc_node : Nat/Nat -> (HVM/HVM Bits/Bits)
+HVM/alloc_node : Nat -> (HVM/HVM Bits)
 | arity #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_mem_len = mem_len
   use new_mem_len = (Nat/apply _ arity Bits/succ old_mem_len)
   use new_net     = #RN{ bag_buf bag_len bag_pop mem_buf new_mem_len }
   #Some{ #Pair{ new_net old_mem_len } }
 
-HVM/push_redex : HVM/RDex -> (HVM/HVM Bits/Bits)
+HVM/push_redex : HVM/RDex -> (HVM/HVM Bits)
 | redex #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_bag_len = bag_len
   use new_bag_len = (Bits/succ old_bag_len)
@@ -223,7 +223,7 @@ HVM/push_redex : HVM/RDex -> (HVM/HVM Bits/Bits)
   use new_net     = #RN{ new_bag_buf new_bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net old_bag_len } }
 
-HVM/pop_redex : (HVM/HVM (Maybe/Maybe HVM/RDex))
+HVM/pop_redex : (HVM/HVM (Maybe HVM/RDex))
 | #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_bag_pop = bag_pop
   use new_bag_pop = (Bits/succ old_bag_pop)
@@ -240,9 +240,9 @@ HVM/pop_redex : (HVM/HVM (Maybe/Maybe HVM/RDex))
 // ---------
 
 HVM/VarMap : *
-= (BinMap/BinMap Bits/Bits)
+= (BinMap/BinMap Bits)
 
-HVM/inject_term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe/Maybe Bits/Bits) -> HVM/VarMap -> (HVM/HVM (Pair/Pair HVM/VarMap HVM/RTerm))
+HVM/inject_term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> (HVM/HVM (Pair/Pair HVM/VarMap HVM/RTerm))
 | p #Lam{var bod} host vars = do HVM {
   ask lam             = (HVM/alloc_node #3)
   ask #Pair{vars var} = (HVM/inject_term #Neg var #Some{(HVM/at #1 lam)} vars)
@@ -328,7 +328,7 @@ HVM/inject_net
 // --------
 
 HVM/recover_var
-: ∀(var: Bits/Bits)
+: ∀(var: Bits)
   ∀(term: HVM/RTerm)
   (HVM/HVM (HVM/Term #Pos))
 = λvar λ{
@@ -348,7 +348,7 @@ HVM/recover_var
 }
 
 HVM/recover_sub
-: ∀(sub: Bits/Bits)
+: ∀(sub: Bits)
   ∀(term: HVM/RTerm)
   (HVM/HVM (HVM/Term #Neg))
 = λsub λ{
@@ -428,7 +428,7 @@ HVM/recover_term
   }
 }
 
-HVM/recover_bag : (List/List HVM/RDex) -> (HVM/HVM HVM/Bag)
+HVM/recover_bag : (List HVM/RDex) -> (HVM/HVM HVM/Bag)
 | #Nil{} = do HVM {
   ret #Nil
 }
@@ -452,7 +452,7 @@ HVM/recover_net : HVM/RNet -> (HVM/HVM HVM/Net)
 // Running
 // -------
 
-HVM/boot : HVM/Net -> (HVM/HVM Unit/Unit)
+HVM/boot : HVM/Net -> (HVM/HVM Unit)
 = λnet do HVM {
   ask #Pair{x rot} = (HVM/inject_net net (BinMap/new _))
   ask (HVM/init #E rot)
@@ -465,7 +465,7 @@ HVM/shut : (HVM/HVM HVM/Net)
   (HVM/recover_net net)
 }
 
-HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe/Maybe A)
+HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe A)
 = λA λhvm match (hvm HVM/net_new) {
   #None: #None
   #Some: λ{ #Pair{net x}: #Some{x} }
@@ -474,7 +474,7 @@ HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe/Maybe A)
 // Showing
 // -------
 
-HVM/show_term : ∀(p: HVM/Pol) (HVM/Term p) -> String/String
+HVM/show_term : ∀(p: HVM/Pol) (HVM/Term p) -> String
 | #Pos{} #Var{uid}     = (String/join "" ["+" (Nat/show (Bits/to-nat uid))])
 | #Pos{} #Sub{uid}     = #void
 | #Pos{} #Nul{}        = "+*"
@@ -492,17 +492,17 @@ HVM/show_term : ∀(p: HVM/Pol) (HVM/Term p) -> String/String
 | #Neg{} #Sup{tm1 tm2} = #void
 | #Neg{} #Dup{dp1 dp2} = (String/join "" ["-{" (HVM/show_term #Neg dp1) " " (HVM/show_term #Neg dp2) "}"])
 
-HVM/show_bag : HVM/Bag -> String/String
+HVM/show_bag : HVM/Bag -> String
 | #Nil{}                     = ""
 | #Cons{#Pair{neg pos} rest} = (String/join "" ["\n& " (HVM/show_term #Neg neg) " ~ " (HVM/show_term #Pos pos) (HVM/show_bag rest)])
 
-HVM/show_net : HVM/Net -> String/String
+HVM/show_net : HVM/Net -> String
 | #MkNet{rot bag} = (String/join "" [(HVM/show_term #Pos rot) (HVM/show_bag bag)])
 
-HVM/show_rloc : Bits/Bits -> String/String
+HVM/show_rloc : Bits -> String
 | loc = (String/pad-left #4 '0' (Nat/show (Bits/to-nat loc)))
 
-HVM/show_rterm : HVM/RTerm -> String/String 
+HVM/show_rterm : HVM/RTerm -> String 
 | #RT{#VAR{} loc} = (String/join "" ["VAR:" (HVM/show_rloc loc)])
 | #RT{#SUB{} loc} = (String/join "" ["SUB:" (HVM/show_rloc loc)])
 | #RT{#NUL{} loc} = (String/join "" ["NUL:" (HVM/show_rloc loc)])
@@ -512,7 +512,7 @@ HVM/show_rterm : HVM/RTerm -> String/String
 | #RT{#SUP{} loc} = (String/join "" ["SUP:" (HVM/show_rloc loc)])
 | #RT{#DUP{} loc} = (String/join "" ["DUP:" (HVM/show_rloc loc)])
 
-HVM/show_rmem : HVM/RMem -> String/String
+HVM/show_rmem : HVM/RMem -> String
 | mem = (List/fold _ (BinMap/to-list _ mem) _ "" (λkv λtxt
   let #Pair{k v} = kv
   let addr = (String/pad-left #4 '0' (Nat/show (Bits/to-nat k)))
@@ -520,10 +520,10 @@ HVM/show_rmem : HVM/RMem -> String/String
   (String/join "" [addr " → " term "\n" txt])
 ))
 
-HVM/show_rdex : HVM/RDex -> String/String
+HVM/show_rdex : HVM/RDex -> String
 | #Pair{p1 p2} = (String/join "" [(HVM/show_rterm p1) " ~ " (HVM/show_rterm p2)])
 
-HVM/show_rbag : HVM/RBag -> String/String
+HVM/show_rbag : HVM/RBag -> String
 | bag = (List/fold _ (BinMap/to-list _ bag) _ "" (λkv λtxt
   let #Pair{k v} = kv
   let addr = (String/pad-left #4 '0' (Nat/show (Bits/to-nat k)))
@@ -533,7 +533,7 @@ HVM/show_rbag : HVM/RBag -> String/String
 
 // show_rnet
 
-HVM/show_rnet : HVM/RNet -> String/String
+HVM/show_rnet : HVM/RNet -> String
 | #RN{bag_buf bag_len bag_pop mem_buf mem_len} = 
   (String/join "" ["MEM:\n" (HVM/show_rmem mem_buf) "BAG:\n" (HVM/show_rbag bag_buf)])
 
@@ -625,13 +625,13 @@ HVM/show_rnet : HVM/RNet -> String/String
   //ret #MkNet{ rot bag }
 //}
 
-//HVM/do_parse_net : String/String -> HVM/Net
+//HVM/do_parse_net : String -> HVM/Net
 //= λcode (Maybe/run _ (#MkNet{ #Nul #Nil }) (Parser/run _ HVM/parse_net code))
 
 // Linking
 // -------
 
-HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit/Unit)
+HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
 | a b = match (HVM/is_sub a) {
   #True: do HVM {
     ask got = (HVM/swap (HVM/get_loc a) b)
@@ -674,7 +674,7 @@ HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit/Unit)
 // Interaction
 // -----------
 
-HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit/Unit)
+HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
 | #RT{#APP{} app} #RT{#LAM{} lam} = do HVM {
   ask arg = (HVM/load (HVM/at #1 app))
   ask ret = (HVM/load (HVM/at #2 app))

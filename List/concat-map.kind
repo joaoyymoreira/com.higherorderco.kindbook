@@ -7,8 +7,8 @@
 List/concat-map
 : ∀(A: *)
   ∀(B: *)
-  ∀(f: ∀(a: A) (List/List B))
-  ∀(xs: (List/List A))
-  (List/List B)
+  ∀(f: ∀(a: A) (List B))
+  ∀(xs: (List A))
+  (List B)
 = λA λB λf λxs
   (List/concat _ (List/map _ _ f xs))

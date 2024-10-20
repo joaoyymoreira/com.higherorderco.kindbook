@@ -3,4 +3,4 @@
 DiffList/DiffList
 : ∀(A: *)
   *
-= λA ∀(xs: (List/List A)) (List/List A)
+= λA ∀(xs: (List A)) (List A)

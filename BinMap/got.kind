@@ -14,8 +14,8 @@
 BinMap/got
 : ∀(A: *)
   ∀(map: (BinMap/BinMap A))
-  ∀(key: Bits/Bits)
-  (Pair/Pair (BinMap/BinMap A) (Maybe/Maybe A))
+  ∀(key: Bits)
+  (Pair/Pair (BinMap/BinMap A) (Maybe A))
 = λA λ{
   #Leaf: λkey #Pair{ #Leaf{} #None{} }
   #Node: λval λlft λrgt λ{

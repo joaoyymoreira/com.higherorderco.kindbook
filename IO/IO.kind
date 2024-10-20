@@ -1,4 +1,4 @@
 IO/IO : ∀(A: *) * = λA data[]{
-  #Print{ T: * text: T then: ∀(x: Unit/Unit) (IO/IO A) } : (IO/IO A)
+  #Print{ T: * text: T then: ∀(x: Unit) (IO/IO A) } : (IO/IO A)
   #Return{ value: A } : (IO/IO A)
 }

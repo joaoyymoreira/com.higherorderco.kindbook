@@ -7,9 +7,9 @@
 Maybe/eq
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
-  ∀(x: (Maybe/Maybe A))
-  ∀(y: (Maybe/Maybe A))
-  Bool/Bool
+  ∀(x: (Maybe A))
+  ∀(y: (Maybe A))
+  Bool
 = λA λe λ{
   #None: λ{
     #None: #True{}

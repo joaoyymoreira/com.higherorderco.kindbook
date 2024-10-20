@@ -9,7 +9,7 @@ BinTree/eq
   ∀(e: (Trait/Eq A))
   ∀(a: (BinTree/BinTree A))
   ∀(b: (BinTree/BinTree A))
-  Bool/Bool
+  Bool
 = λA λe λ{
   #Leaf: λ{
     #Leaf: #True{}
@@ -27,9 +27,9 @@ BinTree/eq
 
 // Test equality of two identical simple trees.
 TEST_0
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
       (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}))
     #True{})
@@ -37,9 +37,9 @@ TEST_0
 
 // Test equality of two identical complex trees.
 TEST_1
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
@@ -53,9 +53,9 @@ TEST_1
 
 // Test inequality of trees with different root values.
 TEST_2
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
       (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}))
     #False{})
@@ -63,9 +63,9 @@ TEST_2
 
 // Test inequality between a leaf and a non-leaf tree.
 TEST_3
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       #Leaf{}
       (#Node{#Succ{#Zero{}} #Leaf{} #Leaf{}}))
     #False{})
@@ -73,9 +73,9 @@ TEST_3
 
 // Test equality of two empty trees (leaves).
 TEST_4
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       #Leaf{}
       #Leaf{})
     #True{})
@@ -83,9 +83,9 @@ TEST_4
 
 // Test inequality of trees with same root but different structure.
 TEST_5
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
@@ -99,9 +99,9 @@ TEST_5
 
 // Test equality of trees with nested structures.
 TEST_6
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Succ{#Succ{#Zero{}}}}
         (#Node{
@@ -121,9 +121,9 @@ TEST_6
 
 // Test inequality of trees with different values in deep structures.
 TEST_7
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Succ{#Succ{#Zero{}}}}
         (#Node{
@@ -143,9 +143,9 @@ TEST_7
 
 // Test equality of trees with multiple levels and identical structure
 TEST_8
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Zero{}}
         (#Node{
@@ -171,9 +171,9 @@ TEST_8
 
 // Test inequality of trees with same structure but different leaf values
 TEST_9
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/eq Nat/Nat NT/Eq
+: (Equal
+    Bool
+    (BinTree/eq Nat NT/Eq
       (#Node{
         #Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})

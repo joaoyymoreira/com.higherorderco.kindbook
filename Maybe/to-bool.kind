@@ -4,8 +4,8 @@
 // = True if the input is Some, False if it's None.
 Maybe/to-bool
 : ∀(A: *)
-  ∀(m: (Maybe/Maybe A))
-  Bool/Bool
+  ∀(m: (Maybe A))
+  Bool
 = λA λ{
   #None: #False{}
   #Some: λma.value #True{}

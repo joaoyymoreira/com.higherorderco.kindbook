@@ -1,5 +1,5 @@
 String/View
 : *
 = data[]{
-  #View{ text: String/String }: String/View
+  #View{ text: String }: String/View
 }

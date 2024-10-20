@@ -5,7 +5,7 @@
 BinTree/value
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  (Maybe/Maybe A)
+  (Maybe A)
 = λA λ{
   #Leaf: #None{}
   #Node: λval λlft λrgt #Some{val}
@@ -13,25 +13,25 @@ BinTree/value
 
 // Test: value of a leaf node is None
 TEST_0
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (BinTree/value Nat/Nat #Leaf{})
+: (Equal
+    (Maybe Nat)
+    (BinTree/value Nat #Leaf{})
     (#None{}))
 = #Refl{}
 
 // Test: value of a node with content 5 is (Some 5)
 TEST_1
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (BinTree/value Nat/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
+: (Equal
+    (Maybe Nat)
+    (BinTree/value Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
     (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
 = #Refl{}
 
 // Test: value of a complex tree returns the root node's value
 TEST_2
-: (Equal/Equal
-    (Maybe/Maybe Nat/Nat)
-    (BinTree/value Nat/Nat (#Node{
+: (Equal
+    (Maybe Nat)
+    (BinTree/value Nat (#Node{
       #Succ{#Zero{}}
       (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
       (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})

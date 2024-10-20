@@ -2,26 +2,26 @@
 // - 1st: The character to check.
 // = True if the character is uppercase, False otherwise.
 Char/is-upper
-: ∀(code: Char/Char)
-  Bool/Bool
+: ∀(code: Char)
+  Bool
 = λcode (Bool/and (U32/gte code 65) (U32/lte code 90))
 
 // Test: Uppercase 'A' is considered uppercase
 TEST_0
-: (Equal/Equal Bool/Bool (Char/is-upper 'A') #True{})
+: (Equal Bool (Char/is-upper 'A') #True{})
 = #Refl{}
 
 // Test: Lowercase 'a' is not considered uppercase
 TEST_1
-: (Equal/Equal Bool/Bool (Char/is-upper 'a') #False{})
+: (Equal Bool (Char/is-upper 'a') #False{})
 = #Refl{}
 
 // Test: Digit '5' is not considered uppercase
 TEST_2
-: (Equal/Equal Bool/Bool (Char/is-upper '5') #False{})
+: (Equal Bool (Char/is-upper '5') #False{})
 = #Refl{}
 
 // Test: Special character '@' is not considered uppercase
 TEST_3
-: (Equal/Equal Bool/Bool (Char/is-upper '@') #False{})
+: (Equal Bool (Char/is-upper '@') #False{})
 = #Refl{}

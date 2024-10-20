@@ -1,9 +1,9 @@
 // Helper function for concat-maybes
 concat-maybes-go
 : ∀(A: *)
-  ∀(ma: (Maybe/Maybe A))
-  ∀(acc: (List/List A))
-  (List/List A)
+  ∀(ma: (Maybe A))
+  ∀(acc: (List A))
+  (List A)
 = λA λ{
   #None: λacc acc
   #Some: λmaValue λacc #Cons{maValue acc}
@@ -16,6 +16,6 @@ concat-maybes-go
 // = A new list containing all the values from `Some` constructors.
 List/concat-maybes
 : ∀(A: *)
-  ∀(xs: (List/List (Maybe/Maybe A)))
-  (List/List A)
+  ∀(xs: (List (Maybe A)))
+  (List A)
 = λA λxs (List/foldr _ _ (concat-maybes-go  _) #Nil{} xs _)

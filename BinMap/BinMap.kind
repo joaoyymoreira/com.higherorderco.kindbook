@@ -3,7 +3,7 @@
 BinMap/BinMap
 : ∀(A: *)
   *
-= λA (BinTree/BinTree (Maybe/Maybe A))
+= λA (BinTree/BinTree (Maybe A))
 
 // Constructs a Node in the BinMap
 // - A: The type of values stored in the map
@@ -13,7 +13,7 @@ BinMap/BinMap
 // = A BinMap node
 BinMap/Node
 : ∀(A: *)
-  ∀(val: (Maybe/Maybe A))
+  ∀(val: (Maybe A))
   ∀(lft: (BinMap/BinMap A))
   ∀(rgt: (BinMap/BinMap A))
   (BinMap/BinMap A)

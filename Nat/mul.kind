@@ -3,59 +3,59 @@
 // 2nd: The natural number.
 // = The product of the two natural numbers.
 Nat/mul
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Nat/Nat
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Nat
 = λ{
   #Zero: λn #Zero{}
   #Succ: λm.pred λn (Nat/add n (Nat/mul m.pred n))
 }
 // Test: 0 * 0 = 0.
 TEST_0
-: (Equal/Equal Nat/Nat (Nat/mul #Zero{} #Zero{}) #Zero{})
+: (Equal Nat (Nat/mul #Zero{} #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: 0 * 5 = 0.
 TEST_1
-: (Equal/Equal Nat/Nat (Nat/mul #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
+: (Equal Nat (Nat/mul #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
 = #Refl{}
 
 // Test: 5 * 0 = 0.
 TEST_2
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Zero{})
+: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: 1 * 5 = 5.
 TEST_3
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Zero{}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal Nat (Nat/mul #Succ{#Zero{}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 5 * 1 = 5.
 TEST_4
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Zero{}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 3 * 2 = 6.
 TEST_5
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
+: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}})
 = #Refl{}
 
 // Test: 7 * 8 = 56.
 TEST_6
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))
+: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) (#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}))
 = #Refl{}
 
 // Test: Commutativity: a * b = b * a.
 TEST_7
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/mul #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
+: (Equal Nat (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/mul #Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Succ{#Succ{#Succ{#Zero{}}}}))
 = #Refl{}
 
 // Test: Distributivity: a * (b + c) = (a * b) + (a * c).
 TEST_8
-: (Equal/Equal Nat/Nat (Nat/mul #Succ{#Succ{#Zero{}}} (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) (Nat/add (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
+: (Equal Nat (Nat/mul #Succ{#Succ{#Zero{}}} (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})) (Nat/add (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
 = #Refl{}
 
 // Test: Associativity: (a * b) * c = a * (b * c).
 TEST_9
-: (Equal/Equal Nat/Nat (Nat/mul (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/mul #Succ{#Succ{#Zero{}}} (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
+: (Equal Nat (Nat/mul (Nat/mul #Succ{#Succ{#Zero{}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}}) (Nat/mul #Succ{#Succ{#Zero{}}} (Nat/mul #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})))
 = #Refl{}

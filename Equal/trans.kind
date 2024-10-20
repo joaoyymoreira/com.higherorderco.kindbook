@@ -11,9 +11,9 @@ Equal/trans
   ∀(x: A)
   ∀(y: A)
   ∀(z: A)
-  ∀(xy: (Equal/Equal A x y))
-  ∀(yz: (Equal/Equal A y z))
-  (Equal/Equal A x z)
+  ∀(xy: (Equal A x y))
+  ∀(yz: (Equal A y z))
+  (Equal A x z)
 = λA λx λy λz λ{
   #Refl: λ{
     #Refl: #Refl{}

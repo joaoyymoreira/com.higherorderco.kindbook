@@ -3,8 +3,8 @@
 // - s: The input string.
 // = A new string with the first n characters removed, or an empty string if n is greater than or equal to the string length.
 String/drop
-: ∀(n: Nat/Nat)
-  ∀(s: String/String)
-  String/String
+: ∀(n: Nat)
+  ∀(s: String)
+  String
 = λn λs 
   (List/drop U32 n s)

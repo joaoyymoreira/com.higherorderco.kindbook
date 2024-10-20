@@ -3,8 +3,8 @@
 // 1st: The natural number to check.
 // = True if the input is zero, False otherwise.
 Nat/is-zero
-: ∀(n: Nat/Nat)
-  Bool/Bool
+: ∀(n: Nat)
+  Bool
 = λ{
   #Zero: #True{}
   #Succ: λn.pred #False{}
@@ -12,13 +12,13 @@ Nat/is-zero
 // Tests for the Nat/is-zero function.
 
 // Test: is-zero of Zero should be True
-TEST_0 : (Equal/Equal Bool/Bool (Nat/is-zero #Zero{}) #True{})
+TEST_0 : (Equal Bool (Nat/is-zero #Zero{}) #True{})
   = #Refl{}
 
 // Test: is-zero of 1 should be False
-TEST_1 : (Equal/Equal Bool/Bool (Nat/is-zero #Succ{#Zero{}}) #False{})
+TEST_1 : (Equal Bool (Nat/is-zero #Succ{#Zero{}}) #False{})
   = #Refl{}
 
 // Test: is-zero of 2 should be False
-TEST_2 : (Equal/Equal Bool/Bool (Nat/is-zero #Succ{#Succ{#Zero{}}}) #False{})
+TEST_2 : (Equal Bool (Nat/is-zero #Succ{#Succ{#Zero{}}}) #False{})
   = #Refl{}

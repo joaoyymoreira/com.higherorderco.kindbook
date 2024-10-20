@@ -6,7 +6,7 @@
 BinMap/del
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
-  ∀(k: Bits/Bits)
+  ∀(k: Bits)
   (BinMap/BinMap A)
 = λA λ{
   #Leaf: λk #Leaf{}

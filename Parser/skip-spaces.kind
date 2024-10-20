@@ -2,11 +2,11 @@
 // - s: The parser state.
 // = A Reply containing the updated state and the number of spaces skipped.
 Pair/skip-spaces
-: (Pair/Parser Nat/Nat)
+: (Pair/Parser Nat)
 = λs
   let input     = (Parser/input s)
   let chars     = input
-  let skipped   = (List/take-while Char/Char Char/is-space chars)
+  let skipped   = (List/take-while Char Char/is-space chars)
   let count     = (String/length skipped)
   let new-index = (Nat/add (Parser/index s) count)
   let new-input = (String/drop count chars)

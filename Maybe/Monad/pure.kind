@@ -5,5 +5,5 @@
 Maybe/Monad/pure
 : ∀(A: *)
   ∀(value: A)
-  (Maybe/Maybe A)
+  (Maybe A)
 = λA λvalue #Some{value}

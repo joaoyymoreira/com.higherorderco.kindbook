@@ -2,18 +2,18 @@
 // - 1st: The Bool value to convert.
 // = A string representation of the Bool value.
 Bool/show
-: ∀(b: Bool/Bool)
-  String/String
+: ∀(b: Bool)
+  String
 = λ{
   #True: "true"
   #False: "false"
 }
 
 Bool/T0
-: (Equal/Equal Bool/Bool (Bool/show #True{}) (#True{}))
+: (Equal Bool (Bool/show #True{}) (#True{}))
 = #Refl{}
 
 Bool/T1
-: (Equal/Equal Bool/Bool (Bool/show #False{}) #False{})
+: (Equal Bool (Bool/show #False{}) #False{})
 = #Refl{}
 

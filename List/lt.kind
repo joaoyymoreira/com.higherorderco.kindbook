@@ -7,9 +7,9 @@
 List/lt
 : ∀(A: *)
   ∀(O: (Trait/Ord A))
-  ∀(xs: (List/List A))
-  ∀(ys: (List/List A))
-  Bool/Bool
+  ∀(xs: (List A))
+  ∀(ys: (List A))
+  Bool
 = λA λO λ{
   #Nil: λ{
     #Nil: #False{}
@@ -20,8 +20,8 @@ List/lt
     #Cons: λys.head λys.tail
       let lt = (Trait/Ord/lt _ O xs.head ys.head)
       let gt = (Trait/Ord/gt _ O xs.head ys.head)
-      (Bool/if Bool/Bool lt #True{}
-        (Bool/if Bool/Bool gt #False{}
+      (Bool/if Bool lt #True{}
+        (Bool/if Bool gt #False{}
           (List/lt _ O xs.tail ys.tail)))
   }
 }

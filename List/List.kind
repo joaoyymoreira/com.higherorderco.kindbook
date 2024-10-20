@@ -1,8 +1,8 @@
 // A polymorphic List with two constructors:
 // - Cons: Appends an element to a list.
 // - Nil: The empty list.
-List/List : * -> *
+List : * -> *
 = λA data[]{
-  #Nil{} : (List/List A)
-  #Cons{ head:A tail:(List/List A) } : (List/List A)
+  #Nil{} : (List A)
+  #Cons{ head:A tail:(List A) } : (List A)
 }

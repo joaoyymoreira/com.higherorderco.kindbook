@@ -5,7 +5,7 @@
 BinTree/left
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  (Maybe/Maybe (BinTree/BinTree A))
+  (Maybe (BinTree/BinTree A))
 = λA λ{
   #Leaf: (Maybe/None _)
   #Node: λtree.val λtree.lft λtree.rgt (Maybe/Some _ tree.lft)
@@ -13,24 +13,24 @@ BinTree/left
 
 // Test: Left of a leaf is None
 TEST_0
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/left Nat/Nat #Leaf{})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/left Nat #Leaf{})
     (#None{}))
 = #Refl{}
 
 // Test: Left of a node with left child returns Some of that child
 TEST_1
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/left Nat/Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/left Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
     (#Some{#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}}))
 = #Refl{}
 
 // Test: Left of a node with only right child still returns Some Leaf for left
 TEST_2
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/left Nat/Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/left Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
     (#Some{#Leaf{}}))
 = #Refl{}

@@ -2,7 +2,7 @@
 // 1st: The digit to convert.
 // = The character code representing the digit.
 Nat/digit_to_char
-: ∀(n: Nat/Nat)
+: ∀(n: Nat)
   U32
 = λ{
   #Zero: 48
@@ -41,9 +41,9 @@ Nat/digit_to_char
 // 2nd: The accumulator for the reversed string.
 // = The reversed string representation of the number.
 Nat/show_rev
-: ∀(n: Nat/Nat)
-  ∀(acc: String/String)
-  String/String
+: ∀(n: Nat)
+  ∀(acc: String)
+  String
 = λ{
   #Zero: λacc acc
   #Succ: λn.pred λacc 
@@ -57,21 +57,21 @@ Nat/show_rev
 // 1st: The natural number to convert.
 // = The string representation of the number.
 Nat/show
-: ∀(n: Nat/Nat)
-  String/String
+: ∀(n: Nat)
+  String
 = λ{
   #Zero: #Cons{48 #Nil{}}
   #Succ: λn.pred (Nat/show_rev (#Succ{n.pred}) #Nil{})
 	}
 
 // Test: show 42 = "42".
-TEST_0 : (Equal/Equal String/String (Nat/show #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) #Cons{52 #Cons{50 #Nil{}}})
+TEST_0 : (Equal String (Nat/show #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}) #Cons{52 #Cons{50 #Nil{}}})
 = #Refl{}
 
 // Test: show 0 = "0".
-TEST_1 : (Equal/Equal String/String (Nat/show #Zero{}) #Cons{48 #Nil{}})
+TEST_1 : (Equal String (Nat/show #Zero{}) #Cons{48 #Nil{}})
 = #Refl{}
 
 // Test: show 1000 = "1000".
-TEST_2 : (Equal/Equal String/String (Nat/show (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil{}}}}})
+TEST_2 : (Equal String (Nat/show (Nat/exp (Nat/mul #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})) #Cons{49 #Cons{48 #Cons{48 #Cons{48 #Nil{}}}}})
 = #Refl{}

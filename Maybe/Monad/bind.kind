@@ -7,9 +7,9 @@
 Maybe/Monad/bind
 : ∀(A: *)
   ∀(B: *)
-  ∀(m: (Maybe/Maybe A))
-  ∀(f: ∀(x: A) (Maybe/Maybe B))
-  (Maybe/Maybe B)
+  ∀(m: (Maybe A))
+  ∀(f: ∀(x: A) (Maybe B))
+  (Maybe B)
 = λA λB λ{
   #None: λf #None{}
   #Some: λm.value λf (f m.value)

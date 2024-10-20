@@ -3,36 +3,36 @@
 // 2nd: The character to compare.
 // = True if the characters are equal, False otherwise.
 Char/eq
-: ∀(a: Char/Char)
-  ∀(b: Char/Char)
-  Bool/Bool
+: ∀(a: Char)
+  ∀(b: Char)
+  Bool
 = λa λb (U32/eq a b)
 // Test: if 'a' is equal to 'a'.
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/eq 'a' 'a') #True{}) 
+: (Equal Bool (Char/eq 'a' 'a') #True{}) 
 = #Refl{}
 
 // Test: if 'a' is equal to 'b'.
 TEST_1
-: (Equal/Equal Bool/Bool (Char/eq 'a' 'b') #False{}) 
+: (Equal Bool (Char/eq 'a' 'b') #False{}) 
 = #Refl{}
 
 // Test: if '0' is equal to '0'.
 TEST_2
-: (Equal/Equal Bool/Bool (Char/eq '0' '0') #True{}) 
+: (Equal Bool (Char/eq '0' '0') #True{}) 
 = #Refl{}
 
 // Test: if '0' is equal to '1'.
 TEST_3
-: (Equal/Equal Bool/Bool (Char/eq '0' '1') #False{}) 
+: (Equal Bool (Char/eq '0' '1') #False{}) 
 = #Refl{}
 
 // Test: if 'A' is equal to 'a'.
 TEST_4
-: (Equal/Equal Bool/Bool (Char/eq 'A' 'a') #False{}) 
+: (Equal Bool (Char/eq 'A' 'a') #False{}) 
 = #Refl{}
 
 // Test: if negation of equality works correctly.
 TEST_5
-: (Equal/Equal Bool/Bool (Bool/not (Char/eq 'a' 'b')) #True{}) 
+: (Equal Bool (Bool/not (Char/eq 'a' 'b')) #True{}) 
 = #Refl{}

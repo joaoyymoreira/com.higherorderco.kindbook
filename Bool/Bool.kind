@@ -1,7 +1,7 @@
 // Represents a Boolean value.
 // - True: Represents logical truth.
 // - False: Represents logical falsehood.
-Bool/Bool : * = data[]{
-  #True : Bool/Bool
-  #False : Bool/Bool
+Bool : * = data[]{
+  #True : Bool
+  #False : Bool
 }

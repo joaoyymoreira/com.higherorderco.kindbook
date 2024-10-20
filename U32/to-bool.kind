@@ -3,7 +3,7 @@
 // = True if x is non-zero, False otherwise.
 U32/to-bool
 : ∀(x: U32)
-  Bool/Bool
+  Bool
 = λ{0: #False{}
   _: λx.pred #True{}
 	}

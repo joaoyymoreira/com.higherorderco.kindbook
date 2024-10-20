@@ -5,7 +5,7 @@
 BinTree/right
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  (Maybe/Maybe (BinTree/BinTree A))
+  (Maybe (BinTree/BinTree A))
 = λA λ{
   #Leaf: #None{}
   #Node: λval λlft λrgt #Some{rgt}
@@ -13,33 +13,33 @@ BinTree/right
 
 // Test: Right of a leaf is None.
 TEST_0
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/right Nat/Nat #Leaf{})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/right Nat #Leaf{})
     (#None{}))
 = #Refl{}
 
 // Test: Right of a node with right child returns Some of that child.
 TEST_1
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/right Nat/Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/right Nat #Node{#Succ{#Zero{}} #Leaf{} #Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}})
     (#Some{#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}}}))
 = #Refl{}
 
 // Test: Right of a node with only left child still returns Some leaf for right.
 TEST_2
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/right Nat/Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/right Nat #Node{#Succ{#Zero{}} #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}} #Leaf{}})
     (#Some{#Leaf{}}))
 = #Refl{}
 
 // Test: Right of a complex tree returns the correct right subtree.
 TEST_3
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/right Nat/Nat #Node{#Succ{#Zero{}}
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/right Nat #Node{#Succ{#Zero{}}
       #Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}}
       #Node{#Succ{#Succ{#Succ{#Zero{}}}}
         #Node{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}} #Leaf{} #Leaf{}}
@@ -56,8 +56,8 @@ TEST_3
 
 // Test: Right of a single node tree with no children returns Some leaf.
 TEST_4
-: (Equal/Equal
-    (Maybe/Maybe (BinTree/BinTree Nat/Nat))
-    (BinTree/right Nat/Nat #Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
+: (Equal
+    (Maybe (BinTree/BinTree Nat))
+    (BinTree/right Nat #Node{#Succ{#Zero{}} #Leaf{} #Leaf{}})
     (#Some{#Leaf{}}))
 = #Refl{}

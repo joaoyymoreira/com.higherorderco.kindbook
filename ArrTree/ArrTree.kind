@@ -3,7 +3,7 @@
 // - Leaf: Contains a value.
 ArrTree/ArrTree
 : ∀(A: *)
-  ∀(d: Nat/Nat)
+  ∀(d: Nat)
   *
 = λA λd data[]{
   #Node{

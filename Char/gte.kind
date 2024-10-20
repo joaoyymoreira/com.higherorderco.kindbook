@@ -3,56 +3,56 @@
 // 2nd: The character to compare.
 // = True if the 1st character is greater than or equal to the 2nd, False otherwise.
 Char/gte
-: ∀(x: Char/Char)
-  ∀(y: Char/Char)
-  Bool/Bool
+: ∀(x: Char)
+  ∀(y: Char)
+  Bool
 = λx λy (U32/gte x y)
 // Test: 'b' is greater than or equal to 'a'.
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/gte 'b' 'a') #True{}) 
+: (Equal Bool (Char/gte 'b' 'a') #True{}) 
 = #Refl{}
 
 // Test: 'a' is not greater than or equal to 'b'.
 TEST_1 
-: (Equal/Equal Bool/Bool (Char/gte 'a' 'b') #False{}) 
+: (Equal Bool (Char/gte 'a' 'b') #False{}) 
 = #Refl{}
 
 // Test: 'A' is not greater than or equal to 'a' (uppercase comes before lowercase in ASCII).
 TEST_2 
-: (Equal/Equal Bool/Bool (Char/gte 'A' 'a') #False{}) 
+: (Equal Bool (Char/gte 'A' 'a') #False{}) 
 = #Refl{}
 
 // Test: 'z' is greater than or equal to 'a'.
 TEST_3 
-: (Equal/Equal Bool/Bool (Char/gte 'z' 'a') #True{}) 
+: (Equal Bool (Char/gte 'z' 'a') #True{}) 
 = #Refl{}
 
 // Test: '9' is greater than or equal to '0'.
 TEST_4 
-: (Equal/Equal Bool/Bool (Char/gte '9' '0') #True{}) 
+: (Equal Bool (Char/gte '9' '0') #True{}) 
 = #Refl{}
 
 // Test: '~' is greater than or equal to '!'.
 TEST_5 
-: (Equal/Equal Bool/Bool (Char/gte '~' '!') #True{}) 
+: (Equal Bool (Char/gte '~' '!') #True{}) 
 = #Refl{}
 
 // Test: 'a' is greater than or equal to 'a'.
 TEST_6 
-: (Equal/Equal Bool/Bool (Char/gte 'a' 'a') #True{}) 
+: (Equal Bool (Char/gte 'a' 'a') #True{}) 
 = #Refl{}
 
 // Test: 'Z' is greater than or equal to 'A'.
 TEST_7 
-: (Equal/Equal Bool/Bool (Char/gte 'Z' 'A') #True{}) 
+: (Equal Bool (Char/gte 'Z' 'A') #True{}) 
 = #Refl{}
 
 // Test: '0' is greater than or equal to '0'.
 TEST_8 
-: (Equal/Equal Bool/Bool (Char/gte '0' '0') #True{}) 
+: (Equal Bool (Char/gte '0' '0') #True{}) 
 = #Refl{}
 
 // Test: 'a' is not greater than or equal to 'z'.
 TEST_9 
-: (Equal/Equal Bool/Bool (Char/gte 'a' 'z') #False{}) 
+: (Equal Bool (Char/gte 'a' 'z') #False{}) 
 = #Refl{}

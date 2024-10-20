@@ -2,8 +2,8 @@
 // - bs: The input binary string.
 // = The incremented binary string, with an additional bit if needed.
 Bits/succ
-: ∀(bs: Bits/Bits)
-  Bits/Bits
+: ∀(bs: Bits)
+  Bits
 = λ{
   #E: #I{#E{}}
   #O: λbs.tail #I{bs.tail}

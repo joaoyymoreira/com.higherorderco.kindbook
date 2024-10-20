@@ -5,13 +5,13 @@
 // = A new list with xs inserted between all lists in yss.
 List/intercalate
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  ∀(yss: (List/List (List/List A)))
-  (List/List A)
+  ∀(xs: (List A))
+  ∀(yss: (List (List A)))
+  (List A)
 = λA λxs λ{
   #Nil: #Nil{}
   #Cons: λyshead λystail 
-    (List/match (List/List A) ystail
+    (List/match (List A) ystail
       yshead
       (λhead λtail (List/append A yshead
                      (List/append A xs

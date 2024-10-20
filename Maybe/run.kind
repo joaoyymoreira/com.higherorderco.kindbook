@@ -6,7 +6,7 @@
 Maybe/run
 : ∀(A: *)
   ∀(d: A)
-  ∀(m: (Maybe/Maybe A))
+  ∀(m: (Maybe A))
   A
 = λA λd λ{
   #None: d

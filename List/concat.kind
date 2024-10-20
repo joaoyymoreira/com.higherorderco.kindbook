@@ -4,7 +4,7 @@
 // = A new list containing all elements from all inner lists.
 List/concat
 : ∀(A: *)
-  ∀(xss: (List/List (List/List A)))
-  (List/List A)
+  ∀(xss: (List (List A)))
+  (List A)
 = λA λxss
-  (List/foldr _ (List/List A) (List/append _) #Nil{} xss)
+  (List/foldr _ (List A) (List/append _) #Nil{} xss)

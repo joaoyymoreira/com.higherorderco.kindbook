@@ -4,8 +4,8 @@
 // = A record containing the current state of parsing.
 Parser/State : * = data[]{
   #MkState{
-    input: String/String
-    index: Nat/Nat
+    input: String
+    index: Nat
   } : Parser/State
 }
 
@@ -13,7 +13,7 @@ Parser/State : * = data[]{
 // - input: The input string to be parsed.
 // = A new State with the given input and index set to zero.
 Parser/new_parser_state
-: ∀(input: String/String)
+: ∀(input: String)
   Parser/State
 = λinput #MkState{
   input: input
@@ -23,7 +23,7 @@ Parser/new_parser_state
 // Helper function to get the input from a State
 Parser/State/input
 : ∀(s: Parser/State)
-  String/String
+  String
 = λ{
   #MkState: λs.input λs.index s.input
 }
@@ -31,21 +31,21 @@ Parser/State/input
 // Helper function to get the index from a State
 Parser/State/index
 : ∀(s: Parser/State)
-  Nat/Nat
+  Nat
 = λ{
   #MkState: λs.input λs.index s.index
 }
 
 // Helper function to create a new State
 Parser/State/new
-: ∀(input: String/String)
-  ∀(index: Nat/Nat)
+: ∀(input: String)
+  ∀(index: Nat)
   Parser/State
 = λinput λindex #MkState{input index}
 
 // Test: Creating a new parser state
 TEST_0 
-: (Equal/Equal 
+: (Equal 
     Parser/State 
     (Parser/new_parser_state "hello") 
     (Parser/State/new "hello" #Zero))
@@ -53,8 +53,8 @@ TEST_0
 
 // Test: Accessing State fields
 TEST_1 
-: (Equal/Equal 
-    (Pair/Pair String/String Nat/Nat)
+: (Equal 
+    (Pair/Pair String Nat)
     (#Pair{
         (Parser/State/input (Parser/State/new "world" #5))
         (Parser/State/index (Parser/State/new "world" #5))})

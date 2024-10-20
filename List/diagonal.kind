@@ -4,12 +4,12 @@
 // = A list containing the diagonal elements of the input.
 List/diagonal
 : ∀(A: *)
-  ∀(xss: (List/List (List/List A)))
-  (List/List A)
+  ∀(xss: (List (List A)))
+  (List A)
 = λA λxss
   (List/foldr
-    (List/List A)
-    (List/List A)
+    (List A)
+    (List A)
     (List/append A)
     #Nil{}
     (List/stripe A xss))

@@ -11,8 +11,8 @@ Equal/right
   ∀(x: A)
   ∀(a: A)
   ∀(b: A)
-  ∀(e1: (Equal/Equal A x a))
-  ∀(e2: (Equal/Equal A x b))
-  (Equal/Equal A a b)
+  ∀(e1: (Equal A x a))
+  ∀(e2: (Equal A x b))
+  (Equal A a b)
 = λA λx λa λb λe1 λe2
   (Equal/trans A a x b (Equal/sym A x a e1) e2)

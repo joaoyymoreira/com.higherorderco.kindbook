@@ -6,7 +6,7 @@
 BinMap/values
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
-  (List/List A)
+  (List A)
 = λA λ{
   #Leaf: #Nil{}
   #Node: λ{

@@ -3,9 +3,9 @@
 // - n: The number of positions to shift left (represented as Nat).
 // = A new Bits value representing the left-shifted result.
 Bits/lshift
-: ∀(bits: Bits/Bits)
-  ∀(n: Nat/Nat)
-  Bits/Bits
+: ∀(bits: Bits)
+  ∀(n: Nat)
+  Bits
 = λbits λ{
   #Zero: bits
   #Succ: λn.pred

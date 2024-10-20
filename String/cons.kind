@@ -1,6 +1,6 @@
 String/cons
-: ∀(head: Char/Char)
-  ∀(tail: String/String)
-  String/String
+: ∀(head: Char)
+  ∀(tail: String)
+  String
 = λhead λtail
   #Cons{ head tail }

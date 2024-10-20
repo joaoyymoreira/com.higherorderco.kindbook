@@ -33,7 +33,7 @@ Trait/Monoid/mapp
 Trait/Monoid/concat
 : ∀(A: *)
   ∀(m: (Trait/Monoid A))
-  ∀(xs: (List/List A))
+  ∀(xs: (List A))
   A
 = λA λm λxs
   (List/foldr _ _ (Trait/Monoid/mapp _ m) (Trait/Monoid/memp _ m) xs)

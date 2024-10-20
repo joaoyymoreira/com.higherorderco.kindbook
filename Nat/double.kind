@@ -2,8 +2,8 @@
 // 1st: The number to double.
 // = The double of the input number.
 Nat/double
-: ∀(n: Nat/Nat)
-  Nat/Nat
+: ∀(n: Nat)
+  Nat
 = λ{
   #Zero: #Zero{}
   #Succ: λn.pred #Succ{#Succ{(Nat/double n.pred)}}
@@ -12,33 +12,33 @@ Nat/double
 
 // Test: double 0 = 0
 TEST_0
-: (Equal/Equal Nat/Nat (Nat/double #Zero{}) #Zero{})
+: (Equal Nat (Nat/double #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: double 1 = 2
 TEST_1
-: (Equal/Equal Nat/Nat (Nat/double #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
+: (Equal Nat (Nat/double #Succ{#Zero{}}) #Succ{#Succ{#Zero{}}})
 = #Refl{}
 
 // Test: double 2 = 4
 TEST_2
-: (Equal/Equal Nat/Nat (Nat/double #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
+: (Equal Nat (Nat/double #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Succ{#Zero{}}}}})
 = #Refl{}
 
 // Test: double 5 = 10
 TEST_3
-: (Equal/Equal Nat/Nat (Nat/double #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
+: (Equal Nat (Nat/double #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}})
 = #Refl{}
 
 // Test: double (double 2) = 8
 TEST_4
-: (Equal/Equal Nat/Nat (Nat/double (Nat/double #Succ{#Succ{#Zero{}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
+: (Equal Nat (Nat/double (Nat/double #Succ{#Succ{#Zero{}}})) #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}})
 = #Refl{}
 
 // Test: double (3 + 2) = double 3 + double 2
 TEST_5
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (Nat/double (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}}))
     (Nat/add (Nat/double #Succ{#Succ{#Succ{#Zero{}}}}) (Nat/double #Succ{#Succ{#Zero{}}})))
 = #Refl{}

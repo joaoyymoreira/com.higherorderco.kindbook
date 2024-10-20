@@ -2,8 +2,8 @@
 // - bits: The input Bits value.
 // = A new Bits value representing the bitwise NOT of the input.
 Bits/not
-: ∀(bits: Bits/Bits)
-  Bits/Bits
+: ∀(bits: Bits)
+  Bits
 = λ{
   #E: #E{}
   #O: λbits.tail #I{(Bits/not bits.tail)}

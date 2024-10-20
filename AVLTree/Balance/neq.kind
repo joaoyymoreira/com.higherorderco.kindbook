@@ -5,7 +5,7 @@
 AVLTree/neq
 : ∀(a: AVLTree/Balance)
   ∀(b: AVLTree/Balance)
-  Bool/Bool
+  Bool
 = λ{
   #MinusOne: λ{
     #MinusOne:  #False{}

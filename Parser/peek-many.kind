@@ -2,13 +2,13 @@
 // - count: The number of characters to peek.
 // = A Parser that returns a Maybe String containing the peeked characters, or None if there aren't enough characters.
 Pair/peek_many
-: ∀(count: Nat/Nat)
-  (Pair/Parser (Maybe/Maybe String/String))
+: ∀(count: Nat)
+  (Pair/Parser (Maybe String))
 = λcount λstate
   let chars  = (Pair/State/input state)
-  let peeked = (List/take Char/Char count chars)
+  let peeked = (List/take Char count chars)
   let #Pair{str-peeked length-peeked} = (String/length-got peeked)
   let enough = (Nat/eq (length-peeked) count)
-  let result = (Bool/if (Maybe/Maybe String/String) enough #Some{str-peeked} #None)
+  let result = (Bool/if (Maybe String) enough #Some{str-peeked} #None)
   // #Done{#MkReply{state result}}
   ?b

@@ -4,10 +4,10 @@
 // - acc: The accumulator for the result.
 // = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
 String/to-nat-base-go
-: ∀(base: Nat/Nat)
-  ∀(chars: String/String)
-  ∀(acc: Nat/Nat)
-  (Maybe/Maybe Nat/Nat)
+: ∀(base: Nat)
+  ∀(chars: String)
+  ∀(acc: Nat)
+  (Maybe Nat)
 = λbase λ{
   #Nil: λacc #Some{acc}
   #Cons: λhead λtail λacc
@@ -23,9 +23,9 @@ String/to-nat-base-go
 // - str: The string to convert.
 // = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
 String/to-nat-base
-: ∀(base: Nat/Nat)
-  ∀(str: String/String)
-  (Maybe/Maybe Nat/Nat)
+: ∀(base: Nat)
+  ∀(str: String)
+  (Maybe Nat)
 = λbase λ{
   #Nil: #None
   #Cons: λhead λtail (String/to-nat-base-go base #Cons{head tail} #0)

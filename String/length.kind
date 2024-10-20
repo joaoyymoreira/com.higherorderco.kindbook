@@ -2,6 +2,6 @@
 // - 1st: The input string.
 // = The number of characters in the string.
 String/length
-: ∀(str: String/String)
-  Nat/Nat
+: ∀(str: String)
+  Nat
 = λstr (List/length U32 str)

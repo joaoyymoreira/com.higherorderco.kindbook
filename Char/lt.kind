@@ -3,26 +3,26 @@
 // 2nd: The character to compare.
 // = True if the 1st character is less than the 2nd, False otherwise.
 Char/lt
-: ∀(x: Char/Char)
-  ∀(y: Char/Char)
-  Bool/Bool
+: ∀(x: Char)
+  ∀(y: Char)
+  Bool
 = λx λy (U32/lt x y)
 // Test: Compare lowercase 'a' with uppercase 'A'
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/lt 'a' 'A') #False{}) 
+: (Equal Bool (Char/lt 'a' 'A') #False{}) 
 = #Refl{}
 
 // Test: Compare lowercase 'a' with lowercase 'b'
 TEST_1 
-: (Equal/Equal Bool/Bool (Char/lt 'a' 'b') #True{}) 
+: (Equal Bool (Char/lt 'a' 'b') #True{}) 
 = #Refl{}
 
 // Test: Compare uppercase 'Z' with lowercase 'a'
 TEST_2 
-: (Equal/Equal Bool/Bool (Char/lt 'Z' 'a') #True{}) 
+: (Equal Bool (Char/lt 'Z' 'a') #True{}) 
 = #Refl{}
 
 // Test: Compare same character
 TEST_3 
-: (Equal/Equal Bool/Bool (Char/lt 'c' 'c') #False{}) 
+: (Equal Bool (Char/lt 'c' 'c') #False{}) 
 = #Refl{}

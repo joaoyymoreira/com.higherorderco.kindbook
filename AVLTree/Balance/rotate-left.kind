@@ -7,7 +7,7 @@ AVLTree/rotate_left
 : ∀(K: *)
   ∀(V: *)
   ∀(tree: (AVLTree/AVLTree K V))
-  (Pair/Pair (AVLTree/AVLTree K V) Bool/Bool)
+  (Pair/Pair (AVLTree/AVLTree K V) Bool)
 = λK λV λ{
   #Node: 
   #Lead: 

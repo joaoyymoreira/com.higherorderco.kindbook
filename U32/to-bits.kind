@@ -3,7 +3,7 @@
 // = The binary representation of the input U32 value as Bits.
 U32/to-bits
 : ∀(n: U32)
-  Bits/Bits
+  Bits
 = λ{
   0: #O{#E{}}
   _: λ{
@@ -11,7 +11,7 @@ U32/to-bits
     _{x.pred}:
       let quotient = (U32/div (+ 2 x.pred) 2)
       let remainder = (U32/mod (+ 2 x.pred) 2)
-      (U32/if Bits/Bits (U32/eql remainder 0)
+      (U32/if Bits (U32/eql remainder 0)
         #O{(U32/to-bits quotient)}
         #I{(U32/to-bits quotient)})
   }

@@ -2,7 +2,7 @@
 // 1st: The Bool value to convert.
 // = 1 if the input is True, 0 if the input is False.
 U32/from-bool
-: ∀(x: Bool/Bool)
+: ∀(x: Bool)
   U32
 = λ{
   #True: 1

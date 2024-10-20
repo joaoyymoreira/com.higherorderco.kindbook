@@ -5,8 +5,8 @@
 // = True if all elements satisfy the predicate, False otherwise.
 List/all-true
 : ∀(A: *)
-  ∀(p: ∀(a: A) Bool/Bool)
-  ∀(xs: (List/List A))
-  Bool/Bool
+  ∀(p: ∀(a: A) Bool)
+  ∀(xs: (List A))
+  Bool
 = λA λp λxs
   (List/foldr _ _ (λx λacc (Bool/and (p x) acc)) #True{} xs)

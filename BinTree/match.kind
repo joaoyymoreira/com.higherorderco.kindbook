@@ -34,16 +34,16 @@ BinTree/match
 count-nodes
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  Nat/Nat
+  Nat
 = λA λtree
-  (BinTree/match A (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/add l r)}) tree)
+  (BinTree/match A (λx Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/add l r)}) tree)
 
 // Test: Counting nodes
 TEST_0
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (count-nodes
-      Nat/Nat
+      Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -57,16 +57,16 @@ TEST_0
 tree-depth
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  Nat/Nat
+  Nat
 = λA λtree
-  (BinTree/match A (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/max l r)}) tree)
+  (BinTree/match A (λx Nat) #Zero{} (λval λlft λrgt λl λr #Succ{(Nat/max l r)}) tree)
 
 // Test: Tree depth
 TEST_1
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (tree-depth
-      Nat/Nat
+      Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -80,16 +80,16 @@ TEST_1
 leaf-count
 : ∀(A: *)
   ∀(tree: (BinTree/BinTree A))
-  Nat/Nat
+  Nat
 = λA λtree
-  (BinTree/match A (λx Nat/Nat) #Succ{#Zero{}} (λval λlft λrgt λl λr (Nat/add l r)) tree)
+  (BinTree/match A (λx Nat) #Succ{#Zero{}} (λval λlft λrgt λl λr (Nat/add l r)) tree)
 
 // Test: Leaf count
 TEST_2
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (leaf-count
-      Nat/Nat
+      Nat
       (#Node{
         #Zero{}
         (#Node{#Zero{} #Leaf{} #Leaf{}})
@@ -101,15 +101,15 @@ TEST_2
 
 // Sums all values in a binary tree of natural numbers
 sum-tree
-: ∀(tree: (BinTree/BinTree Nat/Nat))
-  Nat/Nat
+: ∀(tree: (BinTree/BinTree Nat))
+  Nat
 = λtree
-  (BinTree/match Nat/Nat (λx Nat/Nat) #Zero{} (λval λlft λrgt λl λr (Nat/add val (Nat/add l r))) tree)
+  (BinTree/match Nat (λx Nat) #Zero{} (λval λlft λrgt λl λr (Nat/add val (Nat/add l r))) tree)
 
 // Test: Sum of values (for Nat trees)
 TEST_3
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (sum-tree
       (#Node{
         #Succ{#Succ{#Zero{}}}

@@ -3,24 +3,24 @@
 // = The binary representation of the string as Bits, with each char
 //   represented by exactly 21 bits.
 String/to-bits
-: ∀(s: String/String)
-  Bits/Bits
+: ∀(s: String)
+  Bits
 = λs
   use char-to-bits = λx (Bits/pad-zeros #21 (U32/to-bits x))
-  let bits-list = (List/map U32 Bits/Bits char-to-bits s)
+  let bits-list = (List/map U32 Bits char-to-bits s)
   (Bits/concat bits-list)
 
 // Test: Empty string conversion
 TEST_0 
-: (Equal/Equal Bits/Bits (String/to-bits "") #E{})
+: (Equal Bits (String/to-bits "") #E{})
 = #Refl
 
 // Test: Single character string conversion
 TEST_1 
-: (Equal/Equal Bits/Bits (String/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
+: (Equal Bits (String/to-bits "A") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}})
 = #Refl
 
 // Test: Two character string conversion
 TEST_2 
-: (Equal/Equal Bits/Bits (String/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
+: (Equal Bits (String/to-bits "AB") #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}})
 = #Refl

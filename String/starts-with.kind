@@ -3,9 +3,9 @@
 // - prefix: The prefix to look for.
 // = True if the first string starts with the second string, False otherwise.
 String/starts-with
-: ∀(str: String/String)
-  ∀(prefix: String/String)
-  Bool/Bool
+: ∀(str: String)
+  ∀(prefix: String)
+  Bool
 = λxs λprefix
   let #Pair{prefix-list prefix-length}= (List/length-got U32 prefix)
   let xs-prefix = (List/take U32 prefix-length xs)

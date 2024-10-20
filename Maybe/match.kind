@@ -7,10 +7,10 @@
 // = A value of type (P m), determined by the structure of m.
 Maybe/match
 : ∀(A: *)
-  ∀(P: ∀(m: (Maybe/Maybe A)) *)
+  ∀(P: ∀(m: (Maybe A)) *)
   ∀(none: (P #None{}))
   ∀(some: ∀(x: A) (P (#Some{x})))
-  ∀(m: (Maybe/Maybe A))
+  ∀(m: (Maybe A))
   (P m)
 = λA λP λnone λsome λ{
   #None: none

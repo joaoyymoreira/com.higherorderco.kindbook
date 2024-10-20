@@ -3,9 +3,9 @@
 // 2nd: The boolean value.
 // = True if either '1st' is true or '2nd' is false (or both).
 Bool/orc
-: ∀(a: Bool/Bool)
-  ∀(b: Bool/Bool)
-  Bool/Bool
+: ∀(a: Bool)
+  ∀(b: Bool)
+  Bool
 = λ{
   #False: λ{
     #True: #False{}

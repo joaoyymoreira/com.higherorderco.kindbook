@@ -3,9 +3,9 @@
 // - y: The 2nd integer.
 // = True if x and y are equal, False otherwise.
 Int/eq
-: ∀(x: Int/Int)
-  ∀(y: Int/Int)
-  Bool/Bool
+: ∀(x: Int)
+  ∀(y: Int)
+  Bool
 = λ{
   #Pos: λx.value λ{
     #Pos: λy.value (Nat/eq x.value y.value)

@@ -2,11 +2,11 @@
 // - 1st: The type of the successful result.
 // - 2nd: The type of the error.
 // = A value that either contains the successful result or the error.
-Result/Result
+Result
 : ∀(A: *)
   ∀(E: *)
   *
 = λA λE data[]{
-  #Done{ value: A } : (Result/Result A E)
-  #Fail{ error: E } : (Result/Result A E)
+  #Done{ value: A } : (Result A E)
+  #Fail{ error: E } : (Result A E)
 }

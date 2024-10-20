@@ -14,24 +14,24 @@ Pair/get-snd
 
 // Test: Get second component of a Nat-String pair
 TEST_0
-: (Equal/Equal
-    String/String
-    (Pair/get-snd Nat/Nat (λx String/String) #Pair{#1 "one"})
+: (Equal
+    String
+    (Pair/get-snd Nat (λx String) #Pair{#1 "one"})
     "one")
 = #Refl
 
 // Test: Get second component of a Nat-Nat pair
 TEST_1
-: (Equal/Equal
-    Nat/Nat
-    (Pair/get-snd Nat/Nat (λx Nat/Nat) #Pair{#2 #1})
+: (Equal
+    Nat
+    (Pair/get-snd Nat (λx Nat) #Pair{#2 #1})
     #1)
 = #Refl
 
 // Test: Get second component of a String-Nat pair
 TEST_2
-: (Equal/Equal
-    Nat/Nat
-    (Pair/get-snd String/String (λx Nat/Nat) #Pair{"hello" #3})
+: (Equal
+    Nat
+    (Pair/get-snd String (λx Nat) #Pair{"hello" #3})
     #3)
 = #Refl

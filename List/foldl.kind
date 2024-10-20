@@ -10,7 +10,7 @@ List/foldl
   ∀(B: *)
   ∀(f: ∀(acc: A) ∀(elem: B) A)
   ∀(z: A)
-  ∀(xs: (List/List B))
+  ∀(xs: (List B))
   A
 = λA λB λf λz λ{
   #Nil: z

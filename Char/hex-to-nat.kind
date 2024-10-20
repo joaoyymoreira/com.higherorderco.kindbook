@@ -2,8 +2,8 @@
 // 1st: The input hexadecimal character
 // = Some n if 1st is a valid hexadecimal digit, where n is the corresponding natural number, None otherwise.
 Char/hex-to-nat
-: ∀(code: Char/Char)
-  (Maybe/Maybe Nat/Nat)
+: ∀(code: Char)
+  (Maybe Nat)
 = λcode
   let is_hex = (Char/is-hex-digit code)
   let case_0_9 = (- code 48)
@@ -17,26 +17,26 @@ Char/hex-to-nat
         (< code 97)
         case_A_F
         case_a_f))
-  (Bool/if (Maybe/Maybe Nat/Nat)
+  (Bool/if (Maybe Nat)
     is_hex
     #Some{(U32/to-nat value)}
     #None{})
 // Test: Convert '0' to 0.
 TEST_0
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/hex-to-nat '0') #Some{#Zero{}})
+: (Equal (Maybe Nat) (Char/hex-to-nat '0') #Some{#Zero{}})
 = #Refl{}
 
 // Test: Convert 'A' to 10.
 TEST_1
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/hex-to-nat 'A') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}})
+: (Equal (Maybe Nat) (Char/hex-to-nat 'A') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}})
 = #Refl{}
 
 // Test: Convert 'f' to 15.
 TEST_2
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/hex-to-nat 'f') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}})
+: (Equal (Maybe Nat) (Char/hex-to-nat 'f') #Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}}}}}}})
 = #Refl{}
 
 // Test: Invalid hexadecimal character.
 TEST_3
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/hex-to-nat 'G') #None{})
+: (Equal (Maybe Nat) (Char/hex-to-nat 'G') #None{})
 = #Refl{}

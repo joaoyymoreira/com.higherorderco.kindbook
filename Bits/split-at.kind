@@ -4,9 +4,9 @@
 // = A Pair of Bits where the first element contains the bits before the split point,
 //   and the second element contains the bits after the split point.
 Bits/split-at
-: ∀(m: Nat/Nat)
-  ∀(bits: Bits/Bits)
-  (Pair/Pair Bits/Bits Bits/Bits)
+: ∀(m: Nat)
+  ∀(bits: Bits)
+  (Pair/Pair Bits Bits)
 = λ{
   #Zero: λbits  #Pair{#E bits}
   #Succ: λpred λ{
@@ -22,25 +22,25 @@ Bits/split-at
 
 // Test: Split at zero
 TEST_0 
-: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
+: (Equal (Pair/Pair Bits Bits) (Bits/split-at #0 (#O{#I{#E}})) (#Pair{#E (#O{#I{#E}})}))
 = #Refl
 
 // Test: Split at one for non-empty Bits
 TEST_1 
-: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
+: (Equal (Pair/Pair Bits Bits) (Bits/split-at #1 (#O{#I{#E}})) (#Pair{(#O{#E}) (#I{#E})}))
 = #Refl
 
 // Test: Split at length greater than Bits length
 TEST_2 
-: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+: (Equal (Pair/Pair Bits Bits) (Bits/split-at #3 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
 = #Refl
 
 // Test: Split empty Bits
 TEST_3 
-: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #1 #E) (#Pair{#E #E}))
+: (Equal (Pair/Pair Bits Bits) (Bits/split-at #1 #E) (#Pair{#E #E}))
 = #Refl
 
 // Test: Split at exact length of Bits
 TEST_4 
-: (Equal/Equal (Pair/Pair Bits/Bits Bits/Bits) (Bits/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
+: (Equal (Pair/Pair Bits Bits) (Bits/split-at #2 (#I{#O{#E}})) (#Pair{(#I{#O{#E}}) #E}))
 = #Refl

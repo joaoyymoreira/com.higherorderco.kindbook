@@ -2,8 +2,8 @@
 // - x: The integer to negate.
 // = The negation of x.
 Int/neg
-: ∀(x: Int/Int)
-  Int/Int
+: ∀(x: Int)
+  Int
 = λ{
   #Pos: λ{
     #Zero: #Pos{#Zero{}}

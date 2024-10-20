@@ -2,45 +2,45 @@
 // 1st: The character to check.
 // = True if the character is printable, False otherwise.
 Char/is-print
-: ∀(code: Char/Char)
-  Bool/Bool
+: ∀(code: Char)
+  Bool
 = λcode (Bool/and (U32/gte code 32) (U32/lte code 126))
 // Test: Lowercase letter 'a' is printable
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/is-print 'a') #True{}) 
+: (Equal Bool (Char/is-print 'a') #True{}) 
 = #Refl{}
 
 // Test: Uppercase letter 'Z' is printable
 TEST_1 
-: (Equal/Equal Bool/Bool (Char/is-print 'Z') #True{}) 
+: (Equal Bool (Char/is-print 'Z') #True{}) 
 = #Refl{}
 
 // Test: Digit '5' is printable
 TEST_2 
-: (Equal/Equal Bool/Bool (Char/is-print '5') #True{}) 
+: (Equal Bool (Char/is-print '5') #True{}) 
 = #Refl{}
 
 // Test: Special character '@' is printable
 TEST_3 
-: (Equal/Equal Bool/Bool (Char/is-print '@') #True{}) 
+: (Equal Bool (Char/is-print '@') #True{}) 
 = #Refl{}
 
 // // Test: Space character is printable
 // T4 
-// : (Equal/Equal Bool/Bool (Char/is-print ' ') #True{}) 
+// : (Equal Bool (Char/is-print ' ') #True{}) 
 // = #Refl{}
 
 // Test: Newline character is not printable
 TEST_5 
-: (Equal/Equal Bool/Bool (Char/is-print '\n') #False{}) 
+: (Equal Bool (Char/is-print '\n') #False{}) 
 = #Refl{}
 
 // // Test: Null character is not printable
 // T6 
-// : (Equal/Equal Bool/Bool (Char/is-print '\0') #False{}) 
+// : (Equal Bool (Char/is-print '\0') #False{}) 
 // = #Refl{}
 
 // Test: Tab character is not printable
 TEST_7 
-: (Equal/Equal Bool/Bool (Char/is-print '\t') #False{}) 
+: (Equal Bool (Char/is-print '\t') #False{}) 
 = #Refl{}

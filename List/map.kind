@@ -4,6 +4,6 @@
 // - fn: The function to be applied.
 // - xs: The elements to apply fn to.
 // = A new list with fn applied to all elements.
-List/map : ∀(A: *) ∀(B: *) (A -> B) -> (List/List A) -> (List/List B)
+List/map : ∀(A: *) ∀(B: *) (A -> B) -> (List A) -> (List B)
 | A B fn #Nil             = #Nil
 | A B fn #Cons{head tail} = #Cons{(fn head) (List/map A B fn tail)}

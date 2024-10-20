@@ -7,7 +7,7 @@
 // - 4th: The initial value (for the empty list case).
 // - 5th: The list to fold over.
 // = The result of folding the list.
-List/foldr : ∀(A: *) ∀(B: *) (A -> B -> B) -> B -> (List/List A) -> B
+List/foldr : ∀(A: *) ∀(B: *) (A -> B -> B) -> B -> (List A) -> B
 = λA λB λf λz λ{
   #Nil: z
   #Cons: λxs.head λxs.tail 

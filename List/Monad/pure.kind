@@ -6,6 +6,6 @@
 List/Monad/pure
 : ∀(A: *)
   ∀(x: A)
-  (List/List A)
+  (List A)
 = λA λx #Cons{x #Nil{}}
 

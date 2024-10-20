@@ -2,37 +2,37 @@
 // 1st: The character to check.
 // = True if the character is in the Latin-1 set, False otherwis
 Char/is-latin1
-: ∀(c: Char/Char)
-  Bool/Bool
+: ∀(c: Char)
+  Bool
 = λc (U32/lte c 255)
 // Tests for the is-latin1 function.
 
 // Test: ASCII character 'A' (code point 65).
 TEST_0
-: (Equal/Equal Bool/Bool (Char/is-latin1 'A') #True{})
+: (Equal Bool (Char/is-latin1 'A') #True{})
 = #Refl{}
 
 // Test: Latin-1 character 'ñ' (code point 241).
 TEST_1
-: (Equal/Equal Bool/Bool (Char/is-latin1 'ñ') #True{})
+: (Equal Bool (Char/is-latin1 'ñ') #True{})
 = #Refl{}
 
 // Test: Latin-1 character '¿' (code point 191).
 TEST_2
-: (Equal/Equal Bool/Bool (Char/is-latin1 '¿') #True{})
+: (Equal Bool (Char/is-latin1 '¿') #True{})
 = #Refl{}
 
 // Test: Latin-1 character 'ÿ' (code point 255).
 TEST_3
-: (Equal/Equal Bool/Bool (Char/is-latin1 'ÿ') #True{})
+: (Equal Bool (Char/is-latin1 'ÿ') #True{})
 = #Refl{}
 
 // Test: ASCII control character NUL (code point 0).
 // T4
-// : (Equal/Equal Bool/Bool (Char/is-latin1 '\x0000') #True{})
+// : (Equal Bool (Char/is-latin1 '\x0000') #True{})
 // = #Refl{}
 
 // Test: Non-Latin-1 character '€' (code point 8364).
 TEST_5
-: (Equal/Equal Bool/Bool (Char/is-latin1 '€') #False{})
+: (Equal Bool (Char/is-latin1 '€') #False{})
 = #Refl{}

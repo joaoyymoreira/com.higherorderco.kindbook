@@ -2,8 +2,8 @@
 // - 1st: The character to check.
 // = True if the character is a special character, False otherwise.
 Char/is-special
-: ∀(code: Char/Char)
-  Bool/Bool
+: ∀(code: Char)
+  Bool
 = λcode
   let is_print = (Char/is-print code)
   let is_alpha = (Char/is-alpha code)
@@ -12,25 +12,25 @@ Char/is-special
   (Bool/and is_print (Bool/not is_alphanumeric))
 // Test: Special character (e.g., '@') should return True
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/is-special 64) #True{}) 
+: (Equal Bool (Char/is-special 64) #True{}) 
 = #Refl{}
 
 // Test: Alphabetic character should return False
 TEST_1 
-: (Equal/Equal Bool/Bool (Char/is-special 65) #False{}) 
+: (Equal Bool (Char/is-special 65) #False{}) 
 = #Refl{}
 
 // Test: Digit should return False
 TEST_2 
-: (Equal/Equal Bool/Bool (Char/is-special 53) #False{}) 
+: (Equal Bool (Char/is-special 53) #False{}) 
 = #Refl{}
 
 // Test: Non-printable character should return False
 TEST_3 
-: (Equal/Equal Bool/Bool (Char/is-special 0) #False{}) 
+: (Equal Bool (Char/is-special 0) #False{}) 
 = #Refl{}
 
 // Test: Another special character (e.g., '#') should return True
 TEST_4 
-: (Equal/Equal Bool/Bool (Char/is-special 35) #True{}) 
+: (Equal Bool (Char/is-special 35) #True{}) 
 = #Refl{}

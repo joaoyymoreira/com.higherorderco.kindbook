@@ -3,9 +3,9 @@
 // - 2nd: The Bits value to be split.
 // = A List of Bits, where each element is a chunk of the specified length.
 Bits/split-chunks
-: ∀(d: Nat/Nat)
-  ∀(bits: Bits/Bits)
-  (List/List Bits/Bits)
+: ∀(d: Nat)
+  ∀(bits: Bits)
+  (List Bits)
 = λ{
   #Zero: λbits []
   #Succ: λpred λ{
@@ -29,29 +29,29 @@ Bits/split-chunks
 
 // Test: Split empty Bits
 TEST_0 
-: (Equal/Equal (List/List Bits/Bits) (Bits/split-chunks #3 #E) [])
+: (Equal (List Bits) (Bits/split-chunks #3 #E) [])
 = #Refl
 
 // Test: Split Bits into chunks of length 2
 TEST_1 
-: (Equal/Equal
-  (List/List Bits/Bits)
+: (Equal
+  (List Bits)
   (Bits/split-chunks #2 (Nat/to-bits #45))
   (#Cons{#I{#O{#E}} #Cons{#I{#I{#E}} #Cons{#O{#I{#E}} []}}}))
 = #Refl
 
 // Test: Split Bits into chunks of length 3
 TEST_2 
-: (Equal/Equal
-  (List/List Bits/Bits)
+: (Equal
+  (List Bits)
   (Bits/split-chunks #3 (Nat/to-bits #123))
   (#Cons{#I{#I{#O{#E}}} #Cons{#I{#I{#I{#E}}} #Cons{#I{#O{#E}} []}}}))
 = #Refl
 
 // Test: Split Bits with chunk size larger than Bits length
 TEST_3 
-: (Equal/Equal
-  (List/List Bits/Bits)
+: (Equal
+  (List Bits)
   (Bits/split-chunks #8 (Nat/to-bits #15))
   (#Cons{#I{#I{#I{#I{#O{#O{#O{#E}}}}}}} []}))
 = #Refl

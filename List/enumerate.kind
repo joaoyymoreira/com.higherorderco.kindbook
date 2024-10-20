@@ -2,9 +2,9 @@
 // Recursively builds the enumerated list starting from a given index
 List/enumerate-go
 : ∀(A: *)
-  ∀(n: Nat/Nat)
-  ∀(xs: (List/List A))
-  (List/List (Pair/Pair Nat/Nat A))
+  ∀(n: Nat)
+  ∀(xs: (List A))
+  (List (Pair/Pair Nat A))
 = λA λn λ{
   #Nil: #Nil{}
   #Cons: λxs.head λxs.tail
@@ -20,17 +20,17 @@ List/enumerate-go
 // = A new list where each element is paired with its index
 List/enumerate
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (List/List (Pair/Pair Nat/Nat A))
+  ∀(xs: (List A))
+  (List (Pair/Pair Nat A))
 = λA λxs (List/enumerate-go A #Zero{} xs)
 
 // Examples and properties of the enumerate function
 
 // Example: enumerate ["0", "1", "2"] ≡ [(0, "0"), (1, "1"), (2, "2")]
 List/enumerate/example0
-: (Equal/Equal
-    (List/List (Pair/Pair Nat/Nat (List/List U32)))
-    (List/enumerate (List/List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil{}})})}))
+: (Equal
+    (List (Pair/Pair Nat (List U32)))
+    (List/enumerate (List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil{}})})}))
     (#Cons{(Pair/Pair #Zero{} "0") (#Cons{(Pair/Pair #Succ{#Zero{}} "1") (#Cons{(Pair/Pair #Succ{#Succ{#Zero{}}} "2") #Nil{}})})})
 )
 = #Refl{} 
@@ -47,8 +47,8 @@ List/enumerate/example0
 // Property: enumerate [] ≡ []
 List/enumerate/empty
 : ∀(A: *)
-  (Equal/Equal
-    (List/List (Pair/Pair Nat/Nat A))
+  (Equal
+    (List (Pair/Pair Nat A))
     (List/enumerate A #Nil{})
     #Nil{}
   )

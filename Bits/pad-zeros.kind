@@ -4,9 +4,9 @@
 // = A new Bits value with the same significance as the input, 
 //   but padded with leading zeroes to reach the specified length.
 Bits/pad-zeros
-: ∀(n: Nat/Nat)
-  ∀(bits: Bits/Bits)
-  Bits/Bits
+: ∀(n: Nat)
+  ∀(bits: Bits)
+  Bits
 = λ{
   #Zero: λb b
   #Succ: λpred λ{
@@ -17,29 +17,29 @@ Bits/pad-zeros
 }
 
 TEST_0 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #1 #E) #O{#E})
+: (Equal (Bits) (Bits/pad-zeros #1 #E) #O{#E})
 = #Refl
 
 TEST_1 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #3 #E) #O{#O{#O{#E}}})
+: (Equal (Bits) (Bits/pad-zeros #3 #E) #O{#O{#O{#E}}})
 = #Refl
 
 TEST_2 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #0 #I{#E}) #I{#E})
+: (Equal (Bits) (Bits/pad-zeros #0 #I{#E}) #I{#E})
 = #Refl
 
 TEST_3 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #3 #I{#E}) #I{#O{#O{#E}}})
+: (Equal (Bits) (Bits/pad-zeros #3 #I{#E}) #I{#O{#O{#E}}})
 = #Refl
 
 TEST_4 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #2 #I{#O{#I{#E}}}) #I{#O{#I{#E}}})
+: (Equal (Bits) (Bits/pad-zeros #2 #I{#O{#I{#E}}}) #I{#O{#I{#E}}})
 = #Refl
 
 TEST_5 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #5 #I{#O{#I{#E}}}) #I{#O{#I{#O{#O{#E}}}}})
+: (Equal (Bits) (Bits/pad-zeros #5 #I{#O{#I{#E}}}) #I{#O{#I{#O{#O{#E}}}}})
 = #Refl
 
 TEST_6 
-: (Equal/Equal (Bits/Bits) (Bits/pad-zeros #2 #I{#I{#I{#E}}}) #I{#I{#I{#E}}})
+: (Equal (Bits) (Bits/pad-zeros #2 #I{#I{#I{#E}}}) #I{#I{#I{#E}}})
 = #Refl

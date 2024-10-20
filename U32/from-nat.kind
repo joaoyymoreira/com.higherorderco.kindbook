@@ -2,7 +2,7 @@
 // 1st: The natural number to convert.
 // = The U32 representation of the input natural number.
 U32/from-nat
-: ∀(x: Nat/Nat)
+: ∀(x: Nat)
   U32
 = λ{
   #Zero: 0

@@ -5,7 +5,7 @@
 BinTree/is-leaf
 : ∀(A: *)
   ∀(t: (BinTree/BinTree A))
-  Bool/Bool
+  Bool
 = λA λ{
   #Leaf: #True{}
   #Node: λt.val λt.lft λt.rgt #False{}
@@ -13,22 +13,22 @@ BinTree/is-leaf
 
 // Test: is-leaf on a leaf.
 TEST_0
-: (Equal/Equal Bool/Bool (BinTree/is-leaf Nat/Nat #Leaf{}) #True{})
+: (Equal Bool (BinTree/is-leaf Nat #Leaf{}) #True{})
 = #Refl{}
 
 // Test: is-leaf on a simple node.
 TEST_1
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-leaf Nat/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
+: (Equal
+    Bool
+    (BinTree/is-leaf Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
     #False{})
 = #Refl{}
 
 // Test: is-leaf on a more complex tree.
 TEST_2
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-leaf Nat/Nat
+: (Equal
+    Bool
+    (BinTree/is-leaf Nat
       (#Node{#Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
         (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))
@@ -37,9 +37,9 @@ TEST_2
 
 // Test: is-leaf on a left-heavy tree
 TEST_3
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-leaf Nat/Nat
+: (Equal
+    Bool
+    (BinTree/is-leaf Nat
       (#Node{#Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})
         #Leaf{}}))
@@ -48,9 +48,9 @@ TEST_3
 
 // Test: is-leaf on a right-heavy tree
 TEST_4
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-leaf Nat/Nat
+: (Equal
+    Bool
+    (BinTree/is-leaf Nat
       (#Node{#Succ{#Zero{}}
         #Leaf{}
         (#Node{#Succ{#Succ{#Succ{#Zero{}}}} #Leaf{} #Leaf{}})}))

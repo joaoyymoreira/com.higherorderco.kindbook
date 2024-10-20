@@ -2,27 +2,27 @@
 // 1st: The character to check.
 // = True if the character is an octal digit, False otherwise.
 Char/is-octal-digit
-: ∀(code: Char/Char)
-  Bool/Bool
+: ∀(code: Char)
+  Bool
 = λcode (Bool/and (U32/gte code 48) (U32/lte code 55))
 // Tests for is-octal-digit function
 
 // Test: Checks if '0' is recognized as an octal digit.
 TEST_0
-: (Equal/Equal Bool/Bool (Char/is-octal-digit 48) #True{})
+: (Equal Bool (Char/is-octal-digit 48) #True{})
 = #Refl{}
 
 // Test: Checks if '7' is recognized as an octal digit.
 TEST_1
-: (Equal/Equal Bool/Bool (Char/is-octal-digit 55) #True{})
+: (Equal Bool (Char/is-octal-digit 55) #True{})
 = #Refl{}
 
 // Test: Checks if '8' is not recognized as an octal digit.
 TEST_2
-: (Equal/Equal Bool/Bool (Char/is-octal-digit 56) #False{})
+: (Equal Bool (Char/is-octal-digit 56) #False{})
 = #Refl{}
 
 // Test: Checks if 'a' is not recognized as an octal digit.
 TEST_3
-: (Equal/Equal Bool/Bool (Char/is-octal-digit 97) #False{})
+: (Equal Bool (Char/is-octal-digit 97) #False{})
 = #Refl{}

@@ -2,51 +2,51 @@
 // 1st: The input character.
 // = Some n if 1st is a digit, where n is the corresponding natural number, None otherwise.
 Char/digit-to-nat
-: ∀(c: Char/Char)
-  (Maybe/Maybe Nat/Nat)
+: ∀(c: Char)
+  (Maybe Nat)
 = λc
   let n = (- c 48)
-  (U32/if (Maybe/Maybe Nat/Nat)
+  (U32/if (Maybe Nat)
     (& (<= 0 n) (<= n 9))
     #Some{(U32/to-nat n)}
     #None{}
   )
 // Test: '0' converts to Some 0.
 TEST_0
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 48) (#Some{#Zero{}}))
+: (Equal (Maybe Nat) (Char/digit-to-nat 48) (#Some{#Zero{}}))
 = #Refl{}
 
 // Test: '5' converts to Some 5.
 TEST_1
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
+: (Equal (Maybe Nat) (Char/digit-to-nat 53) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}))
 = #Refl{}
 
 // Test: '9' converts to Some 9.
 TEST_2
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}))
+: (Equal (Maybe Nat) (Char/digit-to-nat 57) (#Some{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}}))
 = #Refl{}
 
 // Test: 'a' converts to None.
 TEST_3
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 97) #None{})
+: (Equal (Maybe Nat) (Char/digit-to-nat 97) #None{})
 = #Refl{}
 
 // Test: '!' converts to None.
 TEST_4
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 33) #None{})
+: (Equal (Maybe Nat) (Char/digit-to-nat 33) #None{})
 = #Refl{}
 
 // Test: ' ' (space) converts to None.
 TEST_5
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 32) #None{})
+: (Equal (Maybe Nat) (Char/digit-to-nat 32) #None{})
 = #Refl{}
 
 // Test: '\n' (newline) converts to None.
 TEST_6
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 10) #None{})
+: (Equal (Maybe Nat) (Char/digit-to-nat 10) #None{})
 = #Refl{}
 
 // Test: '١' (Arabic-Indic digit one) converts to None.
 TEST_7
-: (Equal/Equal (Maybe/Maybe Nat/Nat) (Char/digit-to-nat 1633) #None{})
+: (Equal (Maybe Nat) (Char/digit-to-nat 1633) #None{})
 = #Refl{}

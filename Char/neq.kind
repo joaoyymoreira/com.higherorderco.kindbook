@@ -3,46 +3,46 @@
 // - 2nd: The character to compare.
 // = True if the characters are not equal, False otherwise.
 Char/neq
-: ∀(a: Char/Char)
-  ∀(b: Char/Char)
-  Bool/Bool
+: ∀(a: Char)
+  ∀(b: Char)
+  Bool
 = λa λb (U32/to-bool (!= a b))
 // Tests if 'a' is not equal to 'b'.
 TEST_0 
-: (Equal/Equal Bool/Bool (Char/neq 'a' 'b') #True{}) 
+: (Equal Bool (Char/neq 'a' 'b') #True{}) 
 = #Refl{}
 
 // Tests if 'a' is not equal to 'a'.
 TEST_1 
-: (Equal/Equal Bool/Bool (Char/neq 'a' 'a') #False{}) 
+: (Equal Bool (Char/neq 'a' 'a') #False{}) 
 = #Refl{}
 
 // Tests if '0' is not equal to '1'.
 TEST_2 
-: (Equal/Equal Bool/Bool (Char/neq '0' '1') #True{}) 
+: (Equal Bool (Char/neq '0' '1') #True{}) 
 = #Refl{}
 
 // Tests if '0' is not equal to '0'.
 TEST_3 
-: (Equal/Equal Bool/Bool (Char/neq '0' '0') #False{}) 
+: (Equal Bool (Char/neq '0' '0') #False{}) 
 = #Refl{}
 
 // Tests if 'A' is not equal to 'a'.
 TEST_4 
-: (Equal/Equal Bool/Bool (Char/neq 'A' 'a') #True{}) 
+: (Equal Bool (Char/neq 'A' 'a') #True{}) 
 = #Refl{}
 
 // Tests if negation of inequality works correctly.
 TEST_5 
-: (Equal/Equal Bool/Bool (Bool/not (Char/neq 'a' 'b')) #False{}) 
+: (Equal Bool (Bool/not (Char/neq 'a' 'b')) #False{}) 
 = #Refl{}
 
 // // Tests if space character is not equal to tab character.
 // T6 
-// : (Equal/Equal Bool/Bool (Char/neq ' ' '\t') #True{}) 
+// : (Equal Bool (Char/neq ' ' '\t') #True{}) 
 // = #Refl{}
 
 // Tests if newline character is not equal to carriage return.
 TEST_7 
-: (Equal/Equal Bool/Bool (Char/neq '\n' '\r') #True{}) 
+: (Equal Bool (Char/neq '\n' '\r') #True{}) 
 = #Refl{}

@@ -1,14 +1,14 @@
 // Instance of Show for Bool
-Bool/Trait/Show/Bool : (Trait/Show Bool/Bool) = 
+Bool/Trait/Show/Bool : (Trait/Show Bool) = 
   #Show{
     to_string: Bool/show
   }
 
 Bool/T0
-: (Equal/Equal Bool/Bool (Bool/show #True{}) (#True{}))
+: (Equal Bool (Bool/show #True{}) (#True{}))
 = #Refl{}
 
 Bool/T1
-: (Equal/Equal Bool/Bool (Bool/show #False{}) #False{})
+: (Equal Bool (Bool/show #False{}) #False{})
 = #Refl{}
 

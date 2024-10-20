@@ -3,7 +3,7 @@
 // - 2nd: Parses a single character.
 // - 3rd: Consumes the closing single quote.
 // = Returns the parsed character.
-Parser/parse-quoted-char : (Parser/Parser Char/Char)
+Parser/parse-quoted-char : (Parser/Parser Char)
 = do Parser/Monad {
   ask y = (Parser/consume "'")
   ask c = (Parser/parse-char)
@@ -12,24 +12,24 @@ Parser/parse-quoted-char : (Parser/Parser Char/Char)
 }
 
 // Test: Parsing a normal quoted character
-TEST_0 : (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+TEST_0 : (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "'a'" #Zero))
   (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Zero}}}} 'a'}})
 )
 = #Refl
 
 // Test: Parsing an escaped newline character
-TEST_1 : (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+TEST_1 : (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "'\\n'" #Zero))
   (#Done{#MkReply{#MkState{[] #Succ{#Succ{#Succ{#Succ{#Zero}}}}} '\n'}})
 )
 = #Refl
 
 // Test: Parsing an invalid quoted character (missing closing quote)
-TEST_2 : (Equal/Equal
-  (Result/Result (Parser/Reply Char/Char) Parser/Error)
+TEST_2 : (Equal
+  (Result (Parser/Reply Char) Parser/Error)
   (Parser/parse-quoted-char (Parser/State/new "ab" #Zero))
   (#Fail{#MkError{#Succ{#Succ{#Zero}} "Expected '"}})
 )

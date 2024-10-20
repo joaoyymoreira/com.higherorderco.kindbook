@@ -8,12 +8,12 @@ List/count
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
   ∀(x: A)
-  ∀(xs: (List/List A))
-  Nat/Nat
+  ∀(xs: (List A))
+  Nat
 = λA λe λx λ{
   #Nil: #Zero{}
   #Cons: λxs.head λxs.tail
-    let head_count = (Bool/if Nat/Nat (Trait/Eq/eq _ e x xs.head) #Succ{#Zero{}} #Zero{})
+    let head_count = (Bool/if Nat (Trait/Eq/eq _ e x xs.head) #Succ{#Zero{}} #Zero{})
     let tail_count = (List/count _ e x xs.tail)
     (Nat/add head_count tail_count)
 }

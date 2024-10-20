@@ -3,9 +3,9 @@
 // 2nd: The number to subtract.
 // = The result of 1st - 2nd, or zero if 2nd > 1st.
 Nat/sub
-: ∀(m: Nat/Nat)
-  ∀(n: Nat/Nat)
-  Nat/Nat
+: ∀(m: Nat)
+  ∀(n: Nat)
+  Nat
 = λ{
   #Zero: λn #Zero{}
   #Succ: λm.pred λ{
@@ -17,40 +17,40 @@ Nat/sub
 
 // Test: 0 - 0 = 0.
 TEST_0
-: (Equal/Equal Nat/Nat (Nat/sub #Zero{} #Zero{}) #Zero{})
+: (Equal Nat (Nat/sub #Zero{} #Zero{}) #Zero{})
 = #Refl{}
 
 // Test: 5 - 0 = 5.
 TEST_1
-: (Equal/Equal Nat/Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
+: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Zero{}) #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}})
 = #Refl{}
 
 // Test: 0 - 5 = 0 (subtraction doesn't go below zero).
 TEST_2
-: (Equal/Equal Nat/Nat (Nat/sub #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
+: (Equal Nat (Nat/sub #Zero{} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
 = #Refl{}
 
 // Test: 5 - 2 = 3.
 TEST_3
-: (Equal/Equal Nat/Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})
+: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Succ{#Succ{#Zero{}}}) #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: 10 - 7 = 3.
 TEST_4
-: (Equal/Equal Nat/Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} ) #Succ{#Succ{#Succ{#Zero{}}}})
+: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}} ) #Succ{#Succ{#Succ{#Zero{}}}})
 = #Refl{}
 
 // Test: 8 - 8 = 0.
 TEST_5
-: (Equal/Equal Nat/Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Zero{})
+: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}) #Zero{})
 = #Refl{}
 
 // Test: 3 - 5 = 0 (subtraction doesn't go below zero).
 TEST_6
-: (Equal/Equal Nat/Nat (Nat/sub #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
+: (Equal Nat (Nat/sub #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}) #Zero{})
 = #Refl{}
 
 // Test: (a - b) - c = a - (b + c).
 TEST_7
-: (Equal/Equal Nat/Nat (Nat/sub (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}}) (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}})))
+: (Equal Nat (Nat/sub (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} #Succ{#Succ{#Succ{#Zero{}}}}) #Succ{#Succ{#Zero{}}}) (Nat/sub #Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}}}}}}} (Nat/add #Succ{#Succ{#Succ{#Zero{}}}} #Succ{#Succ{#Zero{}}})))
 = #Refl{}

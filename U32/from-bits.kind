@@ -3,7 +3,7 @@
 // 2nd: The weight or power of 2 to be applied for the current bit position.
 // = The U32 representation of the input Bits after recursive processing.
 U32/from-bits-go
-: ∀(bits: Bits/Bits)
+: ∀(bits: Bits)
   ∀(weight: U32)
   U32
 = λ{
@@ -16,6 +16,6 @@ U32/from-bits-go
 // 1st: The Bits to convert.
 // = The U32 representation of the input Bits.
 U32/from-bits
-: ∀(bits: Bits/Bits)
+: ∀(bits: Bits)
   U32
 = λbits (U32/from-bits-go bits 1)

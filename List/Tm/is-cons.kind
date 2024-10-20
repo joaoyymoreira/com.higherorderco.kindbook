@@ -1,14 +1,14 @@
 // Proof that is-cons returns False for an empty list
 List/is-cons-empty
 : ∀(A: *)
-  (Equal/Equal Bool/Bool (List/is-cons A (#Nil{})) #False{})
+  (Equal Bool (List/is-cons A (#Nil{})) #False{})
 = λA #Refl{}
 
 // Proof that is-cons returns True for a non-empty list
 List/is-cons-cons
 : ∀(A: *)
   ∀(x: A)
-  ∀(xs: (List/List A))
-  (Equal/Equal Bool/Bool (List/is-cons A (#Cons{x xs})) #True{})
+  ∀(xs: (List A))
+  (Equal Bool (List/is-cons A (#Cons{x xs})) #True{})
 = λA λx λxs #Refl{}
 

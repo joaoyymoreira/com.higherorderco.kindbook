@@ -1,6 +1,6 @@
 // Implementation of the Monad instance for Maybe
 Maybe/Trait/Monad
-: (Trait/Monad Maybe/Maybe)
+: (Trait/Monad Maybe)
 = #Monad{
   bind: Maybe/Monad/bind
   pure: Maybe/Monad/pure

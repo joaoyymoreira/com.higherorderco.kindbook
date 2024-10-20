@@ -3,41 +3,41 @@
 // 2nd: The second character to compare.
 // = An Ordering value: LT if 1st < 2nd, EQ if 1st = 2nd, GT if 1st > 2nd.
 Char/compare
-: ∀(x: Char/Char)
-  ∀(y: Char/Char)
-  Ordering/Ordering
+: ∀(x: Char)
+  ∀(y: Char)
+  Ordering
 = λx λy (U32/compare x y)
 // Test: Compares 'a' with 'a'.
 // = EQ
-TEST_0 : (Equal/Equal Ordering/Ordering (Char/compare 97 97) #EQ{})
+TEST_0 : (Equal Ordering (Char/compare 97 97) #EQ{})
 = #Refl{}
 
 // Test: Compares 'a' with 'b'.
 // = LT
-TEST_1 : (Equal/Equal Ordering/Ordering (Char/compare 97 98) #LT{})
+TEST_1 : (Equal Ordering (Char/compare 97 98) #LT{})
 = #Refl{}
 
 // Test: Compares 'b' with 'a'.
 // = GT
-TEST_2 : (Equal/Equal Ordering/Ordering (Char/compare 98 97) #GT{})
+TEST_2 : (Equal Ordering (Char/compare 98 97) #GT{})
 = #Refl{}
 
 // Test: Compares 'A' with 'a'.
 // = LT
-TEST_3 : (Equal/Equal Ordering/Ordering (Char/compare 65 97) #LT{})
+TEST_3 : (Equal Ordering (Char/compare 65 97) #LT{})
 = #Refl{}
 
 // Test: Compares '0' with '9'.
 // = LT
-TEST_4 : (Equal/Equal Ordering/Ordering (Char/compare 48 57) #LT{})
+TEST_4 : (Equal Ordering (Char/compare 48 57) #LT{})
 = #Refl{}
 
 // Test: Compares '!' with '~'.
 // = LT
-TEST_5 : (Equal/Equal Ordering/Ordering (Char/compare 33 126) #LT{})
+TEST_5 : (Equal Ordering (Char/compare 33 126) #LT{})
 = #Refl{}
 
 // Test: Compares 'z' with 'a'.
 // = GT
-TEST_6 : (Equal/Equal Ordering/Ordering (Char/compare 122 97) #GT{})
+TEST_6 : (Equal Ordering (Char/compare 122 97) #GT{})
 = #Refl{}

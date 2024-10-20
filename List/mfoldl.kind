@@ -14,7 +14,7 @@ List/mfoldl
   ∀(B: *)
   ∀(f: ∀(b: B) ∀(a: A) (M B))
   ∀(z: B)
-  ∀(xs: (List/List A))
+  ∀(xs: (List A))
   (M B)
 = λM λm λA λB λf λz λ{
   #Nil: (Trait/Monad/pure M m _ z)

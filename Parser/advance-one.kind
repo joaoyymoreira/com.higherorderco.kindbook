@@ -1,7 +1,7 @@
 // Advances the parser by one character, consuming it.
 // - state: The current parser state.
 // = A Reply containing the updated state and the consumed character (if any).
-Parser/advance-one : (Parser/Parser (Maybe/Maybe Char/Char))
+Parser/advance-one : (Parser/Parser (Maybe Char))
 = λstate
   let input = (Parser/State/input state)
   let index = (Parser/State/index state)
@@ -18,24 +18,24 @@ Parser/advance-one : (Parser/Parser (Maybe/Maybe Char/Char))
   }
 // Test: Advance one character in a non-empty string
 TEST_0 
-: (Equal/Equal 
-  (Parser/Parser (Maybe/Maybe Char/Char))
+: (Equal 
+  (Parser/Parser (Maybe Char))
   (Parser/advance-one (Parser/State/new "abc" #Zero)) 
   (#Done{(#MkReply{(Parser/State/new "bc" (#Succ{#Zero})) (#Some{97})})}))
 = #Refl
 
 // Test: Advance one character in an empty string
 TEST_1 
-: (Equal/Equal 
-  (Parser/Parser (Maybe/Maybe Char/Char))
+: (Equal 
+  (Parser/Parser (Maybe Char))
   (Parser/advance-one (Parser/State/new "" #Zero)) 
   (#Done{(#MkReply{(Parser/State/new "" #Zero) #None})}))
 = #Refl
 
 // Test: Advance one character in a string with special characters
 TEST_2 
-: (Equal/Equal 
-  (Parser/Parser (Maybe/Maybe Char/Char))
+: (Equal 
+  (Parser/Parser (Maybe Char))
   (Parser/advance-one (Parser/State/new "!@#" #Zero)) 
   (#Done{(#MkReply{(Parser/State/new "@#" (#Succ{#Zero})) (#Some{33})})}))
 = #Refl

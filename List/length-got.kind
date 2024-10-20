@@ -4,8 +4,8 @@
 // = A pair containing the original list and its length as a Nat.
 List/length-got
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (Pair/Pair (List/List A) Nat/Nat)
+  ∀(xs: (List A))
+  (Pair/Pair (List A) Nat)
 = λA λ{
   #Nil: #Pair{[] #0}
   #Cons: λhead λtail
@@ -14,24 +14,24 @@ List/length-got
 }
 // Test: Empty list
 TEST_0
-: (Equal/Equal
-    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
-    (List/length-got Nat/Nat [])
+: (Equal
+    (Pair/Pair (List Nat) Nat)
+    (List/length-got Nat [])
     #Pair{[] #0})
 = #Refl
 
 // Test: Single element list
 TEST_1
-: (Equal/Equal
-    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
-    (List/length-got Nat/Nat (#Cons{#0 []}))
+: (Equal
+    (Pair/Pair (List Nat) Nat)
+    (List/length-got Nat (#Cons{#0 []}))
     #Pair{(#Cons{#0 []}) #1})
 = #Refl
 
 // Test: Multiple element list
 TEST_2
-: (Equal/Equal
-    (Pair/Pair (List/List Nat/Nat) Nat/Nat)
-    (List/length-got Nat/Nat (#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}))
+: (Equal
+    (Pair/Pair (List Nat) Nat)
+    (List/length-got Nat (#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}))
     #Pair{(#Cons{#0 (#Cons{#1 (#Cons{#2 []})})}) #3})
 = #Refl

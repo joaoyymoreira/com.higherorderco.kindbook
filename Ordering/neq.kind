@@ -3,9 +3,9 @@
 // - b: The second Ordering value.
 // = True if a and b are not equal, False otherwise.
 Ordering/neq
-: ∀(a: Ordering/Ordering)
-  ∀(b: Ordering/Ordering)
-  Bool/Bool
+: ∀(a: Ordering)
+  ∀(b: Ordering)
+  Bool
 = λ{
   #LT: λ{
     #LT: #False{}

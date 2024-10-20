@@ -4,6 +4,6 @@
 // = A new list with the elements in reverse order.
 List/reverse
 : ∀(A: *)
-  ∀(xs: (List/List A))
-  (List/List A)
+  ∀(xs: (List A))
+  (List A)
 = λA λxs (List/foldl _ _ (λxs λx #Cons{x xs}) #Nil{} xs)

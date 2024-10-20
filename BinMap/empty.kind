@@ -7,5 +7,5 @@ BinMap/empty
 = λA (BinMap/Leaf A)
 // Test case to verify that an empty BinMap is equivalent to a Leaf
 TEST_0
-: (Equal/Equal (BinMap/BinMap Nat/Nat) (BinMap/empty Nat/Nat) (BinMap/Leaf Nat/Nat))
+: (Equal (BinMap/BinMap Nat) (BinMap/empty Nat) (BinMap/Leaf Nat))
 = #Refl{}

@@ -2,6 +2,6 @@
 // - xs: The input list of boolean values.
 // = True if any element is True, False otherwise.
 List/or
-: ∀(xs: (List/List Bool/Bool))
-  Bool/Bool
-= λxs (List/foldr _ Bool/Bool Bool/or #False{} xs)
+: ∀(xs: (List Bool))
+  Bool
+= λxs (List/foldr _ Bool Bool/or #False{} xs)

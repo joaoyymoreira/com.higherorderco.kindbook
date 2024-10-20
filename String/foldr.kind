@@ -8,7 +8,7 @@ String/foldr
 : ∀(A: *)
   ∀(f: ∀(head: U32) ∀(tail: A) A)
   ∀(z: A)
-  ∀(s: String/String)
+  ∀(s: String)
   A
 = λA λf λz λs
   (List/foldr U32 A f z s)

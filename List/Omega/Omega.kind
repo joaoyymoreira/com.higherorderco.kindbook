@@ -5,14 +5,14 @@ Ordering/Omega
 : ∀(A: *)
   *
 = λA data[]{
-  #MkOmega{ runOmega: (List/List A) } : (Ordering/Omega A)
+  #MkOmega{ runOmega: (List A) } : (Ordering/Omega A)
 }
 
 // Accessor for the runOmega field
 Ordering/Omega/runOmega
 : ∀(A: *)
   ∀(omega: (Ordering/Omega A))
-  (List/List A)
+  (List A)
 = λA λ{
   #MkOmega: λomega.runOmega omega.runOmega
 }

@@ -8,15 +8,15 @@ Pair/get-fst : ∀(A: *) ∀(B: ∀(a: A) *) ∀(pair: (Pair/Sigma A B)) A
 
 // Test: Get first component of a simple pair
 TEST_0
-: (Equal/Equal Nat/Nat (Pair/get-fst Nat/Nat (λx Nat/Nat) (#Pair{#5 #10})) #5)
+: (Equal Nat (Pair/get-fst Nat (λx Nat) (#Pair{#5 #10})) #5)
 = #Refl
 
 // Test: Get first component of a dependent pair
 TEST_1
-: (Equal/Equal (Pair/Pair Nat/Nat Nat/Nat) (Pair/get-fst (Pair/Sigma Nat/Nat (λx Nat/Nat)) (λx String/String) (#Pair{#Pair{#3 #4} "pair"})) #Pair{#3 #4})
+: (Equal (Pair/Pair Nat Nat) (Pair/get-fst (Pair/Sigma Nat (λx Nat)) (λx String) (#Pair{#Pair{#3 #4} "pair"})) #Pair{#3 #4})
 = #Refl
 
 // Test: Get first component of a pair with different types
 TEST_2
-: (Equal/Equal String/String (Pair/get-fst String/String (λx Nat/Nat) (#Pair{"hello" #42})) "hello")
+: (Equal String (Pair/get-fst String (λx Nat) (#Pair{"hello" #42})) "hello")
 = #Refl

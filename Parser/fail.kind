@@ -4,7 +4,7 @@
 // = A Parser that always fails with the specified error message.
 Parser/fail
 : ∀(A: *)
-  ∀(msg: String/String)
+  ∀(msg: String)
   (Parser/Parser A)
 = λA λmsg λs
   #Fail{
@@ -16,27 +16,27 @@ Parser/fail
 
 // Test: Failing parser with a test error message
 TEST_0
-: (Equal/Equal
-    (Result/Result (Parser/Reply String/String) Parser/Error)
-    ((Parser/fail String/String "Test error") (Parser/State/new "abcdef" #0))
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    ((Parser/fail String "Test error") (Parser/State/new "abcdef" #0))
     (#Fail{#MkError{#0 "Test error"}})
   )
 = #Refl
 
 // Test: Failing parser with an empty input string
 TEST_1
-: (Equal/Equal
-    (Result/Result (Parser/Reply Nat/Nat) Parser/Error)
-    ((Parser/fail Nat/Nat "Empty input") (Parser/State/new "" #0))
+: (Equal
+    (Result (Parser/Reply Nat) Parser/Error)
+    ((Parser/fail Nat "Empty input") (Parser/State/new "" #0))
     (#Fail{#MkError{#0 "Empty input"}})
   )
 = #Refl
 
 // Test: Failing parser with a non-zero index
 TEST_2
-: (Equal/Equal
-    (Result/Result (Parser/Reply Bool/Bool) Parser/Error)
-    ((Parser/fail Bool/Bool "Error at index 5") (Parser/State/new "hello world" #5))
+: (Equal
+    (Result (Parser/Reply Bool) Parser/Error)
+    ((Parser/fail Bool "Error at index 5") (Parser/State/new "hello world" #5))
     (#Fail{#MkError{#5 "Error at index 5"}})
   )
 = #Refl

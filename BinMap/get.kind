@@ -6,8 +6,8 @@
 BinMap/get
 : ∀(A: *)
   ∀(m: (BinMap/BinMap A))
-  ∀(k: Bits/Bits)
-  (Maybe/Maybe A)
+  ∀(k: Bits)
+  (Maybe A)
 = λA λ{
   #Leaf: λk #None{}
   #Node: λval λlft λrgt λ{

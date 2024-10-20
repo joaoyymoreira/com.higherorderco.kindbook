@@ -3,9 +3,9 @@
 // - b: The second Bits value.
 // = True if a is less than b, False otherwise.
 Bits/lt
-: ∀(a: Bits/Bits)
-  ∀(b: Bits/Bits)
-  Bool/Bool
+: ∀(a: Bits)
+  ∀(b: Bits)
+  Bool
 = λ{
   #E: λ{
     #E: #False{}

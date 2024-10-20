@@ -3,9 +3,9 @@
 // - bs: The 2nd Bits value.
 // = A new Bits value representing the concatenation of as and bs.
 Bits/append
-: ∀(as: Bits/Bits)
-  ∀(bs: Bits/Bits)
-  Bits/Bits
+: ∀(as: Bits)
+  ∀(bs: Bits)
+  Bits
 = λ{
   #E: λbs bs
   #O: λas.tail λbs #O{(Bits/append as.tail bs)}

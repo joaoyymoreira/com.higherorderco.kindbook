@@ -10,7 +10,7 @@ Maybe/fold
   ∀(B: *)
   ∀(default: B)
   ∀(f: ∀(x: A) B)
-  ∀(m: (Maybe/Maybe A))
+  ∀(m: (Maybe A))
   B
 = λA λB λdefault λf λ{
   #None: default

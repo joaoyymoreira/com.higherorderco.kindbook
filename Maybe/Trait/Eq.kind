@@ -2,6 +2,6 @@
 Maybe/Trait/Eq
 : ∀(A: *)
   ∀(e: (Trait/Eq A))
-  (Trait/Eq (Maybe/Maybe A))
+  (Trait/Eq (Maybe A))
 = λA λe
-  (Trait/Eq/derive (Maybe/Maybe A) (Maybe/eq A e))
+  (Trait/Eq/derive (Maybe A) (Maybe/eq A e))

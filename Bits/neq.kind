@@ -3,7 +3,7 @@
 // - b: The 2nd Bits value.
 // = True if a and b are not equal, False otherwise.
 Bits/neq
-: ∀(a: Bits/Bits)
-  ∀(b: Bits/Bits)
-  Bool/Bool
+: ∀(a: Bits)
+  ∀(b: Bits)
+  Bool
 = λa λb (Bool/not (Bits/eq a b))

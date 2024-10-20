@@ -5,7 +5,7 @@
 BinTree/is-node
 : ∀(A: *)
   ∀(t: (BinTree/BinTree A))
-  Bool/Bool
+  Bool
 = λA λ{
   #Leaf: #False{}
   #Node: λt.val λt.lft λt.rgt #True{}
@@ -13,22 +13,22 @@ BinTree/is-node
 
 // Test: is-node on a leaf
 TEST_0
-: (Equal/Equal Bool/Bool (BinTree/is-node Nat/Nat #Leaf{}) #False{})
+: (Equal Bool (BinTree/is-node Nat #Leaf{}) #False{})
 = #Refl{}
 
 // Test: is-node on a simple node
 TEST_1
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-node Nat/Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
+: (Equal
+    Bool
+    (BinTree/is-node Nat (#Node{#Succ{#Succ{#Succ{#Succ{#Succ{#Zero{}}}}}} #Leaf{} #Leaf{}}))
     #True{})
 = #Refl{}
 
 // Test: is-node on a more complex tree
 TEST_2
-: (Equal/Equal
-    Bool/Bool
-    (BinTree/is-node Nat/Nat
+: (Equal
+    Bool
+    (BinTree/is-node Nat
       (#Node{
         #Succ{#Zero{}}
         (#Node{#Succ{#Succ{#Zero{}}} #Leaf{} #Leaf{}})

@@ -6,9 +6,9 @@
 // = A list containing the first n elements of xs, or all of xs if n > length xs.
 List/take
 : ∀(A: *)
-  ∀(n: Nat/Nat)
-  ∀(xs: (List/List A))
-  (List/List A)
+  ∀(n: Nat)
+  ∀(xs: (List A))
+  (List A)
 = λA λ{
   #Zero: λxs []
   #Succ: λpred λ{

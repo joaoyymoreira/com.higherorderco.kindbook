@@ -2,35 +2,35 @@
 // - 1st: The input character.
 // = The lowercase version of the input character.
 Char/to-lower
-: ∀(code: Char/Char)
-  Char/Char
+: ∀(code: Char)
+  Char
 = λcode
   let is_upper = (Char/is-upper code)
-  (Bool/if Char/Char 
+  (Bool/if Char 
 		is_upper 
 		(+ code 32) 
 		(code))
 // Test: Uppercase 'A' is converted to lowercase 'a'
 TEST_0 
-: (Equal/Equal Char/Char (Char/to-lower 'A') 'a')
+: (Equal Char (Char/to-lower 'A') 'a')
 = #Refl{}
 
 // Test: Lowercase 'a' remains unchanged
 TEST_1 
-: (Equal/Equal Char/Char (Char/to-lower 'a') 'a')
+: (Equal Char (Char/to-lower 'a') 'a')
 = #Refl{}
 
 // Test: Digit '5' remains unchanged
 TEST_2 
-: (Equal/Equal Char/Char (Char/to-lower '5') '5')
+: (Equal Char (Char/to-lower '5') '5')
 = #Refl{}
 
 // Test: Special character '@' remains unchanged
 TEST_3 
-: (Equal/Equal Char/Char (Char/to-lower '@') '@')
+: (Equal Char (Char/to-lower '@') '@')
 = #Refl{}
 
 // Test: Uppercase 'Z' is converted to lowercase 'z'
 TEST_4 
-: (Equal/Equal Char/Char (Char/to-lower 'Z') 'z')
+: (Equal Char (Char/to-lower 'Z') 'z')
 = #Refl{}

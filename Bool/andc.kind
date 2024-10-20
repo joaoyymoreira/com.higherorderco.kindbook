@@ -3,9 +3,9 @@
 // 2nd: The 2nd boolean value.
 // = True if '1st' is true and '2nd' is false, False otherwise.
 Bool/andc
-: ∀(a: Bool/Bool)
-  ∀(b: Bool/Bool)
-  Bool/Bool
+: ∀(a: Bool)
+  ∀(b: Bool)
+  Bool
 = λ{
   #True: λ{
     #False: #True{}
@@ -15,18 +15,18 @@ Bool/andc
 }
 
 TEST_0 
-: (Equal/Equal Bool/Bool (Bool/andc #True{} #False{}) (#True{}))
+: (Equal Bool (Bool/andc #True{} #False{}) (#True{}))
 = #Refl{}
 
 TEST_1 
-: (Equal/Equal Bool/Bool (Bool/andc #True{} #True{}) (#False{}))
+: (Equal Bool (Bool/andc #True{} #True{}) (#False{}))
 = #Refl{}
 
 TEST_2 
-: (Equal/Equal Bool/Bool (Bool/andc #False{} #True{}) (#False{}))
+: (Equal Bool (Bool/andc #False{} #True{}) (#False{}))
 = #Refl{}
 
 TEST_3 
-: (Equal/Equal Bool/Bool (Bool/andc #False{} #False{}) (#False{}))
+: (Equal Bool (Bool/andc #False{} #False{}) (#False{}))
 = #Refl{}
 

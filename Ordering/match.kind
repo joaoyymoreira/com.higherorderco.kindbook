@@ -3,7 +3,7 @@ Ordering/match
   ∀(lt: A)
   ∀(eq: A)
   ∀(gt: A)
-  ∀(ord: Ordering/Ordering)
+  ∀(ord: Ordering)
   A
 = λA λlt λeq λgt λ{
   #LT: lt

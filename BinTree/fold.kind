@@ -22,16 +22,16 @@ BinTree/fold
 
 // Test: Folding a leaf tree
 TEST_0
-: (Equal/Equal Nat/Nat (BinTree/fold Nat/Nat Nat/Nat (λx λl λr (Nat/add x (Nat/add l r))) #Zero{} #Leaf{}) #Zero{})
+: (Equal Nat (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #Zero{} #Leaf{}) #Zero{})
 = #Refl{}
 
 // Test: Folding a simple tree with addition
 TEST_1
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/fold
-      Nat/Nat
-      Nat/Nat
+      Nat
+      Nat
       (λx λl λr (Nat/add x (Nat/add l r)))
       #Zero{}
       (#Node{
@@ -44,11 +44,11 @@ TEST_1
 
 // Test: Folding a tree with boolean OR operation
 TEST_2
-: (Equal/Equal
-    Bool/Bool
+: (Equal
+    Bool
     (BinTree/fold
-      Bool/Bool
-      Bool/Bool
+      Bool
+      Bool
       (λx λl λr (Bool/or x (Bool/or l r)))
       #False{}
       (#Node{
@@ -61,11 +61,11 @@ TEST_2
 
 // Test: Folding a more complex tree with addition
 TEST_3
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/fold
-      Nat/Nat
-      Nat/Nat
+      Nat
+      Nat
       (λx λl λr (Nat/add x (Nat/add l r)))
       #Zero{}
       (#Node{
@@ -82,11 +82,11 @@ TEST_3
 
 // Test: Folding a tree with multiplication
 TEST_4
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/fold
-      Nat/Nat
-      Nat/Nat
+      Nat
+      Nat
       (λx λl λr (Nat/mul x (Nat/mul l r)))
       #Succ{#Zero{}}
       (#Node{
@@ -99,11 +99,11 @@ TEST_4
 
 // Test: Folding a tree to find the maximum value
 TEST_5
-: (Equal/Equal
-    Nat/Nat
+: (Equal
+    Nat
     (BinTree/fold
-      Nat/Nat
-      Nat/Nat
+      Nat
+      Nat
       (λx λl λr (Nat/max x (Nat/max l r)))
       #Zero{}
       (#Node{

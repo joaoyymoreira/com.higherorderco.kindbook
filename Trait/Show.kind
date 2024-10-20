@@ -4,7 +4,7 @@ Trait/Show
   *
 = λA data[]{
   #Show{
-    to_string: ∀(x: A) String/String
+    to_string: ∀(x: A) String
   } : (Trait/Show A)
 }
 
@@ -13,7 +13,7 @@ Trait/Show/to_string
 : ∀(A: *)
   ∀(s: (Trait/Show A))
   ∀(x: A)
-  String/String
+  String
 = λA λ{
   #Show: λs.to_string λx (s.to_string x)
 }
@@ -23,5 +23,5 @@ Trait/Show/show
 : ∀(A: *)
   ∀(s: (Trait/Show A))
   ∀(x: A)
-  String/String
+  String
 = Trait/Show/to_string
