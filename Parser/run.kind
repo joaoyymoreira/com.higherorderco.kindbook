@@ -11,5 +11,5 @@ Parser/run : ∀(A: *) (Parser A) -> String -> (Maybe A)
   #Fail{_}: #None
 }
 
-#test: (Parser/run Nat (Parser/pure Nat #42) "hello") == #Some{#42}
-#test: (Parser/run Nat (Parser/fail Nat "error") "hello") == #None
+#test: (Parser/run Nat (Parser/pure Nat #42) "hello") == (#Some{#42})
+#test: (Parser/run Nat (Parser/fail Nat "error") "hello") == (#None)
