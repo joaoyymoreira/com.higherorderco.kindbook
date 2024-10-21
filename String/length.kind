@@ -1,7 +1,8 @@
 // Computes the length of a string.
-// - 1st: The input string.
-// = The number of characters in the string.
-String/length
-: ∀(str: String)
-  Nat
-= λstr (List/length U32 str)
+// - str: Input string.
+// = Number of characters.
+String/length : String -> Nat
+= λstr (List/length U32 (String/to-list str))
+
+#test: (String/length "Hello") == #5
+#test: (String/length "") == #0

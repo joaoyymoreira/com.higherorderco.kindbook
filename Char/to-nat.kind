@@ -1,31 +1,10 @@
-// Converts a character to its corresponding natural number representation.
-// - 1st: The input character.
-// = The natural number representation of the character.
-Char/to-nat
-: ∀(code: Char)
-  Nat
+// Converts a character to its corresponding nat.
+// - code: The input character.
+// = The nat representation of the character.
+Char/to-nat : Char -> Nat
 = λcode (U32/to-nat code)
-// Test: Convert 'A' to its ASCII value
-TEST_0 
-: (Equal Nat (Char/to-nat 'A') #65)
-= #Refl
 
-// Test: Convert '0' to its ASCII value
-TEST_1 
-: (Equal Nat (Char/to-nat '0') #48)
-= #Refl
-
-// Test: Convert 'z' to its ASCII value
-TEST_2 
-: (Equal Nat (Char/to-nat 'z') #122)
-= #Refl
-
-// // Test: Convert space character to its ASCII value
-// T3 
-// : (Equal Nat (Char/to-nat ' ') #31)
-// = #Refl
-
-// Test: Convert newline character to its ASCII value
-TEST_4 
-: (Equal Nat (Char/to-nat '\n') #10)
-= #Refl
+#test: (Char/to-nat 'A') == #65
+#test: (Char/to-nat '0') == #48
+#test: (Char/to-nat 'z') == #122
+#test: (Char/to-nat '\n') == #10

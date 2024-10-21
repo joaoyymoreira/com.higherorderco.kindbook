@@ -1,26 +1,10 @@
 // Checks if a character is alphabetic.
-// 1st: The character to check.
-// = True if the character is alphabetic, False otherwise.
-Char/is-alpha
-: ∀(code: Char)
-  Bool
+// - code: The character to check.
+// = True if alphabetic, False otherwise.
+Char/is-alpha : Char -> Bool
 = λcode (Bool/or (Char/is-upper code) (Char/is-lower code))
-// Test: Lowercase 'a' is alphabetic.
-TEST_0 
-: (Equal Bool (Char/is-alpha 97) #True) 
-= #Refl
 
-// Test: Uppercase 'Z' is alphabetic.
-TEST_1 
-: (Equal Bool (Char/is-alpha 90) #True) 
-= #Refl
-
-// Test: Digit '5' is not alphabetic.
-TEST_2 
-: (Equal Bool (Char/is-alpha 53) #False) 
-= #Refl
-
-// Test: Special character '@' is not alphabetic.
-TEST_3 
-: (Equal Bool (Char/is-alpha 64) #False) 
-= #Refl
+#test: (Char/is-alpha 'a') == #True
+#test: (Char/is-alpha 'Z') == #True
+#test: (Char/is-alpha '5') == #False
+#test: (Char/is-alpha '@') == #False

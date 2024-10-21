@@ -1,65 +1,37 @@
-// Converts a single character to its numeric value in the given base.
-// 1st: The base (e.g., 2 for binary, 8 for octal, 10 for decimal, 16 for hexadecimal).
-// 2nd: The character to convert.
-// = Some n if the character is a valid digit in the given base, where n is the corresponding numeric value, None if the character is not a valid digit in the given base.
-Char/to-digit
-: ∀(base: Nat)
-  ∀(code: Char)
-  (Maybe Nat)
-= λbase λcode
-  let is_base_2 = (Nat/eq base (U32/to-nat 2))
-  let is_base_8 = (Nat/eq base (U32/to-nat 8))
-  let is_base_10 = (Nat/eq base (U32/to-nat 10))
-  let is_base_16 = (Nat/eq base (U32/to-nat 16))
+// Converts a character to its numeric value in the given base.
+// - base: The base (2 for binary, 8 for octal, 10 for decimal, 16 for hexadecimal).
+// - code: The character to convert.
+// = Some n if valid digit in the given base, None otherwise.
+Char/to-digit : Nat -> Char -> (Maybe Nat)
+| base code =
+  let is_base_2  = (Nat/eq base #2)
+  let is_base_8  = (Nat/eq base #8)
+  let is_base_10 = (Nat/eq base #10)
+  let is_base_16 = (Nat/eq base #16)
   
-  let is_binary = (Bool/and is_base_2 (Char/is-binary-digit code))
-  let is_octal = (Bool/and is_base_8 (Char/is-octal-digit code))
+  let is_binary  = (Bool/and is_base_2  (Char/is-binary-digit code))
+  let is_octal   = (Bool/and is_base_8  (Char/is-octal-digit code))
   let is_decimal = (Bool/and is_base_10 (Char/is-digit code))
-  let is_hex = (Bool/and is_base_16 (Char/is-hex-digit code))
+  let is_hex     = (Bool/and is_base_16 (Char/is-hex-digit code))
   
-  (Bool/if (Maybe Nat)
-    is_binary
+  if is_binary {
     (Char/digit-to-nat code)
-    (Bool/if (Maybe Nat)
-      is_octal
-      (Char/digit-to-nat code)
-      (Bool/if (Maybe Nat)
-        is_decimal
-        (Char/digit-to-nat code)
-        (Bool/if (Maybe Nat)
-          is_hex
-          (Char/hex-to-nat code)
-          #None
-        )
-      )
-    )
-  )
-// Test: Convert '5' to digit in base 10.
-TEST_0 
-: (Equal (Maybe Nat) (Char/to-digit (#10) '5') (#Some{#5))
-= #Refl
+  } else if is_octal {
+    (Char/digit-to-nat code)
+  } else if is_decimal {
+    (Char/digit-to-nat code)
+  } else if is_hex {
+    (Char/hex-to-nat code)
+  } else {
+    (Maybe/none Nat)
+  }
 
-// Test: Convert 'A' to digit in base 16.
-TEST_1 
-: (Equal (Maybe Nat) (Char/to-digit (#16) 'A') (#Some{#10))
-= #Refl
-
-// Test: Convert 'G' to digit in base 16 (invalid hexadecimal digit).
-TEST_2 
-: (Equal (Maybe Nat) (Char/to-digit (#16) 'G') #None)
-= #Refl
-
-// Test: Convert '9' to digit in base 8 (invalid octal digit).
-TEST_3 
-: (Equal (Maybe Nat) (Char/to-digit (#8) '9') #None)
-= #Refl
-
-// Test: Convert '0' to digit in base 2.
-TEST_4 
-: (Equal (Maybe Nat) (Char/to-digit (#2) '0') (#Some{#Zero}))
-= #Refl
-
-// Test: Convert 'F' to digit in base 10 (invalid decimal digit).
-TEST_5 
-: (Equal (Maybe Nat) (Char/to-digit (#10) 'F') #None)
-= #Refl
+#test: (Char/to-digit #2  '0') == (Maybe/some Nat #0)
+#test: (Char/to-digit #2  '1') == (Maybe/some Nat #1)
+#test: (Char/to-digit #2  '2') == (Maybe/none Nat)
+#test: (Char/to-digit #8  '7') == (Maybe/some Nat #7)
+#test: (Char/to-digit #8  '8') == (Maybe/none Nat)
+#test: (Char/to-digit #10 '9') == (Maybe/some Nat #9)
+#test: (Char/to-digit #10 'a') == (Maybe/none Nat)
+#test: (Char/to-digit #16 'f') == (Maybe/some Nat #15)
+#test: (Char/to-digit #16 'g') == (Maybe/none Nat)

@@ -1,31 +1,11 @@
-// Determines if a character is an ASCII character.
-// 1st: The character to check.
-// = True if the character is an ASCII character, False otherwise.
-Char/is-ascii
-: ∀(code: Char)
-  Bool
-= λcode (U32/lt code 128)
-// Test: ASCII character 'A' (code point 65).
-TEST_0 
-: (Equal Bool (Char/is-ascii 65) #True) 
-= #Refl
+// Checks if a character is ASCII.
+// - code: The character to check.
+// = True if ASCII, False otherwise.
+Char/is-ascii : Char -> Bool
+= λcode (U32/to-bool (< code 128))
 
-// Test: Non-ASCII character '€' (code point 8364).
-TEST_1 
-: (Equal Bool (Char/is-ascii 8364) #False) 
-= #Refl
-
-// Test: ASCII character '~' (code point 126).
-TEST_2 
-: (Equal Bool (Char/is-ascii 126) #True) 
-= #Refl
-
-// Test: ASCII character DEL (code point 127).
-TEST_3 
-: (Equal Bool (Char/is-ascii 127) #True) 
-= #Refl
-
-// Test: Non-ASCII character 'ñ' (code point 241).
-TEST_4 
-: (Equal Bool (Char/is-ascii 241) #False) 
-= #Refl
+#test: (Char/is-ascii 'A') == #True
+#test: (Char/is-ascii '€') == #False
+#test: (Char/is-ascii '~') == #True
+#test: (Char/is-ascii '\x7F') == #True
+#test: (Char/is-ascii 'ñ') == #False

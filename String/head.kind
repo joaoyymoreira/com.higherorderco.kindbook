@@ -1,8 +1,9 @@
 // Returns the first character of a string, if it exists.
-// - str: The input string.
-// = A Maybe Char, containing the first character if the string is non-empty, or None if it's empty.
-String/head
-: ∀(str: String)
-  (Maybe U32)
-= λstr
-  (List/head _ str)
+// - str: Input string.
+// = Maybe U32 with the first character, or None if empty.
+String/head : String -> (Maybe U32)
+= λstr (List/head U32 str)
+
+#test: (String/head []) == #None
+#test: (String/head [97]) == #Some{97}
+#test: (String/head [97 98 99]) == #Some{97}

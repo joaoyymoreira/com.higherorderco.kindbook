@@ -1,11 +1,11 @@
 // Concatenates two strings.
-// - a: The first string.
-// - b: The second string.
-// = A new string that is the concatenation of the two input strings.
+// - a: First string.
+// - b: Second string.
+// = Concatenated string.
 String/append : String -> String -> String
-| a b = ?a
+| a b = (List/append U32 a b)
 
-//#test: (String/append "Hello" "-World") == "Hello-World"
-//#test: (String/append "Hello" "") == "Hello"
-//#test: (String/append "" "World") == "World"
-//#test: (String/append "Hello" (String/append "-" "World")) == "Hello-World"
+#test: (String/append "Hello" "-World") == "Hello-World"
+#test: (String/append "Hello" "") == "Hello"
+#test: (String/append "" "World") == "World"
+#test: (String/append "Hello" (String/append "-" "World")) == "Hello-World"

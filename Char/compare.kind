@@ -1,43 +1,14 @@
-// Compares two characters and returns their ordering.
-// 1st: The first character to compare.
-// 2nd: The second character to compare.
-// = An Ordering value: LT if 1st < 2nd, EQ if 1st = 2nd, GT if 1st > 2nd.
-Char/compare
-: ∀(x: Char)
-  ∀(y: Char)
-  Ordering
+// Compares two characters.
+// - x: First character.
+// - y: Second character.
+// = Ord: LT, EQ, or GT.
+Char/compare : Char -> Char -> Ord
 = λx λy (U32/compare x y)
-// Test: Compares 'a' with 'a'.
-// = EQ
-TEST_0 : (Equal Ordering (Char/compare 97 97) #EQ)
-= #Refl
 
-// Test: Compares 'a' with 'b'.
-// = LT
-TEST_1 : (Equal Ordering (Char/compare 97 98) #LT)
-= #Refl
-
-// Test: Compares 'b' with 'a'.
-// = GT
-TEST_2 : (Equal Ordering (Char/compare 98 97) #GT)
-= #Refl
-
-// Test: Compares 'A' with 'a'.
-// = LT
-TEST_3 : (Equal Ordering (Char/compare 65 97) #LT)
-= #Refl
-
-// Test: Compares '0' with '9'.
-// = LT
-TEST_4 : (Equal Ordering (Char/compare 48 57) #LT)
-= #Refl
-
-// Test: Compares '!' with '~'.
-// = LT
-TEST_5 : (Equal Ordering (Char/compare 33 126) #LT)
-= #Refl
-
-// Test: Compares 'z' with 'a'.
-// = GT
-TEST_6 : (Equal Ordering (Char/compare 122 97) #GT)
-= #Refl
+#test: (Char/compare 'a' 'a') == #EQ
+#test: (Char/compare 'a' 'b') == #LT
+#test: (Char/compare 'b' 'a') == #GT
+#test: (Char/compare 'A' 'a') == #LT
+#test: (Char/compare '0' '9') == #LT
+#test: (Char/compare '!' '~') == #LT
+#test: (Char/compare 'z' 'a') == #GT

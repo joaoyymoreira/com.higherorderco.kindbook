@@ -1,31 +1,9 @@
-// Converts a natural number to its corresponding Unicode character.
-// 1st: The natural number to convert.
-// = The Unicode character corresponding to the given natural number.
-Char/from-nat
-: ∀(n: Nat)
-  Char
+// Converts a nat to its corresponding Unicode character.
+// - n: The nat to convert.
+// = The Unicode character corresponding to the given nat.
+Char/from-nat : Nat -> Char
 = λn (U32/from-nat n)
-// Test: Convert 65 to character 'A'.
-TEST_0 
-: (Equal Char (Char/from-nat (U32/to-nat 65)) 'A')
-= #Refl
 
-// Test: Convert 97 to character 'a'.
-TEST_1 
-: (Equal Char (Char/from-nat (U32/to-nat 97)) 'a')
-= #Refl
-
-// Test: Convert 0 to null character.
-// T2 
-// : (Equal Char (Char/from-nat (U32/to-nat 0)) '\0')
-// = #Refl
-
-// Test: Convert 32 to space character.
-// T3 
-// : (Equal Char (Char/from-nat (U32/to-nat 32)) '')
-// = #Refl
-
-// Test: Convert 48 to character '0'.
-TEST_4 
-: (Equal Char (Char/from-nat (U32/to-nat 48)) '0')
-= #Refl
+#test: (Char/from-nat #65) == 'A'
+#test: (Char/from-nat #97) == 'a'
+#test: (Char/from-nat #48) == '0'

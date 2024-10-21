@@ -1,42 +1,26 @@
 // Converts a hexadecimal character to its corresponding natural number.
-// 1st: The input hexadecimal character
-// = Some n if 1st is a valid hexadecimal digit, where n is the corresponding natural number, None otherwise.
-Char/hex-to-nat
-: ∀(code: Char)
-  (Maybe Nat)
-= λcode
-  let is_hex = (Char/is-hex-digit code)
+// - code: The input hexadecimal character
+// = Some n if code is a valid hexadecimal digit, where n is the corresponding natural number, None otherwise.
+Char/hex-to-nat : Char -> (Maybe Nat)
+| code =
+  let is_hex   = (Char/is-hex-digit code)
   let case_0_9 = (- code 48)
   let case_A_F = (- code 55)
   let case_a_f = (- code 87)
-  let value =
-    (U32/if U32
-      (< code 58)
-      case_0_9
-      (U32/if U32
-        (< code 97)
-        case_A_F
-        case_a_f))
-  (Bool/if (Maybe Nat)
-    is_hex
-    #Some{(U32/to-nat value)}
-    #None)
-// Test: Convert '0' to 0.
-TEST_0
-: (Equal (Maybe Nat) (Char/hex-to-nat '0') #Some{#Zero})
-= #Refl
+  use value = if (U32/to-bool (< code 58)) {
+    case_0_9
+  } else if (U32/to-bool (< code 97)) {
+    case_A_F
+  } else {
+    case_a_f
+  }
+  if is_hex {
+    (Maybe/some Nat (U32/to-nat value))
+  } else {
+    (Maybe/none Nat)
+  }
 
-// Test: Convert 'A' to 10.
-TEST_1
-: (Equal (Maybe Nat) (Char/hex-to-nat 'A') #Some{#10)
-= #Refl
-
-// Test: Convert 'f' to 15.
-TEST_2
-: (Equal (Maybe Nat) (Char/hex-to-nat 'f') #Some{#15)
-= #Refl
-
-// Test: Invalid hexadecimal character.
-TEST_3
-: (Equal (Maybe Nat) (Char/hex-to-nat 'G') #None)
-= #Refl
+#test: (Char/hex-to-nat '0') == (Maybe/some Nat #0)
+#test: (Char/hex-to-nat 'A') == (Maybe/some Nat #10)
+#test: (Char/hex-to-nat 'f') == (Maybe/some Nat #15)
+#test: (Char/hex-to-nat 'G') == (Maybe/none Nat)

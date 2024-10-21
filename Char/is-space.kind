@@ -1,42 +1,18 @@
-// Determines if a character is a whitespace character.
-// 1st: The character to check.
-// = True if the character is a whitespace character, False otherwise.
-Char/is-space
-: ∀(code: Char)
-  Bool
+// Checks if a character is whitespace.
+// - code: The character to check.
+// = True if whitespace, False otherwise.
+Char/is-space : Char -> Bool
 = λcode (U32/to-bool 
-	(| (== code 32)  // space
+  (| (== code 32)  // space
   (| (== code 9)   // tab
   (| (== code 10)  // newline
   (| (== code 13)  // carriage return
-  (| (== code 11)  // vertical tab // form feed
-  (== code 12)))))))  
-// Test: Space character is a whitespace
-TEST_0 
-: (Equal Bool (Char/is-space 32) #True) 
-= #Refl
+  (| (== code 11)  // vertical tab
+  (== code 12)))))))  // form feed
 
-// Test: Newline character is a whitespace
-TEST_1 
-: (Equal Bool (Char/is-space 10) #True) 
-= #Refl
-
-// Test: Tab character is a whitespace
-TEST_2 
-: (Equal Bool (Char/is-space 9) #True) 
-= #Refl
-
-// Test: Regular letter 'A' is not a whitespace
-TEST_3 
-: (Equal Bool (Char/is-space 65) #False) 
-= #Refl
-
-// Test: Digit '5' is not a whitespace
-TEST_4 
-: (Equal Bool (Char/is-space 53) #False) 
-= #Refl
-
-// Test: Special character '!' is not a whitespace
-TEST_5 
-: (Equal Bool (Char/is-space 33) #False) 
-= #Refl
+#test: (Char/is-space ' ') == #True
+#test: (Char/is-space '\n') == #True
+#test: (Char/is-space '\t') == #True
+#test: (Char/is-space 'A') == #False
+#test: (Char/is-space '5') == #False
+#test: (Char/is-space '!') == #False

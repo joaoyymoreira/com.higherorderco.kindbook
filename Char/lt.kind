@@ -1,28 +1,11 @@
-// Compares two characters lexicographically.
-// 1st: The character to compare.
-// 2nd: The character to compare.
-// = True if the 1st character is less than the 2nd, False otherwise.
-Char/lt
-: ∀(x: Char)
-  ∀(y: Char)
-  Bool
-= λx λy (U32/lt x y)
-// Test: Compare lowercase 'a' with uppercase 'A'
-TEST_0 
-: (Equal Bool (Char/lt 'a' 'A') #False) 
-= #Refl
+// Checks if one character is less than another.
+// - x: The 1st character.
+// - y: The 2nd character.
+// = True if x is less than y, False otherwise.
+Char/lt : Char -> Char -> Bool
+= λx λy (U32/to-bool (< x y))
 
-// Test: Compare lowercase 'a' with lowercase 'b'
-TEST_1 
-: (Equal Bool (Char/lt 'a' 'b') #True) 
-= #Refl
-
-// Test: Compare uppercase 'Z' with lowercase 'a'
-TEST_2 
-: (Equal Bool (Char/lt 'Z' 'a') #True) 
-= #Refl
-
-// Test: Compare same character
-TEST_3 
-: (Equal Bool (Char/lt 'c' 'c') #False) 
-= #Refl
+#test: (Char/lt 'a' 'A') == #False
+#test: (Char/lt 'a' 'b') == #True
+#test: (Char/lt 'Z' 'a') == #True
+#test: (Char/lt 'c' 'c') == #False

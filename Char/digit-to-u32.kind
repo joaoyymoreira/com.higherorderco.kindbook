@@ -1,42 +1,18 @@
-// Converts a digit character to its corresponding U32 number.
-// 1st: The input character.
-// = Some n if 1st is a digit, where n is the corresponding U32 number, None otherwise.
-Char/digit-to-u32
-: ∀(c: Char)
-  (Maybe U32)
+// Converts a digit char to its corresponding U32 number.
+// - c: The input char.
+// = Some n if c is a digit, where n is the corresponding U32 number, None otherwise.
+Char/digit-to-u32 : Char -> (Maybe U32)
 = λc
-  let n = (- c 48)
-  (U32/if (Maybe U32)
-    (& (>= n 0) (<= n 9))
-    (#Some{n})
-    #None
-  )
-// Test: '0' converts to Some 0.
-TEST_0
-: (Equal (Maybe U32) (Char/digit-to-u32 48) (#Some{0}))
-= #Refl
+  let n = (- c '0')
+  if (Bool/and (U32/to-bool (>= n 0)) (U32/to-bool (<= n 9))) {
+    (Maybe/some U32 n)
+  } else {
+    (Maybe/none U32)
+  }
 
-// Test: '5' converts to Some 5.
-TEST_1
-: (Equal (Maybe U32) (Char/digit-to-u32 53) (#Some{5}))
-= #Refl
-
-// Test: '9' converts to Some 9.
-TEST_2
-: (Equal (Maybe U32) (Char/digit-to-u32 57) (#Some{9}))
-= #Refl
-
-// Test: 'a' converts to None.
-TEST_3
-: (Equal (Maybe U32) (Char/digit-to-u32 97) #None)
-= #Refl
-
-// Test: '!' converts to None.
-TEST_4
-: (Equal (Maybe U32) (Char/digit-to-u32 33) #None)
-= #Refl
-
-// Test: ' ' (space) converts to None.
-TEST_5
-: (Equal (Maybe U32) (Char/digit-to-u32 32) #None)
-= #Refl
+#test: (Char/digit-to-u32 '0') == (Maybe/some U32 0)
+#test: (Char/digit-to-u32 '5') == (Maybe/some U32 5)
+#test: (Char/digit-to-u32 '9') == (Maybe/some U32 9)
+#test: (Char/digit-to-u32 'a') == (Maybe/none U32)
+#test: (Char/digit-to-u32 '!') == (Maybe/none U32)
+#test: (Char/digit-to-u32 ' ') == (Maybe/none U32)

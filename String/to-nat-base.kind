@@ -1,32 +1,27 @@
+// Converts a string to a nat in the given base.
+// - base: The base to use for conversion.
+// - str: The string to convert.
+// = A Maybe Nat with the converted number if successful, None if conversion fails.
+String/to-nat-base : Nat -> String -> (Maybe Nat)
+| base #Nil         = #None
+| base #Cons{hd tl} = (String/to-nat-base/go base #Cons{hd tl} #0)
+
 // Helper function for String/to-nat-base
 // - base: The base to use for conversion.
 // - chars: The list of characters to convert.
 // - acc: The accumulator for the result.
-// = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
-String/to-nat-base-go
-: ∀(base: Nat)
-  ∀(chars: String)
-  ∀(acc: Nat)
-  (Maybe Nat)
-= λbase λ{
-  #Nil: λacc #Some{acc}
-  #Cons: λhead λtail λacc
-    let digit = (Char/to-digit base head)
-    match digit {
-      #None: #None
-      #Some: λvalue (String/to-nat-base-go base tail (Nat/add (Nat/mul acc base) value))
-    }
-}
+// = A Maybe Nat with the converted number if successful, None if conversion fails.
+String/to-nat-base/go : Nat -> String -> Nat -> (Maybe Nat)
+| base #Nil         acc = #Some{acc}
+| base #Cons{hd tl} acc =
+  let digit = (Char/to-digit base hd)
+  (Maybe/fold Nat (Maybe Nat) #None
+    (λvalue (String/to-nat-base/go base tl (Nat/add (Nat/mul acc base) value)))
+    digit)
 
-// Converts a string to a natural number in the given base.
-// - base: The base to use for conversion.
-// - str: The string to convert.
-// = A Maybe Nat, where Some n is the converted number if successful, or None if conversion fails.
-String/to-nat-base
-: ∀(base: Nat)
-  ∀(str: String)
-  (Maybe Nat)
-= λbase λ{
-  #Nil: #None
-  #Cons: λhead λtail (String/to-nat-base-go base #Cons{head tail} #0)
-}
+//#test: (String/to-nat-base #10 "123") == #Some{#123}
+//#test: (String/to-nat-base #16 "FF") == #Some{#255}
+//#test: (String/to-nat-base #2 "1010") == #Some{#10}
+//#test: (String/to-nat-base #8 "777") == #Some{#511}
+//#test: (String/to-nat-base #10 "") == #None
+//#test: (String/to-nat-base #16 "GG") == #None

@@ -1,5 +1,17 @@
-main : (Pair/Pair U32 U32)
-= #Pair { foo 13 }
+Main : (Pair String U32) -> (Pair (List U32) U32)
+| str = str
+
+
+
+
+
+
+
+
+
+
+//main : (Pair/Pair U32 U32)
+//= #Pair { foo 13 }
 
 //use Bool/ as Bool/
 //use U32/ as U32/

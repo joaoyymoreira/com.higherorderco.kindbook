@@ -1,0 +1,8 @@
+// Folds a string.
+// - B: Result type.
+// - c: Combining function.
+// - n: Initial value.
+// - s: Input string.
+// = Folded result.
+String/fold : ∀(B: *) (U32 -> B -> B) -> B -> String -> B
+= λB λc λn λs (List/fold U32 s B n c)

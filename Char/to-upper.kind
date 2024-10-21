@@ -1,46 +1,16 @@
 // Converts a character to its uppercase equivalent.
-// 1st: The character to convert.
+// - code: The character to convert.
 // = The uppercase version of the input character.
-Char/to-upper
-: ∀(code: Char)
-  Char
+Char/to-upper : Char -> Char
 = λcode
-  let is_lower = (Char/is-lower code)
-  (Bool/if Char
-		is_lower
-		(- code 32) 
-		(code))
-// Test: Lowercase 'a' is converted to uppercase 'A'
-TEST_0 
-: (Equal Char (Char/to-upper 'a') 'A')
-= #Refl
+  if (Char/is-lower code) {
+    (- code 32)
+  } else {
+    code
+  }
 
-// Test: Uppercase 'A' remains unchanged
-TEST_1 
-: (Equal Char (Char/to-upper 'A') 'A')
-= #Refl
-
-// Test: Digit '5' remains unchanged
-TEST_2 
-: (Equal Char (Char/to-upper '5') '5')
-= #Refl
-
-// Test: Special character '@' remains unchanged
-TEST_3 
-: (Equal Char (Char/to-upper '@') '@')
-= #Refl
-
-// // Test: Space character remains unchanged
-// T4 
-// : (Equal Char (Char/to-upper ' ') ' ')
-// = #Refl
-
-// // Test: Newline character remains unchanged
-// T5 
-// : (Equal Char (Char/to-upper '\n') '\n')
-// = #Refl
-
-// Test: Lowercase 'z' is converted to uppercase 'Z'
-TEST_6 
-: (Equal Char (Char/to-upper 'z') 'Z')
-= #Refl
+#test: (Char/to-upper 'a') == 'A'
+#test: (Char/to-upper 'A') == 'A'
+#test: (Char/to-upper '5') == '5'
+#test: (Char/to-upper '@') == '@'
+#test: (Char/to-upper 'z') == 'Z'

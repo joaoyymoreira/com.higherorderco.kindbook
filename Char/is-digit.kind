@@ -1,52 +1,14 @@
 // Checks if a character is a digit (0-9).
-// 1st: The character to check.
-// = True if the character is a digit, False otherwise.
-Char/is-digit
-: ∀(c: Char)
-  Bool
-= λc
-  (Bool/and (U32/gte c 48) (U32/lte c 57))
-// Test: '0' is a digit
-TEST_0 
-: (Equal Bool (Char/is-digit '0') #True) 
-= #Refl
+// - c: The character to check.
+// = True if digit, False otherwise.
+Char/is-digit : Char -> Bool
+= λc (Bool/and (U32/gte c 48) (U32/lte c 57))
 
-// Test: '9' is a digit
-TEST_1 
-: (Equal Bool (Char/is-digit '9') #True) 
-= #Refl
-
-// Test: '5' is a digit
-TEST_2 
-: (Equal Bool (Char/is-digit '5') #True) 
-= #Refl
-
-// Test: 'a' is not a digit
-TEST_3 
-: (Equal Bool (Char/is-digit 'a') #False) 
-= #Refl
-
-// Test: 'A' is not a digit
-TEST_4 
-: (Equal Bool (Char/is-digit 'A') #False) 
-= #Refl
-
-// Test: ' ' (space) is not a digit
-// T5 
-// : (Equal Bool (Char/is-digit ' ') #False) 
-// = #Refl
-
-// Test: '-' is not a digit
-TEST_6 
-: (Equal Bool (Char/is-digit '-') #False) 
-= #Refl
-
-// Test: '/' is not a digit (just before '0' in ASCII)
-TEST_7 
-: (Equal Bool (Char/is-digit '/') #False) 
-= #Refl
-
-// Test: ':' is not a digit (just after '9' in ASCII)
-TEST_8 
-: (Equal Bool (Char/is-digit ':') #False) 
-= #Refl
+#test: (Char/is-digit '0') == #True
+#test: (Char/is-digit '9') == #True
+#test: (Char/is-digit '5') == #True
+#test: (Char/is-digit 'a') == #False
+#test: (Char/is-digit 'A') == #False
+#test: (Char/is-digit '-') == #False
+#test: (Char/is-digit '/') == #False
+#test: (Char/is-digit ':') == #False

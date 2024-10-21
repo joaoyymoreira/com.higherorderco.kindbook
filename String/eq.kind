@@ -1,12 +1,17 @@
 // Checks if two strings are equal.
-// - a: The first string to compare.
-// - b: The second string to compare.
-// = A boolean value indicating whether the strings are equal.
+// - a: First string.
+// - b: Second string.
+// = True if equal, False otherwise.
 String/eq : String -> String -> Bool
 | #Nil         #Nil         = #True
-| #Nil         #Cons{_  _}  = #False
-| #Cons{_  _}  #Nil         = #False
-| #Cons{a0 as} #Cons{b0 bs} = (Bool/and (Char/eq a0 b0) (String/eq as bs))
+| #Nil         #Cons{b0 bs} = #False
+| #Cons{a0 as} #Nil         = #False
+| #Cons{a0 as} #Cons{b0 bs} = 
+  if (Char/eq a0 b0) {
+    (String/eq as bs)
+  } else {
+    #False
+  }
 
 #test: (String/eq "" "") == #True
 #test: (String/eq "hello" "hello") == #True

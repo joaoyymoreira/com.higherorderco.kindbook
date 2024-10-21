@@ -1,0 +1,8 @@
+// Left-folds a string.
+// - A: Accumulator type.
+// - f: Combining function.
+// - z: Initial value.
+// - s: Input string.
+// = Folded result.
+String/foldl : ∀(A: *) (A -> U32 -> A) -> A -> String -> A
+= λA λf λz λs (List/foldl A U32 f z s)

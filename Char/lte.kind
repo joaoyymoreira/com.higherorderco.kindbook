@@ -1,50 +1,14 @@
 // Checks if one character is less than or equal to another.
-// 1st: The character to compare.
-// 2nd: The character to compare.
-// = True if the 1st character is less than or equal to the 2nd, False otherwise..
-Char/lte
-: ∀(x: Char)
-  ∀(y: Char)
-  Bool
-= λx λy (Nat/lte (Char/to-nat x) (Char/to-nat y))
-// Test: 'a' is less than or equal to 'b'
+// - x: The 1st character.
+// - y: The 2nd character.
+// = True if x is less than or equal to y, False otherwise.
+Char/lte : Char -> Char -> Bool
+= λx λy (U32/to-bool (<= x y))
 
-TEST_0
-: (Equal Bool (Char/lte 'a' 'b') #True) 
-= #Refl
-
-// Test: 'b' is not less than or equal to 'a'
-
-TEST_1
-: (Equal Bool (Char/lte 'b' 'a') #False) 
-= #Refl
-
-// Test: 'A' is less than or equal to 'A' (equality case)
-
-TEST_2
-: (Equal Bool (Char/lte 'A' 'A') #True) 
-= #Refl
-
-// Test: 'z' is less than or equal to 'z' (equality case)
-
-TEST_3
-: (Equal Bool (Char/lte 'z' 'z') #True) 
-= #Refl
-
-// Test: '0' is less than or equal to '9'
-
-TEST_4
-: (Equal Bool (Char/lte '0' '9') #True) 
-= #Refl
-
-// Test: 'Z' is less than or equal to 'a'
-
-TEST_5
-: (Equal Bool (Char/lte 'Z' 'a') #True) 
-= #Refl
-
-// Test: '~' is not less than or equal to '!'
-
-TEST_6
-: (Equal Bool (Char/lte '~' '!') #False) 
-= #Refl
+#test: (Char/lte 'a' 'b') == #True
+#test: (Char/lte 'b' 'a') == #False
+#test: (Char/lte 'A' 'A') == #True
+#test: (Char/lte 'z' 'z') == #True
+#test: (Char/lte '0' '9') == #True
+#test: (Char/lte 'Z' 'a') == #True
+#test: (Char/lte '~' '!') == #False

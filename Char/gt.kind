@@ -1,43 +1,14 @@
 // Checks if one character is greater than another.
-// 1st: The character to compare.
-// 2nd: The character to compare.
-// = True if the 1st character is greater than the 2nd, False otherwise.
-Char/gt
-: ∀(x: Char)
-  ∀(y: Char)
-  Bool
-= λx λy (U32/gt x y)
-// Test: 'b' is greater than 'a'.
-TEST_0
-: (Equal Bool (Char/gt 'b' 'a') #True) 
-= #Refl
+// - x: The 1st character.
+// - y: The 2nd character.
+// = True if x is greater than y, False otherwise.
+Char/gt : Char -> Char -> Bool
+= λx λy (U32/to-bool (> x y))
 
-// Test: 'a' is not greater than 'b'.
-TEST_1
-: (Equal Bool (Char/gt 'a' 'b') #False) 
-= #Refl
-
-// Test: 'A' is not greater than 'a'.
-TEST_2
-: (Equal Bool (Char/gt 'A' 'a') #False) 
-= #Refl
-
-// Test: 'z' is greater than 'a'.
-TEST_3
-: (Equal Bool (Char/gt 'z' 'a') #True) 
-= #Refl
-
-// Test: '9' is greater than '0'.
-TEST_4
-: (Equal Bool (Char/gt '9' '0') #True) 
-= #Refl
-
-// Test: '~' is greater than '!'.
-TEST_5
-: (Equal Bool (Char/gt '~' '!') #True) 
-= #Refl
-
-// Test: 'a' is not greater than 'a'.
-TEST_6
-: (Equal Bool (Char/gt 'a' 'a') #False) 
-= #Refl
+#test: (Char/gt 'b' 'a') == #True
+#test: (Char/gt 'a' 'b') == #False
+#test: (Char/gt 'A' 'a') == #False
+#test: (Char/gt 'z' 'a') == #True
+#test: (Char/gt '9' '0') == #True
+#test: (Char/gt '~' '!') == #True
+#test: (Char/gt 'a' 'a') == #False

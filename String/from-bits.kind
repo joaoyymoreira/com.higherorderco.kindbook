@@ -1,35 +1,13 @@
-// Converts a Bits value to a String by grouping bits into chunks of 21,
-// - 1st: The input Bits value to convert.
-// = A String representation of the input Bits.
-String/from-bits
-: ∀(bits: Bits)
-  String
+// Converts Bits to String by grouping bits into chunks of 21.
+// - bits: The input Bits value to convert.
+// = String representation of the input Bits.
+String/from-bits : Bits -> String
 = λbits
   let chunks = (Bits/split-chunks #21 bits)
-  let chars = (List/map Bits U32 Bits/to-char chunks)
-  chars
-  
-// Test: Empty bits should result in an empty string
-TEST_0
-: (Equal String (String/from-bits #E) "")
-= #Refl
+  (List/map Bits U32 Bits/to-char chunks)
 
-// Test: A single character (ASCII 'A')
-TEST_1
-: (Equal String (String/from-bits (Nat/to-bits #65)) "A")
-= #Refl
-
-// Test: Multiple characters (ASCII 'Hello')
-TEST_2
-: (Equal String (String/from-bits (String/to-bits "Hello")) "Hello")
-= #Refl
-
-// Test: Non-ASCII character (Unicode '€' symbol)
-TEST_3
-: (Equal String (String/from-bits (Nat/to-bits #8364)) "€")
-= #Refl
-
-// Test: Mixed ASCII and non-ASCII characters
-TEST_4
-: (Equal String (String/from-bits (String/to-bits "Hello€")) "Hello€")
-= #Refl
+#test: (String/from-bits #E) == ""
+#test: (String/from-bits (Nat/to-bits #65)) == "A"
+#test: (String/from-bits (String/to-bits "Hello")) == "Hello"
+#test: (String/from-bits (Nat/to-bits #8364)) == "€"
+#test: (String/from-bits (String/to-bits "Hello€")) == "Hello€"

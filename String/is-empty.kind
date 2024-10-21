@@ -1,10 +1,9 @@
 // Checks if a string is empty.
 // - s: The string to check.
-// = True if the string is empty, False otherwise.
-String/is-empty
-: ∀(s: String)
-  Bool
-= λ{
-    #Nil: #True
-    #Cons: λhead λtail #False
-  }
+// = True if empty, False otherwise.
+String/is-empty : String -> Bool
+| #Nil         = #True
+| #Cons{hd tl} = #False
+
+#test: (String/is-empty String/nil) == #True
+#test: (String/is-empty (String/cons 97 String/nil)) == #False

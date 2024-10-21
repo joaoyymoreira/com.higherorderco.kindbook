@@ -1,48 +1,14 @@
-// Compares two characters for inequality.
-// - 1st: The character to compare.
-// - 2nd: The character to compare.
-// = True if the characters are not equal, False otherwise.
-Char/neq
-: ∀(a: Char)
-  ∀(b: Char)
-  Bool
+// Checks if two characters are not equal.
+// - a: The first character.
+// - b: The second character.
+// = True if not equal, False otherwise.
+Char/neq : Char -> Char -> Bool
 = λa λb (U32/to-bool (!= a b))
-// Tests if 'a' is not equal to 'b'.
-TEST_0 
-: (Equal Bool (Char/neq 'a' 'b') #True) 
-= #Refl
 
-// Tests if 'a' is not equal to 'a'.
-TEST_1 
-: (Equal Bool (Char/neq 'a' 'a') #False) 
-= #Refl
-
-// Tests if '0' is not equal to '1'.
-TEST_2 
-: (Equal Bool (Char/neq '0' '1') #True) 
-= #Refl
-
-// Tests if '0' is not equal to '0'.
-TEST_3 
-: (Equal Bool (Char/neq '0' '0') #False) 
-= #Refl
-
-// Tests if 'A' is not equal to 'a'.
-TEST_4 
-: (Equal Bool (Char/neq 'A' 'a') #True) 
-= #Refl
-
-// Tests if negation of inequality works correctly.
-TEST_5 
-: (Equal Bool (Bool/not (Char/neq 'a' 'b')) #False) 
-= #Refl
-
-// // Tests if space character is not equal to tab character.
-// T6 
-// : (Equal Bool (Char/neq ' ' '\t') #True) 
-// = #Refl
-
-// Tests if newline character is not equal to carriage return.
-TEST_7 
-: (Equal Bool (Char/neq '\n' '\r') #True) 
-= #Refl
+#test: (Char/neq 'a' 'b') == #True
+#test: (Char/neq 'a' 'a') == #False
+#test: (Char/neq '0' '1') == #True
+#test: (Char/neq '0' '0') == #False
+#test: (Char/neq 'A' 'a') == #True
+#test: (Bool/not (Char/neq 'a' 'b')) == #False
+#test: (Char/neq '\n' '\r') == #True

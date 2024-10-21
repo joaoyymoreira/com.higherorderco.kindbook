@@ -1,7 +1,9 @@
-// Converts a character to a string.
-// - 1st: The input character.
-// = A string containing only the input character.
-String/from-char
-: ∀(chars: U32)
-  String
-= λchars (String/from-list (#Cons{chars #Nil}))
+// Converts a char to a string.
+// - c: Input char.
+// = String with only the input char.
+String/from-char : Char -> String
+| c = #Cons{c #Nil}
+
+#test: (String/from-char 'A') == [65]
+#test: (String/from-char '0') == [48]
+#test: (String/from-char '\n') == [10]

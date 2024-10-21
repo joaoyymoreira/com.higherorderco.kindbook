@@ -1,37 +1,18 @@
 // Pads a string with a character to the left until the given length is reached.
-// - 1st: The desired length of the resulting string.
-// - 2nd: The character to use for padding.
-// - 3rd: The input string to pad.
-// = A new string padded to length n with character c on the left side.
-String/pad-left
-: ∀(n: Nat)
-  ∀(c: U32)
-  ∀(s: String)
-  String
-= λn λc λs
+// - n: Desired length of the resulting string.
+// - c: Character to use for padding.
+// - s: Input string to pad.
+// = New string padded to length n with character c on the left side.
+String/pad-left : Nat -> U32 -> String -> String
+| n c s =
   let #Pair{str len} = (List/length-got U32 s)
-  match (Nat/lt len n) {
-      #True: (String/append (String/replicate (Nat/sub n len) c) str)
-      #False: str
-    }
+  if (Nat/lt len n) {
+    (String/append (String/replicate (Nat/sub n len) c) str)
+  } else {
+    str
+  }
 
-//ERROR: kind: Constructor Cons not found in pattern match.
-// Test: Pad a short string with spaces
-TEST_0 
-: (Equal String "abc" "abc")
-= #Refl
-
-//// Test: Pad an empty string
-//T1 
-//: (Equal String (String/pad-left #3 'x' "") "xxx")
-//= #Refl
-
-//// Test: No padding needed (string length equal to desired length)
-//T2 
-//: (Equal String (String/pad-left #3 'y' "123") "123")
-//= #Refl
-
-//// Test: No padding needed (string length greater than desired length)
-//T3 
-//: (Equal String (String/pad-left #2 'z' "hello") "hello")
-//= #Refl
+#test: (String/pad-left #3 'x' "") == "xxx"
+#test: (String/pad-left #5 'y' "123") == "yy123"
+#test: (String/pad-left #2 'z' "hello") == "hello"
+#test: (String/pad-left #5 ' ' "abc") == "  abc"

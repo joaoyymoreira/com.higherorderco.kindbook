@@ -1,58 +1,17 @@
 // Checks if the first character is greater than or equal to the second.
-// 1st: The character to compare.
-// 2nd: The character to compare.
-// = True if the 1st character is greater than or equal to the 2nd, False otherwise.
-Char/gte
-: ∀(x: Char)
-  ∀(y: Char)
-  Bool
-= λx λy (U32/gte x y)
-// Test: 'b' is greater than or equal to 'a'.
-TEST_0 
-: (Equal Bool (Char/gte 'b' 'a') #True) 
-= #Refl
+// - x: The first character.
+// - y: The second character.
+// = True if x is greater than or equal to y, False otherwise.
+Char/gte : Char -> Char -> Bool
+= λx λy (U32/to-bool (>= x y))
 
-// Test: 'a' is not greater than or equal to 'b'.
-TEST_1 
-: (Equal Bool (Char/gte 'a' 'b') #False) 
-= #Refl
-
-// Test: 'A' is not greater than or equal to 'a' (uppercase comes before lowercase in ASCII).
-TEST_2 
-: (Equal Bool (Char/gte 'A' 'a') #False) 
-= #Refl
-
-// Test: 'z' is greater than or equal to 'a'.
-TEST_3 
-: (Equal Bool (Char/gte 'z' 'a') #True) 
-= #Refl
-
-// Test: '9' is greater than or equal to '0'.
-TEST_4 
-: (Equal Bool (Char/gte '9' '0') #True) 
-= #Refl
-
-// Test: '~' is greater than or equal to '!'.
-TEST_5 
-: (Equal Bool (Char/gte '~' '!') #True) 
-= #Refl
-
-// Test: 'a' is greater than or equal to 'a'.
-TEST_6 
-: (Equal Bool (Char/gte 'a' 'a') #True) 
-= #Refl
-
-// Test: 'Z' is greater than or equal to 'A'.
-TEST_7 
-: (Equal Bool (Char/gte 'Z' 'A') #True) 
-= #Refl
-
-// Test: '0' is greater than or equal to '0'.
-TEST_8 
-: (Equal Bool (Char/gte '0' '0') #True) 
-= #Refl
-
-// Test: 'a' is not greater than or equal to 'z'.
-TEST_9 
-: (Equal Bool (Char/gte 'a' 'z') #False) 
-= #Refl
+#test: (Char/gte 'b' 'a') == #True
+#test: (Char/gte 'a' 'b') == #False
+#test: (Char/gte 'A' 'a') == #False
+#test: (Char/gte 'z' 'a') == #True
+#test: (Char/gte '9' '0') == #True
+#test: (Char/gte '~' '!') == #True
+#test: (Char/gte 'a' 'a') == #True
+#test: (Char/gte 'Z' 'A') == #True
+#test: (Char/gte '0' '0') == #True
+#test: (Char/gte 'a' 'z') == #False

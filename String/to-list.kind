@@ -1,7 +1,5 @@
 // Converts a string to a list of characters.
-// - str: The input string.
-// = A list of characters representing the string.
-String/to-list
-: ∀(str: String)
-  (List U32)
-= λstr str
+// - str: Input string.
+// = List of characters.
+String/to-list : String -> (List U32)
+| str = str

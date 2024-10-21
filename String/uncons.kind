@@ -1,11 +1,9 @@
 // Deconstructs a string into its first character and the rest.
-// - str: The input string.
-// = Some (first character, rest of the string) if the string is non-empty,
-//   None if the string is empty.
-String/uncons
-: ∀(str: String)
-  (Maybe (Pair/Sigma U32 (λx String)))
-= λ{
-    #Nil: #None
-    #Cons: λhead λtail #Some{#Pair{head tail}}
-  }
+// - str: Input string.
+// = Some (first char, rest) if non-empty, None if empty.
+String/uncons : String -> (Maybe (Pair U32 String))
+| #Nil         = (Maybe/none (Pair U32 String))
+| #Cons{hd tl} = (Maybe/some (Pair U32 String) #Pair{hd tl})
+
+#test: (String/uncons String/nil) == (Maybe/none (Pair U32 String))
+#test: (String/uncons (String/cons 97 String/nil)) == (Maybe/some (Pair U32 String) #Pair{97 String/nil})

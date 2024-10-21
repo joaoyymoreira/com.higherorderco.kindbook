@@ -1,38 +1,13 @@
 // Compares two characters for equality.
-// 1st: The character to compare.
-// 2nd: The character to compare.
-// = True if the characters are equal, False otherwise.
-Char/eq
-: ∀(a: Char)
-  ∀(b: Char)
-  Bool
-= λa λb (U32/eq a b)
-// Test: if 'a' is equal to 'a'.
-TEST_0 
-: (Equal Bool (Char/eq 'a' 'a') #True) 
-= #Refl
+// - a: The first character.
+// - b: The second character.
+// = True if equal, False otherwise.
+Char/eq : Char -> Char -> Bool
+= λa λb (U32/to-bool (U32/eql a b))
 
-// Test: if 'a' is equal to 'b'.
-TEST_1
-: (Equal Bool (Char/eq 'a' 'b') #False) 
-= #Refl
-
-// Test: if '0' is equal to '0'.
-TEST_2
-: (Equal Bool (Char/eq '0' '0') #True) 
-= #Refl
-
-// Test: if '0' is equal to '1'.
-TEST_3
-: (Equal Bool (Char/eq '0' '1') #False) 
-= #Refl
-
-// Test: if 'A' is equal to 'a'.
-TEST_4
-: (Equal Bool (Char/eq 'A' 'a') #False) 
-= #Refl
-
-// Test: if negation of equality works correctly.
-TEST_5
-: (Equal Bool (Bool/not (Char/eq 'a' 'b')) #True) 
-= #Refl
+#test: (Char/eq 'a' 'a') == #True
+#test: (Char/eq 'a' 'b') == #False
+#test: (Char/eq '0' '0') == #True
+#test: (Char/eq '0' '1') == #False
+#test: (Char/eq 'A' 'a') == #False
+#test: (Bool/not (Char/eq 'a' 'b')) == #True

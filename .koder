@@ -65,3 +65,13 @@ NOTE: U32 functions like '==' and '>' return an U32, not a Bool. when a Bool is 
 NOTE: do not create tests with functions that you've not been explicitly shown. you tend to hallucinate functions that don't exist. don't do that.
 
 NOTE: do NOT change the logic or algorithm used in the implementations in any way. just update to the newer syntax, keeping the same logic closely.
+
+NOTE: always use the same field names when pattern-matching equations. do not use '_'. example:
+
+| #Cons{_  _}  #Nil         = A
+| #Cons{a0 as} #Cons{b0 bs} = B
+
+this isn't allowed, because 'a0' and '_' have different names, despite corresponding to the same field. write this instead:
+
+| #Cons{a0 as} #Nil         = A
+| #Cons{a0 as} #Cons{b0 bs} = B

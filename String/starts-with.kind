@@ -1,16 +1,17 @@
-// Checks if one string starts with another.
-// - str: The string to check.
-// - prefix: The prefix to look for.
-// = True if the first string starts with the second string, False otherwise.
-String/starts-with
-: ∀(str: String)
-  ∀(prefix: String)
-  Bool
-= λxs λprefix
-  let #Pair{prefix-list prefix-length}= (List/length-got U32 prefix)
-  let xs-prefix = (List/take U32 prefix-length xs)
-  let xs-length = (List/length U32 xs-prefix)
+// Checks if a string starts with another.
+// - str: String to check.
+// - prefix: Prefix to look for.
+// = True if str starts with prefix, False otherwise.
+String/starts-with : String -> String -> Bool
+| str prefix =
+  let #Pair{prefix_list prefix_length} = (List/length-got U32 prefix)
+  let str_prefix = (List/take U32 prefix_length str)
+  let str_length = (List/length U32 str_prefix)
   (Bool/and
-    (String/eq xs-prefix prefix-list)
-    (Nat/eq xs-length prefix-length))
- 
+    (String/eq str_prefix prefix_list)
+    (Nat/eq str_length prefix_length))
+
+#test: (String/starts-with "Hello, World!" "Hello") == #True
+#test: (String/starts-with "Hello, World!" "World") == #False
+#test: (String/starts-with "" "") == #True
+#test: (String/starts-with "A" "AB") == #False

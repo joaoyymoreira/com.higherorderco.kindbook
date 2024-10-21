@@ -1,19 +1,20 @@
 // Joins a list of strings with a separator.
-// - sep: The separator string.
-// - xs: The list of strings to join.
-// = A single string with all input strings concatenated, separated by the given separator.
-String/join
-: ∀(sep: String)
-  ∀(xs: (List String))
-  String
-= λsep λxs
-  (List/foldr _ _ (String/join/go sep) "" xs)
+// - sep: Separator string.
+// - xs: List of strings to join.
+// = Single string with all inputs concatenated, separated by sep.
+String/join : String -> (List String) -> String
+| sep xs = (List/foldr String String (String/join/go sep) "" xs)
 
-// Helper function for String/join
 // Combines a string with the accumulated result
-String/join/go
-: ∀(sep: String)
-  ∀(s: String)
-  ∀(acc: String)
-  String
-= λsep λs λacc (Bool/if String (String/eq acc "") s (String/append s (String/append sep acc)))
+String/join/go : String -> String -> String -> String
+| sep s acc = 
+  if (String/is-empty acc) {
+    s
+  } else {
+    (String/append s (String/append sep acc))
+  }
+
+#test: (String/join "," ["a" "b" "c"]) == "a,b,c"
+#test: (String/join "" ["hello" "world"]) == "helloworld"
+#test: (String/join " " ["one"]) == "one"
+#test: (String/join "-" []) == ""
