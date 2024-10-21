@@ -1,9 +1,8 @@
 // Skips spaces in the text and returns the number of spaces skipped.
 // - s: The parser state.
 // = A Reply containing the updated state and the number of spaces skipped.
-Parser/skip-spaces
-: (Parser Nat)
-= λstate
+Parser/skip-spaces : (Parser Nat)
+| state =
   let #State{chars index} = state
   let skipped   = (List/take-while Char Char/is-space chars)
   let count     = (String/length skipped)

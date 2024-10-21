@@ -1,0 +1,10 @@
+// Skips a comment and continues skipping trivia.
+// - acc: Accumulated skipped characters.
+// - cs: Remaining input.
+// = Pair of skipped count and remaining input.
+Parser/skip-comment : Nat -> String -> (Pair Nat String)
+| acc cs =
+  let com-len = (String/length (List/take-while Char (λc (Bool/not (Parser/is-newline c))) cs))
+  let new-acc = (Nat/add (Nat/add acc #2) com-len)
+  let rem     = (String/drop (#Succ{com-len}) cs)
+  (Parser/skip-trivia-go new-acc rem)

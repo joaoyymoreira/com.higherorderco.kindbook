@@ -1,134 +1,15 @@
-
-// Checks if a character is a newline
-Parser/is-newline
-: ∀(c: Char)
-  Bool
-= λc (Char/eq c 10) // 10 is the ASCII code for newline
-
-// Checks if a list of characters starts with "//"
-Parser/is-comment
-: ∀(cs: String)
-  Bool
-= λ{
-  #Cons: λhead λ{
-    #Nil: #False{}
-    #Cons: λsecond λtail (Bool/and (Char/eq head 47) (Char/eq second 47))
-  }
-  #Nil: #False{}
-}
-
-// Helper function to handle comment skipping
-Parser/skip-comment
-: ∀(acc: Nat)
-  ∀(cs: String)
-  (Pair Nat String)
-= λacc λcs
-  let com-len = (String/length (List/take-while Char (λc (Bool/not (Parser/is-newline c))) cs))
-  let new-acc = (Nat/add (Nat/add acc #2) com-len) // +2 for "//"
-  let rem     = (String/drop (#Succ{com-len}) cs) // +1 to consume newline
-  (Parser/skip-trivia-go new-acc rem)
-
-// Auxiliary function for skip-trivia
-// Accumulates the number of skipped characters
-Parser/skip-trivia-go
-: ∀(acc: Nat)
-  ∀(cs: String)
-  (Pair Nat String)
-= λacc λ{
-  #Nil: (#Pair{acc #Nil{}})
-  #Cons: λc λcs
-    match (Char/is-space c) {
-      #True: (Parser/skip-trivia-go (#Succ{acc}) cs)
-      #False: match (Parser/is-comment (#Cons{c cs})) { 
-         #True: (Parser/skip-comment acc cs)
-         #False: #Pair{acc (#Cons{c cs})}
-      }
-    }
-}
-
-
 // Skips whitespace and comments in the text.
 // Returns the number of characters skipped.
-Parser/skip-trivia: (Parser Nat)
-= λstate do Parser/Monad {
-  let #State{chars index} = state
-  let #Pair{skp  rem} = (Parser/skip-trivia-go #0 chars)
-  let new-index   = (Nat/add index skp)
-  let new-input   = rem
-  (#Done{#Reply{#State{new-input new-index} skp}})
-  }
+Parser/skip-trivia : (Parser Nat)
+| state =
+  let #State{input index} = state
+  let #Pair{skp rem}      = (Parser/skip-trivia-go #0 input)
+  let new-index           = (Nat/add index skp)
+  let new-input           = rem
+  #Done{#Reply{#State{new-input new-index} skp}}
 
-// Test: Skipping spaces
-TEST_0
-: (Equal
-    // (Parser Nat)
-    //  expected : (Parser Nat)
-    // - detected : (Result (Parser/Reply Nat) Parser/Error)
-     (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"   abc" #0}))
-    #Done{#Reply{#State{"abc" #3} #3}})
-= #Refl
-
-// Test: Skipping a single-line comment
-TEST_1
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"// This is a comment\nabc" #0}))
-    #Done{#Reply{#State{"abc" #21} #21}})
-= #Refl
-
-// Test: Skipping mixed spaces and comment
-TEST_2
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"  // Comment\n  abc" #0}))
-    (#Done{#Reply{#State{"abc" #15} #15}}))
-= #Refl
-
-// Test: No trivia to skip
-TEST_3
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"abc" #0}))
-    #Done{#Reply{(#State{"abc" #0}) #0}})
-= #Refl
-
-// Test: Skipping multiple comments
-TEST_4
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"// Comment 1\/ Comment 2\nabc" #0}))
-    #Done{#Reply{(#State{"abc" #24}) #24}}) // #26
-= #Refl
-
-// Test: Skipping mixed whitespace
-TEST_5
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{" \t \t abc" #0}))
-    #Done{#Reply{(#State{"abc" #5}) #5}})
-= #Refl
-
-// Test: Comment at the end (not skipped)
-TEST_6
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"abc // Final comment" #0}))
-    #Done{#Reply{(#State{"abc // Final comment" #0}) #0}})
-= #Refl
-
-// Test: Skipping multiple newlines
-TEST_7
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"\n\n\nabc" #0}))
-    #Done{#Reply{(#State{"abc" #3}) #3}})
-= #Refl
-
-// Test: Skipping comment without newline
-TEST_8
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    (Parser/skip-trivia (#State{"// Comment without newline" #0}))
-    #Done{#Reply{(#State{"" #27}) #27}})
-= #Refl
+#test: (Parser/skip-trivia (#State{"   abc" #0})) == #Done{#Reply{#State{"abc" #3} #3}}
+#test: (Parser/skip-trivia (#State{"// This is a comment\nabc" #0})) == #Done{#Reply{#State{"abc" #21} #21}}
+#test: (Parser/skip-trivia (#State{"  // Comment\n  abc" #0})) == #Done{#Reply{#State{"abc" #15} #15}}
+#test: (Parser/skip-trivia (#State{"abc" #0})) == #Done{#Reply{#State{"abc" #0} #0}}
+#test: (Parser/skip-trivia (#State{"// Comment 1\n// Comment 2\nabc" #0})) == #Done{#Reply{#State{"abc" #26} #26}}

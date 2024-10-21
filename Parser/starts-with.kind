@@ -2,44 +2,17 @@
 // - prefix: The prefix string to check for.
 // = A Parser that returns True if the input starts with the given string, False otherwise.
 //   Does not consume any input.
-Parser/starts-with
-: ∀(prefix: String)
-  (Parser Bool)
-= λprefix λstate
-  let #State{input _} = state
-  let result = (String/starts-with input prefix)
-  #Done{
-    #Reply{
-      state: state
-      value: result
-    }
+Parser/starts-with : String -> (Parser Bool)
+| prefix #State{input index} = #Done{
+  #Reply{
+    state: #State{input index}
+    value: (String/starts-with input prefix)
   }
-// Test: Starts with matching prefix
-TEST_0 : (Equal
-  (Result (Parser/Reply Bool) Parser/Error)
-  (Parser/starts-with "hello" (#State{"hello world" #0}))
-  #Done{#Reply{
-    state: (#State{"hello world" #0})
-    value: #True
-  }}
-) = #Refl
+}
 
-// Test: Starts with non-matching prefix
-TEST_1 : (Equal
-  (Result (Parser/Reply Bool) Parser/Error)
-  (Parser/starts-with "hello" (#State{"goodbye world" #0}))
-  #Done{#Reply{
-    state: (#State{"goodbye world" #0})
-    value: #False
-  }}
-) = #Refl
-
-// Test: Starts with empty string
-TEST_2 : (Equal
-  (Result (Parser/Reply Bool) Parser/Error)
-  (Parser/starts-with "" (#State{"any string" #0}))
-  #Done{#Reply{
-    state: (#State{"any string" #0})
-    value: #True
-  }}
-) = #Refl
+#test: (Parser/starts-with "hello" (#State{"hello world" #0}))
+    == #Done{#Reply{state: (#State{"hello world" #0}) value: #True}}
+#test: (Parser/starts-with "hello" (#State{"goodbye world" #0}))
+    == #Done{#Reply{state: (#State{"goodbye world" #0}) value: #False}}
+#test: (Parser/starts-with "" (#State{"any string" #0}))
+    == #Done{#Reply{state: (#State{"any string" #0}) value: #True}}

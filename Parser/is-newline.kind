@@ -1,0 +1,3 @@
+// Checks if a character is a newline
+Parser/is-newline : Char -> Bool
+| c = (Char/eq c 10) // 10 is the ASCII code for newline

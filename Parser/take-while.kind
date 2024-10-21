@@ -1,41 +1,15 @@
 // Consumes characters from the input as long as they satisfy the given predicate.
-// - pred: A function that takes a Char (U32) and returns a Bool, used as the predicate.
-// = A Parser that returns a String containing the consumed characters.
-Parser/take-while
-: ∀(pred: ∀(c: Char) Bool)
-  (Parser String)
-= λpred λstate do Parser/Monad {
-  let #State{input index} = state
-  let consumed  = (List/take-while Char pred input)
-  let #Pair{consume count} = (String/length-got consumed)
-  let new-index = (Nat/add index count)
-  let new-input = (String/drop count input)
-  (#Done{#Reply{#State{new-input new-index} consume}})
-}
+// - pred: Function that takes a Char and returns a Bool, used as the predicate.
+// = Parser that returns a String containing the consumed characters.
+Parser/take-while : (Char -> Bool) -> (Parser String)
+| pred = λstate
+  let #State{inp idx} = state
+  let consumed        = (List/take-while Char pred inp)
+  let #Pair{cs count} = (String/length-got consumed)
+  let new-idx         = (Nat/add idx count)
+  let new-inp         = (String/drop count inp)
+  #Done{#Reply{#State{new-inp new-idx} cs}}
 
-  // Test: Take while alpha on mixed input
-TEST_0
-: (Equal
-    (Result (Parser/Reply String) Parser/Error)
-    (Parser/take-while Char/is-alpha (#State{"abcDEF123" #0}))
-    (#Done{#Reply{#State{"123" #6} "abcDEF"}})
-  )
-= #Refl
-
-// Test: Take while alpha on empty input
-TEST_1
-: (Equal
-    (Result (Parser/Reply String) Parser/Error)
-    ((Parser/take-while Char/is-alpha) (#State{"" #0}))
-    (#Done{#Reply{#State{"" #0} ""}})
-  )
-= #Refl
-
-// Test: Take while alpha on non-matching input
-TEST_2
-: (Equal
-    (Result (Parser/Reply String) Parser/Error)
-    ((Parser/take-while Char/is-alpha) (#State{"123abc" #0}))
-    (#Done{#Reply{#State{"123abc" #0} ""}})
-  )
-= #Refl
+#test: (Parser/take-while Char/is-alpha (#State{"abcDEF123" #0})) == #Done{#Reply{#State{"123" #6} "abcDEF"}}
+#test: (Parser/take-while Char/is-alpha (#State{"" #0})) == #Done{#Reply{#State{"" #0} ""}}
+#test: (Parser/take-while Char/is-alpha (#State{"k123abc" #0})) == #Done{#Reply{#State{"123abc" #1} "k"}}

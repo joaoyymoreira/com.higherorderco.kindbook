@@ -1,0 +1,11 @@
+// Checks if a string starts with "//".
+// - str: Input string.
+// = True if it starts with "//", False otherwise.
+Parser/is-comment : String -> Bool
+| #Cons{head #Cons{second tail}} = (Bool/and (Char/eq head '/') (Char/eq second '/'))
+| _                              = #False
+
+#test: (Parser/is-comment "// This is a comment") == #True
+#test: (Parser/is-comment "This is not a comment") == #False
+#test: (Parser/is-comment "/") == #False
+#test: (Parser/is-comment "") == #False
