@@ -3,5 +3,5 @@
 // = A function that takes a State and returns a Result which is either:
 //   - Done: a Reply containing the parsed value and new state.
 //   - Fail: an Error containing the index and message.
-Parser/Parser : * -> *
+Parser : * -> *
 = λA (Parser/State -> (Result (Parser/Reply A) Parser/Error))

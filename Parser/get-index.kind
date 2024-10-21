@@ -1,9 +1,9 @@
 // Returns the current index of the parser state.
 // = A Reply containing the current state and the current index.
-Parser/get-index : (Parser/Parser Nat)
+Parser/get-index : (Parser Nat)
 = λstate
-  let index = (Parser/State/index state)
-  #Done{#MkReply{
+  let #State{_ index} = state
+  #Done{#Reply{
     state: state
     value: index
   }}

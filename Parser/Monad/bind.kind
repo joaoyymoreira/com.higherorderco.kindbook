@@ -7,14 +7,13 @@
 Parser/Monad/bind
 : ∀(A: *)
   ∀(B: *)
-  ∀(p: (Parser/Parser A))
-  ∀(f: ∀(a: A) (Parser/Parser B))
-  (Parser/Parser B)
+  ∀(p: (Parser A))
+  ∀(f: ∀(a: A) (Parser B))
+  (Parser B)
 = λA λB λp λf λs
   match (p s) {
     #Done: λr
-      let value = (Parser/Reply/value A r)
-      let state = (Parser/Reply/state A r)
+      let #Reply{state value} = r
       (f value state)
     #Fail: λe #Fail{e}
   }
@@ -28,8 +27,8 @@ Parser/Monad/bind
 Parser/Monad/seq
 : ∀(A: *)
   ∀(B: *)
-  ∀(p: (Parser/Parser A))
-  ∀(q: (Parser/Parser B))
-  (Parser/Parser B)
+  ∀(p: (Parser A))
+  ∀(q: (Parser B))
+  (Parser B)
 = λA λB λp λq
-  (Pair/Monad/bind A B p (λx q))
+  (Parser/Monad/bind A B p (λx q))

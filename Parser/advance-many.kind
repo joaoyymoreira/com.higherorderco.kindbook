@@ -1,15 +1,77 @@
 // Advances the parser by a specified number of characters and returns the consumed characters.
 // - count: The number of characters to advance.
 // = A Parser that returns a Maybe String containing the consumed characters.
-Pair/advance-many
+Parser/advance-many
 : ∀(count: Nat)
-  (Pair/Parser (Maybe String))
+  (Parser (Maybe String))
 = λcount λstate
-  let input     = (Pair/State/input state)
-  let chars     = input
+  let #State{chars index} = state
   let consumed  = (List/take Char count chars)
-  let new-index = (Nat/add (Pair/State/index state) count)
+  let new-index = (Nat/add index count)
   let new-input = (String/drop count chars)
-  // #Done{#MkReply{#MkState{new-input new-index} #Some{consumed}}}
-  ?a
+  #Done{#Reply{#State{new-input new-index} #Some{consumed}}}
 
+// Test: Advance 3 characters in a valid string
+TEST_0
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #3 #State{"abcdef" #0})
+    (#Done{#Reply{#State{"def" #3} #Some{"abc"}}}))
+= #Refl
+
+// Test: Advance more characters than available
+TEST_1
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #10 #State{"abcdef" #0})
+    (#Done{#Reply{#State{"" #10} #Some{"abcdef"}}}))
+= #Refl
+
+// Test: Advance exactly the number of characters available
+TEST_2
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #6 #State{"abcdef" #0})
+    (#Done{#Reply{#State{"" #6} #Some{"abcdef"}}}))
+= #Refl
+
+// Test: Advance in an empty string
+TEST_3
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #3 #State{"" #0})
+    (#Done{#Reply{#State{"" #3} #Some{""}}}))
+= #Refl
+
+// Test: Advance with non-0 starting index
+TEST_4
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #3#State{"abcdef" #2})
+    (#Done{#Reply{#State{"def" #5} #Some{"abc"}}}))
+= #Refl
+
+// Test: Advance 0 characters
+TEST_5
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    ((Parser/advance-many #0)
+       #State{"abcdef" #0})
+    (#Done{#Reply{#State{"abcdef" #0} #Some{""}}}))
+= #Refl
+
+// Test: Advance with Unicode characters
+TEST_6
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #2 #State{"🌟🌠✨" #0})
+    (#Done{#Reply{#State{"✨" #2} #Some{"🌟🌠"}}}))
+= #Refl
+
+// Test: Advance beyond length with non-0 start
+TEST_7
+: (Equal
+    (Result (Parser/Reply (Maybe String)) Parser/Error)
+    (Parser/advance-many #8 #State{"abcdef" #2})
+    (#Done{#Reply{#State{"" #10} #Some{"abcdef"}}}))
+= #Refl

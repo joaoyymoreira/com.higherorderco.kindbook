@@ -1,27 +1,49 @@
 // Attempts to consume a specific string from the input.
 // - target: The target string to consume.
 // = A Parser that returns unit if successful, or fails if the target string is not found at the current position.
-Pair/consume
+Parser/consume
 : ∀(target: String)
-  (Pair/Parser Unit)
+  (Parser Unit)
 = λtarget λstate
-  let input = (Pair/State/input state)
-  let index = (Pair/State/index state)
-  (Bool/if (Result (Pair/Reply Unit) Pair/Error)
-    (String/starts-with input target)
+  let #State{input index} = state
+  if (String/starts-with input target) {
     (#Done{
-      #MkReply{
-        state: #MkState{
-          input: (String/drop (List/length U32 target) input)
-          index: (Nat/add index (List/length U32 target))
+      #Reply{
+        state: #State{
+          input: (String/drop (String/length target) input)
+          index: (Nat/add index (String/length target))
         }
         value: #Unit
       }
     })
+    } else {
     (#Fail{
-      #MkError{
+      #Error{
         index: index
         error: (String/append "Expected " target)
       }
     })
-  )
+  }
+// Test: Consuming a valid string
+TEST_0 
+: (Equal
+  (Result (Parser/Reply Unit) Parser/Error)
+  ((Parser/consume "abc") (#State{input: "abcdef" index: #0}))
+  (#Done{#Reply{#State{input: "def" index: #3} #Unit}})) 
+= #Refl
+
+// Test: Consuming an invalid string
+TEST_1 
+: (Equal
+  (Result (Parser/Reply Unit) Parser/Error)
+  ((Parser/consume "abc") (#State{input: "abxdef" index: #0}))
+  (#Fail{#Error{#0 "Expected abc"}})) 
+= #Refl
+
+// Test: Consuming an empty string
+TEST_2 
+: (Equal
+  (Result (Parser/Reply Unit) Parser/Error)
+  ((Parser/consume "") (#State{input: "abcdef" index: #0}))
+  (#Done{#Reply{ #State{input: "abcdef" index: #0} #Unit}})) 
+= #Refl

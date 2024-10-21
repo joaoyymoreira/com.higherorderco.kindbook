@@ -1,13 +1,3 @@
-// Parses as many occurrences of the given parser as possible.
-// - A: The type of elements parsed by the given parser.
-// - p: The parser to be repeatedly applied.
-// = A parser that returns a list of all successfully parsed elements.
-Parser/parse_many
-: ∀(A: *)
-  ∀(p: (Parser/Parser A))
-  (Parser/Parser (List A))
-= λA λp (Parser/parse_many_go A p #Nil)
-
 // Helper function to accumulate parsed results.
 // - A: The type of elements parsed by the given parser.
 // - p: The parser to be repeatedly applied.
@@ -15,21 +5,29 @@ Parser/parse_many
 // = A parser that returns the final list of all parsed elements.
 Parser/parse_many_go
 : ∀(A: *)
-  ∀(p: (Parser/Parser A))
+  ∀(p: (Parser A))
   ∀(acc:( List A))
-  (Parser/Parser (List A))
-= λA λp λacc λs
-  match (p s) {
-    #Done: λr
-      let value = (Parser/Reply/value A r)
-      let state = (Parser/Reply/state A r)
+  (Parser (List A))
+= λA λp λacc λstate
+  match (p state) {
+    #Done: λreply
+      let #Reply{state value} = reply
       use new_acc = #Cons{value acc}
       (Parser/parse_many_go A p new_acc state)
     #Fail: λe
       #Done{
-        #MkReply{
-          state: s
+        #Reply{
+          state: state
           value: (List/reverse A acc)
         }
       }
   }
+// Parses as many occurrences of the given parser as possible.
+// - A: The type of elements parsed by the given parser.
+// - p: The parser to be repeatedly applied.
+// = A parser that returns a list of all successfully parsed elements.
+Parser/parse_many
+: ∀(A: *)
+  ∀(p: (Parser A))
+  (Parser (List A))
+= λA λp (Parser/parse_many_go A p #Nil)

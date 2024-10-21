@@ -8,10 +8,12 @@ Parser/map
 : ∀(A: *)
   ∀(B: *)
   ∀(fn: A -> B)
-  ∀(p: (Parser/Parser A))
-  (Parser/Parser B)
-= λA λB λfn λp λs
-  match (p s) {
-    #Done: λr #Done{#MkReply{(Parser/Reply/state A r) (fn (Parser/Reply/value A r))}}
+  ∀(p: (Parser A))
+  (Parser B)
+= λA λB λfn λp λstate
+  match (p state) {
+    #Done: λreply 
+      let #Reply{state value} = reply
+      #Done{#Reply{state (fn value)}}
     #Fail: λe #Fail{e}
   }

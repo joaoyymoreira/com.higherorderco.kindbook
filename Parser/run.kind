@@ -5,14 +5,16 @@
 // = Either (Some parsed-value) if successful, or None if parsing failed.
 Parser/run
 : ∀(A: *)
-  ∀(parser: (Parser/Parser A))
+  ∀(parser: (Parser A))
   ∀(input: String)
   (Maybe A)
 = λA λparser λinput
   let initial_state = (Parser/new_parser_state input)
   let result = (parser initial_state)
   match result {
-    #Done: λreply #Some{(Parser/Reply/value A reply)}
+    #Done: λreply 
+      let #Reply{_ value} = reply 
+      #Some{value}
     #Fail: λerror #None
   }
 

@@ -1,47 +1,28 @@
 // Checks if the parser has reached the end of the input.
 // = A Reply containing a Bool: True if at the end of input, False otherwise.
-Parser/is-eof : (Parser/Parser Bool)
+Parser/is-eof : (Parser Bool)
 = λstate
-  let input = (Parser/State/input state)
+  let #State{input _} = state
   let result = (String/is-empty input)
   #Done{
-    #MkReply{
+    #Reply{
       state: state
       value: result
     }
   }
 
-// Accessor for the input field of State
-Parser/State/input
-: ∀(s: Parser/State)
-  String
-= λ{
-  #MkState: λs.input λs.index s.input
-}
 // Test: is-eof returns True for an empty string
 TEST_0
 : (Equal
     (Result (Parser/Reply Bool) Parser/Error)
-    (Parser/is-eof (Parser/State/new [] #Zero))
-    (#Done{
-      #MkReply{
-        state: (Parser/State/new [] #Zero)
-        value: #True
-      }
-    })
-  )
+    (Parser/is-eof #State{"" #0})
+    (#Done{ #Reply{#State{"" #0} #True}}))
 = #Refl
 
 // Test: is-eof returns False for a non-empty string
 TEST_1
 : (Equal
     (Result (Parser/Reply Bool) Parser/Error)
-    (Parser/is-eof (Parser/State/new (String/from-list [97u32 98u32 99u32]) #Zero))
-    (#Done{
-      #MkReply{
-        state: (Parser/State/new (String/from-list [97u32 98u32 99u32]) #Zero)
-        value: #False
-      }
-    })
-  )
+    (Parser/is-eof #State{"abc" #0})
+    (#Done{#Reply{#State{"abc" #0} #False}}))
 = #Refl

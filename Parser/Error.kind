@@ -2,7 +2,7 @@
 // - index: Error position.
 // - error: Error description.
 data Parser/Error {
-  #MkError {
+  #Error {
     index: Nat
     error: String
   }

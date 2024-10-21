@@ -5,9 +5,9 @@
 // = A new parser that succeeds if either of the input parsers succeeds.
 Parser/alternative
 : ∀(A: *)
-  ∀(p: (Parser/Parser A))
-  ∀(q: (Parser/Parser A))
-  (Parser/Parser A)
+  ∀(p: (Parser A))
+  ∀(q: (Parser A))
+  (Parser A)
 = λA λp λq λs
   match (p s) {
     #Done: λr #Done{r}
@@ -17,7 +17,7 @@ Parser/alternative
 // Infix operator for alternative.
 Parser/alt
 : ∀(A: *)
-  ∀(p: (Parser/Parser A))
-  ∀(q: (Parser/Parser A))
-  (Parser/Parser A)
+  ∀(p: (Parser A))
+  ∀(q: (Parser A))
+  (Parser A)
 = Parser/alternative
