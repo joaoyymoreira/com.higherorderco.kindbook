@@ -11,3 +11,35 @@ Parser/peek-many
   let enough = (Nat/eq length count)
   let result = (Bool/if (Maybe String) (enough) (#Some{str}) (#None))
   #Done{#Reply{state result}}
+
+  // Test: Peek 3 characters from a 6-character string
+TEST_0 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #3 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #Some{"abc"}}}))
+= #Refl
+
+// Test: Peek all 6 characters from a 6-character string
+TEST_1 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #6 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #Some{"abcdef"}}}))
+= #Refl
+
+// Test: Attempt to peek more characters than available
+TEST_2 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #10 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #None}}))
+= #Refl
+
+// Test: Peek from an empty string
+TEST_3 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #3 #State{"" #0})
+  (#Done{#Reply{#State{"" #0} #None}}))
+= #Refl

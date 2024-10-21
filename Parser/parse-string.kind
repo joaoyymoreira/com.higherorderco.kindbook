@@ -1,52 +1,53 @@
-// Parses multiple characters until a closing quote is encountered.
+Parses multiple characters until a closing quote is encountered.
 // = A list of characters representing the parsed string content.
-Parser/parse-chars : (Parser/Parser String)
+Parser/parse-chars : (Parser String)
 = do Parser/Monad {
   ask c = (Parser/parse-char)
-  (match (Char/eq '"' c) {
+  (match (Char/eq 34 c) {
     #True: (Parser/Monad/pure _ [])
     #False: do Parser/Monad {
       ask cs = (Parser/parse-chars)
-      (Parser/Monad/pure _ #Cons{c cs})
+      ret #Cons{c cs}
     }
   })
 }
 // Parses a quoted string.
 // = A String value representing the parsed quoted string.
-Parser/parse-string : (Parser/Parser String)
+Parser/parse-string : (Parser/ String)
 = do Parser/Monad {
   ask y = (Parser/consume "\"")
   ask chars = (Parser/parse-chars)
-  (Parser/Monad/pure _ (chars))
+  ret chars
 }
+
 // Test: Parse a normal string
 TEST_0 
 : (Equal
-  (Parser/Parser String)
-  (Parser/parse-string (Parser/State/new "\"abc\"" #Zero))
-  (#Done{#MkReply{#MkState{[] (U32/to-nat 5)} "abc"}}))
+  (Parser String)
+  (Parser/parse-string #State{"\"abc\"" #0})
+  (#Done{#Reply{#State{[] #5} "abc"}}))
 = #Refl
 
 // Test: Parse a string with escape character
 TEST_1 
 : (Equal
-  (Parser/Parser String)
-  (Parser/parse-string (Parser/State/new "\"a\\nb\"" #Zero))
-  (#Done{#MkReply{#MkState{[] (U32/to-nat 6)} "a\nb"}}))
+  (Parser String)
+  (Parser/parse-string #State{"\"a\\nb\"" #0})
+  (#Done{#Reply{#State{[] #6} "a\nb"}}))
 = #Refl
 
 // Test: Parse an empty string
 TEST_2 
 : (Equal
-  (Parser/Parser String)
-  (Parser/parse-string (Parser/State/new "\"\"" #Zero))
-  (#Done{#MkReply{#MkState{[] (U32/to-nat 2)} []}}))
+  (Parser String)
+  (Parser/parse-string #State{"\"\"" #0})
+  (#Done{#Reply{#State{[] #2} []}}))
 = #Refl
 
 // Test: Parse an invalid string (unclosed quote)
 TEST_3 
 : (Equal
-  (Parser/Parser String)
-  (Parser/parse-string (Parser/State/new "\"abc" #Zero))
-  (#Fail{#MkError{(U32/to-nat 4) "Unexpected end of input"}}))
+  (Parser String)
+  (Parser/parse-string #State{"\"abc" #0})
+  (#Fail{#Error{#4 "Unexpected end of input"}}))
 = #Refl

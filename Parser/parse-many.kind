@@ -22,6 +22,7 @@ Parser/parse-many-go
         }
       }
   }
+
 // Parses as many occurrences of the given parser as possible.
 // - A: The type of elements parsed by the given parser.
 // - p: The parser to be repeatedly applied.

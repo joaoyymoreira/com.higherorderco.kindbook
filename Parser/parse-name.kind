@@ -23,3 +23,28 @@ Parser/parse-name : (Parser String)
       }
     #Fail: λe #Fail{e}
   }
+
+
+// Test: Parsing a valid name
+TEST_0
+: (Equal
+  (Result (Parser/Reply String) Parser/Error)
+  (Parser/parse-name #State{"abc_123 def" #0})
+  (#Done{#Reply{(#State{" def" #7}) "abc_123"}}))
+= #Refl
+
+// Test: Parsing an empty name (should fail)
+TEST_1
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    (Parser/parse-name #State{" abc" #0})
+    (#Fail{#Error{#0 "Expected a name"}}))
+= #Refl
+
+// Test: Parsing a name with special characters
+TEST_2
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    (Parser/parse-name #State{"abc-def.ghi" #0})
+    (#Done{#Reply{(#State{"" #11}) "abc-def.ghi"}}))
+= #Refl
