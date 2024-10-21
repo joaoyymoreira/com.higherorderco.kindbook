@@ -12,7 +12,7 @@ Parser/parse-unicode-escape : (Parser Char)
 }
 
 #test: (Parser/run Char Parser/parse-unicode-escape "{41}") == #Some{'A'}
-// #test: (Parser/run Char Parser/parse-unicode-escape "{1F600}") == #Some{'😀'}
+// #test: (Parser/run Char Parser/parse-unicode-escape "{1F600}") == #Some{'😀'} // #128512 = 1F600
 #test: (Parser/run Char Parser/parse-unicode-escape "{G}") == #None
 #test: (Parser/run Char Parser/parse-unicode-escape "41}") == #None
 #test: (Parser/run Char Parser/parse-unicode-escape "{41") == #None
