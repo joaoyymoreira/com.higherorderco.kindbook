@@ -1,7 +1,4 @@
 // Creates an empty OrdMap.
 // = An empty OrdMap.
-OrdMap/empty
-: ∀(K: *)
-  ∀(V: *)
-  (OrdMap/OrdMap K V)
-= λK λV (AVLTree/empty K V)
+OrdMap/empty : ∀(K: *) ∀(V: *) (OrdMap K V)
+| K V = (OrdTree/empty K V)
