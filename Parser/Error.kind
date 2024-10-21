@@ -1,9 +1,9 @@
-// Represents a parser error with an index and an error message.
-// - index: The position in the input where the error occurred.
-// - error: A string describing the error.
-Parser/Error : * = data[]{
-  #MkError{
+// Represents a parser error.
+// - index: Error position.
+// - error: Error description.
+data Parser/Error {
+  #MkError {
     index: Nat
     error: String
-  } : Parser/Error
-} : Parser/Error
+  }
+}
