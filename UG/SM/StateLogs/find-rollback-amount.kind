@@ -1,0 +1,21 @@
+// Finds the number of states to roll back to reach a specific tick.
+// - target_tick: The tick to roll back to.
+// - states: The current state logs.
+// = The number of states to roll back to reach the target tick.
+UG/SM/StateLogs/find_rollback_amount : ∀(S: *) UG/SM/Tick -> (UG/SM/StateLogs S) -> Nat
+| S target_tick states = (UG/SM/StateLogs/find_rollback_amount/go S target_tick states #Zero)
+
+// Auxiliary function to find the number of states to roll back.
+// - target_tick: The tick to roll back to.
+// - states: The current state logs.
+// - rollback_amount: Accumulator for the number of states to roll back.
+// = The number of states to roll back to reach the target tick.
+UG/SM/StateLogs/find_rollback_amount/go : ∀(S: *) UG/SM/Tick -> (UG/SM/StateLogs S) -> Nat -> Nat
+| S target_tick #None                                                   rollback_amount = rollback_amount
+| S target_tick #Some{#StateNode{tick keep life state older}} rollback_amount =
+  let is_target_greater = (Nat/lt target_tick tick)
+  if (is_target_greater) {
+    (UG/SM/StateLogs/find_rollback_amount/go S target_tick older (Nat/add #1 rollback_amount))
+  } else {
+    rollback_amount
+  }

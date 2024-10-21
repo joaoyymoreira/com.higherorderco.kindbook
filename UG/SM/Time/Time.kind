@@ -1,0 +1,3 @@
+// Represents a time value
+Time : *
+= Nat

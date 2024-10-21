@@ -1,0 +1,8 @@
+// Gets the state from a StateNode.
+// - S: State type.
+// - node: The StateNode.
+// = The state value.
+UG/SM/StateLogs/StateNode/state : ∀(S: *) (UG/SM/StateLogs/StateNode S) -> S
+| S #StateNode{tick keep life state older} = state
+
+#test: (UG/SM/StateLogs/StateNode/state Bool #StateNode{tick: #0 keep: #5 life: #10 state: #True older: #None}) == #True

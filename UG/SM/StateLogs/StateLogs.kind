@@ -1,0 +1,4 @@
+// Represents a log of states
+// It's either empty (None) or contains a StateNode
+UG/SM/StateLogs : * -> *
+| S = (Maybe (UG/SM/StateLogs/StateNode S))
