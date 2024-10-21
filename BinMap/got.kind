@@ -8,8 +8,12 @@
 BinMap/got : ∀(A: *) (BinMap A) -> Bits -> (Pair (BinMap A) (Maybe A))
 | A #Leaf        k     = #Pair{#Leaf #None}
 | A #Node{x l r} #E    = #Pair{#Node{x l r} x}
-| A #Node{x l r} #O{k} = match (BinMap/got A l k) { #Pair{l x}: #Pair{#Node{x l r} x} }
-| A #Node{x l r} #I{k} = match (BinMap/got A r k) { #Pair{r x}: #Pair{#Node{x l r} x} }
+| A #Node{x l r} #O{k} = match (BinMap/got A l k) { #Pair{l got}: #Pair{#Node{x l r} got} }
+| A #Node{x l r} #I{k} = match (BinMap/got A r k) { #Pair{r got}: #Pair{#Node{x l r} got} }
 
 #test: (BinMap/got U32 #Leaf #E) == #Pair{#Leaf #None}
 #test: (BinMap/got U32 (BinMap/set U32 #Leaf #E 3) #E) == #Pair{#Node{#Some{3} #Leaf #Leaf} #Some{3}}
+#test:
+  let old = (BinMap/set _ (BinMap/new _) #E 7)
+  let neo = (Pair/get-fst _ _ (BinMap/got _ old #I{#O{#E}}))
+  old == neo
