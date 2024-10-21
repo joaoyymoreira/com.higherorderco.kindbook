@@ -10,3 +10,12 @@ Parser/bind : ∀(A: *) ∀(B: *) (Parser A) -> (A -> (Parser B)) -> (Parser B)
   #Fail: λe #Fail{e}
 }
 
+
+parser1 : (Parser Nat)
+| state = #Done{#Reply{state #5}}
+
+parser2 : Nat -> (Parser String)
+| n state = #Done{#Reply{state (String/replicate n 'a')}}
+
+#test: ((Parser/bind Nat String parser1 parser2) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "aaaaa"}})
+#test: ((Parser/bind Nat String parser1 (λx (Parser/pure String "hello"))) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "hello"}})
