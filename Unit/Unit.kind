@@ -1,5 +1,4 @@
-// Represents a unit type with a single inhabitant.
-Unit : *
-= data[]{
-  #Unit : Unit
-} : Unit
+// A type with a single inhabitant.
+data Unit {
+  #Unit
+}

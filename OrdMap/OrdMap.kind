@@ -1,11 +1,5 @@
-// OrdMap is a type alias for AVL trees.
-// It represents an ordered map (dictionary) data structure.
-// - K: The type of keys in the map.
-// - V: The type of values associated with the keys.
-// The underlying implementation uses an AVL tree for efficient
-// insertion, deletion, and lookup operations.
-OrdMap
-: ∀(K: *)
-  ∀(V: *)
-  *
-= λK λV (OrdTree K V)
+// Ordered map (dictionary) data structure.
+// - K: Key type.
+// - V: Value type.
+OrdMap : * -> * -> *
+| K V = (OrdTree K V)

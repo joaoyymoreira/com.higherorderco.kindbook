@@ -1,46 +1,6 @@
-// Represents the reply of a parser.
-// - A: The type of the parsed value.
-// = A record containing the current parser state and the parsed value.
-Parser/Reply : ∀(A: *) *
-= λA data[]{
-  #MkReply{
+data Parser/Reply (A : Set) {
+  #Reply {
     state: Parser/State
     value: A
-  } : (Parser/Reply A)
+  }
 }
-
-// Accessor for the state field of Reply
-Parser/Reply/state
-: ∀(A: *)
-  ∀(reply: (Parser/Reply A))
-  Parser/State
-= λA λ{
-  #MkReply: λreply.state λreply.value reply.state
-}
-
-// Accessor for the value field of Reply
-Parser/Reply/value
-: ∀(A: *)
-  ∀(reply: (Parser/Reply A))
-  A
-= λA λ{
-  #MkReply: λreply.state λreply.value reply.value
-}
-
-// Helper function to create a new Reply
-Parser/Reply/new
-: ∀(A: *)
-  ∀(state: Parser/State)
-  ∀(value: A)
-  (Parser/Reply A)
-= λA λstate λvalue #MkReply{state value}
-// Test: Verify Reply record field access
-TEST_0 : (Equal use x = (Parser/Reply)
-      (Pair/Pair Parser/State Nat)
-      (#Pair{
-        (Parser/Reply/state Nat (#MkReply{(#MkState{"abc" #0}) #42}))
-        (Parser/Reply/value Nat (#MkReply{(#MkState{"abc" #0}) #42}))})
-      (#Pair{
-        (#MkState{"abc" #0})
-        #42}))
-= #Refl

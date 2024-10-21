@@ -1,3 +1,2 @@
-// Represents an empty type with no constructors.
-Empty : *
-= data[]{} : Empty
+// An empty type with no constructors.
+data Empty {}

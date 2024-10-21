@@ -1,8 +1,9 @@
-// Represents a simple pair of two values.
-// - A: The type of the first component.
-// - B: The type of the second component.
-Pair : * -> * -> *
-= λA λB 
-  data[]{
-    #Pair{ fst: A snd: B } : (Pair A B)
-  } : (Pair A B)
+// A pair of two values.
+// - A: First type.
+// - B: Second type.
+data Pair (A: *) (B: *) {
+  #Pair {
+    fst: A
+    snd: B
+  }
+}

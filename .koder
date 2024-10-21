@@ -42,6 +42,38 @@ Nat/double : Nat -> Nat
 #test: (Nat/double #1) == #2
 ```
 
+We're also refactoring ADT declarations. Example:
+
+```
+// Propositional Equality.
+// - A: The element type.
+// - x: The 1st element.
+// - y: The 2nd element.
+// = A proposition that x equals y.
+Equal : ∀(A: *) A -> A -> *
+= λA λx λy
+  data[y]{
+    #Refl : (Equal A x x)
+  } : (Equal A x y)
+```
+
+Must be updated to:
+
+```
+// Propositional Equality.
+// - A: The element type.
+// - x: The 1st element.
+// - y: The 2nd element.
+// = A proposition that x equals y.
+data Equal (A: *) ~ (x: A) (y: A) {
+  #Refl : (Equal A x x)
+}
+```
+
+NOTE: ADT indices must be placed after '~' on its signature
+
+NOTE: the return type of an ADT Ctr (ex: '#Refl : (Equal A x x)') can be omitted when the ADT isn't indexed
+
 NOTE: tests should always be one-liners, and without comments.
 
 NOTE: keep comments concise and less redundant. Example:

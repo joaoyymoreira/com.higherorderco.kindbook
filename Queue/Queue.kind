@@ -1,11 +1,8 @@
-// A queue that stores a list of elements to be dequeued
-// and a list of elements that have been enqueued.
-// When dequeueing, if `front` is empty then `back` is reversed
-// and replaces `front`.
-Queue
-: ∀(A: *)
-  *
-= λA
-  data[]{
-    #MkQueue{ front:(List A) back:(List A) } : (Queue A)
-  } : (Queue A)
+// A queue with two lists: front (to dequeue) and back (to enqueue).
+// - A: Element type.
+data Queue (A: *) {
+  #MkQueue {
+    front: (List A)
+    back: (List A)
+  }
+}

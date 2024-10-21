@@ -1,8 +1,7 @@
 // Represents nats.
 // - Zero: The zero nat.
 // - Succ: The successor of a nat.
-Nat : *
-= data[]{
-  #Zero : Nat
-  #Succ{ pred: Nat } : Nat
-} : Nat
+data Nat {
+  #Zero
+  #Succ{ pred: Nat }
+}

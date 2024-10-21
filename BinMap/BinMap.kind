@@ -1,6 +1,4 @@
 // Represents a BinMap as a BinTree of Maybe values.
 // - A: The type of values stored in the map.
-BinMap
-: ∀(A: *)
-  *
-= λA (BinTree (Maybe A))
+BinMap : * -> *
+| A = (BinTree (Maybe A))

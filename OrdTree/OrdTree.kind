@@ -1,17 +1,12 @@
 // Defines an Ord tree datatype.
-// - K: The type of keys stored in the tree.
-// - V: The type of values stored in the tree.
-OrdTree
-: ∀(K: *)
-  ∀(V: *)
-  *
-= λK λV
-  data[]{
-    #Leaf : (OrdTree K V)
-    #Node{
-      key_value: (Pair K V)
-      balance: Bool // FIXME
-      left: (OrdTree K V)
-      right: (OrdTree K V)
-    } : (OrdTree K V)
-  } : (OrdTree K V)
+// - K: Key type.
+// - V: Value type.
+data OrdTree (K: *) (V: *) {
+  #Leaf
+  #Node{
+    key_value: (Pair K V)
+    //balance: Bool/Balance -- FIXME
+    left: (OrdTree K V)
+    right: (OrdTree K V)
+  }
+}

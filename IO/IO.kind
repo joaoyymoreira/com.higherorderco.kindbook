@@ -1,6 +1,11 @@
-IO : ∀(A: *) *
-= λA
-  data[]{
-    #Print{ T: * text: T then: ∀(x: Unit) (IO A) } : (IO A)
-    #Return{ value: A } : (IO A)
+// Represents IO operations.
+// - A: The type of the result.
+data IO (A: *) {
+  #Print{
+    text: String
+    then: Unit -> (IO A)
   } : (IO A)
+  #Return{
+    value: A
+  } : (IO A)
+}

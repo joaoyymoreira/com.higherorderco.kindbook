@@ -3,8 +3,6 @@
 // - x: The 1st element.
 // - y: The 2nd element.
 // = A proposition that x equals y.
-Equal : ∀(A: *) A -> A -> *
-= λA λx λy
-  data[y]{
-    #Refl : (Equal A x x)
-  } : (Equal A x y)
+data Equal (A: *) ~ (x: A) (y: A) {
+  #Refl : (Equal A x x)
+}

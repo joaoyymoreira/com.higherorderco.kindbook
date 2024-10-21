@@ -1,9 +1,10 @@
-// Defines a binary tree datatype.
-// - Node: Contains a value and two subtrees.
-// - Leaf: Represents an empty tree.
-BinTree : * -> *
-= λA
-  data[]{
-    #Node{ val:A lft:(BinTree A) rgt:(BinTree A) } : (BinTree A)
-    #Leaf : (BinTree A)
-  } : (BinTree A)
+// Binary tree.
+// - A: Element type.
+data BinTree (A: *) {
+  #Node{
+    val: A
+    lft: (BinTree A)
+    rgt: (BinTree A)
+  }
+  #Leaf
+}

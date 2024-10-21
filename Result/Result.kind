@@ -1,13 +1,8 @@
-// Represents a computation that may succeed with a value or fail with an error.
-// - 1st: The type of the successful result.
-// - 2nd: The type of the error.
-// = A value that either contains the successful result or the error.
-Result
-: ∀(A: *)
-  ∀(E: *)
-  *
-= λA λE
-  data[]{
-    #Done{ value: A } : (Result A E)
-    #Fail{ error: E } : (Result A E)
-  } : (Result A E)
+// Represents a computation that may succeed or fail.
+// - A: Success type.
+// - E: Error type.
+// = A value containing either the result or the error.
+data Result (A: *) (E: *) {
+  #Done { value: A }
+  #Fail { error: E }
+}

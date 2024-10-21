@@ -1,9 +1,7 @@
 // Represents an optional value.
-// - None: Represents the absence of a value.
-// - Some: Represents the presence of a value.
-Maybe : * -> *
-= λA
-  data[]{
-    #None : (Maybe A)
-    #Some{ value: A } : (Maybe A)
-  } : (Maybe A)
+// - None: Absence of a value.
+// - Some: Presence of a value.
+data Maybe (A: *) {
+  #None
+  #Some{ value: A }
+}
