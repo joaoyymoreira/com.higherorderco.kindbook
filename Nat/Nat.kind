@@ -5,4 +5,4 @@ Nat : *
 = data[]{
   #Zero : Nat
   #Succ{ pred: Nat } : Nat
-}
+} : Nat

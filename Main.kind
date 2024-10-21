@@ -1,4 +1,4 @@
-Main : (Pair String U32) -> (Pair (List U32) U32)
+Main : (Pair String *) -> (Pair (List U32) *)
 | str = str
 
 

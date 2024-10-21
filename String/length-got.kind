@@ -1,5 +1,3 @@
-// FIXME: loops type checker
-
 // Computes string length while preserving it.
 // - str: Input string.
 // = Pair of original string and its length.

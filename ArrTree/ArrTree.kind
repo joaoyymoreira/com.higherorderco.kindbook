@@ -1,16 +1,17 @@
 // Defines an array-like binary tree datatype.
 // - Node: Contains two subtrees.
 // - Leaf: Contains a value.
-ArrTree/ArrTree
+ArrTree
 : ∀(A: *)
   ∀(d: Nat)
   *
-= λA λd data[]{
-  #Node{
-    lft: (ArrTree/ArrTree A d)
-    rgt: (ArrTree/ArrTree A d)
-  } : (ArrTree/ArrTree A (#Succ{d}))
-  #Leaf{
-    val: A
-  } : (ArrTree/ArrTree A #Zero)
-}
+= λA λd
+  data[]{
+    #Node{
+      lft: (ArrTree A d)
+      rgt: (ArrTree A d)
+    } : (ArrTree A (#Succ{d}))
+    #Leaf{
+      val: A
+    } : (ArrTree A #Zero)
+  } : (ArrTree A d)

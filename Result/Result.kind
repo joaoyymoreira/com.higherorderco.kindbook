@@ -6,7 +6,8 @@ Result
 : ∀(A: *)
   ∀(E: *)
   *
-= λA λE data[]{
-  #Done{ value: A } : (Result A E)
-  #Fail{ error: E } : (Result A E)
-}
+= λA λE
+  data[]{
+    #Done{ value: A } : (Result A E)
+    #Fail{ error: E } : (Result A E)
+  } : (Result A E)

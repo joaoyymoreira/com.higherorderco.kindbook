@@ -3,7 +3,8 @@
 // - B: The type of the right value.
 // = Returns left or right value.
 Either : * -> * -> *
-= λA λB data[]{
-  #Lft{ value: A } : (Either A B)
-  #Rgt{ value: B } : (Either A B)
-}
+= λA λB
+  data[]{
+    #Lft{ value: A } : (Either A B)
+    #Rgt{ value: B } : (Either A B)
+  } : (Either A B)

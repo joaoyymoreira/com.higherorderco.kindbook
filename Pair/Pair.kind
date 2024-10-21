@@ -2,6 +2,7 @@
 // - A: The type of the first component.
 // - B: The type of the second component.
 Pair : * -> * -> *
-= λA λB data[]{
-  #Pair{ fst: A snd: B } : (Pair A B)
-}
+= λA λB 
+  data[]{
+    #Pair{ fst: A snd: B } : (Pair A B)
+  } : (Pair A B)

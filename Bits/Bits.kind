@@ -4,7 +4,7 @@
 // - E: Represents the end of the binary string.
 Bits : *
 = data[]{
-  #O{ tail: Bits } : Bits
-  #I{ tail: Bits } : Bits
-  #E : Bits
-}
+    #O{ tail: Bits } : Bits
+    #I{ tail: Bits } : Bits
+    #E : Bits
+  } : Bits

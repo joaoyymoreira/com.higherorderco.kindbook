@@ -2,7 +2,8 @@
 // - Cons: Appends an element to a list.
 // - Nil: The empty list.
 List : * -> *
-= λA data[]{
-  #Nil : (List A)
-  #Cons{ head:A tail:(List A) } : (List A)
-}
+= λA 
+  data[]{
+    #Nil : (List A)
+    #Cons{ head:A tail:(List A) } : (List A)
+  } : (List A)

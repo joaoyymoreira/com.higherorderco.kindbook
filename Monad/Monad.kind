@@ -1,10 +1,11 @@
-Monad/Monad
+Monad
 : ∀(M: ∀(A: *) *)
   *
-= λM data[]{
-  #Bind{ A:* B:* ma:(M A) fn:(∀(a: A) (M B)) }: (Monad/Monad M)
-  #Pure: (Monad/Monad M)
-}
+= λM
+  data[]{
+    #Bind{ A:* B:* ma:(M A) fn:(∀(a: A) (M B)) }: (Monad M)
+    #Pure: (Monad M)
+  } : (Monad M)
 
 //use Trait/ as Trait/
 
