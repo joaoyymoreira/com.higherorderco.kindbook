@@ -1,6 +1,0 @@
-// Monad instance for Maybe
-Maybe/Trait/Monad : (Trait/Monad Maybe)
-= #Monad{
-    bind: Maybe/Monad/bind
-    pure: Maybe/Monad/pure
-  }

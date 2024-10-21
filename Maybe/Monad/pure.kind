@@ -1,9 +1,0 @@
-// Wraps a value in a Maybe context.
-// - A: The type of the value.
-// - x: The value to be wrapped.
-// = A Maybe value containing the given value.
-Maybe/Monad/pure : ∀(A: *) A -> (Maybe A)
-| A x = #Some{x}
-
-#test: (Maybe/Monad/pure U32 42) == #Some{42}
-#test: (Maybe/Monad/pure Bool #True) == #Some{#True}

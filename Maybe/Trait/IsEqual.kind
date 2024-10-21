@@ -1,8 +1,0 @@
-// IsEqual instance for Maybe
-Maybe/Trait/IsEqual
-: ∀(A: *)
-  ∀(e: (IsEqual A))
-  (IsEqual (Maybe A))
-= λA λe #IsEqual{
-    fn: (Maybe/eq A e)
-  }
