@@ -3,7 +3,7 @@
 Parser/skip-trivia : (Parser Nat)
 | state =
   let #State{input index} = state
-  let #Pair{skp rem}      = (Parser/skip-trivia-go #0 input)
+  let #Pair{skp rem}      = (Parser/skip-accumulate #0 input)
   let new-index           = (Nat/add index skp)
   let new-input           = rem
   #Done{#Reply{#State{new-input new-index} skp}}

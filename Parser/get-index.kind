@@ -1,10 +1,8 @@
 // Returns the current index of the parser state.
-// = A Reply containing the current state and the current index.
+// - state: The current parser state.
+// = A Reply containing the current state and index.
 Parser/get-index : (Parser Nat)
-| #State{input index} = 
-  #Done{
-    #Reply{
-      state: #State{input index}
-      value: index
-    }
-  }
+| #State{input index} = #Done{#Reply{#State{input index} index}}
+
+#test: (Parser/run Nat Parser/get-index "") == #Some{#0}
+#test: (Parser/run Nat Parser/get-index "abc") == #Some{#0}

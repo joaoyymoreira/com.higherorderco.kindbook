@@ -7,8 +7,12 @@
 Parser/map : ∀(A: *) ∀(B: *) (A -> B) -> (Parser A) -> (Parser B)
 | A B fn p state = 
   match (p state) {
-    #Done{reply}: match reply {
-      #Reply{state value}: #Done{#Reply{state (fn value)}}
-    }
+    #Done{reply}: 
+      match reply {
+        #Reply{state value}: #Done{#Reply{state (fn value)}}
+      }
     #Fail{e}: #Fail{e}
   }
+
+#test: (Parser/run U32 (Parser/map U32 U32 (λx (+ 1 x)) (Parser/pure U32 3)) "") == #Some{4}
+#test: (Parser/run U32 (Parser/map U32 U32 (λx (+ 1 x)) (Parser/fail U32 "error")) "") == #None

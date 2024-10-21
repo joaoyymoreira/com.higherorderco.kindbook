@@ -1,5 +1,5 @@
 // Parses an escape sequence.
-// = The parsed escaped character.
+// = Parsed escaped character.
 Parser/parse-escape-sequence : (Parser Char)
 = do Parser {
   ask mc = (Parser/advance-one)
@@ -17,3 +17,10 @@ Parser/parse-escape-sequence : (Parser Char)
     }
   }
 }
+
+#test: (Parser/run Char Parser/parse-escape-sequence "n") == #Some{'\n'}
+#test: (Parser/run Char Parser/parse-escape-sequence "t") == #Some{'\t'}
+#test: (Parser/run Char Parser/parse-escape-sequence "\\") == #Some{'\\'}
+#test: (Parser/run Char Parser/parse-escape-sequence "\"") == #Some{'\"'}
+#test: (Parser/run Char Parser/parse-escape-sequence "x") == #None
+#test: (Parser/run Char Parser/parse-escape-sequence "") == #None
