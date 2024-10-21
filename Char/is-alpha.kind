@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if alphabetic, False otherwise.
 Char/is-alpha : Char -> Bool
-= λcode (Bool/or (Char/is-upper code) (Char/is-lower code))
+| code = (Bool/or (Char/is-upper code) (Char/is-lower code))
 
 #test: (Char/is-alpha 'a') == #True
 #test: (Char/is-alpha 'Z') == #True
