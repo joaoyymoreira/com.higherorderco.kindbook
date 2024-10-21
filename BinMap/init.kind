@@ -6,10 +6,10 @@
 // = A new BinMap with the entry initialized if it didn't exist before.
 BinMap/init
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   ∀(k: Bits)
   ∀(v: A)
-  (BinMap/BinMap A)
+  (BinMap A)
 = λA λ{
   #Leaf: λ{
 		#E: λv #Node{#Some{v} #Leaf #Leaf}
@@ -20,7 +20,7 @@ BinMap/init
 		#E: λv 	
 			use none = #Node{#Some{v} #Leaf #Leaf}
 			use some = λx #Node{#Some{x} #Leaf #Leaf}
-			(Maybe/match A (λx (BinMap/BinMap A)) none some val)
+			(Maybe/match A (λx (BinMap A)) none some val)
 		#O: λb λv #Node{val (BinMap/init A lft b v) rgt}
 		#I: λb λv #Node{val lft (BinMap/init A rgt b v)}
 	}

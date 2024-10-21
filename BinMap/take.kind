@@ -5,30 +5,30 @@
 // = Maybe containing a pair of the new BinMap and the value if the key existed, None otherwise.
 BinMap/take
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   ∀(k: Bits)
-  (Maybe (Pair/Pair (BinMap/BinMap A) A))
+  (Maybe (Pair/Pair (BinMap A) A))
 = λA λ{
   #Leaf: λk #None
   #Node: λval λlft λrgt λ{
 		#E: 
 			use none = #None
 			use some = λs #Some{#Pair{#Node{#None lft rgt} s}}
-			(Maybe/match A (λx (Maybe (Pair/Pair (BinMap/BinMap A) A))) none some val)
+			(Maybe/match A (λx (Maybe (Pair/Pair (BinMap A) A))) none some val)
 		#O: λb
 			(Maybe/map 
-				(Pair/Pair (BinMap/BinMap A) A) 
-				(Pair/Pair (BinMap/BinMap A) A) 
+				(Pair/Pair (BinMap A) A) 
+				(Pair/Pair (BinMap A) A) 
 				(λx (#Pair{
-					(#Node{val (Pair/Sigma/fst (BinMap/BinMap A) (λx A) x) rgt}) 
-					(Pair/Sigma/snd (BinMap/BinMap A) (λx A) x)}))
+					(#Node{val (Pair/Sigma/fst (BinMap A) (λx A) x) rgt}) 
+					(Pair/Sigma/snd (BinMap A) (λx A) x)}))
 				(BinMap/take A lft b))
 		#I: λb (Maybe/map 
-				(Pair/Pair (BinMap/BinMap A) A) 
-				(Pair/Pair (BinMap/BinMap A) A) 
+				(Pair/Pair (BinMap A) A) 
+				(Pair/Pair (BinMap A) A) 
 				(λx (#Pair{
-					(#Node{val lft (Pair/Sigma/fst (BinMap/BinMap A) (λx A) x)}) 
-					(Pair/Sigma/snd (BinMap/BinMap A) (λx A) x)}))
+					(#Node{val lft (Pair/Sigma/fst (BinMap A) (λx A) x)}) 
+					(Pair/Sigma/snd (BinMap A) (λx A) x)}))
 				(BinMap/take A rgt b))
 	}
 }
@@ -36,7 +36,7 @@ BinMap/take
 // Test: Taking from an empty BinMap
 TEST_0
 : (Equal
-    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (Maybe (Pair/Pair (BinMap Nat) Nat))
     (BinMap/take Nat (BinMap/empty Nat) #E)
     #None)
 = #Refl
@@ -44,7 +44,7 @@ TEST_0
 // Test: Taking an existing key-value pair
 TEST_1
 : (Equal
-    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (Maybe (Pair/Pair (BinMap Nat) Nat))
     (BinMap/take Nat (BinMap/set Nat (BinMap/empty Nat) #E (U32/to-nat 42)) #E)
     (#Some{ (#Pair{(#Node{#None (BinMap/Leaf Nat) (BinMap/Leaf Nat)}) (U32/to-nat 42)})}))
 = #Refl
@@ -52,7 +52,7 @@ TEST_1
 // Test: Taking a non-existent key
 TEST_2
 : (Equal
-    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (Maybe (Pair/Pair (BinMap Nat) Nat))
     (BinMap/take Nat (BinMap/set Nat (BinMap/empty Nat) #E (U32/to-nat 42)) (#O{#E}))
     #None)
 = #Refl
@@ -60,7 +60,7 @@ TEST_2
 // Test: Taking from a BinMap with multiple values
 TEST_3
 : (Equal
-    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (Maybe (Pair/Pair (BinMap Nat) Nat))
     (BinMap/take Nat (BinMap/set Nat (BinMap/set Nat (BinMap/empty Nat) #E (U32/to-nat 42)) (#I{#E}) (U32/to-nat 24)) (#I{#E}))
     (#Some{ (#Pair{(#Node{(#Some{(U32/to-nat 42)}) (BinMap/Leaf Nat) (#Node{#None (BinMap/Leaf Nat) (BinMap/Leaf Nat)})}) (U32/to-nat 24)})}))
 = #Refl
@@ -68,7 +68,7 @@ TEST_3
 // Test: Taking a value and then taking it again
 TEST_4
 : (Equal
-    (Maybe (Pair/Pair (BinMap/BinMap Nat) Nat))
+    (Maybe (Pair/Pair (BinMap Nat) Nat))
     (BinMap/take Nat (#Node{#None (BinMap/Leaf Nat) (BinMap/Leaf Nat)}) #E)
     #None)
 = #Refl

@@ -13,9 +13,9 @@
 //   2. A copy of the original BinMap.
 BinMap/got
 : ∀(A: *)
-  ∀(map: (BinMap/BinMap A))
+  ∀(map: (BinMap A))
   ∀(key: Bits)
-  (Pair/Pair (BinMap/BinMap A) (Maybe A))
+  (Pair (BinMap A) (Maybe A))
 = λA λ{
   #Leaf: λkey #Pair{ #Leaf #None }
   #Node: λval λlft λrgt λ{

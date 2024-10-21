@@ -2,9 +2,9 @@
 // = An empty BinMap.
 BinMap/new
 : ∀(A: *)
-  (BinMap/BinMap A)
+  (BinMap A)
 = λA (BinMap/Leaf A)
 // Test that creating a new BinMap results in a Leaf
 TEST_0
-: (Equal (BinMap/BinMap Nat) (BinMap/new Nat) (BinMap/Leaf Nat))
+: (Equal (BinMap Nat) (BinMap/new Nat) (BinMap/Leaf Nat))
 = #Refl

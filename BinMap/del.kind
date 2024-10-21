@@ -5,9 +5,9 @@
 // = A new BinMap with the key-value pair removed.
 BinMap/del
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   ∀(k: Bits)
-  (BinMap/BinMap A)
+  (BinMap A)
 = λA λ{
   #Leaf: λk #Leaf
   #Node: λval λlft λrgt λ{

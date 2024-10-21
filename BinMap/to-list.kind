@@ -1,8 +1,8 @@
 // Helper function to traverse the BinMap in breadth-first order
 BinMap/to-list-go
 : ∀(A: *)
-  ∀(queue: (List (Pair/Pair Bits (BinMap/BinMap A))))
-  (List (Pair/Pair Bits A))
+  ∀(queue: (List (Pair Bits (BinMap A))))
+  (List (Pair Bits A))
 = λA λ{
   #Nil: #Nil
   #Cons: λ{
@@ -10,9 +10,9 @@ BinMap/to-list-go
 			#Leaf: λtail (BinMap/to-list-go A tail)
 			#Node: λ{
 				#None: λlft λrgt λtail 
-					(BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))
+					(BinMap/to-list-go A (List/append (Pair Bits (BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))
 				#Some: λval λlft λrgt λtail
-					#Cons{#Pair{acc val} (BinMap/to-list-go A (List/append (Pair/Pair Bits (BinMap/BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))}
+					#Cons{#Pair{acc val} (BinMap/to-list-go A (List/append (Pair Bits (BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))}
 			}
 		}
 	} 
@@ -25,13 +25,13 @@ BinMap/to-list-go
 // = A List of Pairs, where each Pair contains the Bits path and the corresponding value.
 BinMap/to-list
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
-  (List (Pair/Pair Bits A))
+  ∀(m: (BinMap A))
+  (List (Pair Bits A))
 = λA λm (BinMap/to-list-go A #Cons{#Pair{#E (BinMap/invert A m)} #Nil})
 // Test: Empty map should result in an empty list
 TEST_0
 : (Equal
-    (List (Pair/Pair Bits Bool))
+    (List (Pair Bits Bool))
     (BinMap/to-list Bool #Leaf)
     (#Nil))
 = #Refl
@@ -39,7 +39,7 @@ TEST_0
 // Test: BinMap with a single element
 TEST_1
 : (Equal
-    (List (Pair/Pair Bits Bool))
+    (List (Pair Bits Bool))
     (BinMap/to-list Bool (BinMap/set Bool #Leaf #E #True))
     (#Cons{(#Pair{#E #True}) (#Nil)}))
 = #Refl
@@ -47,7 +47,7 @@ TEST_1
 // Test: Overwrite element
 TEST_2
 : (Equal
-    (List (Pair/Pair Bits Bool))
+    (List (Pair Bits Bool))
     (BinMap/to-list Bool (BinMap/set Bool (BinMap/set Bool #Leaf #E #True) #E #False))
     (#Cons{(#Pair{#E #False}) (#Nil)}))
 = #Refl
@@ -56,7 +56,7 @@ TEST_2
 // // BUG: Constructor Cons not found in pattern match.
 // T3
 // : (Equal
-//     (List (Pair/Pair Bits Bool))
+//     (List (Pair Bits Bool))
 //     (BinMap/to-list Bool 
 //       (#Node{
 // 				#None

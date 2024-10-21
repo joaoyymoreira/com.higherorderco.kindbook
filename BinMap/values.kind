@@ -5,7 +5,7 @@
 // = A list with the values stored in the BinMap.
 BinMap/values
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   (List A)
 = λA λ{
   #Leaf: #Nil

@@ -5,7 +5,7 @@
 // = The value associated with the key, wrapped in Maybe.
 BinMap/get
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   ∀(k: Bits)
   (Maybe A)
 = λA λ{

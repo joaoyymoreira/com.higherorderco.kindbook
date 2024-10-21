@@ -5,7 +5,7 @@
 // = True if the key exists in the BinMap, False otherwise.
 BinMap/contains
 : ∀(A: *)
-  ∀(m: (BinMap/BinMap A))
+  ∀(m: (BinMap A))
   ∀(k: Bits)
   Bool
 = λA λ{
