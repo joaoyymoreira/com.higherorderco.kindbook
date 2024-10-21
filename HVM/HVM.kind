@@ -301,25 +301,6 @@ HVM/inject-net
 // Recovery
 // --------
 
-//HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
-//= λvar λ{
-  //#RTerm{tag loc}: match tag {
-    //#SUB: match (Bits/eq var loc) {
-      //#True: do HVM { ret #Var{loc} }
-      //#False: (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
-    //}
-    //#ERA: λnet #None
-    //#APP: λnet #None
-    //#DUP: λnet #None
-    //#VAR: (HVM/recover-term #Pos (#RTerm{ #VAR loc }))
-    //#NUL: (HVM/recover-term #Pos (#RTerm{ #NUL loc }))
-    //#LAM: (HVM/recover-term #Pos (#RTerm{ #LAM loc }))
-    //#SUP: (HVM/recover-term #Pos (#RTerm{ #SUP loc }))
-  //}
-//}
-
-// TODO: reimplement recover-var using the equational notation instead of match
-
 HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
 | var #RTerm{#ERA loc} = λnet #None
 | var #RTerm{#APP loc} = λnet #None
@@ -334,28 +315,6 @@ HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
   (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
 }
 
-//HVM/recover-sub
-//: ∀(sub: Bits)
-  //∀(term: HVM/RTerm)
-  //(HVM/HVM (HVM/Term #Neg))
-//= λsub λ{
-  //#RTerm{tag loc}: match tag {
-    //#SUB: match (Bits/eq sub loc) {
-      //#True: do HVM { ret #Sub{loc} }
-      //#False: (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
-    //}
-    //#NUL: λnet #None
-    //#LAM: λnet #None
-    //#SUP: λnet #None
-    //#VAR: (HVM/recover-term #Neg (#RTerm{ #VAR loc }))
-    //#ERA: (HVM/recover-term #Neg (#RTerm{ #ERA loc }))
-    //#APP: (HVM/recover-term #Neg (#RTerm{ #APP loc }))
-    //#DUP: (HVM/recover-term #Neg (#RTerm{ #DUP loc }))
-  //}
-//}
-
-// TODO: reimplement recover-sub using the equational notation instead of match
-
 HVM/recover-sub : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Neg))
 | sub #RTerm{#NUL loc} = λnet #None
 | sub #RTerm{#LAM loc} = λnet #None
@@ -369,69 +328,6 @@ HVM/recover-sub : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Neg))
 } else {
   (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
 }
-
-//HVM/recover-term
-//: ∀(p: HVM/Pol)
-  //∀(term: HVM/RTerm)
-  //(HVM/HVM (HVM/Term p))
-//= λ{
-  //#Pos: λ{
-    //#RTerm{tag loc}: match tag {
-      //#NUL: do HVM { ret #Nul }
-      //#VAR: do HVM {
-        //ask got = (HVM/get loc)
-        //(HVM/recover-var loc got)
-      //}
-      //#LAM: do HVM {
-        //ask var = (HVM/get (HVM/at #1 loc))
-        //ask bod = (HVM/get (HVM/at #2 loc))
-        //ask var = (HVM/recover-term #Neg var)
-        //ask bod = (HVM/recover-term #Pos bod)
-        //ret #Lam{var bod}
-      //}
-      //#SUP: do HVM {
-        //ask tm1 = (HVM/get (HVM/at #1 loc))
-        //ask tm2 = (HVM/get (HVM/at #2 loc))
-        //ask tm1 = (HVM/recover-term #Pos tm1)
-        //ask tm2 = (HVM/recover-term #Pos tm2)
-        //ret #Sup{tm1 tm2}
-      //}
-      //#SUB: λnet #None
-      //#ERA: λnet #None
-      //#APP: λnet #None
-      //#DUP: λnet #None
-    //}
-  //}
-  //#Neg: λ{
-    //#RTerm{tag loc}: match tag {
-      //#ERA: do HVM { ret #Era }
-      //#SUB: do HVM {
-        //ask got = (HVM/get loc)
-        //(HVM/recover-sub loc got)
-      //}
-      //#APP: do HVM {
-        //ask arg = (HVM/get (HVM/at #1 loc))
-        //ask ret = (HVM/get (HVM/at #2 loc))
-        //ask arg = (HVM/recover-term #Pos arg)
-        //ask ret = (HVM/recover-term #Neg ret)
-        //ret #App{arg ret}
-      //}
-      //#DUP: do HVM {
-        //ask dp1 = (HVM/get (HVM/at #1 loc))
-        //ask dp2 = (HVM/get (HVM/at #2 loc))
-        //ask dp1 = (HVM/recover-term #Neg dp1)
-        //ask dp2 = (HVM/recover-term #Neg dp2)
-        //ret #Dup{dp1 dp2}
-      //}
-      //#VAR: λnet #None
-      //#NUL: λnet #None
-      //#LAM: λnet #None
-      //#SUP: λnet #None
-    //}
-  //}
-//}
-
-// TODO: reimplement recover-term using the equational notation instead of match
 
 HVM/recover-term : ∀(p: HVM/Pol) ∀(term: HVM/RTerm) (HVM/HVM (HVM/Term p))
 | #Pos #RTerm{#NUL loc} = do HVM {
@@ -691,11 +587,12 @@ HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
   #True: do HVM {
     ask got = (HVM/swap (HVM/get-loc a) #Some{b})
     match got {
-      #Some{A}: match (HVM/is-sub A) {
-        #True: do HVM {
+      #Some{A}: if (HVM/is-sub A) {
+        do HVM {
           ret #Unit
         }
-        #False: do HVM {
+      } else {
+        do HVM {
           ask b = (HVM/take (HVM/get-loc a))
           (HVM/link a b)
         }
@@ -707,11 +604,12 @@ HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
     #True: do HVM {
       ask got = (HVM/swap (HVM/get-loc b) #Some{a})
       match got {
-        #Some{B}: match (HVM/is-sub B) {
-          #True: do HVM {
+        #Some{B}: if (HVM/is-sub B) {
+          do HVM {
             ret #Unit
           }
-          #False: do HVM {
+        } else {
+          do HVM {
             ask a = (HVM/take (HVM/get-loc b))
             (HVM/link a b)
           }
@@ -798,10 +696,9 @@ HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
   ret #Unit
 }
 
-//HVM/HVM/main
-//: _
-//= use key = U32/to-bits
-  //use map = (BinMap/new _)
-  //use map = (BinMap/set _ map (key 123) 420)
-  //use got = (BinMap/get _ map (key 123))
-  //got
+main
+= use key = U32/to-bits
+  use map = (BinMap/new _)
+  use map = (BinMap/set _ map (key 123) 420)
+  use got = (BinMap/get _ map (key 123))
+  got
