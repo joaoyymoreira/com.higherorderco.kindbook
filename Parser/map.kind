@@ -1,19 +1,14 @@
 // Applies a function to the result of a parser if it succeeds.
-// - A: The type of the original parser's result.
-// - B: The type of the new parser's result.
-// - fn: The function to apply to the parsed value.
-// - p: The parser to run.
-// = A new parser that applies fn to the result of p if it succeeds.
-Parser/map
-: ∀(A: *)
-  ∀(B: *)
-  ∀(fn: A -> B)
-  ∀(p: (Parser A))
-  (Parser B)
-= λA λB λfn λp λstate
+// - A: Input type.
+// - B: Output type.
+// - fn: Function to apply to the parsed value.
+// - p: Parser to run.
+// = New parser that applies fn to the result of p if it succeeds.
+Parser/map : ∀(A: *) ∀(B: *) (A -> B) -> (Parser A) -> (Parser B)
+| A B fn p state = 
   match (p state) {
-    #Done: λreply 
-      let #Reply{state value} = reply
-      #Done{#Reply{state (fn value)}}
-    #Fail: λe #Fail{e}
+    #Done{reply}: match reply {
+      #Reply{state value}: #Done{#Reply{state (fn value)}}
+    }
+    #Fail{e}: #Fail{e}
   }

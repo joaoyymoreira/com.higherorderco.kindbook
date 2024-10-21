@@ -1,28 +1,13 @@
 // Checks if the parser has reached the end of the input.
 // = A Reply containing a Bool: True if at the end of input, False otherwise.
 Parser/is-eof : (Parser Bool)
-= λstate
-  let #State{input _} = state
-  let result = (String/is-empty input)
+| #State{input index} =
   #Done{
     #Reply{
-      state: state
-      value: result
+      state: #State{input index}
+      value: (String/is-empty input)
     }
   }
 
-// Test: is-eof returns True for an empty string
-TEST_0
-: (Equal
-    (Result (Parser/Reply Bool) Parser/Error)
-    (Parser/is-eof #State{"" #0})
-    (#Done{ #Reply{#State{"" #0} #True}}))
-= #Refl
-
-// Test: is-eof returns False for a non-empty string
-TEST_1
-: (Equal
-    (Result (Parser/Reply Bool) Parser/Error)
-    (Parser/is-eof #State{"abc" #0})
-    (#Done{#Reply{#State{"abc" #0} #False}}))
-= #Refl
+#test: (Parser/is-eof #State{"" #0}) == (#Done{ #Reply{#State{"" #0} #True}})
+#test: (Parser/is-eof #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #False}})

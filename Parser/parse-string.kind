@@ -1,53 +1,12 @@
-Parses multiple characters until a closing quote is encountered.
-// = A list of characters representing the parsed string content.
-Parser/parse-chars : (Parser String)
-= do Parser/Monad {
-  ask c = (Parser/parse-char)
-  (match (Char/eq 34 c) {
-    #True: (Parser/Monad/pure _ [])
-    #False: do Parser/Monad {
-      ask cs = (Parser/parse-chars)
-      ret #Cons{c cs}
-    }
-  })
-}
 // Parses a quoted string.
 // = A String value representing the parsed quoted string.
-Parser/parse-string : (Parser/ String)
-= do Parser/Monad {
-  ask y = (Parser/consume "\"")
-  ask chars = (Parser/parse-chars)
-  ret chars
+Parser/parse-string : (Parser String)
+= do Parser {
+  ask (Parser/consume "\"")
+  (Parser/parse-chars)
 }
 
-// Test: Parse a normal string
-TEST_0 
-: (Equal
-  (Parser String)
-  (Parser/parse-string #State{"\"abc\"" #0})
-  (#Done{#Reply{#State{[] #5} "abc"}}))
-= #Refl
-
-// Test: Parse a string with escape character
-TEST_1 
-: (Equal
-  (Parser String)
-  (Parser/parse-string #State{"\"a\\nb\"" #0})
-  (#Done{#Reply{#State{[] #6} "a\nb"}}))
-= #Refl
-
-// Test: Parse an empty string
-TEST_2 
-: (Equal
-  (Parser String)
-  (Parser/parse-string #State{"\"\"" #0})
-  (#Done{#Reply{#State{[] #2} []}}))
-= #Refl
-
-// Test: Parse an invalid string (unclosed quote)
-TEST_3 
-: (Equal
-  (Parser String)
-  (Parser/parse-string #State{"\"abc" #0})
-  (#Fail{#Error{#4 "Unexpected end of input"}}))
-= #Refl
+#test: (Parser/parse-string #State{"\"abc\"" #0}) == (#Done{#Reply{#State{[] #5} "abc"}})
+#test: (Parser/parse-string #State{"\"a\\nb\"" #0}) == (#Done{#Reply{#State{[] #6} "a\nb"}})
+#test: (Parser/parse-string #State{"\"\"" #0}) == (#Done{#Reply{#State{[] #2} []}})
+#test: (Parser/parse-string #State{"\"abc" #0}) == (#Fail{#Error{#4 "Unexpected end of input"}})

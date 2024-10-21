@@ -1,13 +1,10 @@
-// Attempts to consume a specific string from the input.
-// - target: The target string to consume.
-// = A Parser that returns unit if successful, or fails if the target string is not found at the current position.
-Parser/consume
-: ∀(target: String)
-  (Parser Unit)
-= λtarget λstate
-  let #State{input index} = state
+// Consumes a specific string from the input.
+// - target: String to consume.
+// = Parser that returns unit if successful, or fails if not found.
+Parser/consume : String -> (Parser Unit)
+| target #State{input index} =
   if (String/starts-with input target) {
-    (#Done{
+    #Done{
       #Reply{
         state: #State{
           input: (String/drop (String/length target) input)
@@ -15,35 +12,16 @@ Parser/consume
         }
         value: #Unit
       }
-    })
-    } else {
-    (#Fail{
+    }
+  } else {
+    #Fail{
       #Error{
         index: index
         error: (String/append "Expected " target)
       }
-    })
+    }
   }
-// Test: Consuming a valid string
-TEST_0 
-: (Equal
-  (Result (Parser/Reply Unit) Parser/Error)
-  ((Parser/consume "abc") (#State{input: "abcdef" index: #0}))
-  (#Done{#Reply{#State{input: "def" index: #3} #Unit}})) 
-= #Refl
 
-// Test: Consuming an invalid string
-TEST_1 
-: (Equal
-  (Result (Parser/Reply Unit) Parser/Error)
-  ((Parser/consume "abc") (#State{input: "abxdef" index: #0}))
-  (#Fail{#Error{#0 "Expected abc"}})) 
-= #Refl
-
-// Test: Consuming an empty string
-TEST_2 
-: (Equal
-  (Result (Parser/Reply Unit) Parser/Error)
-  ((Parser/consume "") (#State{input: "abcdef" index: #0}))
-  (#Done{#Reply{ #State{input: "abcdef" index: #0} #Unit}})) 
-= #Refl
+#test: ((Parser/consume "abc") (#State{input: "abcdef" index: #0})) == (#Done{#Reply{#State{input: "def" index: #3} #Unit}})
+#test: ((Parser/consume "abc") (#State{input: "abxdef" index: #0})) == (#Fail{#Error{#0 "Expected abc"}})
+#test: ((Parser/consume "") (#State{input: "abcdef" index: #0})) == (#Done{#Reply{#State{input: "abcdef" index: #0} #Unit}})

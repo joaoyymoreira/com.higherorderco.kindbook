@@ -1,95 +1,18 @@
-// Parses a unicode escape sequence.
-// = The character corresponding to the parsed Unicode code point.
-Parser/parse-unicode-escape : (Parser/Parser Char)
-= do Parser/Monad {
-  ask y = (Parser/consume "{")
-  ask digits = (Parser/take-while Char/is-hex-digit)
-  ask x = (Parser/consume "}")
-  (match (String/to-nat-base (U32/to-nat 16) digits) {
-    #None: (Parser/fail _ "Invalid hexadecimal number in Unicode escape")
-    #Some: λn (Parser/Monad/pure _ (Char/from-nat n))
-  })
-}
-
-// Parses an escape sequence.
-// = The parsed escaped character.
-Parser/parse-escape-sequence : (Parser/Parser Char)
-= do Parser/Monad {
-  ask mc = (Parser/advance-one)
-  (match mc {
-    #None: (Parser/fail _ "Unexpected end of input in escape sequence")
-    #Some{c}: match (Char/eq c 'n') {
-      #True: (Parser/Monad/pure _ '\n')
-      #False: match (Char/eq c 'r') {
-        #True: (Parser/Monad/pure _ '\r')
-        #False: match (Char/eq c 't') {
-          #True: (Parser/Monad/pure _ '\t')
-          #False: match (Char/eq c '\\') {
-            #True: (Parser/Monad/pure _ '\\')
-            #False: match (Char/eq c '\'') {
-              #True: (Parser/Monad/pure _ '\'')
-              #False: match (Char/eq c '"') {
-                #True: (Parser/Monad/pure _ '"')
-                #False: match (Char/eq c '"') {
-                  #True: Parser/parse-unicode-escape
-                  #False: (Parser/fail _ (String/append ("Invalid escape character: ") (String/from-char c)))
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  })
-}
-
 // Parses a single character, including escape sequences.
 // = The parsed character.
-Parser/parse-char : (Parser/Parser Char)
-= do Parser/Monad {
-  ask mc = (Parser/advance-one)
-  (match mc {
+Parser/parse-char : (Parser Char)
+= do Parser {
+  ask mc = Parser/advance-one
+  match mc {
     #None: (Parser/fail _ "Unexpected end of input")
-    #Some{c}: match (Char/eq c '\\') {
-      #True: Parser/parse-escape-sequence
-      #False: (Parser/Monad/pure _ c)
+    #Some{c}: if (Char/eq c '\\') {
+      Parser/parse-escape-sequence
+    } else {
+      (Parser/pure _ c)
     }
-    
-  })
+  }
 }
 
-// Test: Parsing a normal character
-TEST_0 
-: (Equal
-  (Result (Parser/Reply Char) Parser/Error)
-  (Parser/parse-char (Parser/State/new "abc" #Zero))
-  (#Done{#MkReply{#MkState{"bc" #1 'a'}})
-)
-= #Refl
-
-// Test: Parsing an escaped newline character
-TEST_1 
-: (Equal
-  (Result (Parser/Reply Char) Parser/Error)
-  (Parser/parse-char (Parser/State/new "\\nabc" #Zero))
-  (#Done{#MkReply{#MkState{"abc" #2 '\n'}})
-)
-= #Refl
-
-// // Test: Parsing a Unicode escape sequence
-// T2 
-// : (Equal
-//   (Result (Parser/Reply Char) Parser/Error)
-//   (Parser/parse-char (Parser/State/new "\\u{1F600}abc" #Zero))
-//   (#Done{#MkReply{#MkState{"abc" #9} '😀'}})
-// )
-// = #Refl
-
-// Test: Parsing an invalid escape sequence
-TEST_3 
-: (Equal
-  (Result (Parser/Reply Char) Parser/Error)
-  (Parser/parse-char (Parser/State/new "\\xabc" #Zero))
-  (#Fail{#MkError{#2 "Invalid escape character: x"}})
-)
-= #Refl
+#test: (Parser/parse-char #State{"abc" #Zero}) == #Done{#Reply{#State{"bc" #1} 'a'}}
+#test: (Parser/parse-char #State{"\\nabc" #Zero}) == #Done{#Reply{#State{"abc" #2} '\n'}}
+#test: (Parser/parse-char #State{"\\xabc" #Zero}) == #Fail{#Error{#2 "invalid-escape-char:x"}}

@@ -1,9 +1,11 @@
 //Main : (Pair String *) -> (Pair (List U32) *)
 //| str = str
 
-main : String/View
-= #View { "// Comment 1\/ Comment 2\nabc" }
+//main : String/View
+//= #View { "// Comment 1\/ Comment 2\nabc" }
 
+
+main = Parser/parse-unicode-escape
 
 
 

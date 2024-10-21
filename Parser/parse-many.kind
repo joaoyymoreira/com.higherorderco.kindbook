@@ -1,34 +1,19 @@
-// Helper function to accumulate parsed results.
-// - A: The type of elements parsed by the given parser.
-// - p: The parser to be repeatedly applied.
-// - acc: The accumulator list of already parsed elements.
-// = A parser that returns the final list of all parsed elements.
-Parser/parse-many-go
-: ∀(A: *)
-  ∀(p: (Parser A))
-  ∀(acc:( List A))
-  (Parser (List A))
-= λA λp λacc λstate
-  match (p state) {
-    #Done: λreply
-      let #Reply{state value} = reply
-      use new_acc = #Cons{value acc}
-      (Parser/parse-many-go A p new_acc state)
-    #Fail: λe
-      #Done{
-        #Reply{
-          state: state
-          value: (List/reverse A acc)
-        }
-      }
-  }
-
 // Parses as many occurrences of the given parser as possible.
-// - A: The type of elements parsed by the given parser.
-// - p: The parser to be repeatedly applied.
-// = A parser that returns a list of all successfully parsed elements.
-Parser/parse-many
-: ∀(A: *)
-  ∀(p: (Parser A))
-  (Parser (List A))
-= λA λp (Parser/parse-many-go A p #Nil)
+// - A: Input type.
+// - p: Parser to be repeatedly applied.
+// = Parser that returns a list of all successfully parsed elements.
+Parser/parse-many : ∀(A: *) (Parser A) -> (Parser (List A))
+| A p = (Parser/parse-many/go A p #Nil)
+
+// Accumulates parsed results.
+// - A: Input type.
+// - p: Parser to be repeatedly applied.
+// - acc: Accumulator list of already parsed elements.
+// = Parser that returns the final list of all parsed elements.
+Parser/parse-many/go : ∀(A: *) (Parser A) -> (List A) -> (Parser (List A))
+| A p acc state = match (p state) {
+  #Done{r}: match r {
+    #Reply{state value}: (Parser/parse-many/go A p #Cons{value acc} state)
+  }
+  #Fail{e}: #Done{#Reply{state (List/reverse A acc)}}
+}

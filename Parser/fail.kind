@@ -1,44 +1,16 @@
 // Creates a failing parser with the given error message.
-// - A: The type of the value to be parsed.
-// - msg: The error message as a String.
+// - A: Value type.
+// - msg: Error message.
 // = A Parser that always fails with the specified error message.
-Parser/fail
-: ∀(A: *)
-  ∀(msg: String)
-  (Parser A)
-= λA λmsg λstate
+Parser/fail : ∀(A: *) String -> (Parser A)
+| A msg #State{input index} =
   #Fail{
     #Error{
-      index: 
-        let #State{_ index} = state
-        index
+      index: index
       error: msg
     }
   }
 
-// Test: Failing parser with a test error message
-TEST_0
-: (Equal
-    (Result (Parser/Reply String) Parser/Error)
-    ((Parser/fail String "Test error") #State{"abcdef" #0})
-    (#Fail{#Error{#0 "Test error"}})
-  )
-= #Refl
-
-// Test: Failing parser with an empty input string
-TEST_1
-: (Equal
-    (Result (Parser/Reply Nat) Parser/Error)
-    ((Parser/fail Nat "Empty input") #State{"" #0})
-    (#Fail{#Error{#0 "Empty input"}})
-  )
-= #Refl
-
-// Test: Failing parser with a non-zero index
-TEST_2
-: (Equal
-    (Result (Parser/Reply Bool) Parser/Error)
-    ((Parser/fail Bool "Error at index 5") #State{"hello world" #5})
-    (#Fail{#Error{#5 "Error at index 5"}})
-  )
-= #Refl
+#test: ((Parser/fail String "Test error") #State{"abcdef" #0}) == (#Fail{#Error{#0 "Test error"}})
+#test: ((Parser/fail Nat "Empty input") #State{"" #0}) == (#Fail{#Error{#0 "Empty input"}})
+#test: ((Parser/fail Bool "Error at index 5") #State{"hello world" #5}) == (#Fail{#Error{#5 "Error at index 5"}})

@@ -1,0 +1,19 @@
+// Parses an escape sequence.
+// = The parsed escaped character.
+Parser/parse-escape-sequence : (Parser Char)
+= do Parser {
+  ask mc = (Parser/advance-one)
+  match mc {
+    #None: (Parser/fail _ "unexpected-eof")
+    #Some{c}: when Char/eq c {
+      'n'  : (Parser/pure _ '\n')
+      'r'  : (Parser/pure _ '\r')
+      't'  : (Parser/pure _ '\t')
+      '\\' : (Parser/pure _ '\\')
+      '\'' : (Parser/pure _ '\'')
+      '\"' : (Parser/pure _ '\"')
+      'u'  : Parser/parse-unicode-escape
+      _    : (Parser/fail _ (String/append "invalid-escape-char:" (String/from-char c)))
+    }
+  }
+}

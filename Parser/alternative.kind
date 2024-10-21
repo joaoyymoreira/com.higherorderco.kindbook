@@ -3,21 +3,8 @@
 // - p: The first parser to try.
 // - q: The parser to try if the first fails.
 // = A new parser that succeeds if either of the input parsers succeeds.
-Parser/alternative
-: ∀(A: *)
-  ∀(p: (Parser A))
-  ∀(q: (Parser A))
-  (Parser A)
-= λA λp λq λs
-  match (p s) {
-    #Done: λr #Done{r}
-    #Fail: λx (q s)
-  }
-
-// Infix operator for alternative.
-Parser/alt
-: ∀(A: *)
-  ∀(p: (Parser A))
-  ∀(q: (Parser A))
-  (Parser A)
-= Parser/alternative
+Parser/alternative : ∀(A: *) (Parser A) -> (Parser A) -> (Parser A)
+| A p q s = match (p s) {
+  #Done: λr #Done{r}
+  #Fail: λx (q s)
+}

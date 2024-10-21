@@ -1,0 +1,10 @@
+// Checks if a character is valid for a name.
+// - c: The character to check.
+// = A boolean indicating whether the character is valid for a name (alphanumeric, underscore, hyphen, or dot).
+Parser/is-name-char : Char -> Bool
+| c =
+  (Bool/or (Char/is-alpha c)
+  (Bool/or (Char/is-digit c)
+  (Bool/or (Char/eq c '_') 
+  (Bool/or (Char/eq c '-') 
+           (Char/eq c '.')))))

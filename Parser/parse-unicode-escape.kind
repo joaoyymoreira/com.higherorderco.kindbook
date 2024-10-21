@@ -1,0 +1,12 @@
+// Parses a unicode escape sequence.
+// = The character corresponding to the parsed Unicode code point.
+Parser/parse-unicode-escape : (Parser Char)
+= do Parser {
+  ask (Parser/consume "{")
+  ask digits = (Parser/take-while Char/is-hex-digit)
+  ask (Parser/consume "}")
+  match (String/to-nat-base (U32/to-nat 16) digits) {
+    #None: (Parser/fail _ "Invalid hexadecimal number in Unicode escape")
+    #Some{n}: (Parser/pure _ (Char/from-nat n))
+  }
+}

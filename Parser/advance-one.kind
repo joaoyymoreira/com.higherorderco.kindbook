@@ -12,26 +12,7 @@ Parser/advance-one : (Parser (Maybe Char))
       let tail = (Pair/get-snd _ _ pair)
       #Done{#Reply{#State{tail #Succ{index}} #Some{head}}}
   }
-// Test: Advance one character in a non-empty string
-TEST_0 
-: (Equal 
-  (Result (Parser/Reply (Maybe Char)) Parser/Error)
-  (Parser/advance-one #State{"abc" #Zero}) 
-  (#Done{#Reply{#State{"bc" #1} #Some{97}}}))
-= #Refl
 
-// Test: Advance one character in an empty string
-TEST_1 
-: (Equal 
-  (Result (Parser/Reply (Maybe Char)) Parser/Error)
-  (Parser/advance-one #State{"" #Zero})
-  (#Done{#Reply{#State{"" #Zero} #None}}))
-= #Refl
-
-// Test: Advance one character in a string with special characters
-TEST_2 
-: (Equal 
-  (Result (Parser/Reply (Maybe Char)) Parser/Error)
-  (Parser/advance-one #State{"!@#" #Zero}) 
-  (#Done{#Reply{#State{"@#" #1} #Some{33}}}))
-= #Refl
+#test: (Parser/advance-one #State{"abc" #Zero}) == (#Done{#Reply{#State{"bc" #1} #Some{97}}})
+#test: (Parser/advance-one #State{"" #Zero}) == (#Done{#Reply{#State{"" #Zero} #None}})
+#test: (Parser/advance-one #State{"!@#" #Zero}) == (#Done{#Reply{#State{"@#" #1} #Some{33}}})
