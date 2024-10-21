@@ -1,14 +1,42 @@
 // Consumes characters from the input as long as they satisfy the given predicate.
 // - pred: A function that takes a Char (U32) and returns a Bool, used as the predicate.
 // = A Parser that returns a String containing the consumed characters.
-Pair/take-while
+Parser/take-while
 : ∀(pred: ∀(c: Char) Bool)
-  (Pair/Parser String)
+  (Parser String)
 = λpred λs
-  let input     = (Pair/State/input s)
+  let #MkState{input index} = s
   let consumed  = (List/take-while Char pred input)
   let count     = (String/length consumed)
-  let new-index = (Nat/add (Pair/State/index s) count)
+  let new-index = (Nat/add index count)
   let new-input = (String/drop count input)
-  // (#Done{#MkReply{#MkState{new-input new-index} consumed}})
-  ?a
+  (#Done{#MkReply{#MkState{new-input new-index} consumed}})
+
+
+
+  // Test: Take while alpha on mixed input
+T0
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    (Parser/take-while Char/is-alpha (#MkState{"abcDEF123" #0}))
+    (#Done{#MkReply{#MkState{"123" #6} "abcDEF"}})
+  )
+= #Refl
+
+// Test: Take while alpha on empty input
+T1
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    ((Parser/take-while Char/is-alpha) (#MkState{"" #0}))
+    (#Done{#MkReply{#MkState{"" #0} ""}})
+  )
+= #Refl
+
+// Test: Take while alpha on non-matching input
+T2
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    ((Parser/take-while Char/is-alpha) (#MkState{"123abc" #0}))
+    (#Done{#MkReply{#MkState{"123abc" #0} ""}})
+  )
+= #Refl
