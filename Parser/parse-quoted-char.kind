@@ -11,29 +11,6 @@ Parser/parse-quoted-char : (Parser Char)
   ret c
 }
 
-//// Test: Parsing a normal quoted character
-//TEST_0 
-//: (Equal
-  //(Result (Parser/Reply Char) Parser/Error)
-  //(Parser/parse-quoted-char #State{"'a'" #0})
-  //(#Done{#Reply{#State{[] #3} 'a'}})
-//)
-//= #Refl
-
-//// Test: Parsing an escaped newline character
-//TEST_1 
-//: (Equal
-  //(Result (Parser/Reply Char) Parser/Error)
-  //(Parser/parse-quoted-char #State{"'\\n'" #0})
-  //(#Done{#Reply{#State{[] #4} '\n'}})
-//)
-//= #Refl
-
-//// Test: Parsing an invalid quoted character (missing closing quote)
-//TEST_2 
-//: (Equal
-  //(Result (Parser/Reply Char) Parser/Error)
-  //(Parser/parse-quoted-char #State{"ab" #0})
-  //(#Fail{#Error{#2 "Expected '"}})
-//)
-//= #Refl
+#test: (Parser/parse-quoted-char #State{"'a'" #0}) == (#Done{#Reply{#State{[] #3} 'a'}})
+#test: (Parser/parse-quoted-char #State{"'\\n'" #0}) == (#Done{#Reply{#State{[] #4} '\n'}})
+#test: (Parser/parse-quoted-char #State{"'ab'" #0}) == (#Fail{#Error{#2 "Expected '"}})

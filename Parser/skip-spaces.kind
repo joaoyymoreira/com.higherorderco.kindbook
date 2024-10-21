@@ -10,3 +10,7 @@ Parser/skip-spaces : (Parser Nat)
   let new-input = (String/drop count chars)
   #Done{#Reply{#State{new-input new-index} count}}
 
+
+#test: (Parser/skip-spaces #State{"   abc" #0}) == (#Done{#Reply{#State{"abc" #3} #3}})
+#test: (Parser/skip-spaces #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #0}})
+#test: (Parser/skip-spaces #State{"     " #0}) == (#Done{#Reply{#State{"" #5} #5}})

@@ -1,3 +1,6 @@
 // Creates a parser that always succeeds with the given value without consuming any input
 Parser/pure : ∀(A: *) A -> (Parser A)
 | A x s = #Done{ #Reply{ s x } }
+
+#test: (Parser/pure Nat #2 #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #2}})
+#test: (Parser/pure String "hello" #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} "hello"}})
