@@ -1,0 +1,4 @@
+// Represents a map of action logs, where each key (a tick) is associated with a list of actions.
+// - A: The type of actions stored in the logs.
+UG/SM/ActionLogs : * -> *
+= λA (BinMap (List A))
