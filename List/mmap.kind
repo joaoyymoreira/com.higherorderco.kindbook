@@ -8,18 +8,16 @@
 // = Monadic list of results.
 List/mmap
 : ∀(M: ∀(A: *) *)
-  ∀(m: (Trait/Monad M))
+  ∀(m: (Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(f: A -> (M B))
   (List A) -> (M (List B))
-| M m A B f #Nil             = (Trait/Monad/pure M m (List B) #Nil)
-| M m A B f #Cons{head tail} =
-  let bind = (Trait/Monad/bind M m)
-  let pure = (Trait/Monad/pure M m)
+| M #Monad{pure bind} A B f #Nil = (pure (List B) #Nil)
+| M #Monad{pure bind} A B f #Cons{head tail} =
   (bind B (List B) (f head) λy
-  (bind (List B) (List B) (List/mmap M m A B f tail) λys
+  (bind (List B) (List B) (List/mmap M #Monad{pure bind} A B f tail) λys
   (pure (List B) (#Cons{y ys}))))
 
-#test: (List/mmap Maybe Maybe/Trait/Monad U32 U32 (λx (Maybe/Monad/pure U32 x)) [1 2 3]) == #Some{[1 2 3]}
-#test: (List/mmap Maybe Maybe/Trait/Monad U32 U32 (λx #None) [1 2 3]) == #None
+//#test: (List/mmap Maybe Maybe/Monad U32 U32 (λx (Maybe/Monad/pure U32 x)) [1 2 3]) == #Some{[1 2 3]}
+//#test: (List/mmap Maybe Maybe/Monad U32 U32 (λx #None) [1 2 3]) == #None

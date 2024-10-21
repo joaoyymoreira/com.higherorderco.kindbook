@@ -4,17 +4,13 @@
 // - xs: The first list.
 // - ys: The second list.
 // = LT if xs < ys, EQ if xs = ys, GT if xs > ys.
-List/compare : ∀(A: *) (Trait/Ord A) -> (List A) -> (List A) -> Ord
-| A ord #Nil             #Nil             = #EQ
-| A ord #Nil             #Cons{y ys}      = #LT
-| A ord #Cons{x xs}      #Nil             = #GT
-| A ord #Cons{x xs}      #Cons{y ys}      =
-  let head_cmp = (Trait/Ord/compare A ord x y)
-  (Ord/match Ord #LT (List/compare A ord xs ys) #GT head_cmp)
-
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [] []) == #EQ
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [] [#1]) == #LT
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1] []) == #GT
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1 #2] [#1 #2]) == #EQ
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1 #2] [#1 #3]) == #LT
-#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#2] [#1 #1]) == #GT
+List/compare : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Cmp
+| A ord #Nil        #Nil        = #EQ
+| A ord #Nil        #Cons{y ys} = #LT
+| A ord #Cons{x xs} #Nil        = #GT
+| A ord #Cons{x xs} #Cons{y ys} =
+  match (Ord/compare A ord x y) {
+    #LT: #LT
+    #EQ: (List/compare A ord xs ys)
+    #GT: #GT
+  }

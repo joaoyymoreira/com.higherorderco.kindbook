@@ -1,0 +1,8 @@
+// Compares two values using an Ord instance.
+// - A: The type of values to compare.
+// - ord: The Ord instance for type A.
+// - x: The first value.
+// - y: The second value.
+// = The comparison result.
+Ord/compare : ∀(A: *) (Ord A) -> A -> A -> Cmp
+| A #Ord{compare} x y = (compare x y)

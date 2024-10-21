@@ -9,12 +9,12 @@
 // = Final state after processing all elements.
 List/for
 : ∀(M: ∀(A: *) *)
-  ∀(m: (Trait/Monad M))
+  ∀(m: (Monad M))
   ∀(A: *)
   ∀(S: *)
   ∀(x: (List A))
   ∀(s: S)
   ∀(f: ∀(s: S) ∀(a: A) (M S))
   (M S)
-| M m A S #Nil{}           s f = (Trait/Monad/pure M m S s)
-| M m A S #Cons{head tail} s f = (Trait/Monad/bind M m S S (f s head) (λx (List/for M m A S tail x f)))
+| M #Monad{pure bind} A S #Nil{}           s f = (pure S s)
+| M #Monad{pure bind} A S #Cons{head tail} s f = (bind S S (f s head) (λx (List/for M #Monad{pure bind} A S tail x f)))

@@ -68,7 +68,7 @@ main = Parser/parse-unicode-escape
 //use Equal/ as EQ/
 //use Maybe/ as MB/
 //use Pair/ as Pair/
-//use Trait/ as Trait/
+//use / as /
 
 //IsTrue
 //: ∀(b: Bool)

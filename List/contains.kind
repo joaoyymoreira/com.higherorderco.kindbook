@@ -4,6 +4,6 @@
 // - x: Element to search for.
 // - xs: List to search in.
 // = True if found, False otherwise.
-List/contains : ∀(A: *) (Trait/Eq A) -> A -> (List A) -> Bool
+List/contains : ∀(A: *) (IsEqual A) -> A -> (List A) -> Bool
 | A e x #Nil             = #False
-| A e x #Cons{head tail} = (Bool/or (Trait/Eq/eq A e x head) (List/contains A e x tail))
+| A e x #Cons{head tail} = (Bool/or (IsEqual/eq A e x head) (List/contains A e x tail))

@@ -4,7 +4,7 @@
 // - prefix: Potential prefix list.
 // - xs: List to check against.
 // = True if xs starts with prefix, False otherwise.
-List/starts-with : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
+List/starts-with : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
 | A e prefix xs =
   let #Pair{prefix_list prefix_length} = (List/length-got A prefix)
   let xs_prefix = (List/take A prefix_length xs)
@@ -13,7 +13,7 @@ List/starts-with : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
     (List/eq A e xs_prefix prefix_list)
     (Nat/eq xs_length prefix_length))
 
-#test: (List/starts-with U32 (Trait/Eq/derive U32 U32/eq) [1 2 3] [1 2 3 4 5]) == #True
-#test: (List/starts-with U32 (Trait/Eq/derive U32 U32/eq) [1 2 4] [1 2 3 4 5]) == #False
-#test: (List/starts-with U32 (Trait/Eq/derive U32 U32/eq) [] [1 2 3 4 5]) == #True
-#test: (List/starts-with U32 (Trait/Eq/derive U32 U32/eq) [1 2 3 4 5 6] [1 2 3 4 5]) == #False
+#test: (List/starts-with Nat Nat/IsEqual [#1 #2 #3] [#1 #2 #3 #4 #5]) == #True
+#test: (List/starts-with Nat Nat/IsEqual [#1 #2 #4] [#1 #2 #3 #4 #5]) == #False
+#test: (List/starts-with Nat Nat/IsEqual [] [#1 #2 #3 #4 #5]) == #True
+#test: (List/starts-with Nat Nat/IsEqual [#1 #2 #3 #4 #5 #6] [#1 #2 #3 #4 #5]) == #False

@@ -4,14 +4,14 @@
 // - x: Element to count.
 // - xs: Input list.
 // = Number of occurrences.
-List/count : ∀(A: *) (Trait/Eq A) -> A -> (List A) -> Nat
+List/count : ∀(A: *) (IsEqual A) -> A -> (List A) -> Nat
 | A e x #Nil             = #Zero
 | A e x #Cons{head tail} =
-  let count_head = (Bool/if Nat (Trait/Eq/eq A e x head) #1 #Zero)
+  let count_head = (Bool/if Nat (IsEqual/eq A e x head) #1 #Zero)
   let count_tail = (List/count A e x tail)
   (Nat/add count_head count_tail)
 
-#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #2 [#1 #2 #3 #2 #4 #2]) == #3
-#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #5 [#1 #2 #3 #2 #4 #2]) == #0
-#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #1 [#1]) == #1
-#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #1 []) == #0
+#test: (List/count Nat Nat/IsEqual #2 [#1 #2 #3 #2 #4 #2]) == #3
+#test: (List/count Nat Nat/IsEqual #5 [#1 #2 #3 #2 #4 #2]) == #0
+#test: (List/count Nat Nat/IsEqual #1 [#1]) == #1
+#test: (List/count Nat Nat/IsEqual #1 []) == #0

@@ -4,17 +4,13 @@
 // - xs: First list.
 // - ys: Second list.
 // = True if xs < ys, False otherwise.
-List/lt : ∀(A: *) (Trait/Ord A) -> (List A) -> (List A) -> Bool
+List/lt : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Bool
 | A O #Nil        #Nil        = #False
 | A O #Nil        #Cons{y ys} = #True
 | A O #Cons{x xs} #Nil        = #False
 | A O #Cons{x xs} #Cons{y ys} =
-  let lt = (Trait/Ord/lt A O x y)
-  let gt = (Trait/Ord/gt A O x y)
-  if lt {
-    #True
-  } else if gt {
-    #False
-  } else {
-    (List/lt A O xs ys)
+  match (Ord/compare A O x y) {
+    #LT: #True
+    #GT: #False
+    #EQ: (List/lt A O xs ys)
   }

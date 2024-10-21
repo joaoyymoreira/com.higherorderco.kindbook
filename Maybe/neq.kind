@@ -4,8 +4,8 @@
 // - x: The first Maybe value.
 // - y: The second Maybe value.
 // = True if x and y are not equal, False otherwise.
-Maybe/neq : ∀(A: *) ∀(e: (Trait/Eq A)) (Maybe A) -> (Maybe A) -> Bool
+Maybe/neq : ∀(A: *) ∀(e: (IsEqual A)) (Maybe A) -> (Maybe A) -> Bool
 | A e #None    #None    = #False
 | A e #None    #Some{y} = #True
 | A e #Some{x} #None    = #True
-| A e #Some{x} #Some{y} = (Trait/Eq/neq A e x y)
+| A e #Some{x} #Some{y} = (Bool/not (IsEqual/eq A e x y))

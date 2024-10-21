@@ -9,12 +9,12 @@
 // = Monadic result of folding the list.
 List/mfoldl
 : ∀(M: ∀(A: *) *)
-  ∀(m: (Trait/Monad M))
+  ∀(m: (Monad M))
   ∀(A: *)
   ∀(B: *)
   ∀(f: ∀(b: B) ∀(a: A) (M B))
   ∀(z: B)
   ∀(x: (List A))
   (M B)
-| M m A B f z #Nil             = (Trait/Monad/pure M m B z)
-| M m A B f z #Cons{head tail} = (Trait/Monad/bind M m B B (f z head) λz1 (List/mfoldl M m A B f z1 tail))
+| M #Monad{pure bind} A B f z #Nil             = (pure B z)
+| M #Monad{pure bind} A B f z #Cons{head tail} = (bind B B (f z head) λz1 (List/mfoldl M #Monad{pure bind} A B f z1 tail))
