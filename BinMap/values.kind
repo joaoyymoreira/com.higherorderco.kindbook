@@ -1,17 +1,18 @@
-// Converts a BinMap to a List of the stored values.
-// None values are skipped.
-// - A: The type of values stored in the map.
-// - m: The input BinMap.
-// = A list with the values stored in the BinMap.
-BinMap/values
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  (List A)
-= λA λ{
-  #Leaf: #Nil
-  #Node: λ{
-		#None: λlft λrgt (List/append A (BinMap/values A lft)  (BinMap/values A rgt))
-		#Some: λv λlft λrgt #Cons{v (List/append A (BinMap/values A lft) (BinMap/values A rgt))}
-	}
-}
-  
+// Converts a BinMap to a List of stored values.
+// - A: Value type.
+// - m: Input BinMap.
+// = List of values stored in the BinMap.
+BinMap/values : ∀(A: *) (BinMap A) -> (List A)
+| A m = (List/map (Pair Bits A) A (Pair/get-snd Bits A) (BinMap/to-list A m))
+
+#test:
+  let map = (BinMap/empty U32)
+  (BinMap/values U32 map) == []
+
+#test: 
+  let map = (BinMap/empty U32)
+  let map = (BinMap/set U32 map #O{#O{#E}} 0)
+  let map = (BinMap/set U32 map #I{#O{#E}} 1)
+  let map = (BinMap/set U32 map #O{#I{#E}} 2)
+  let map = (BinMap/set U32 map #I{#I{#E}} 3)
+  (BinMap/values U32 map) == [0 1 2 3]

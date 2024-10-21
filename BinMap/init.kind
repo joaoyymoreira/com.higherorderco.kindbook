@@ -1,27 +1,16 @@
-// Initializes an entry in the BinMap if it doesn't already exist.
-// - A: The type of values stored in the map.
-// - m: The BinMap to initialize the entry in.
-// - k: The Bits key for the entry.
-// - v: The value to initialize the entry with.
-// = A new BinMap with the entry initialized if it didn't exist before.
-BinMap/init
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  ∀(v: A)
-  (BinMap A)
-= λA λ{
-  #Leaf: λ{
-		#E: λv #Node{#Some{v} #Leaf #Leaf}
-		#O: λb λv #Node{#None (BinMap/init A #Leaf b v) #Leaf}
-		#I: λb λv #Node{#None #Leaf (BinMap/init A #Leaf b v)}
-	}
-  #Node: λval λlft λrgt λ{
-		#E: λv 	
-			use none = #Node{#Some{v} #Leaf #Leaf}
-			use some = λx #Node{#Some{x} #Leaf #Leaf}
-			(Maybe/match A (λx (BinMap A)) none some val)
-		#O: λb λv #Node{val (BinMap/init A lft b v) rgt}
-		#I: λb λv #Node{val lft (BinMap/init A rgt b v)}
-	}
+// Initializes an entry in the BinMap if it doesn't exist.
+// - A: Value type.
+// - m: BinMap to initialize the entry in.
+// - k: Bits key for the entry.
+// - v: Value to initialize the entry with.
+// = New BinMap with the entry initialized if it didn't exist.
+BinMap/init : ∀(A: *) (BinMap A) -> Bits -> A -> (BinMap A)
+| A #Leaf          #O{b} v = #Node{#None (BinMap/init A #Leaf b v) #Leaf}
+| A #Leaf          #I{b} v = #Node{#None #Leaf (BinMap/init A #Leaf b v)}
+| A #Leaf          #E    v = #Node{#Some{v} #Leaf #Leaf}
+| A #Node{x l r}   #O{b} v = #Node{x (BinMap/init A l b v) r}
+| A #Node{x l r}   #I{b} v = #Node{x l (BinMap/init A r b v)}
+| A #Node{x l r}   #E    v = match x {
+  #None   : #Node{#Some{v} l r}
+  #Some{y}: #Node{#Some{y} l r}
 }

@@ -3,7 +3,7 @@
 // - bits: The Bits value to be split.
 // = A Pair of Bits where the first element contains the bits before the split point,
 //   and the second element contains the bits after the split point.
-Bits/split-at : Nat -> Bits -> (Pair/Pair Bits Bits)
+Bits/split-at : Nat -> Bits -> (Pair Bits Bits)
 | #Zero       bits     = #Pair{#E bits}
 | #Succ{pred} #E       = #Pair{(Bits/pad-zeros pred #E) #E}
 | #Succ{pred} #O{tail} = let #Pair{k rest} = (Bits/split-at pred tail) #Pair{#O{k} rest}

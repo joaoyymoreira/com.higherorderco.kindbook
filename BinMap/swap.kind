@@ -1,36 +1,17 @@
 // Swaps a value in the BinMap for a new value, returning the old value if it existed.
-// - A: The type of values stored in the BinMap.
-// - m: The BinMap to swap in.
-// - k: The Bits key to swap.
-// - v: The new value to insert.
-// = A pair containing the new BinMap and Maybe the old value if the key existed.
-BinMap/swap
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  ∀(v: A)
-  (Pair (BinMap A) (Maybe A))
-= λA  λ{
-  #Leaf: λ{
-		#E: λv #Pair{#Node{#Some{v} #Leaf #Leaf} #None} 
-		#O: λb λv 
-			let left = (BinMap/swap A #Leaf b v)
-      #Pair{#Node{#None (Pair/get-fst (BinMap A) (Maybe A) left) #Leaf} (Pair/get-snd (BinMap A) (Maybe A) left)}
-		#I: λb λv 
-			let right = (BinMap/swap A #Leaf b v)
-			#Pair{#Node{#None #Leaf (Pair/get-fst (BinMap A) (Maybe A) right)} (Pair/get-snd (BinMap A) (Maybe A) right)}
-	}
-  #Node: λval λlft λrgt λ{
-		#E: λv
-			use none = #Pair{#Node{#Some{v} lft rgt} #None}
-			use some = λx #Pair{#Node{#Some{v} lft rgt} #Some{x}}
-			//(Maybe/match A (Pair (BinMap A) (Maybe A)) none some val)
-			(Maybe/match A λx(Pair (BinMap A) (Maybe A)) none some val)
-		#O: λb λv 
-			let left = (BinMap/swap A lft b v)
-			#Pair{#Node{val (Pair/get-fst (BinMap A) (Maybe A) left) rgt} (Pair/get-snd (BinMap A) (Maybe A) left)}
-		#I: λb λv 			
-			let right = (BinMap/swap A rgt b v)
-			#Pair{#Node{val lft (Pair/get-fst (BinMap A) (Maybe A) right)} (Pair/get-snd (BinMap A) (Maybe A) right)}
-	}
-}
+// - A: Value type.
+// - m: BinMap to swap in.
+// - k: Bits key to swap.
+// - v: New value to insert (Maybe A).
+// = Pair of new BinMap and Maybe old value.
+BinMap/swap : ∀(A: *) (BinMap A) -> Bits -> (Maybe A) -> (Pair (BinMap A) (Maybe A))
+| A #Leaf        #O{b} v = let #Pair{t old} = (BinMap/swap A #Leaf b v) #Pair{#Node{#None t #Leaf} old}
+| A #Leaf        #I{b} v = let #Pair{t old} = (BinMap/swap A #Leaf b v) #Pair{#Node{#None #Leaf t} old}
+| A #Leaf        #E    v = #Pair{#Node{v #Leaf #Leaf} #None}
+| A #Node{x l r} #O{b} v = let #Pair{l old} = (BinMap/swap A l b v) #Pair{#Node{x l r} old}
+| A #Node{x l r} #I{b} v = let #Pair{r old} = (BinMap/swap A r b v) #Pair{#Node{x l r} old}
+| A #Node{x l r} #E    v = #Pair{#Node{v l r} x}
+
+#test: (BinMap/swap U32 #Leaf #E #Some{42}) == #Pair{#Node{#Some{42} #Leaf #Leaf} #None}
+#test: (BinMap/swap U32 (BinMap/set U32 #Leaf #E 10) #E #Some{20}) == #Pair{#Node{#Some{20} #Leaf #Leaf} #Some{10}}
+#test: (BinMap/swap U32 (BinMap/set U32 #Leaf #E 10) #E #None) == #Pair{#Node{#None #Leaf #Leaf} #Some{10}}

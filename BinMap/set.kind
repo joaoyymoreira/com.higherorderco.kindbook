@@ -1,25 +1,17 @@
 // Inserts a key-value pair into the BinMap.
-// - A: The type of values stored in the map.
-// - m: The BinMap to insert into.
-// - k: The Bits key to insert.
-// - v: The value to associate with the key.
-// = A new BinMap with the key-value pair inserted.
-BinMap/set
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  ∀(v: A)
-  (BinMap A)
-= λA λ{
-  #Leaf: λ{
-		#E: λv #Node{#Some{v} #Leaf #Leaf}
-		#O: λb λv #Node{#None (BinMap/set A #Leaf b v) #Leaf}
-		#I: λb λv #Node{#None #Leaf (BinMap/set A #Leaf b v)}
-	}
-  #Node: λval λlft λrgt λ{
-		#E: λv #Node{#Some{v} lft rgt}
-		#O: λb λv #Node{val (BinMap/set A lft b v) rgt}
-		#I: λb λv #Node{val lft (BinMap/set A rgt b v)}
-	}
-}
+// - A: Value type.
+// - m: BinMap to insert into.
+// - k: Bits key to insert.
+// - v: Value to associate with the key.
+// = New BinMap with the key-value pair inserted.
+BinMap/set : ∀(A: *) (BinMap A) -> Bits -> A -> (BinMap A)
+| A #Leaf        #E    v = #Node{#Some{v} #Leaf #Leaf}
+| A #Leaf        #O{b} v = #Node{#None (BinMap/set A #Leaf b v) #Leaf}
+| A #Leaf        #I{b} v = #Node{#None #Leaf (BinMap/set A #Leaf b v)}
+| A #Node{x l r} #E    v = #Node{#Some{v} l r}
+| A #Node{x l r} #O{b} v = #Node{x (BinMap/set A l b v) r}
+| A #Node{x l r} #I{b} v = #Node{x l (BinMap/set A r b v)}
 
+#test: (BinMap/set U32 (BinMap/empty U32) #E 42) == #Node{#Some{42} #Leaf #Leaf}
+#test: (BinMap/set U32 (BinMap/empty U32) #O{#E} 42) == #Node{#None #Node{#Some{42} #Leaf #Leaf} #Leaf}
+#test: (BinMap/set U32 (BinMap/empty U32) #I{#E} 42) == #Node{#None #Leaf #Node{#Some{42} #Leaf #Leaf}}

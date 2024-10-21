@@ -1,22 +1,14 @@
 // Checks if a key exists in the BinMap.
-// - A: The type of values stored in the map.
+// - A: Value type.
 // - m: The BinMap to search in.
 // - k: The Bits key to look for.
-// = True if the key exists in the BinMap, False otherwise.
-BinMap/contains
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  Bool
-= λA λ{
-  #Leaf: λk #False
-  #Node: λval λlft λrgt λ{
-		#E: 
-			use false = #False
-			use true = λs #True
-			(Maybe/match A (λx Bool) false true val)
-		#O: λb (BinMap/contains A lft b)
-		#I: λb (BinMap/contains A rgt b)
-	}
-}
+// = True if the key exists, False otherwise.
+BinMap/contains : ∀(A: *) (BinMap A) -> Bits -> Bool
+| A #Leaf        k     = #False
+| A #Node{x l r} #E    = match x { #None: #False #Some{x}: #True }
+| A #Node{x l r} #O{b} = (BinMap/contains A l b)
+| A #Node{x l r} #I{b} = (BinMap/contains A r b)
 
+#test: (BinMap/contains U32 (BinMap/empty U32) #E) == #False
+#test: (BinMap/contains U32 (BinMap/set U32 (BinMap/empty U32) #E 3) #E) == #True
+#test: (BinMap/contains U32 (BinMap/set U32 (BinMap/empty U32) #I{#E} 3) #O{#E}) == #False

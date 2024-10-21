@@ -5,4 +5,4 @@
 // - s: Input string.
 // = Folded result.
 String/foldr : ∀(B: *) (U32 -> B -> B) -> B -> String -> B
-= λA λc λn λs (List/foldr U32 A c n s)
+| A c n s = (List/foldr U32 A c n s)

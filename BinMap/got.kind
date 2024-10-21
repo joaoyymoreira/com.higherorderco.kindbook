@@ -1,30 +1,15 @@
-//got : ∀ {A : Set} → BinMap A → Bits → Pair (Maybe A) (BinMap A)
-//got (Node val l r) E     = val , Node val l r
-//got (Node val l r) (O k) = let v , l = got l k in v , Node val l r
-//got (Node val l r) (I k) = let v , r = got r k in v , Node val l r
-//got Leaf           _     = None , Leaf
-
 // Retrieves a value from the BinMap given a key and returns a copy of the map.
-// - A: The type of values stored in the map.
-// - m: The BinMap to search in.
-// - k: The Bits key to look up.
-// = A pair containing:
-//   1. The value associated with the key, wrapped in Maybe.
-//   2. A copy of the original BinMap.
-BinMap/got
-: ∀(A: *)
-  ∀(map: (BinMap A))
-  ∀(key: Bits)
-  (Pair (BinMap A) (Maybe A))
-= λA λ{
-  #Leaf: λkey #Pair{ #Leaf #None }
-  #Node: λval λlft λrgt λ{
-    #E: #Pair{ #Node{ val lft rgt } val }
-    #O: λkey match (BinMap/got A lft key) {
-      #Pair: λlft λval #Pair { #Node{ val lft rgt } val }
-    }
-    #I: λkey match (BinMap/got A rgt key) {
-      #Pair: λrgt λval #Pair { #Node{ val lft rgt } val }
-    }
-  }
-}
+// - A: Value type.
+// - m: BinMap to search in.
+// - k: Bits key to look up.
+// = Pair containing:
+//   1. A copy of the original BinMap.
+//   2. Value associated with the key, wrapped in Maybe.
+BinMap/got : ∀(A: *) (BinMap A) -> Bits -> (Pair (BinMap A) (Maybe A))
+| A #Leaf        k     = #Pair{#Leaf #None}
+| A #Node{x l r} #E    = #Pair{#Node{x l r} x}
+| A #Node{x l r} #O{k} = match (BinMap/got A l k) { #Pair{l x}: #Pair{#Node{x l r} x} }
+| A #Node{x l r} #I{k} = match (BinMap/got A r k) { #Pair{r x}: #Pair{#Node{x l r} x} }
+
+#test: (BinMap/got U32 #Leaf #E) == #Pair{#Leaf #None}
+#test: (BinMap/got U32 (BinMap/set U32 #Leaf #E 3) #E) == #Pair{#Node{#Some{3} #Leaf #Leaf} #Some{3}}

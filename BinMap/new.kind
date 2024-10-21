@@ -1,10 +1,7 @@
 // Creates an empty BinMap.
+// - A: Value type.
 // = An empty BinMap.
-BinMap/new
-: ∀(A: *)
-  (BinMap A)
-= λA (BinMap/Leaf A)
-// Test that creating a new BinMap results in a Leaf
-TEST_0
-: (Equal (BinMap Nat) (BinMap/new Nat) (BinMap/Leaf Nat))
-= #Refl
+BinMap/new : ∀(A: *) (BinMap A)
+| A = (BinMap/empty A)
+
+#test: (BinMap/new Nat) == (BinMap/empty Nat)

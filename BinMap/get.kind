@@ -1,18 +1,16 @@
 // Retrieves a value from the BinMap given a key.
-// - A: The type of values stored in the map.
-// - m: The BinMap to search in.
-// - k: The Bits key to look up.
-// = The value associated with the key, wrapped in Maybe.
-BinMap/get
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  (Maybe A)
-= λA λ{
-  #Leaf: λk #None
-  #Node: λval λlft λrgt λ{
-		#E: val
-		#O: λb (BinMap/get A lft b)
-		#I: λb (BinMap/get A rgt b)
-	}
-}
+// - A: Value type.
+// - m: BinMap to search in.
+// - k: Bits key to look up.
+// = Value associated with the key, wrapped in Maybe.
+BinMap/get : ∀(A: *) (BinMap A) -> Bits -> (Maybe A)
+| A #Leaf        k     = #None
+| A #Node{x l r} #E    = x
+| A #Node{x l r} #O{b} = (BinMap/get A l b)
+| A #Node{x l r} #I{b} = (BinMap/get A r b)
+
+#test: (BinMap/get U32 (BinMap/empty U32) #E) == #None
+#test: (BinMap/get U32 (BinMap/set U32 (BinMap/empty U32) #E 42) #E) == #Some{42}
+#test: (BinMap/get U32 (BinMap/set U32 (BinMap/empty U32) #O{#E} 42) #O{#E}) == #Some{42}
+#test: (BinMap/get U32 (BinMap/set U32 (BinMap/empty U32) #I{#E} 42) #I{#E}) == #Some{42}
+#test: (BinMap/get U32 (BinMap/set U32 (BinMap/empty U32) #O{#E} 42) #I{#E}) == #None

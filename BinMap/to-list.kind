@@ -1,66 +1,33 @@
-// Helper function to traverse the BinMap in breadth-first order
-BinMap/to-list-go
-: ∀(A: *)
-  ∀(queue: (List (Pair Bits (BinMap A))))
-  (List (Pair Bits A))
-= λA λ{
-  #Nil: #Nil
-  #Cons: λ{
-		#Pair: λacc λ{
-			#Leaf: λtail (BinMap/to-list-go A tail)
-			#Node: λ{
-				#None: λlft λrgt λtail 
-					(BinMap/to-list-go A (List/append (Pair Bits (BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))
-				#Some: λval λlft λrgt λtail
-					#Cons{#Pair{acc val} (BinMap/to-list-go A (List/append (Pair Bits (BinMap A)) tail (#Cons{#Pair{#O{acc} lft} #Cons{#Pair{#I{acc} rgt} #Nil}})))}
-			}
-		}
-	} 
-}
-
 // Converts a BinMap to a List of (Bits,A) pairs in breadth-first order.
-// The keys returned are sorted in ascending order.
-// - A: The type of values stored in the BinMap.
-// - m: The input BinMap.
-// = A List of Pairs, where each Pair contains the Bits path and the corresponding value.
-BinMap/to-list
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  (List (Pair Bits A))
-= λA λm (BinMap/to-list-go A #Cons{#Pair{#E (BinMap/invert A m)} #Nil})
-// Test: Empty map should result in an empty list
-TEST_0
-: (Equal
-    (List (Pair Bits Bool))
-    (BinMap/to-list Bool #Leaf)
-    (#Nil))
-= #Refl
+// Keys are sorted in ascending order.
+// - A: Value type.
+// - m: Input BinMap.
+// = List of Pairs with Bits path and corresponding value.
+BinMap/to-list : ∀(A: *) (BinMap A) -> (List (Pair Bits A))
+| A m = (BinMap/to-list/go A [#Pair{#E (BinMap/invert A m)}])
 
-// Test: BinMap with a single element
-TEST_1
-: (Equal
-    (List (Pair Bits Bool))
-    (BinMap/to-list Bool (BinMap/set Bool #Leaf #E #True))
-    (#Cons{(#Pair{#E #True}) (#Nil)}))
-= #Refl
+// Helper function to traverse the BinMap in breadth-first order
+BinMap/to-list/go : ∀(A: *) (List (Pair Bits (BinMap A))) -> (List (Pair Bits A))
+| A #Nil                                  = #Nil
+| A #Cons{#Pair{k #Node{#None    l r}} q} = (BinMap/to-list/go A (List/append _ q [#Pair{(#O{k}) l} #Pair{(#I{k}) r}]))
+| A #Cons{#Pair{k #Node{#Some{x} l r}} q} = #Cons{#Pair{k x} (BinMap/to-list/go A (List/append _ q [#Pair{(#O{k}) l} #Pair{(#I{k}) r}]))}
+| A #Cons{#Pair{k #Leaf}               q} = (BinMap/to-list/go A q)
 
-// Test: Overwrite element
-TEST_2
-: (Equal
-    (List (Pair Bits Bool))
-    (BinMap/to-list Bool (BinMap/set Bool (BinMap/set Bool #Leaf #E #True) #E #False))
-    (#Cons{(#Pair{#E #False}) (#Nil)}))
-= #Refl
+#test:
+  let map = (BinMap/empty U32)
+  (BinMap/to-list U32 map) == #Nil
 
-// // Test: Skip None values 
-// // BUG: Constructor Cons not found in pattern match.
-// T3
-// : (Equal
-//     (List (Pair Bits Bool))
-//     (BinMap/to-list Bool 
-//       (#Node{
-// 				#None
-//         (#Node{#Some{#True} #Leaf #Leaf})
-//         (#Node{#Some{#False} #Leaf #Leaf})}))
-//     (#Cons{(#Pair{(#O{#E}) #True}) (#Cons{(#Pair{(#I{#E}) #False}) #Nil})}))
-// = #Refl
+#test:
+  let map = (BinMap/empty U32)
+  let map = (BinMap/set U32 map #O{#E} 0)
+  let map = (BinMap/set U32 map #I{#E} 1)
+  (BinMap/to-list U32 map) == [#Pair{#O{#E} 0} #Pair{#I{#E} 1}]
+
+#test:
+  let map = (BinMap/empty U32)
+  let map = (BinMap/set U32 map #O{#O{#E}} 0)
+  let map = (BinMap/set U32 map #I{#O{#E}} 1)
+  let map = (BinMap/set U32 map #O{#I{#E}} 2)
+  let map = (BinMap/set U32 map #I{#I{#E}} 3)
+  (BinMap/to-list U32 map) == [#Pair{#O{#O{#E}} 0} #Pair{#I{#O{#E}} 1} #Pair{#O{#I{#E}} 2} #Pair{#I{#I{#E}} 3}]
+

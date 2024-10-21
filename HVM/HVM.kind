@@ -158,10 +158,7 @@ HVM/take : Bits -> (HVM/HVM HVM/RTerm)
 | loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
   match (BinMap/take _ mem_buf loc) {
     #None: #None
-    #Some: λ{
-      #Pair{mem_buf got}:
-        #Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } got } }
-    }
+    #Some: ?a
   }
 
 ////HVM/load : Bits -> (HVM/HVM HVM/RTerm)

@@ -100,6 +100,8 @@ NOTE: do NOT change the logic or algorithm used in the implementations in any wa
 
 NOTE: always use the same field names when pattern-matching equations. do not use '_'. example:
 
+NOTE: '#3' makes a Nat (sugar for #Succ{#Succ{#Succ{#Zero}}}) and '3' makes an U32 (native)
+
 | #Cons{_  _}  #Nil         = A
 | #Cons{a0 as} #Cons{b0 bs} = B
 
@@ -107,3 +109,5 @@ this isn't allowed, because 'a0' and '_' have different names, despite correspon
 
 | #Cons{a0 as} #Nil         = A
 | #Cons{a0 as} #Cons{b0 bs} = B
+
+NOTE: never use Type/match functions. just use a match expression ('match x { ... }')

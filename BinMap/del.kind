@@ -1,18 +1,13 @@
 // Removes a key-value pair from the BinMap.
-// - A: The type of values stored in the map.
-// - m: The BinMap to remove from.
-// - k: The Bits key to remove.
-// = A new BinMap with the key-value pair removed.
-BinMap/del
-: ∀(A: *)
-  ∀(m: (BinMap A))
-  ∀(k: Bits)
-  (BinMap A)
-= λA λ{
-  #Leaf: λk #Leaf
-  #Node: λval λlft λrgt λ{
-		#E: #Node{#None lft rgt}
-		#O: λb #Node{val (BinMap/del A lft b) rgt}
-		#I: λb #Node{val lft (BinMap/del A rgt b)}
-	}
-}
+// - A: Value type.
+// - m: BinMap to remove from.
+// - k: Key to remove.
+// = New BinMap with the key-value pair removed.
+BinMap/del : ∀(A: *) (BinMap A) -> Bits -> (BinMap A)
+| A #Leaf        k     = #Leaf
+| A #Node{x l r} #E    = #Node{#None l r}
+| A #Node{x l r} #O{b} = #Node{x (BinMap/del A l b) r}
+| A #Node{x l r} #I{b} = #Node{x l (BinMap/del A r b)}
+
+#test: (BinMap/del Bool (BinMap/empty Bool) #E) == (BinMap/empty Bool)
+#test: (BinMap/del Bool (BinMap/set Bool (BinMap/empty Bool) #E #True) #E) == #Node{#None #Leaf #Leaf}
