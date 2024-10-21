@@ -76,32 +76,50 @@ data HVM/RNet {
   }
 }
 
-HVM/HVM : * -> *
+HVM : * -> *
 | A = ∀(net: HVM/RNet) (Maybe (Pair HVM/RNet A))
 
 // HVM Monad
 // ---------
 
-HVM/pure : ∀(A: *) A -> (HVM/HVM A)
+HVM/pure : ∀(A: *) A -> (HVM A)
 | A a net = #Some{#Pair{ net a }}
 
-HVM/bind : ∀(A: *) ∀(B: *) (HVM/HVM A) -> (A -> (HVM/HVM B)) -> (HVM/HVM B)
+HVM/bind : ∀(A: *) ∀(B: *) (HVM A) -> (A -> (HVM B)) -> (HVM B)
 | A B ma fn net = (HVM/bind/go A B (ma net) fn)
 
-HVM/bind/go : ∀(A: *) ∀(B: *) (Maybe (Pair HVM/RNet A)) -> (A -> (HVM/HVM B)) -> (Maybe (Pair HVM/RNet B))
+HVM/bind/go : ∀(A: *) ∀(B: *) (Maybe (Pair HVM/RNet A)) -> (A -> (HVM B)) -> (Maybe (Pair HVM/RNet B))
 | A B #None               fn = #None
 | A B #Some{#Pair{net a}} fn = (fn a net)
 
-HVM/Monad : (Monad HVM/HVM)
+HVM/Monad : (Monad HVM)
 = #Monad{
   pure: HVM/pure
   bind: HVM/bind
 }
 
-// Utils
+// Initialization
+// --------------
+
+HVM/Net/new : HVM/Net
+= #Net{
+  rot: #Nul
+  bag: #Nil
+}
+
+HVM/RNet/new : HVM/RNet
+= #RNet{
+  bag_buf: (BinMap/new _)
+  bag_len: #E
+  bag_pop: #E
+  mem_buf: (BinMap/new _)
+  mem_len: (Bits/succ #E)
+}
+
+// RTerm
 // -----
 
-HVM/is-sub : HVM/RTerm -> Bool
+HVM/RTerm/is-sub : HVM/RTerm -> Bool
 | #RTerm{#VAR loc} = #False
 | #RTerm{#SUB loc} = #True
 | #RTerm{#NUL loc} = #False
@@ -111,17 +129,17 @@ HVM/is-sub : HVM/RTerm -> Bool
 | #RTerm{#SUP loc} = #False
 | #RTerm{#DUP loc} = #False
 
-HVM/get-typ : HVM/RTerm -> HVM/RTag
+HVM/RTerm/get-typ : HVM/RTerm -> HVM/RTag
 | #RTerm{typ loc} = typ
 
-HVM/get-loc : HVM/RTerm -> HVM/RLoc
+HVM/RTerm/get-loc : HVM/RTerm -> HVM/RLoc
 | #RTerm{typ loc} = loc
 
 HVM/at : Nat -> Bits -> Bits
 | #Zero    x = x
 | #Succ{n} x = (Bits/succ (HVM/at n x))
 
-HVM/get : Bits -> (HVM/HVM HVM/RTerm)
+HVM/get : Bits -> (HVM HVM/RTerm)
 | loc #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf got} = (BinMap/got _ mem_buf loc)
   match got {
@@ -129,29 +147,32 @@ HVM/get : Bits -> (HVM/HVM HVM/RTerm)
     #Some: λterm #Some{ #Pair{ #RNet{ bag_buf bag_len bag_pop mem_buf mem_len } term }}
   }
 
-HVM/set : Bits -> HVM/RTerm -> (HVM/HVM Unit)
+// Actions
+// -------
+
+HVM/set : Bits -> HVM/RTerm -> (HVM Unit)
 | loc term #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/set _ mem_buf loc term)
   use new_net = #RNet{ bag_buf bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net #Unit } }
 
-HVM/del : Bits -> (HVM/HVM Unit)
+HVM/del : Bits -> (HVM Unit)
 | loc #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/del _ mem_buf loc)
   use new_net = #RNet{ bag_buf bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net #Unit } }
 
-HVM/swap : Bits -> (Maybe HVM/RTerm) -> (HVM/HVM (Maybe HVM/RTerm))
+HVM/swap : Bits -> (Maybe HVM/RTerm) -> (HVM (Maybe HVM/RTerm))
 | loc term #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf old} = (BinMap/swap _ mem_buf loc term)
   #Some{ #Pair{ #RNet{ bag_buf bag_len bag_pop mem_buf mem_len } old } }
 
-HVM/take : Bits -> (HVM/HVM HVM/RTerm)
+HVM/take : Bits -> (HVM HVM/RTerm)
 | loc #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   let #Pair{mem_buf got} = (BinMap/swap _ mem_buf loc #Some{#RTerm{ #SUB loc }})
   match got {
     #None: #None
-    #Some{got}: if (HVM/is-sub got) {
+    #Some{got}: if (HVM/RTerm/is-sub got) {
       #Some{ #Pair{ #RNet{ bag_buf bag_len bag_pop mem_buf mem_len } got } }
     } else {
       let mem_buf = (BinMap/del _ mem_buf loc) 
@@ -159,45 +180,33 @@ HVM/take : Bits -> (HVM/HVM HVM/RTerm)
     }
   }
 
-HVM/init : Bits -> HVM/RTerm -> (HVM/HVM Unit)
+HVM/init : Bits -> HVM/RTerm -> (HVM Unit)
 | loc term #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use mem_buf = (BinMap/init _ mem_buf loc term)
   use new_net = #RNet{ bag_buf bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net #Unit } }
 
-HVM/get-net : (HVM/HVM HVM/RNet)
+HVM/get-rnet : (HVM HVM/RNet)
 = λnet #Some{ #Pair{ net net } }
 
-HVM/get-bag : (HVM/HVM HVM/RBag)
+HVM/get-rbag : (HVM HVM/RBag)
 | #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   #Some{ #Pair{ #RNet{ bag_buf bag_len bag_pop mem_buf mem_len } bag_buf } }
 
-HVM/get-rot : (HVM/HVM HVM/RTerm)
+HVM/get-rrot : (HVM HVM/RTerm)
 = (HVM/get #E)
-
-// Initialization
-// --------------
-
-HVM/Net/new : HVM/RNet
-= #RNet{
-  bag_buf: (BinMap/new _)
-  bag_len: #E
-  bag_pop: #E
-  mem_buf: (BinMap/new _)
-  mem_len: (Bits/succ #E)
-}
 
 // Allocation
 // ----------
 
-HVM/alloc-node : Nat -> (HVM/HVM Bits)
+HVM/alloc-node : Nat -> (HVM Bits)
 | arity #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_mem_len = mem_len
   use new_mem_len = (Nat/apply _ arity Bits/succ old_mem_len)
   use new_net     = #RNet{ bag_buf bag_len bag_pop mem_buf new_mem_len }
   #Some{ #Pair{ new_net old_mem_len } }
 
-HVM/push-redex : HVM/RDex -> (HVM/HVM Bits)
+HVM/push-redex : HVM/RDex -> (HVM Bits)
 | redex #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_bag_len = bag_len
   use new_bag_len = (Bits/succ old_bag_len)
@@ -205,7 +214,7 @@ HVM/push-redex : HVM/RDex -> (HVM/HVM Bits)
   use new_net     = #RNet{ new_bag_buf new_bag_len bag_pop mem_buf mem_len }
   #Some{ #Pair{ new_net old_bag_len } }
 
-HVM/pop-redex : (HVM/HVM (Maybe HVM/RDex))
+HVM/pop-redex : (HVM (Maybe HVM/RDex))
 | #RNet{bag_buf bag_len bag_pop mem_buf mem_len} =
   use old_bag_pop  = bag_pop
   use new_bag_pop  = (Bits/succ old_bag_pop)
@@ -219,13 +228,13 @@ HVM/pop-redex : (HVM/HVM (Maybe HVM/RDex))
 HVM/VarMap : *
 = (BinMap Bits)
 
-HVM/inject-term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> (HVM/HVM (Pair HVM/VarMap HVM/RTerm))
+HVM/inject-term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> (HVM (Pair HVM/VarMap HVM/RTerm))
 | p #Lam{var bod} host vars = do HVM {
   ask lam             = (HVM/alloc-node #3)
   ask #Pair{vars var} = (HVM/inject-term #Neg var #Some{(HVM/at #1 lam)} vars)
   ask #Pair{vars bod} = (HVM/inject-term #Pos bod #Some{(HVM/at #2 lam)} vars)
   ask (HVM/init (HVM/at #1 lam) var)
-  ask (HVM/init (HVM/at #2 lam) var)
+  ask (HVM/init (HVM/at #2 lam) bod)
   ret #Pair{ vars #RTerm{ #LAM lam } }
 }
 | p #App{arg ret} host vars = do HVM {
@@ -276,7 +285,7 @@ HVM/inject-term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> 
   ret #Pair{ vars #RTerm{ #ERA #E } }
 }
 
-HVM/inject-redex : HVM/Dex -> HVM/VarMap -> (HVM/HVM HVM/VarMap)
+HVM/inject-redex : HVM/Dex -> HVM/VarMap -> (HVM HVM/VarMap)
 | redex vars = do HVM {
   let #Pair{neg pos}  = redex
   ask #Pair{vars neg} = (HVM/inject-term #Neg neg #None vars)
@@ -285,11 +294,8 @@ HVM/inject-redex : HVM/Dex -> HVM/VarMap -> (HVM/HVM HVM/VarMap)
   ret vars
 }
 
-HVM/inject-net
-: ∀(net: HVM/Net)
-  ∀(vars: HVM/VarMap)
-  (HVM/HVM (Pair HVM/VarMap HVM/RTerm))
-= λnet λvars do HVM {
+HVM/inject-net : HVM/Net -> HVM/VarMap -> (HVM (Pair HVM/VarMap HVM/RTerm))
+| net vars = do HVM {
   let #Net{rot bag} = net
   ask #Pair{vars rot} = (HVM/inject-term #Pos rot #Some{#E} vars)
   ask vars = for dex in bag {
@@ -298,10 +304,16 @@ HVM/inject-net
   ret #Pair{ vars rot }
 }
 
+HVM/do-inject-net : HVM/Net -> (HVM HVM/RTerm)
+| net = do HVM {
+  ask #Pair{x rot} = (HVM/inject-net net (BinMap/new _))
+  ret rot
+}
+
 // Recovery
 // --------
 
-HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
+HVM/recover-var : Bits -> HVM/RTerm -> (HVM (HVM/Term #Pos))
 | var #RTerm{#ERA loc} = λnet #None
 | var #RTerm{#APP loc} = λnet #None
 | var #RTerm{#DUP loc} = λnet #None
@@ -315,7 +327,7 @@ HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
   (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
 }
 
-HVM/recover-sub : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Neg))
+HVM/recover-sub : Bits -> HVM/RTerm -> (HVM (HVM/Term #Neg))
 | sub #RTerm{#NUL loc} = λnet #None
 | sub #RTerm{#LAM loc} = λnet #None
 | sub #RTerm{#SUP loc} = λnet #None
@@ -329,7 +341,7 @@ HVM/recover-sub : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Neg))
   (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
 }
 
-HVM/recover-term : ∀(p: HVM/Pol) ∀(term: HVM/RTerm) (HVM/HVM (HVM/Term p))
+HVM/recover-term : ∀(p: HVM/Pol) ∀(term: HVM/RTerm) (HVM (HVM/Term p))
 | #Pos #RTerm{#NUL loc} = do HVM {
   ret #Nul
 }
@@ -379,7 +391,7 @@ HVM/recover-term : ∀(p: HVM/Pol) ∀(term: HVM/RTerm) (HVM/HVM (HVM/Term p))
 | #Neg #RTerm{#LAM loc} = λnet #None
 | #Neg #RTerm{#SUP loc} = λnet #None
 
-HVM/recover-bag : (List HVM/RDex) -> (HVM/HVM HVM/Bag)
+HVM/recover-bag : (List HVM/RDex) -> (HVM HVM/Bag)
 | #Nil = do HVM {
   ret #Nil
 }
@@ -390,10 +402,10 @@ HVM/recover-bag : (List HVM/RDex) -> (HVM/HVM HVM/Bag)
   ret #Cons{ #Pair{neg pos} rest }
 }
 
-HVM/recover-net : HVM/RNet -> (HVM/HVM HVM/Net)
+HVM/recover-net : HVM/RNet -> (HVM HVM/Net)
 = λnet do HVM {
-  ask rot = HVM/get-rot
-  ask bag = HVM/get-bag
+  ask rot = HVM/get-rrot
+  ask bag = HVM/get-rbag
   ask rot = (HVM/recover-term #Pos rot)
   let val = (BinMap/values HVM/RDex bag)
   ask bag = (HVM/recover-bag val)
@@ -403,21 +415,21 @@ HVM/recover-net : HVM/RNet -> (HVM/HVM HVM/Net)
 // Running
 // -------
 
-HVM/boot : HVM/Net -> (HVM/HVM Unit)
+HVM/boot : HVM/Net -> (HVM Unit)
 = λnet do HVM {
-  ask #Pair{x rot} = (HVM/inject-net net (BinMap/new _))
-  ask (HVM/init #E rot)
+  ask rot = (HVM/do-inject-net net)
+  ask (HVM/set #E rot)
   ret #Unit
 }
 
-HVM/shut : (HVM/HVM HVM/Net)
+HVM/shut : (HVM HVM/Net)
 = do HVM {
-  ask net = HVM/get-net
+  ask net = HVM/get-rnet
   (HVM/recover-net net)
 }
 
-HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe A)
-= λA λhvm match (hvm HVM/Net/new) {
+HVM/run : ∀(A: *) (HVM A) -> (Maybe A)
+= λA λhvm match (hvm HVM/RNet/new) {
   #None: #None
   #Some: λ{ #Pair{net x}: #Some{x} }
 }
@@ -578,41 +590,41 @@ HVM/parse-net : (Parser HVM/Net)
   ret #Net{ rot bag }
 }
 
-HVM/do_parse-net : String -> HVM/Net
-= λcode (Maybe/run _ (#Net{ #Nul #Nil }) (Parser/run _ HVM/parse-net code))
+HVM/do-parse-net : String -> HVM/Net
+= λcode (Maybe/run _ HVM/Net/new (Parser/run _ HVM/parse-net code))
 
 // Linking
 // -------
 
-HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
-| a b = match (HVM/is-sub a) {
+HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
+| a b = match (HVM/RTerm/is-sub a) {
   #True: do HVM {
-    ask got = (HVM/swap (HVM/get-loc a) #Some{b})
+    ask got = (HVM/swap (HVM/RTerm/get-loc a) #Some{b})
     match got {
-      #Some{A}: if (HVM/is-sub A) {
+      #Some{A}: if (HVM/RTerm/is-sub A) {
         do HVM {
           ret #Unit
         }
       } else {
         do HVM {
-          ask b = (HVM/take (HVM/get-loc a))
+          ask b = (HVM/take (HVM/RTerm/get-loc a))
           (HVM/link a b)
         }
       }
       #None: λnet #None
     }
   }
-  #False: match (HVM/is-sub b) {
+  #False: match (HVM/RTerm/is-sub b) {
     #True: do HVM {
-      ask got = (HVM/swap (HVM/get-loc b) #Some{a})
+      ask got = (HVM/swap (HVM/RTerm/get-loc b) #Some{a})
       match got {
-        #Some{B}: if (HVM/is-sub B) {
+        #Some{B}: if (HVM/RTerm/is-sub B) {
           do HVM {
             ret #Unit
           }
         } else {
           do HVM {
-            ask a = (HVM/take (HVM/get-loc b))
+            ask a = (HVM/take (HVM/RTerm/get-loc b))
             (HVM/link a b)
           }
         }
@@ -629,7 +641,7 @@ HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
 // Interaction
 // -----------
 
-HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
+HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
 | #RTerm{#APP app} #RTerm{#LAM lam} = do HVM {
   ask arg = (HVM/take (HVM/at #1 app))
   ask ret = (HVM/take (HVM/at #2 app))
@@ -699,20 +711,26 @@ HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
 }
 
 main
-= use key = U32/to-bits
-  use map = (BinMap/new _)
-  use map = (BinMap/set _ map (key 123) 420)
-  use got = (BinMap/get _ map (key 123))
-  got
-
-//main
-//= log (String/append "foo" "bar")
-  //12
-
-main
 : (Maybe String/View)
-= do Maybe {
-  ask term = (Parser/run _ (HVM/parse-term #Pos) "((x x) (y y))")
-  ret #View{(HVM/Term/to-string #Pos term)}
-}
+= (HVM/run _ do HVM {
 
+  // Parses Net
+  let net = (HVM/do-parse-net "(x y) & (* *) ~ (y x)")
+
+  // Boots Net
+  ask (HVM/boot net)
+  ask rnet = HVM/get-rnet
+
+  // Gets resulting net
+  ask net = HVM/shut
+
+  // Logs Net and Memory
+  log "[CR-NET]"
+  log (HVM/Net/to-string net)
+  log "[RT-NET]"
+  log (HVM/RNet/to-string rnet)
+
+  // Returns result
+  ret #View{"ok"}
+
+})
