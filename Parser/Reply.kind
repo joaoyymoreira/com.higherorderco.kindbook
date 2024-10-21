@@ -7,7 +7,7 @@ Parser/Reply : ∀(A: *) *
     state: Parser/State
     value: A
   } : (Parser/Reply A)
-}
+} : (Parser/Reply A)
 
 // Accessor for the state field of Reply
 Parser/Reply/state
@@ -35,8 +35,8 @@ Parser/Reply/new
   (Parser/Reply A)
 = λA λstate λvalue #MkReply{state value}
 // Test: Verify Reply record field access
-TEST_0 : (Equal use x = (Parser/Reply)
-      (Pair/Pair Parser/State Nat)
+TEST_0 : (Equal
+      (Pair Parser/State Nat)
       (#Pair{
         (Parser/Reply/state Nat (#MkReply{(#MkState{"abc" #0}) #42}))
         (Parser/Reply/value Nat (#MkReply{(#MkState{"abc" #0}) #42}))})

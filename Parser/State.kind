@@ -7,7 +7,7 @@ Parser/State : * = data[]{
     input: String
     index: Nat
   } : Parser/State
-}
+} : Parser/State
 
 // Creates a new State with the given input and initial index of zero.
 // - input: The input string to be parsed.
@@ -54,7 +54,7 @@ TEST_0
 // Test: Accessing State fields
 TEST_1 
 : (Equal 
-    (Pair/Pair String Nat)
+    (Pair String Nat)
     (#Pair{
         (Parser/State/input (Parser/State/new "world" #5))
         (Parser/State/index (Parser/State/new "world" #5))})

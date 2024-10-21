@@ -6,7 +6,7 @@ Parser/Error : * = data[]{
     index: Nat
     error: String
   } : Parser/Error
-}
+} : Parser/Error
 // Accessor for the index field
 Parser/Error/index
 : ∀(e: Parser/Error)
@@ -25,8 +25,8 @@ Parser/Error/error
 // Test: Verify that Error constructor and field accessors work correctly
 
 TEST_0
-: (Equal use x = Parser/Error
-    (Pair/Pair Nat String)
+: (Equal 
+    (Pair Nat String)
     (#Pair{
       (Parser/Error/index (#MkError{#5 "Test error"})) 
       (Parser/Error/error (#MkError{#5 "Test error"}))})
