@@ -219,35 +219,35 @@ HVM/pop-redex : (HVM/HVM (Maybe HVM/RDex))
 HVM/VarMap : *
 = (BinMap Bits)
 
-HVM/inject_term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> (HVM/HVM (Pair HVM/VarMap HVM/RTerm))
+HVM/inject-term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> (HVM/HVM (Pair HVM/VarMap HVM/RTerm))
 | p #Lam{var bod} host vars = do HVM {
   ask lam             = (HVM/alloc-node #3)
-  ask #Pair{vars var} = (HVM/inject_term #Neg var #Some{(HVM/at #1 lam)} vars)
-  ask #Pair{vars bod} = (HVM/inject_term #Pos bod #Some{(HVM/at #2 lam)} vars)
+  ask #Pair{vars var} = (HVM/inject-term #Neg var #Some{(HVM/at #1 lam)} vars)
+  ask #Pair{vars bod} = (HVM/inject-term #Pos bod #Some{(HVM/at #2 lam)} vars)
   ask (HVM/init (HVM/at #1 lam) var)
   ask (HVM/init (HVM/at #2 lam) var)
   ret #Pair{ vars #RTerm{ #LAM lam } }
 }
 | p #App{arg ret} host vars = do HVM {
   ask app             = (HVM/alloc-node #3)
-  ask #Pair{vars arg} = (HVM/inject_term #Pos arg #Some{(HVM/at #1 app)} vars)
-  ask #Pair{vars ret} = (HVM/inject_term #Neg ret #Some{(HVM/at #2 app)} vars)
+  ask #Pair{vars arg} = (HVM/inject-term #Pos arg #Some{(HVM/at #1 app)} vars)
+  ask #Pair{vars ret} = (HVM/inject-term #Neg ret #Some{(HVM/at #2 app)} vars)
   ask (HVM/init (HVM/at #1 app) arg)
   ask (HVM/init (HVM/at #2 app) ret)
   ret #Pair{ vars #RTerm{ #APP app } }
 }
 | p #Sup{tm1 tm2} host vars = do HVM {
   ask sup             = (HVM/alloc-node #3)
-  ask #Pair{vars tm1} = (HVM/inject_term #Pos tm1 #Some{(HVM/at #1 sup)} vars)
-  ask #Pair{vars tm2} = (HVM/inject_term #Pos tm2 #Some{(HVM/at #2 sup)} vars)
+  ask #Pair{vars tm1} = (HVM/inject-term #Pos tm1 #Some{(HVM/at #1 sup)} vars)
+  ask #Pair{vars tm2} = (HVM/inject-term #Pos tm2 #Some{(HVM/at #2 sup)} vars)
   ask (HVM/init (HVM/at #1 sup) tm1)
   ask (HVM/init (HVM/at #2 sup) tm2)
   ret #Pair{ vars #RTerm{ #SUP sup } }
 }
 | p #Dup{dp1 dp2} host vars = do HVM {
   ask dup             = (HVM/alloc-node #3)
-  ask #Pair{vars dp1} = (HVM/inject_term #Neg dp1 #Some{(HVM/at #1 dup)} vars)
-  ask #Pair{vars dp2} = (HVM/inject_term #Neg dp2 #Some{(HVM/at #2 dup)} vars)
+  ask #Pair{vars dp1} = (HVM/inject-term #Neg dp1 #Some{(HVM/at #1 dup)} vars)
+  ask #Pair{vars dp2} = (HVM/inject-term #Neg dp2 #Some{(HVM/at #2 dup)} vars)
   ask (HVM/init (HVM/at #1 dup) dp1)
   ask (HVM/init (HVM/at #2 dup) dp2)
   ret #Pair{ vars #RTerm{ #DUP dup } }
@@ -276,451 +276,532 @@ HVM/inject_term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe Bits) -> HVM/VarMap -> 
   ret #Pair{ vars #RTerm{ #ERA #E } }
 }
 
-HVM/inject_redex : HVM/Dex -> HVM/VarMap -> (HVM/HVM HVM/VarMap)
+HVM/inject-redex : HVM/Dex -> HVM/VarMap -> (HVM/HVM HVM/VarMap)
 | redex vars = do HVM {
   let #Pair{neg pos}  = redex
-  ask #Pair{vars neg} = (HVM/inject_term #Neg neg #None vars)
-  ask #Pair{vars pos} = (HVM/inject_term #Pos pos #None vars)
+  ask #Pair{vars neg} = (HVM/inject-term #Neg neg #None vars)
+  ask #Pair{vars pos} = (HVM/inject-term #Pos pos #None vars)
   ask (HVM/push-redex #Pair{neg pos})
   ret vars
 }
 
-HVM/inject_net
+HVM/inject-net
 : ∀(net: HVM/Net)
   ∀(vars: HVM/VarMap)
   (HVM/HVM (Pair HVM/VarMap HVM/RTerm))
 = λnet λvars do HVM {
   let #Net{rot bag} = net
-  ask #Pair{vars rot} = (HVM/inject_term #Pos rot #Some{#E} vars)
+  ask #Pair{vars rot} = (HVM/inject-term #Pos rot #Some{#E} vars)
   ask vars = for dex in bag {
-    (HVM/inject_redex dex vars)
+    (HVM/inject-redex dex vars)
   }
   ret #Pair{ vars rot }
 }
 
-////// Recovery
-////// --------
+// Recovery
+// --------
 
-////HVM/recover_var
-////: ∀(var: Bits)
-  ////∀(term: HVM/RTerm)
-  ////(HVM/HVM (HVM/Term #Pos))
-////= λvar λ{
-  ////#RTerm{tag loc}: match tag {
-    ////#SUB: match (Bits/eq var loc) {
-      ////#True: do HVM { ret #Var{loc} }
-      ////#False: (HVM/recover_term #Pos (#RTerm{ #SUB loc }))
-    ////}
-    ////#ERA: λnet #None
-    ////#APP: λnet #None
-    ////#DUP: λnet #None
-    ////#VAR: (HVM/recover_term #Pos (#RTerm{ #VAR loc }))
-    ////#NUL: (HVM/recover_term #Pos (#RTerm{ #NUL loc }))
-    ////#LAM: (HVM/recover_term #Pos (#RTerm{ #LAM loc }))
-    ////#SUP: (HVM/recover_term #Pos (#RTerm{ #SUP loc }))
-  ////}
-////}
+//HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
+//= λvar λ{
+  //#RTerm{tag loc}: match tag {
+    //#SUB: match (Bits/eq var loc) {
+      //#True: do HVM { ret #Var{loc} }
+      //#False: (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
+    //}
+    //#ERA: λnet #None
+    //#APP: λnet #None
+    //#DUP: λnet #None
+    //#VAR: (HVM/recover-term #Pos (#RTerm{ #VAR loc }))
+    //#NUL: (HVM/recover-term #Pos (#RTerm{ #NUL loc }))
+    //#LAM: (HVM/recover-term #Pos (#RTerm{ #LAM loc }))
+    //#SUP: (HVM/recover-term #Pos (#RTerm{ #SUP loc }))
+  //}
+//}
 
-////HVM/recover_sub
-////: ∀(sub: Bits)
-  ////∀(term: HVM/RTerm)
-  ////(HVM/HVM (HVM/Term #Neg))
-////= λsub λ{
-  ////#RTerm{tag loc}: match tag {
-    ////#SUB: match (Bits/eq sub loc) {
-      ////#True: do HVM { ret #Sub{loc} }
-      ////#False: (HVM/recover_term #Neg (#RTerm{ #SUB loc }))
-    ////}
-    ////#NUL: λnet #None
-    ////#LAM: λnet #None
-    ////#SUP: λnet #None
-    ////#VAR: (HVM/recover_term #Neg (#RTerm{ #VAR loc }))
-    ////#ERA: (HVM/recover_term #Neg (#RTerm{ #ERA loc }))
-    ////#APP: (HVM/recover_term #Neg (#RTerm{ #APP loc }))
-    ////#DUP: (HVM/recover_term #Neg (#RTerm{ #DUP loc }))
-  ////}
-////}
+// TODO: reimplement recover-var using the equational notation instead of match
 
-////HVM/recover_term
-////: ∀(p: HVM/Pol)
-  ////∀(term: HVM/RTerm)
-  ////(HVM/HVM (HVM/Term p))
-////= λ{
-  ////#Pos: λ{
-    ////#RTerm{tag loc}: match tag {
-      ////#NUL: do HVM { ret #Nul }
-      ////#VAR: do HVM {
-        ////ask got = (HVM/get loc)
-        ////(HVM/recover_var loc got)
-      ////}
-      ////#LAM: do HVM {
-        ////ask var = (HVM/get (HVM/at #1 loc))
-        ////ask bod = (HVM/get (HVM/at #2 loc))
-        ////ask var = (HVM/recover_term #Neg var)
-        ////ask bod = (HVM/recover_term #Pos bod)
-        ////ret #Lam{var bod}
-      ////}
-      ////#SUP: do HVM {
-        ////ask tm1 = (HVM/get (HVM/at #1 loc))
-        ////ask tm2 = (HVM/get (HVM/at #2 loc))
-        ////ask tm1 = (HVM/recover_term #Pos tm1)
-        ////ask tm2 = (HVM/recover_term #Pos tm2)
-        ////ret #Sup{tm1 tm2}
-      ////}
-      ////#SUB: λnet #None
-      ////#ERA: λnet #None
-      ////#APP: λnet #None
-      ////#DUP: λnet #None
-    ////}
-  ////}
-  ////#Neg: λ{
-    ////#RTerm{tag loc}: match tag {
-      ////#ERA: do HVM { ret #Era }
-      ////#SUB: do HVM {
-        ////ask got = (HVM/get loc)
-        ////(HVM/recover_sub loc got)
-      ////}
-      ////#APP: do HVM {
-        ////ask arg = (HVM/get (HVM/at #1 loc))
-        ////ask ret = (HVM/get (HVM/at #2 loc))
-        ////ask arg = (HVM/recover_term #Pos arg)
-        ////ask ret = (HVM/recover_term #Neg ret)
-        ////ret #App{arg ret}
-      ////}
-      ////#DUP: do HVM {
-        ////ask dp1 = (HVM/get (HVM/at #1 loc))
-        ////ask dp2 = (HVM/get (HVM/at #2 loc))
-        ////ask dp1 = (HVM/recover_term #Neg dp1)
-        ////ask dp2 = (HVM/recover_term #Neg dp2)
-        ////ret #Dup{dp1 dp2}
-      ////}
-      ////#VAR: λnet #None
-      ////#NUL: λnet #None
-      ////#LAM: λnet #None
-      ////#SUP: λnet #None
-    ////}
-  ////}
-////}
+HVM/recover-var : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Pos))
+| var #RTerm{#ERA loc} = λnet #None
+| var #RTerm{#APP loc} = λnet #None
+| var #RTerm{#DUP loc} = λnet #None
+| var #RTerm{#VAR loc} = (HVM/recover-term #Pos (#RTerm{ #VAR loc }))
+| var #RTerm{#NUL loc} = (HVM/recover-term #Pos (#RTerm{ #NUL loc }))
+| var #RTerm{#LAM loc} = (HVM/recover-term #Pos (#RTerm{ #LAM loc }))
+| var #RTerm{#SUP loc} = (HVM/recover-term #Pos (#RTerm{ #SUP loc }))
+| var #RTerm{#SUB loc} = if (Bits/eq var loc) {
+  do HVM { ret #Var{loc} }
+} else {
+  (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
+}
 
-////HVM/recover_bag : (List HVM/RDex) -> (HVM/HVM HVM/Bag)
-////| #Nil = do HVM {
-  ////ret #Nil
-////}
-////| #Cons{#Pair{neg pos} rest} = do HVM {
-  ////ask neg  = (HVM/recover_term #Neg neg)
-  ////ask pos  = (HVM/recover_term #Pos pos)
-  ////ask rest = (HVM/recover_bag rest)
-  ////ret #Cons{ #Pair{neg pos} rest }
-////}
+//HVM/recover-sub
+//: ∀(sub: Bits)
+  //∀(term: HVM/RTerm)
+  //(HVM/HVM (HVM/Term #Neg))
+//= λsub λ{
+  //#RTerm{tag loc}: match tag {
+    //#SUB: match (Bits/eq sub loc) {
+      //#True: do HVM { ret #Sub{loc} }
+      //#False: (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
+    //}
+    //#NUL: λnet #None
+    //#LAM: λnet #None
+    //#SUP: λnet #None
+    //#VAR: (HVM/recover-term #Neg (#RTerm{ #VAR loc }))
+    //#ERA: (HVM/recover-term #Neg (#RTerm{ #ERA loc }))
+    //#APP: (HVM/recover-term #Neg (#RTerm{ #APP loc }))
+    //#DUP: (HVM/recover-term #Neg (#RTerm{ #DUP loc }))
+  //}
+//}
 
-////HVM/recover_net : HVM/RNet -> (HVM/HVM HVM/Net)
-////= λnet do HVM {
-  ////ask rot = HVM/get-rot
-  ////ask bag = HVM/get-bag
-  ////ask rot = (HVM/recover_term #Pos rot)
-  ////let val = (BinMap/values HVM/RDex bag)
-  ////ask bag = (HVM/recover_bag val)
-  ////ret #Net{ rot bag }
-////}
+// TODO: reimplement recover-sub using the equational notation instead of match
 
-////// Running
-////// -------
+HVM/recover-sub : Bits -> HVM/RTerm -> (HVM/HVM (HVM/Term #Neg))
+| sub #RTerm{#NUL loc} = λnet #None
+| sub #RTerm{#LAM loc} = λnet #None
+| sub #RTerm{#SUP loc} = λnet #None
+| sub #RTerm{#VAR loc} = (HVM/recover-term #Neg (#RTerm{ #VAR loc }))
+| sub #RTerm{#ERA loc} = (HVM/recover-term #Neg (#RTerm{ #ERA loc }))
+| sub #RTerm{#APP loc} = (HVM/recover-term #Neg (#RTerm{ #APP loc }))
+| sub #RTerm{#DUP loc} = (HVM/recover-term #Neg (#RTerm{ #DUP loc }))
+| sub #RTerm{#SUB loc} = if (Bits/eq sub loc) {
+  do HVM { ret #Sub{loc} }
+} else {
+  (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
+}
 
-////HVM/boot : HVM/Net -> (HVM/HVM Unit)
-////= λnet do HVM {
-  ////ask #Pair{x rot} = (HVM/inject_net net (BinMap/new _))
-  ////ask (HVM/init #E rot)
-  ////ret #Unit
-////}
+//HVM/recover-term
+//: ∀(p: HVM/Pol)
+  //∀(term: HVM/RTerm)
+  //(HVM/HVM (HVM/Term p))
+//= λ{
+  //#Pos: λ{
+    //#RTerm{tag loc}: match tag {
+      //#NUL: do HVM { ret #Nul }
+      //#VAR: do HVM {
+        //ask got = (HVM/get loc)
+        //(HVM/recover-var loc got)
+      //}
+      //#LAM: do HVM {
+        //ask var = (HVM/get (HVM/at #1 loc))
+        //ask bod = (HVM/get (HVM/at #2 loc))
+        //ask var = (HVM/recover-term #Neg var)
+        //ask bod = (HVM/recover-term #Pos bod)
+        //ret #Lam{var bod}
+      //}
+      //#SUP: do HVM {
+        //ask tm1 = (HVM/get (HVM/at #1 loc))
+        //ask tm2 = (HVM/get (HVM/at #2 loc))
+        //ask tm1 = (HVM/recover-term #Pos tm1)
+        //ask tm2 = (HVM/recover-term #Pos tm2)
+        //ret #Sup{tm1 tm2}
+      //}
+      //#SUB: λnet #None
+      //#ERA: λnet #None
+      //#APP: λnet #None
+      //#DUP: λnet #None
+    //}
+  //}
+  //#Neg: λ{
+    //#RTerm{tag loc}: match tag {
+      //#ERA: do HVM { ret #Era }
+      //#SUB: do HVM {
+        //ask got = (HVM/get loc)
+        //(HVM/recover-sub loc got)
+      //}
+      //#APP: do HVM {
+        //ask arg = (HVM/get (HVM/at #1 loc))
+        //ask ret = (HVM/get (HVM/at #2 loc))
+        //ask arg = (HVM/recover-term #Pos arg)
+        //ask ret = (HVM/recover-term #Neg ret)
+        //ret #App{arg ret}
+      //}
+      //#DUP: do HVM {
+        //ask dp1 = (HVM/get (HVM/at #1 loc))
+        //ask dp2 = (HVM/get (HVM/at #2 loc))
+        //ask dp1 = (HVM/recover-term #Neg dp1)
+        //ask dp2 = (HVM/recover-term #Neg dp2)
+        //ret #Dup{dp1 dp2}
+      //}
+      //#VAR: λnet #None
+      //#NUL: λnet #None
+      //#LAM: λnet #None
+      //#SUP: λnet #None
+    //}
+  //}
+//}
 
-////HVM/shut : (HVM/HVM HVM/Net)
-////= do HVM {
-  ////ask net = HVM/get-net
-  ////(HVM/recover_net net)
-////}
+// TODO: reimplement recover-term using the equational notation instead of match
 
-////HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe A)
-////= λA λhvm match (hvm HVM/net_new) {
-  ////#None: #None
-  ////#Some: λ{ #Pair{net x}: #Some{x} }
-////}
+HVM/recover-term : ∀(p: HVM/Pol) ∀(term: HVM/RTerm) (HVM/HVM (HVM/Term p))
+| #Pos #RTerm{#NUL loc} = do HVM {
+  ret #Nul
+}
+| #Pos #RTerm{#VAR loc} = do HVM {
+  ask got = (HVM/get loc)
+  (HVM/recover-var loc got)
+}
+| #Pos #RTerm{#LAM loc} = do HVM {
+  ask var = (HVM/get (HVM/at #1 loc))
+  ask bod = (HVM/get (HVM/at #2 loc))
+  ask var = (HVM/recover-term #Neg var)
+  ask bod = (HVM/recover-term #Pos bod)
+  ret #Lam{var bod}
+}
+| #Pos #RTerm{#SUP loc} = do HVM {
+  ask tm1 = (HVM/get (HVM/at #1 loc))
+  ask tm2 = (HVM/get (HVM/at #2 loc))
+  ask tm1 = (HVM/recover-term #Pos tm1)
+  ask tm2 = (HVM/recover-term #Pos tm2)
+  ret #Sup{tm1 tm2}
+}
+| #Pos #RTerm{#SUB loc} = λnet #None
+| #Pos #RTerm{#ERA loc} = λnet #None
+| #Pos #RTerm{#APP loc} = λnet #None
+| #Pos #RTerm{#DUP loc} = λnet #None
+| #Neg #RTerm{#ERA loc} = do HVM { ret #Era }
+| #Neg #RTerm{#SUB loc} = do HVM {
+  ask got = (HVM/get loc)
+  (HVM/recover-sub loc got)
+}
+| #Neg #RTerm{#APP loc} = do HVM {
+  ask arg = (HVM/get (HVM/at #1 loc))
+  ask ret = (HVM/get (HVM/at #2 loc))
+  ask arg = (HVM/recover-term #Pos arg)
+  ask ret = (HVM/recover-term #Neg ret)
+  ret #App{arg ret}
+}
+| #Neg #RTerm{#DUP loc} = do HVM {
+  ask dp1 = (HVM/get (HVM/at #1 loc))
+  ask dp2 = (HVM/get (HVM/at #2 loc))
+  ask dp1 = (HVM/recover-term #Neg dp1)
+  ask dp2 = (HVM/recover-term #Neg dp2)
+  ret #Dup{dp1 dp2}
+}
+| #Neg #RTerm{#VAR loc} = λnet #None
+| #Neg #RTerm{#NUL loc} = λnet #None
+| #Neg #RTerm{#LAM loc} = λnet #None
+| #Neg #RTerm{#SUP loc} = λnet #None
 
-////// Showing
-////// -------
+HVM/recover-bag : (List HVM/RDex) -> (HVM/HVM HVM/Bag)
+| #Nil = do HVM {
+  ret #Nil
+}
+| #Cons{#Pair{neg pos} rest} = do HVM {
+  ask neg  = (HVM/recover-term #Neg neg)
+  ask pos  = (HVM/recover-term #Pos pos)
+  ask rest = (HVM/recover-bag rest)
+  ret #Cons{ #Pair{neg pos} rest }
+}
 
-////HVM/show_term : ∀(p: HVM/Pol) (HVM/Term p) -> String
-////| #Pos #Var{uid}     = (String/join "" ["+" (Nat/show (Bits/to-nat uid))])
-////| #Pos #Sub{uid}     = #void
-////| #Pos #Nul        = "+*"
-////| #Pos #Era        = #void
-////| #Pos #Lam{var bod} = (String/join "" ["+(" (HVM/show_term #Neg var) " " (HVM/show_term #Pos bod) ")"])
-////| #Pos #App{arg ret} = #void
-////| #Pos #Sup{tm1 tm2} = (String/join "" ["+{" (HVM/show_term #Pos tm1) " " (HVM/show_term #Pos tm2) "}"])
-////| #Pos #Dup{dp1 dp2} = #void
-////| #Neg #Var{uid}     = #void
-////| #Neg #Sub{uid}     = (String/join "" ["-" (Nat/show (Bits/to-nat uid))])
-////| #Neg #Nul        = #void
-////| #Neg #Era        = "-*"
-////| #Neg #Lam{var bod} = #void
-////| #Neg #App{arg ret} = (String/join "" ["-(" (HVM/show_term #Pos arg) " " (HVM/show_term #Neg ret) ")"])
-////| #Neg #Sup{tm1 tm2} = #void
-////| #Neg #Dup{dp1 dp2} = (String/join "" ["-{" (HVM/show_term #Neg dp1) " " (HVM/show_term #Neg dp2) "}"])
+HVM/recover-net : HVM/RNet -> (HVM/HVM HVM/Net)
+= λnet do HVM {
+  ask rot = HVM/get-rot
+  ask bag = HVM/get-bag
+  ask rot = (HVM/recover-term #Pos rot)
+  let val = (BinMap/values HVM/RDex bag)
+  ask bag = (HVM/recover-bag val)
+  ret #Net{ rot bag }
+}
 
-////HVM/show_bag : HVM/Bag -> String
-////| #Nil                     = ""
-////| #Cons{#Pair{neg pos} rest} = (String/join "" ["\n& " (HVM/show_term #Neg neg) " ~ " (HVM/show_term #Pos pos) (HVM/show_bag rest)])
+// Running
+// -------
 
-////HVM/show_net : HVM/Net -> String
-////| #Net{rot bag} = (String/join "" [(HVM/show_term #Pos rot) (HVM/show_bag bag)])
+HVM/boot : HVM/Net -> (HVM/HVM Unit)
+= λnet do HVM {
+  ask #Pair{x rot} = (HVM/inject-net net (BinMap/new _))
+  ask (HVM/init #E rot)
+  ret #Unit
+}
 
-////HVM/show_rloc : Bits -> String
-////| loc = (String/pad-left #4 '0' (Nat/show (Bits/to-nat loc)))
+HVM/shut : (HVM/HVM HVM/Net)
+= do HVM {
+  ask net = HVM/get-net
+  (HVM/recover-net net)
+}
 
-////HVM/show_rterm : HVM/RTerm -> String 
-////| #RTerm{#VAR loc} = (String/join "" ["VAR:" (HVM/show_rloc loc)])
-////| #RTerm{#SUB loc} = (String/join "" ["SUB:" (HVM/show_rloc loc)])
-////| #RTerm{#NUL loc} = (String/join "" ["NUL:" (HVM/show_rloc loc)])
-////| #RTerm{#ERA loc} = (String/join "" ["ERA:" (HVM/show_rloc loc)])
-////| #RTerm{#LAM loc} = (String/join "" ["LAM:" (HVM/show_rloc loc)])
-////| #RTerm{#APP loc} = (String/join "" ["APP:" (HVM/show_rloc loc)])
-////| #RTerm{#SUP loc} = (String/join "" ["SUP:" (HVM/show_rloc loc)])
-////| #RTerm{#DUP loc} = (String/join "" ["DUP:" (HVM/show_rloc loc)])
+HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe A)
+= λA λhvm match (hvm HVM/net_new) {
+  #None: #None
+  #Some: λ{ #Pair{net x}: #Some{x} }
+}
 
-////HVM/show_rmem : HVM/RMem -> String
-////| mem = (List/fold _ (BinMap/to-list _ mem) _ "" (λkv λtxt
-  ////let #Pair{k v} = kv
-  ////let addr = (String/pad-left #4 '0' (Nat/show (Bits/to-nat k)))
-  ////let term = (HVM/show_rterm v)
-  ////(String/join "" [addr " → " term "\n" txt])
-////))
+// Showing
+// -------
 
-////HVM/show_rdex : HVM/RDex -> String
-////| #Pair{p1 p2} = (String/join "" [(HVM/show_rterm p1) " ~ " (HVM/show_rterm p2)])
+HVM/Term/to-string : ∀(p: HVM/Pol) (HVM/Term p) -> String
+| #Pos #Var{uid}     = (String/join "" ["+" (Nat/to-string (Bits/to-nat uid))])
+| #Pos #Sub{uid}     = #void
+| #Pos #Nul          = "+*"
+| #Pos #Era          = #void
+| #Pos #Lam{var bod} = (String/join "" ["+(" (HVM/Term/to-string #Neg var) " " (HVM/Term/to-string #Pos bod) ")"])
+| #Pos #App{arg ret} = #void
+| #Pos #Sup{tm1 tm2} = (String/join "" ["+{" (HVM/Term/to-string #Pos tm1) " " (HVM/Term/to-string #Pos tm2) "}"])
+| #Pos #Dup{dp1 dp2} = #void
+| #Neg #Var{uid}     = #void
+| #Neg #Sub{uid}     = (String/join "" ["-" (Nat/to-string (Bits/to-nat uid))])
+| #Neg #Nul          = #void
+| #Neg #Era          = "-*"
+| #Neg #Lam{var bod} = #void
+| #Neg #App{arg ret} = (String/join "" ["-(" (HVM/Term/to-string #Pos arg) " " (HVM/Term/to-string #Neg ret) ")"])
+| #Neg #Sup{tm1 tm2} = #void
+| #Neg #Dup{dp1 dp2} = (String/join "" ["-{" (HVM/Term/to-string #Neg dp1) " " (HVM/Term/to-string #Neg dp2) "}"])
 
-////HVM/show_rbag : HVM/RBag -> String
-////| bag = (List/fold _ (BinMap/to-list _ bag) _ "" (λkv λtxt
-  ////let #Pair{k v} = kv
-  ////let addr = (String/pad-left #4 '0' (Nat/show (Bits/to-nat k)))
-  ////let dex  = (HVM/show_rdex v)
-  ////(String/join "" [addr " → " dex "\n" txt])
-////))
+HVM/Bag/to-string : HVM/Bag -> String
+| #Nil                       = ""
+| #Cons{#Pair{neg pos} rest} = (String/join "" ["\n& " (HVM/Term/to-string #Neg neg) " ~ " (HVM/Term/to-string #Pos pos) (HVM/Bag/to-string rest)])
 
-////// show_rnet
+HVM/Net/to-string : HVM/Net -> String
+| #Net{rot bag} = (String/join "" [(HVM/Term/to-string #Pos rot) (HVM/Bag/to-string bag)])
 
-////HVM/show_rnet : HVM/RNet -> String
-////| #RNet{bag_buf bag_len bag_pop mem_buf mem_len} = 
-  ////(String/join "" ["MEM:\n" (HVM/show_rmem mem_buf) "BAG:\n" (HVM/show_rbag bag_buf)])
+HVM/RLoc/to-string : Bits -> String
+| loc = (String/pad-left #4 '0' (Nat/to-string (Bits/to-nat loc)))
 
-////// Parser
-////// ------
+HVM/RTerm/to-string : HVM/RTerm -> String 
+| #RTerm{#VAR loc} = (String/join "" ["VAR:" (HVM/RLoc/to-string loc)])
+| #RTerm{#SUB loc} = (String/join "" ["SUB:" (HVM/RLoc/to-string loc)])
+| #RTerm{#NUL loc} = (String/join "" ["NUL:" (HVM/RLoc/to-string loc)])
+| #RTerm{#ERA loc} = (String/join "" ["ERA:" (HVM/RLoc/to-string loc)])
+| #RTerm{#LAM loc} = (String/join "" ["LAM:" (HVM/RLoc/to-string loc)])
+| #RTerm{#APP loc} = (String/join "" ["APP:" (HVM/RLoc/to-string loc)])
+| #RTerm{#SUP loc} = (String/join "" ["SUP:" (HVM/RLoc/to-string loc)])
+| #RTerm{#DUP loc} = (String/join "" ["DUP:" (HVM/RLoc/to-string loc)])
 
-//////HVM/parse_term : ∀(p: HVM/Pol) (Parser/Parser (HVM/Term p))
-//////| #Pos = do Parser/Monad {
-  //////ask Parser/skip-trivia
-  //////ask head = Parser/peek-one
-  //////when (Maybe/eq-with _ U32/eq) head {
-    //////#Some{'('} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ask var = (HVM/parse_term #Neg)
-      //////ask bod = (HVM/parse_term #Pos)
-      //////ask (Parser/consume #Nil)
-      //////ret #Lam { var bod }
-    //////}
-    //////#Some{'{'} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ask tm1 = (HVM/parse_term #Pos)
-      //////ask tm2 = (HVM/parse_term #Pos)
-      //////ask (Parser/consume #Nil)
-      //////ret #Sup { tm1 tm2 }
-    //////}
-    //////#Some{'*'} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ret #Nul
-    //////}
-    //////_ : do Parser/Monad {
-      //////ask name = Parser/parse-name
-      //////ret #Var { (String/to-bits name) }
-    //////}
-  //////}
-//////}
-//////| #Neg = do Parser/Monad {
-  //////ask Parser/skip-trivia
-  //////ask head = Parser/peek-one
-  //////when (Maybe/eq-with _ U32/eq) head {
-    //////#Some{'('} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ask arg = (HVM/parse_term #Pos)
-      //////ask ret = (HVM/parse_term #Neg)
-      //////ask (Parser/consume #Nil)
-      //////ret #App { arg ret }
-    //////}
-    //////#Some{'{'} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ask dp1 = (HVM/parse_term #Neg)
-      //////ask dp2 = (HVM/parse_term #Neg)
-      //////ask (Parser/consume #Nil)
-      //////ret #Dup { dp1 dp2 }
-    //////}
-    //////#Some{'*'} : do Parser/Monad {
-      //////ask (Parser/consume #Nil)
-      //////ret #Era
-    //////}
-    //////_ : do Parser/Monad {
-      //////ask name = Parser/parse-name
-      //////ret #Sub { (String/to-bits name) }
-    //////}
-  //////}
-//////}
+HVM/RMem/to-string : HVM/RMem -> String
+| mem = (List/fold _ (BinMap/to-list _ mem) _ "" (λkv λtxt
+  let #Pair{k v} = kv
+  let addr       = (String/pad-left #4 '0' (Nat/to-string (Bits/to-nat k)))
+  let term       = (HVM/RTerm/to-string v)
+  (String/join "" [addr " → " term "\n" txt])
+))
 
-//////HVM/parse_bag : (Parser/Parser HVM/Bag)
-//////= do Parser/Monad {
-  //////ask Parser/skip-trivia
-  //////ask head = Parser/peek-one
-  //////when (Maybe/eq-with _ U32/eq) head {
-    //////#Some{'&'} : do Parser/Monad {
-      //////ask (Parser/consume "&")
-      //////ask neg = (HVM/parse_term #Neg)
-      //////ask Parser/skip-trivia
-      //////ask (Parser/consume "~")
-      //////ask pos = (HVM/parse_term #Pos)
-      //////ask rest = HVM/parse_bag
-      //////ret #Cons{ #Pair{neg pos} rest }
-    //////}
-    //////_ : do Parser/Monad {
-      //////ret #Nil
-    //////}
-  //////}
-//////}
+HVM/RDex/to-string : HVM/RDex -> String
+| #Pair{p1 p2} = (String/join "" [(HVM/RTerm/to-string p1) " ~ " (HVM/RTerm/to-string p2)])
 
-//////HVM/parse_net : (Parser/Parser HVM/Net)
-//////= do Parser/Monad {
-  //////ask rot = (HVM/parse_term #Pos)
-  //////ask bag = HVM/parse_bag
-  //////ret #Net{ rot bag }
-//////}
+HVM/RBag/to-string : HVM/RBag -> String
+| bag = (List/fold _ (BinMap/to-list _ bag) _ "" (λkv λtxt
+  let #Pair{k v} = kv
+  let addr       = (String/pad-left #4 '0' (Nat/to-string (Bits/to-nat k)))
+  let dex        = (HVM/RDex/to-string v)
+  (String/join "" [addr " → " dex "\n" txt])
+))
 
-//////HVM/do_parse_net : String -> HVM/Net
-//////= λcode (Maybe/run _ (#Net{ #Nul #Nil }) (Parser/run _ HVM/parse_net code))
+// RNet/to-string
 
-////// Linking
-////// -------
+HVM/RNet/to-string : HVM/RNet -> String
+| #RNet{bag_buf bag_len bag_pop mem_buf mem_len} = 
+  (String/join "" ["MEM:\n" (HVM/RMem/to-string mem_buf) "BAG:\n" (HVM/RBag/to-string bag_buf)])
 
-////HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
-////| a b = match (HVM/is-sub a) {
-  ////#True: do HVM {
-    ////ask got = (HVM/swap (HVM/get-loc a) b)
-    ////match got {
-      ////#Some{A}: match (HVM/is-sub A) {
-        ////#True: do HVM {
-          ////ret #Unit
-        ////}
-        ////#False: do HVM {
-          ////ask b = (HVM/load (HVM/get-loc a))
-          ////(HVM/link a b)
-        ////}
-      ////}
-      ////#None: λnet #None
-    ////}
-  ////}
-  ////#False: match (HVM/is-sub b) {
-    ////#True: do HVM {
-      ////ask got = (HVM/swap (HVM/get-loc b) a)
-      ////match got {
-        ////#Some{B}: match (HVM/is-sub B) {
-          ////#True: do HVM {
-            ////ret #Unit
-          ////}
-          ////#False: do HVM {
-            ////ask a = (HVM/load (HVM/get-loc b))
-            ////(HVM/link a b)
-          ////}
-        ////}
-        ////#None: λnet #None
-      ////}
-    ////}
-    ////#False: do HVM {
-      ////ask (HVM/push-redex #Pair{a b})
-      ////ret #Unit
-    ////}
-  ////}
-////}
+// Parser
+// ------
 
-////// Interaction
-////// -----------
+HVM/parse-term : ∀(p: HVM/Pol) (Parser (HVM/Term p))
+| #Pos = do Parser {
+  ask Parser/skip-trivia
+  ask head = Parser/peek-one
+  when (Maybe/eq-with _ U32/eq) head {
+    #Some{'('} : do Parser {
+      ask (Parser/consume #Nil)
+      ask var = (HVM/parse-term #Neg)
+      ask bod = (HVM/parse-term #Pos)
+      ask (Parser/consume #Nil)
+      ret #Lam { var bod }
+    }
+    #Some{'{'} : do Parser {
+      ask (Parser/consume #Nil)
+      ask tm1 = (HVM/parse-term #Pos)
+      ask tm2 = (HVM/parse-term #Pos)
+      ask (Parser/consume #Nil)
+      ret #Sup { tm1 tm2 }
+    }
+    #Some{'*'} : do Parser {
+      ask (Parser/consume #Nil)
+      ret #Nul
+    }
+    _ : do Parser {
+      ask name = Parser/parse-name
+      ret #Var { (String/to-bits name) }
+    }
+  }
+}
+| #Neg = do Parser {
+  ask Parser/skip-trivia
+  ask head = Parser/peek-one
+  when (Maybe/eq-with _ U32/eq) head {
+    #Some{'('} : do Parser {
+      ask (Parser/consume #Nil)
+      ask arg = (HVM/parse-term #Pos)
+      ask ret = (HVM/parse-term #Neg)
+      ask (Parser/consume #Nil)
+      ret #App { arg ret }
+    }
+    #Some{'{'} : do Parser {
+      ask (Parser/consume #Nil)
+      ask dp1 = (HVM/parse-term #Neg)
+      ask dp2 = (HVM/parse-term #Neg)
+      ask (Parser/consume #Nil)
+      ret #Dup { dp1 dp2 }
+    }
+    #Some{'*'} : do Parser {
+      ask (Parser/consume #Nil)
+      ret #Era
+    }
+    _ : do Parser {
+      ask name = Parser/parse-name
+      ret #Sub { (String/to-bits name) }
+    }
+  }
+}
 
-////HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
-////| #RTerm{#APP app} #RTerm{#LAM lam} = do HVM {
-  ////ask arg = (HVM/load (HVM/at #1 app))
-  ////ask ret = (HVM/load (HVM/at #2 app))
-  ////ask var = (HVM/load (HVM/at #1 lam))
-  ////ask bod = (HVM/load (HVM/at #2 lam))
-  ////ask (HVM/link var arg)
-  ////ask (HVM/link ret bod)
-  ////ret #Unit
-////}
-////| #RTerm{#DUP dup} #RTerm{#SUP sup} = do HVM {
-  ////ask dp1 = (HVM/load (HVM/at #1 dup))
-  ////ask dp2 = (HVM/load (HVM/at #2 dup))
-  ////ask tm1 = (HVM/load (HVM/at #1 sup))
-  ////ask tm2 = (HVM/load (HVM/at #2 sup))
-  ////ask (HVM/link dp1 tm1)
-  ////ask (HVM/link dp2 tm2)
-  ////ret #Unit
-////}
-////| #RTerm{#DUP dup} #RTerm{#LAM lam} = do HVM {
-  ////ask dp1 = (HVM/load (HVM/at #1 dup))
-  ////ask dp2 = (HVM/load (HVM/at #2 dup))
-  ////ask var = (HVM/load (HVM/at #1 lam))
-  ////ask bod = (HVM/load (HVM/at #2 lam))
-  ////ask co1 = (HVM/alloc-node #3)
-  ////ask co2 = (HVM/alloc-node #3)
-  ////ask du1 = (HVM/alloc-node #3)
-  ////ask du2 = (HVM/alloc-node #3)
-  ////ask (HVM/set (HVM/at #1 co1) (#RTerm{ #SUB (HVM/at #1 co1) }))
-  ////ask (HVM/set (HVM/at #2 co1) (#RTerm{ #VAR (HVM/at #1 du2) }))
-  ////ask (HVM/set (HVM/at #1 co2) (#RTerm{ #SUB (HVM/at #1 co2) }))
-  ////ask (HVM/set (HVM/at #2 co2) (#RTerm{ #VAR (HVM/at #2 du2) }))
-  ////ask (HVM/set (HVM/at #1 du1) (#RTerm{ #VAR (HVM/at #1 co1) }))
-  ////ask (HVM/set (HVM/at #2 du1) (#RTerm{ #VAR (HVM/at #1 co2) }))
-  ////ask (HVM/set (HVM/at #1 du2) (#RTerm{ #SUB (HVM/at #1 du2) }))
-  ////ask (HVM/set (HVM/at #2 du2) (#RTerm{ #SUB (HVM/at #2 du2) }))
-  ////ask (HVM/link dp1 (#RTerm{ #LAM co1 }))
-  ////ask (HVM/link dp2 (#RTerm{ #LAM co2 }))
-  ////ask (HVM/link var (#RTerm{ #SUP du1 }))
-  ////ask (HVM/link (#RTerm{ #DUP du2 }) bod)
-  ////ret #Unit
-////}
-////| #RTerm{#APP app} #RTerm{#SUP sup} = do HVM {
-  ////ask arg = (HVM/load (HVM/at #1 app))
-  ////ask ret = (HVM/load (HVM/at #2 app))
-  ////ask tm1 = (HVM/load (HVM/at #1 sup))
-  ////ask tm2 = (HVM/load (HVM/at #2 sup))
-  ////ask dp1 = (HVM/alloc-node #3)
-  ////ask dp2 = (HVM/alloc-node #3)
-  ////ask cn1 = (HVM/alloc-node #3)
-  ////ask cn2 = (HVM/alloc-node #3)
-  ////ask (HVM/set (HVM/at #1 dp1) (#RTerm{ #SUB (HVM/at #1 dp1) }))
-  ////ask (HVM/set (HVM/at #2 dp1) (#RTerm{ #SUB (HVM/at #2 dp1) }))
-  ////ask (HVM/set (HVM/at #1 dp2) (#RTerm{ #VAR (HVM/at #2 cn1) }))
-  ////ask (HVM/set (HVM/at #2 dp2) (#RTerm{ #VAR (HVM/at #2 cn2) }))
-  ////ask (HVM/set (HVM/at #1 cn1) (#RTerm{ #VAR (HVM/at #1 dp1) }))
-  ////ask (HVM/set (HVM/at #2 cn1) (#RTerm{ #SUB (HVM/at #2 cn1) }))
-  ////ask (HVM/set (HVM/at #1 cn2) (#RTerm{ #VAR (HVM/at #2 dp1) }))
-  ////ask (HVM/set (HVM/at #2 cn2) (#RTerm{ #SUB (HVM/at #2 cn2) }))
-  ////ask (HVM/link (#RTerm{ #DUP dp1 }) arg)
-  ////ask (HVM/link ret (#RTerm{ #SUP dp2 }))
-  ////ask (HVM/link (#RTerm{ #APP cn1 }) tm1)
-  ////ask (HVM/link (#RTerm{ #APP cn2 }) tm2)
-  ////ret #Unit
-////}
-////| a b = do HVM {
-  ////ret #Unit
-////}
+HVM/parse-bag : (Parser HVM/Bag)
+= do Parser {
+  ask Parser/skip-trivia
+  ask head = Parser/peek-one
+  when (Maybe/eq-with _ U32/eq) head {
+    #Some{'&'} : do Parser {
+      ask (Parser/consume "&")
+      ask neg = (HVM/parse-term #Neg)
+      ask Parser/skip-trivia
+      ask (Parser/consume "~")
+      ask pos = (HVM/parse-term #Pos)
+      ask rest = HVM/parse-bag
+      ret #Cons{ #Pair{neg pos} rest }
+    }
+    _ : do Parser {
+      ret #Nil
+    }
+  }
+}
 
-////HVM/HVM/main
-////: _
-////= use key = U32/to-bits
-  ////use map = (BinMap/new _)
-  ////use map = (BinMap/set _ map (key 123) 420)
-  ////use got = (BinMap/get _ map (key 123))
-  ////got
+HVM/parse-net : (Parser HVM/Net)
+= do Parser {
+  ask rot = (HVM/parse-term #Pos)
+  ask bag = HVM/parse-bag
+  ret #Net{ rot bag }
+}
+
+HVM/do_parse-net : String -> HVM/Net
+= λcode (Maybe/run _ (#Net{ #Nul #Nil }) (Parser/run _ HVM/parse-net code))
+
+// Linking
+// -------
+
+HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
+| a b = match (HVM/is-sub a) {
+  #True: do HVM {
+    ask got = (HVM/swap (HVM/get-loc a) #Some{b})
+    match got {
+      #Some{A}: match (HVM/is-sub A) {
+        #True: do HVM {
+          ret #Unit
+        }
+        #False: do HVM {
+          ask b = (HVM/take (HVM/get-loc a))
+          (HVM/link a b)
+        }
+      }
+      #None: λnet #None
+    }
+  }
+  #False: match (HVM/is-sub b) {
+    #True: do HVM {
+      ask got = (HVM/swap (HVM/get-loc b) #Some{a})
+      match got {
+        #Some{B}: match (HVM/is-sub B) {
+          #True: do HVM {
+            ret #Unit
+          }
+          #False: do HVM {
+            ask a = (HVM/take (HVM/get-loc b))
+            (HVM/link a b)
+          }
+        }
+        #None: λnet #None
+      }
+    }
+    #False: do HVM {
+      ask (HVM/push-redex #Pair{a b})
+      ret #Unit
+    }
+  }
+}
+
+// Interaction
+// -----------
+
+HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM/HVM Unit)
+| #RTerm{#APP app} #RTerm{#LAM lam} = do HVM {
+  ask arg = (HVM/take (HVM/at #1 app))
+  ask ret = (HVM/take (HVM/at #2 app))
+  ask var = (HVM/take (HVM/at #1 lam))
+  ask bod = (HVM/take (HVM/at #2 lam))
+  ask (HVM/link var arg)
+  ask (HVM/link ret bod)
+  ret #Unit
+}
+| #RTerm{#DUP dup} #RTerm{#SUP sup} = do HVM {
+  ask dp1 = (HVM/take (HVM/at #1 dup))
+  ask dp2 = (HVM/take (HVM/at #2 dup))
+  ask tm1 = (HVM/take (HVM/at #1 sup))
+  ask tm2 = (HVM/take (HVM/at #2 sup))
+  ask (HVM/link dp1 tm1)
+  ask (HVM/link dp2 tm2)
+  ret #Unit
+}
+| #RTerm{#DUP dup} #RTerm{#LAM lam} = do HVM {
+  ask dp1 = (HVM/take (HVM/at #1 dup))
+  ask dp2 = (HVM/take (HVM/at #2 dup))
+  ask var = (HVM/take (HVM/at #1 lam))
+  ask bod = (HVM/take (HVM/at #2 lam))
+  ask co1 = (HVM/alloc-node #3)
+  ask co2 = (HVM/alloc-node #3)
+  ask du1 = (HVM/alloc-node #3)
+  ask du2 = (HVM/alloc-node #3)
+  ask (HVM/set (HVM/at #1 co1) (#RTerm{ #SUB (HVM/at #1 co1) }))
+  ask (HVM/set (HVM/at #2 co1) (#RTerm{ #VAR (HVM/at #1 du2) }))
+  ask (HVM/set (HVM/at #1 co2) (#RTerm{ #SUB (HVM/at #1 co2) }))
+  ask (HVM/set (HVM/at #2 co2) (#RTerm{ #VAR (HVM/at #2 du2) }))
+  ask (HVM/set (HVM/at #1 du1) (#RTerm{ #VAR (HVM/at #1 co1) }))
+  ask (HVM/set (HVM/at #2 du1) (#RTerm{ #VAR (HVM/at #1 co2) }))
+  ask (HVM/set (HVM/at #1 du2) (#RTerm{ #SUB (HVM/at #1 du2) }))
+  ask (HVM/set (HVM/at #2 du2) (#RTerm{ #SUB (HVM/at #2 du2) }))
+  ask (HVM/link dp1 (#RTerm{ #LAM co1 }))
+  ask (HVM/link dp2 (#RTerm{ #LAM co2 }))
+  ask (HVM/link var (#RTerm{ #SUP du1 }))
+  ask (HVM/link (#RTerm{ #DUP du2 }) bod)
+  ret #Unit
+}
+| #RTerm{#APP app} #RTerm{#SUP sup} = do HVM {
+  ask arg = (HVM/take (HVM/at #1 app))
+  ask ret = (HVM/take (HVM/at #2 app))
+  ask tm1 = (HVM/take (HVM/at #1 sup))
+  ask tm2 = (HVM/take (HVM/at #2 sup))
+  ask dp1 = (HVM/alloc-node #3)
+  ask dp2 = (HVM/alloc-node #3)
+  ask cn1 = (HVM/alloc-node #3)
+  ask cn2 = (HVM/alloc-node #3)
+  ask (HVM/set (HVM/at #1 dp1) (#RTerm{ #SUB (HVM/at #1 dp1) }))
+  ask (HVM/set (HVM/at #2 dp1) (#RTerm{ #SUB (HVM/at #2 dp1) }))
+  ask (HVM/set (HVM/at #1 dp2) (#RTerm{ #VAR (HVM/at #2 cn1) }))
+  ask (HVM/set (HVM/at #2 dp2) (#RTerm{ #VAR (HVM/at #2 cn2) }))
+  ask (HVM/set (HVM/at #1 cn1) (#RTerm{ #VAR (HVM/at #1 dp1) }))
+  ask (HVM/set (HVM/at #2 cn1) (#RTerm{ #SUB (HVM/at #2 cn1) }))
+  ask (HVM/set (HVM/at #1 cn2) (#RTerm{ #VAR (HVM/at #2 dp1) }))
+  ask (HVM/set (HVM/at #2 cn2) (#RTerm{ #SUB (HVM/at #2 cn2) }))
+  ask (HVM/link (#RTerm{ #DUP dp1 }) arg)
+  ask (HVM/link ret (#RTerm{ #SUP dp2 }))
+  ask (HVM/link (#RTerm{ #APP cn1 }) tm1)
+  ask (HVM/link (#RTerm{ #APP cn2 }) tm2)
+  ret #Unit
+}
+| a b = do HVM {
+  ret #Unit
+}
+
+//HVM/HVM/main
+//: _
+//= use key = U32/to-bits
+  //use map = (BinMap/new _)
+  //use map = (BinMap/set _ map (key 123) 420)
+  //use got = (BinMap/get _ map (key 123))
+  //got
