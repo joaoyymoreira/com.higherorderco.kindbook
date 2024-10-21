@@ -1,9 +1,0 @@
-List/Trait/Eq
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  (Trait/Eq (List A))
-= λA λe
-  (Trait/Eq/derive
-    (List A)
-    (List/eq A e))
-

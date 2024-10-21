@@ -1,0 +1,19 @@
+// Checks if two Cmp values are not equal.
+// - a: The first Cmp value.
+// - b: The second Cmp value.
+// = True if a and b are not equal, False otherwise.
+Cmp/neq : Cmp -> Cmp -> Bool
+| #LT #LT = #False
+| #LT #EQ = #True
+| #LT #GT = #True
+| #EQ #LT = #True
+| #EQ #EQ = #False
+| #EQ #GT = #True
+| #GT #LT = #True
+| #GT #EQ = #True
+| #GT #GT = #False
+
+#test: (Cmp/neq #LT #EQ) == #True
+#test: (Cmp/neq #EQ #EQ) == #False
+#test: (Cmp/neq #GT #LT) == #True
+#test: (Cmp/neq #LT #LT) == #False

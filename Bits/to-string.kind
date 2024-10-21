@@ -1,0 +1,7 @@
+// Converts a Bits value to its string representation.
+// - bits: The Bits value to convert.
+// = A string representation of the Bits value.
+Bits/to-string : Bits -> String
+| #E       = "e"
+| #O{tail} = (String/append "0" (Bits/to-string tail))
+| #I{tail} = (String/append "1" (Bits/to-string tail))

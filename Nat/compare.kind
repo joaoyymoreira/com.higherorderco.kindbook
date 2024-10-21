@@ -1,8 +1,8 @@
 // Compares two natural numbers.
 // - m: The first natural number to compare.
 // - n: The second natural number to compare.
-// = An Ord value: LT if m < n, EQ if m = n, GT if m > n.
-Nat/compare : Nat -> Nat -> Ord
+// = An Cmp value: LT if m < n, EQ if m = n, GT if m > n.
+Nat/compare : Nat -> Nat -> Cmp
 | #Zero    #Zero    = #EQ
 | #Zero    #Succ{n} = #LT
 | #Succ{m} #Zero    = #GT

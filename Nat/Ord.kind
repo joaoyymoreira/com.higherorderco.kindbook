@@ -1,0 +1,5 @@
+// Ord instance for Nat
+Nat/Ord : (Ord Nat)
+= #Ord{
+    compare: Nat/compare
+  }

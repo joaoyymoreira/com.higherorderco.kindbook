@@ -1,6 +1,5 @@
-// Converts a Bool to its string representation.
-// - 1st: The Bool value to convert.
-// = A string representation of the Bool value.
-Bool/show : Bool -> String
-| #True  = "True"
-| #False = "False"
+// Instance of Show for Bool
+Bool/Show : (Show Bool)
+= #Show{
+    to-string: Bool/to-string
+  }

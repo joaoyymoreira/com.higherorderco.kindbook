@@ -1,0 +1,13 @@
+// Applies the equality function of an IsEqual instance.
+// - A: Input type.
+// - e: IsEqual instance for A.
+// - x: First value to compare.
+// - y: Second value to compare.
+// = True if x equals y, False otherwise.
+IsEqual/eq : ∀(A: *) ∀(e: (IsEqual A)) A -> A -> Bool
+| A #IsEqual{eq} x y = (eq x y)
+
+//#test: (IsEqual/eq Bool Bool/eq #True #True) == #True
+//#test: (IsEqual/eq Bool Bool/eq #True #False) == #False
+//#test: (IsEqual/eq Nat Nat/eq #3 #3) == #True
+//#test: (IsEqual/eq Nat Nat/eq #2 #3) == #False

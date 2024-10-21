@@ -1,0 +1,6 @@
+// Monad instance for List
+List/Monad : (Monad List)
+= #Monad{
+  pure: List/pure
+  bind: List/bind
+}

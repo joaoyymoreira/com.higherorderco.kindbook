@@ -1,7 +1,7 @@
-// Represents a Monad for a type constructor M.
-// - M: The type constructor.
-// = A Monad instance for M.
-data Monad (M: ∀(A: *) *) {
-  #Bind{ A: * B: * ma: (M A) fn: (A -> (M B)) } : (Monad M)
-  #Pure{ A: * a: A } : (Monad M)
+// Monad trait for type constructor M.
+data Monad (M: * -> *) {
+  #Monad {
+    pure: ∀(A: *) A -> (M A)
+    bind: ∀(A: *) ∀(B: *) (M A) -> (A -> (M B)) -> (M B)
+  }
 }

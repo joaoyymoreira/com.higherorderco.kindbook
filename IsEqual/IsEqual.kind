@@ -1,0 +1,6 @@
+// Represents the Same trait for a type A.
+data IsEqual (A: *) {
+  #IsEqual {
+    eq: A -> A -> Bool
+  }
+}

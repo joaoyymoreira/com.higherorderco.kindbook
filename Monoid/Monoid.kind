@@ -1,0 +1,8 @@
+// Represents a Monoid for a type A.
+// - A: Type of elements.
+data Monoid (A: *) {
+  #New {
+    id: A
+    op: A -> A -> A
+  }
+}

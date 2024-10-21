@@ -1,0 +1,5 @@
+// IsEqual instance for Char
+Char/IsEqual : (IsEqual Char)
+= #IsEqual{
+    eq: Char/eq
+  }

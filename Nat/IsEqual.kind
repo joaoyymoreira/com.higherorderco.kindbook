@@ -1,0 +1,5 @@
+// IsEqual instance for Nat
+Nat/IsEqual : (IsEqual Nat)
+= #IsEqual{
+  eq: Nat/eq
+}

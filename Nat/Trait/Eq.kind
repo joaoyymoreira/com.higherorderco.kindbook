@@ -1,4 +1,0 @@
-// Instance of Eq for Nat
-Nat/Trait/Eq: (Trait/Eq Nat) = 
-  use x = Trait/Eq
-  (Trait/Eq/derive Nat Nat/eq)

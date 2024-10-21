@@ -1,7 +1,0 @@
-// Derives an Eq instance for Maybe A, given an Eq instance for A
-Maybe/Trait/Eq
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  (Trait/Eq (Maybe A))
-= λA λe
-  (Trait/Eq/derive (Maybe A) (Maybe/eq A e))

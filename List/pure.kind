@@ -1,0 +1,11 @@
+// The pure function for the List monad.
+// Wraps a single element in a list.
+// - A: The type of the element.
+// - x: The element to wrap.
+// = A list containing only x.
+List/pure
+: ∀(A: *)
+  ∀(x: A)
+  (List A)
+= λA λx #Cons{x #Nil}
+

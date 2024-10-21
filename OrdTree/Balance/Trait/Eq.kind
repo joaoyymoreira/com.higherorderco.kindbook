@@ -1,5 +1,0 @@
-// Instance of Eq for Balance
-AVLTree/Trait/Eq : (Trait/Eq AVLTree/Balance) =
-  (Trait/Eq/derive
-    AVLTree/Balance
-    AVLTree/Balance/eq)

@@ -1,19 +1,11 @@
 // Checks if two lists are equal.
-// - A: Element type.
-// - e: Equality function for A.
-// - xs: First list.
-// - ys: Second list.
-// = True if equal, False otherwise.
-List/eq : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
+List/eq : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
 | A e #Nil        #Nil        = #True
 | A e #Nil        #Cons{y ys} = #False
 | A e #Cons{x xs} #Nil        = #False
 | A e #Cons{x xs} #Cons{y ys} = 
-  if (Trait/Eq/eq A e x y) {
+  if (IsEqual/eq A e x y) {
     (List/eq A e xs ys)
   } else {
     #False
   }
-
-#test: (List/eq Bool (Trait/Eq/derive Bool Bool/eq) [#True #False] [#True #False]) == #True
-#test: (List/eq Bool (Trait/Eq/derive Bool Bool/eq) [#True #False] [#True #True]) == #False

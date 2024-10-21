@@ -1,3 +1,0 @@
-// Instance of Eq trait for Char
-Char/Trait/Eq : (Trait/Eq Char) = 
-  (Trait/Eq/derive Char Char/eq)

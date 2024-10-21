@@ -1,4 +1,0 @@
-// Instance of Ord trait for Nat
-Nat/Trait/Ord : (Trait/Ord Nat) = 
-  use x = Trait/Ord
-  (Trait/Ord/derive _ Nat/compare)
