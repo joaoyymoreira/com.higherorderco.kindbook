@@ -1,19 +1,8 @@
-// Sets the first component of a pair to a new value.
-// This function creates a new pair with an updated first component.
-// 1st: The type of the original first component.
-// 2nd: The type of the second component.
-// 3rd: The type of the new first component.
-// 4th: The new value for the first component.
-// 5th: The original pair.
-// = A new pair with the updated first component and the original second component.
-Pair/set-fst
-: ∀(A: *)
-  ∀(B: *)
-  ∀(C: *)
-  ∀(z: C)
-  ∀(pair: (Pair/Pair A B))
-  (Pair/Pair C B)
-= λA λB λC λz λpair
-  let x = (Pair/Sigma/fst _ _ pair)
-  let y = (Pair/Sigma/snd _ _ pair)
-  #Pair{ z y }
+// Sets the first value of a pair.
+// - A: The type of the first component.
+// - B: The type of the second component.
+// - p: The original pair.
+// - x: The new value for the first component.
+// = A new pair with the updated first component.
+Pair/set-fst : ∀(A: *) ∀(B: *) (Pair A B) -> A -> (Pair A B)
+| A B #Pair{fst snd} x = #Pair{x snd}

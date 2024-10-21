@@ -1,22 +1,7 @@
-// Retrieves the first component of a dependent pair.
-// - A: The type of the first component.
-// - B: The type family for the second component.
-// - p: The dependent pair.
-// = The first component of the pair.
-Pair/get-fst : ∀(A: *) ∀(B: ∀(a: A) *) ∀(pair: (Pair/Sigma A B)) A
+// Retrieves the 1st value of a pair.
+// - A: The 1st type.
+// - B: The 2nd type.
+// - p: The pair.
+// = The 1st value.
+Pair/get-fst : ∀(A: *) ∀(B: *) ∀(pair: (Pair A B)) A
 | A B #Pair{fst snd} = fst
-
-// Test: Get first component of a simple pair
-TEST_0
-: (Equal Nat (Pair/get-fst Nat (λx Nat) (#Pair{#5 #10})) #5)
-= #Refl
-
-// Test: Get first component of a dependent pair
-TEST_1
-: (Equal (Pair/Pair Nat Nat) (Pair/get-fst (Pair/Sigma Nat (λx Nat)) (λx String) (#Pair{#Pair{#3 #4} "pair"})) #Pair{#3 #4})
-= #Refl
-
-// Test: Get first component of a pair with different types
-TEST_2
-: (Equal String (Pair/get-fst String (λx Nat) (#Pair{"hello" #42})) "hello")
-= #Refl

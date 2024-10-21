@@ -1,19 +1,8 @@
-// Applies a function to the first element of a pair.
-// This function creates a new pair with the modified first element and the original second element.
-// 1st: Type of the original first element.
-// 2nd: Type of the second element.
-// 3rd: Type of the new first element.
-// 4th: Function to apply to the first element.
-// 5th: Input pair.
-// = A new pair with the modified first element and the original second element.
-Pair/mut-fst
-: ∀(A: *)
-  ∀(B: *)
-  ∀(C: *)
-  ∀(f: ∀(a: A) C)
-  ∀(pair: (Pair/Pair A B))
-  (Pair/Pair C B)
-= λA λB λC λf λpair
-  let fst = (Pair/Sigma/fst _ _ pair)
-  let snd = (Pair/Sigma/snd _ _ pair)
-  #Pair{ (f fst) snd }
+// Modifies the first component of a pair.
+// - A: The type of the first component.
+// - B: The type of the second component.
+// - f: The function to apply to the first component.
+// - p: The input pair.
+// = A new pair with the first component modified.
+Pair/mut-fst : ∀(A: *) ∀(B: *) (A -> A) -> (Pair A B) -> (Pair A B)
+| A B f #Pair{fst snd} = #Pair{fst: (f fst) snd}

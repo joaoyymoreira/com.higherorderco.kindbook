@@ -1,23 +1,11 @@
-// Maps functions over both components of a dependent pair.
-// This function applies f to the first component and g to the second component.
-// - A: The type of the first component of the input pair.
-// - B: The type family for the second component of the input pair.
-// - C: The type of the first component of the output pair.
-// - D: The type family for the second component of the output pair.
-// - f: Function to apply to the first component.
-// - g: Function to apply to the second component, which can depend on the first.
-// - pair: The input dependent pair.
-// = A new dependent pair with both components transformed.
-Pair/map
-: ∀(A: *)
-  ∀(B: ∀(a: A) *)
-  ∀(C: *)
-  ∀(D: ∀(c: C) *)
-  ∀(f: ∀(a: A) C)
-  ∀(g: ∀(x: A) ∀(y: (B x)) (D (f x)))
-  ∀(pair: (Pair/Sigma A B))
-  (Pair/Sigma C D)
-= λA λB λC λD λf λg λpair
-  let x = (Pair/Sigma/fst A B pair)
-  let y = (Pair/Sigma/snd A B pair)
-  (Pair/Sigma/new C D (f x) (g x y))
+// Maps a function to both elements of a pair.
+// - A: The input type.
+// - B: The output type.
+// - f: The function to apply to both elements.
+// - p: The input pair.
+// = A new pair with the function applied to both elements.
+Pair/map : ∀(A: *) ∀(B: *) (A -> B) -> (Pair A A) -> (Pair B B)
+| A B f #Pair{fst snd} = #Pair{(f fst) (f snd)}
+
+#test: (Pair/map U32 U32 (λx (+ x 1)) #Pair{1 2}) == #Pair{2 3}
+#test: (Pair/map Bool Bool Bool/not #Pair{#True #False}) == #Pair{#False #True}

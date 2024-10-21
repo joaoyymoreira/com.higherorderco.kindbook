@@ -1,37 +1,7 @@
-// Retrieves the second component of a dependent pair.
-// - 1st: The type of the first component.
-// - 2nd: The type family for the second component.
-// - 3rd: The dependent pair.
-// = The second component of the pair.
-Pair/get-snd
-: ∀(A: *)
-  ∀(B: ∀(a: A) *)
-  ∀(pair: (Pair/Sigma A B))
-  (B (Pair/Sigma/fst A B pair))
-= λA λB λ{
-  #Pair: λpair.fst λpair.snd pair.snd
-}
-
-// Test: Get second component of a Nat-String pair
-TEST_0
-: (Equal
-    String
-    (Pair/get-snd Nat (λx String) #Pair{#1 "one"})
-    "one")
-= #Refl
-
-// Test: Get second component of a Nat-Nat pair
-TEST_1
-: (Equal
-    Nat
-    (Pair/get-snd Nat (λx Nat) #Pair{#2 #1})
-    #1)
-= #Refl
-
-// Test: Get second component of a String-Nat pair
-TEST_2
-: (Equal
-    Nat
-    (Pair/get-snd String (λx Nat) #Pair{"hello" #3})
-    #3)
-= #Refl
+// Retrieves the 2nd value of a pair.
+// - A: The 1st type.
+// - B: The 2nd type.
+// - p: The pair.
+// = The 2nd value.
+Pair/get-snd : ∀(A: *) ∀(B: *) ∀(pair: (Pair A B)) B
+| A B #Pair{fst snd} = snd

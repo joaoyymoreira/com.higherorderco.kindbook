@@ -1,6 +1,7 @@
-// Simple pair type
-Pair/Pair
-: ∀(A: *)
-  ∀(B: *)
-  *
-= λA λB (Pair/Sigma A (λx B))
+// Represents a simple pair of two values.
+// - A: The type of the first component.
+// - B: The type of the second component.
+Pair : * -> * -> *
+= λA λB data[]{
+  #Pair{ fst: A snd: B } : (Pair A B)
+}
