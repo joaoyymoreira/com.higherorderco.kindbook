@@ -154,15 +154,15 @@ HVM/swap : Bits -> HVM/RTerm -> (HVM/HVM (Maybe HVM/RTerm))
   let #Pair{mem_buf old} = (BinMap/swap _ mem_buf loc term)
   #Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } old } }
 
-//HVM/take : Bits -> (HVM/HVM HVM/RTerm)
-//| loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
-  //match (BinMap/take _ mem_buf loc) {
-    //#None: #None
-    //#Some: λ{
-      //#Pair{mem_buf got}:
-        //#Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } got } }
-    //}
-  //}
+HVM/take : Bits -> (HVM/HVM HVM/RTerm)
+| loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =
+  match (BinMap/take _ mem_buf loc) {
+    #None: #None
+    #Some: λ{
+      #Pair{mem_buf got}:
+        #Some{ #Pair{ #RN{ bag_buf bag_len bag_pop mem_buf mem_len } got } }
+    }
+  }
 
 ////HVM/load : Bits -> (HVM/HVM HVM/RTerm)
 ////| loc #RN{bag_buf bag_len bag_pop mem_buf mem_len} =

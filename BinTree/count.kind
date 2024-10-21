@@ -4,19 +4,19 @@
 // - x: The value to count.
 // - t: The binary tree to search.
 // = The number of occurrences of the given value in the tree.
-BinTree/count : ∀(A: *) (Trait/Eq A) -> A -> (BinTree A) -> Nat
+BinTree/count : ∀(A: *) (IsEqual A) -> A -> (BinTree A) -> Nat
 | A e x #Leaf = #Zero
 | A e x #Node{val lft rgt} =
-  let is_equal  = (Trait/Eq/eq A e x val)
+  let is_equal  = (IsEqual/eq A e x val)
   let count_val = (Bool/if Nat is_equal #1 #Zero)
   let count_lft = (BinTree/count A e x lft)
   let count_rgt = (BinTree/count A e x rgt)
   (Nat/add count_val (Nat/add count_lft count_rgt))
 
-#test: (BinTree/count Nat Nat/Trait/Eq #5 #Leaf) == #0
-#test: (BinTree/count Nat Nat/Trait/Eq #5 (#Node{#5 #Leaf #Leaf})) == #1
-#test: (BinTree/count Nat Nat/Trait/Eq #5 (#Node{#5 (#Node{#5 #Leaf #Leaf}) (#Node{#3 #Leaf (#Node{#5 #Leaf #Leaf})}) })) == #3
-#test: (BinTree/count Nat Nat/Trait/Eq #7 (#Node{#5 (#Node{#3 #Leaf #Leaf}) (#Node{#1 #Leaf (#Node{#9 #Leaf #Leaf})}) })) == #Zero
-#test: (BinTree/count Nat Nat/Trait/Eq #2 (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 (#Node{#2 #Leaf #Leaf}) (#Node{#4 #Leaf #Leaf}) }) })) == #2
-#test: (BinTree/count Nat Nat/Trait/Eq #1 (#Node{#1 (#Node{#1 (#Node{#1 #Leaf #Leaf}) #Leaf }) #Leaf })) == #3
-#test: (BinTree/count Nat Nat/Trait/Eq #3 (#Node{#1 #Leaf (#Node{#2 #Leaf (#Node{#3 #Leaf (#Node{#3 #Leaf #Leaf}) }) }) })) == #2
+#test: (BinTree/count Nat Nat/IsEqual #5 #Leaf) == #0
+#test: (BinTree/count Nat Nat/IsEqual #5 (#Node{#5 #Leaf #Leaf})) == #1
+#test: (BinTree/count Nat Nat/IsEqual #5 (#Node{#5 (#Node{#5 #Leaf #Leaf}) (#Node{#3 #Leaf (#Node{#5 #Leaf #Leaf})}) })) == #3
+#test: (BinTree/count Nat Nat/IsEqual #7 (#Node{#5 (#Node{#3 #Leaf #Leaf}) (#Node{#1 #Leaf (#Node{#9 #Leaf #Leaf})}) })) == #Zero
+#test: (BinTree/count Nat Nat/IsEqual #2 (#Node{#1 (#Node{#2 #Leaf #Leaf}) (#Node{#3 (#Node{#2 #Leaf #Leaf}) (#Node{#4 #Leaf #Leaf}) }) })) == #2
+#test: (BinTree/count Nat Nat/IsEqual #1 (#Node{#1 (#Node{#1 (#Node{#1 #Leaf #Leaf}) #Leaf }) #Leaf })) == #3
+#test: (BinTree/count Nat Nat/IsEqual #3 (#Node{#1 #Leaf (#Node{#2 #Leaf (#Node{#3 #Leaf (#Node{#3 #Leaf #Leaf}) }) }) })) == #2
