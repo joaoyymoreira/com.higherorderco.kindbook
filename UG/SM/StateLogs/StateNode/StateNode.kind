@@ -1,0 +1,11 @@
+// Represents a node in the state log
+data UG/SM/StateLogs/StateNode (S: *) {
+  #StateNode {
+    tick  : UG/SM/Tick
+    keep  : Nat
+    life  : Nat
+    state : S
+    older : (Maybe (UG/SM/StateLogs/StateNode S))
+  } 
+}
+
