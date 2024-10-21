@@ -1,9 +1,3 @@
 // Creates a parser that always succeeds with the given value without consuming any input
-Parser/Monad/pure : ∀(A: *) A -> (Parser/Parser A)
-= λA λx λs
-  #Done{
-    #Reply{
-      state: s
-      value: x
-    }
-  }
+Parser/Monad/pure : ∀(A: *) A -> (Parser A)
+| A x s = #Done{ #Reply{ s x } }

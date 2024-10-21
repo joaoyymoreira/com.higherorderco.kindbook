@@ -1,0 +1,18 @@
+// Creates a new State with the given input and initial index of zero.
+// - input: The input string to be parsed.
+// = A new State with the given input and index set to zero.
+Parser/new-parser-state
+: ∀(input: String)
+  Parser/State
+= λinput 
+  #State{
+    input: input
+    index: #0
+  }
+// Test: Creating a new parser state
+TEST_0 
+: (Equal 
+    Parser/State 
+    (Parser/new-parser-state "hello") 
+    (#State{ "hello" #0}))
+= #Refl

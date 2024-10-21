@@ -1,54 +1,33 @@
 // Peeks at the next character in the input without consuming it.
 // - s: The current parser state.
 // = A Reply containing the current state and the next character (if any).
-Parser/peek-one : (Parser/Parser (Maybe U32))
-= λs
-  let next_char = (String/head (Parser/State/input s))
-  #Done{
-    #MkReply{
-      state: s
-      value: next_char
-    }
-  }
+Parser/peek-one : (Parser (Maybe Char))
+= λstate do Parser/Monad {
+  let #State{chars x} = state
+  let next_char = (String/head chars)
+  #Done{#Reply{#State{chars x} next_char}}
+}
 
 // Test: Peek one character from a non-empty string
 TEST_0
 : (Equal
-    (Result (Parser/Reply (Maybe U32)) Parser/Error)
-    (Parser/peek-one (Parser/State/new "abc" #Zero))
-    (#Done{
-      #MkReply{
-        state: (Parser/State/new "abc" #Zero)
-        value: (#Some{'a'})
-      }
-    })
-  )
+    (Result (Parser/Reply (Maybe Char)) Parser/Error)
+    (Parser/peek-one #State{"abc" #0})
+    (#Done{#Reply{#State{"abc" #0} #Some{'a'}}}))
 = #Refl
 
 // Test: Peek one character from an empty string
 TEST_1
 : (Equal
-    (Result (Parser/Reply (Maybe U32)) Parser/Error)
-    (Parser/peek-one (Parser/State/new (String/from-list []) #Zero))
-    (#Done{
-      #MkReply{
-        state: (Parser/State/new (String/from-list []) #Zero)
-        value: #None
-      }
-    })
-  )
+    (Result (Parser/Reply (Maybe Char)) Parser/Error)
+    (Parser/peek-one #State{[] #0})
+    (#Done{#Reply{#State{[] #0} #None}}))
 = #Refl
 
 // Test: Peek one character from a string with special characters
 TEST_2
 : (Equal
-    (Result (Parser/Reply (Maybe U32)) Parser/Error)
-    (Parser/peek-one (Parser/State/new "!@#" #Zero))
-    (#Done{
-      #MkReply{
-        state: (Parser/State/new "!@#" #Zero)
-        value: (#Some{'!'})
-      }
-    })
-  )
+    (Result (Parser/Reply (Maybe Char)) Parser/Error)
+    (Parser/peek-one #State{"!@#" #0})
+    (#Done{#Reply{#State{"!@#" #0} #Some{'!'}}}))
 = #Refl

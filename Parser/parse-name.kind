@@ -1,25 +1,50 @@
 // Checks if a character is valid for a name.
 // - c: The character to check.
 // = A boolean indicating whether the character is valid for a name (alphanumeric, underscore, hyphen, or dot).
-Pair/is-name-char : Char -> Bool
+Parser/is-name-char : Char -> Bool
 = λc
   (Bool/or (Char/is-alpha c)
   (Bool/or (Char/is-digit c)
-  (Bool/or (Char/eq c 95) // '_'
-  (Bool/or (Char/eq c 45) // '-'
-        (Char/eq c 46))))) // '.'
+  (Bool/or (Char/eq c '_') 
+  (Bool/or (Char/eq c '-') 
+        (Char/eq c '.'))))) 
 
 // Parses a name from the input.
 // = A Parser that returns a String containing the parsed name, or fails if no valid name is found.
-Pair/parse-name : (Pair/Parser String)
-= λs
-  let name = (Pair/take-while Pair/is-name-char s)
+Parser/parse-name : (Parser String)
+= λstate
+  let name = (Parser/take-while Parser/is-name-char state)
   match name {
-    #Done: λr
-      let value = (Pair/Reply/value String r)
+    #Done: λreply
+      let #Reply{_ value} = reply
       match value {
-        #Nil: (Pair/fail _ "Expected a name" s)
-        #Cons: λhead λtail #Done{r}
+        #Nil: (Parser/fail _ "Expected a name" state)
+        #Cons: λhead λtail #Done{reply}
       }
     #Fail: λe #Fail{e}
   }
+
+
+// Test: Parsing a valid name
+TEST_0
+: (Equal
+  (Result (Parser/Reply String) Parser/Error)
+  (Parser/parse-name #State{"abc_123 def" #0})
+  (#Done{#Reply{(#State{" def" #7}) "abc_123"}}))
+= #Refl
+
+// Test: Parsing an empty name (should fail)
+TEST_1
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    (Parser/parse-name #State{" abc" #0})
+    (#Fail{#Error{#0 "Expected a name"}}))
+= #Refl
+
+// Test: Parsing a name with special characters
+TEST_2
+: (Equal
+    (Result (Parser/Reply String) Parser/Error)
+    (Parser/parse-name #State{"abc-def.ghi" #0})
+    (#Done{#Reply{(#State{"" #11}) "abc-def.ghi"}}))
+= #Refl

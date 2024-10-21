@@ -4,39 +4,38 @@
 Parser/take-while
 : ∀(pred: ∀(c: Char) Bool)
   (Parser String)
-= λpred λs
-  let #MkState{input index} = s
+= λpred λstate do Parser/Monad {
+  let #State{input index} = state
   let consumed  = (List/take-while Char pred input)
-  let count     = (String/length consumed)
+  let #Pair{consume count} = (String/length-got consumed)
   let new-index = (Nat/add index count)
   let new-input = (String/drop count input)
-  (#Done{#MkReply{#MkState{new-input new-index} consumed}})
-
-
+  (#Done{#Reply{#State{new-input new-index} consume}})
+}
 
   // Test: Take while alpha on mixed input
-T0
+TEST_0
 : (Equal
     (Result (Parser/Reply String) Parser/Error)
-    (Parser/take-while Char/is-alpha (#MkState{"abcDEF123" #0}))
-    (#Done{#MkReply{#MkState{"123" #6} "abcDEF"}})
+    (Parser/take-while Char/is-alpha (#State{"abcDEF123" #0}))
+    (#Done{#Reply{#State{"123" #6} "abcDEF"}})
   )
 = #Refl
 
 // Test: Take while alpha on empty input
-T1
+TEST_1
 : (Equal
     (Result (Parser/Reply String) Parser/Error)
-    ((Parser/take-while Char/is-alpha) (#MkState{"" #0}))
-    (#Done{#MkReply{#MkState{"" #0} ""}})
+    ((Parser/take-while Char/is-alpha) (#State{"" #0}))
+    (#Done{#Reply{#State{"" #0} ""}})
   )
 = #Refl
 
 // Test: Take while alpha on non-matching input
-T2
+TEST_2
 : (Equal
     (Result (Parser/Reply String) Parser/Error)
-    ((Parser/take-while Char/is-alpha) (#MkState{"123abc" #0}))
-    (#Done{#MkReply{#MkState{"123abc" #0} ""}})
+    ((Parser/take-while Char/is-alpha) (#State{"123abc" #0}))
+    (#Done{#Reply{#State{"123abc" #0} ""}})
   )
 = #Refl

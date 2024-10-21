@@ -4,42 +4,42 @@
 //   Does not consume any input.
 Parser/starts-with
 : ∀(prefix: String)
-  (Parser/Parser Bool)
-= λprefix λs
-  let input = (Parser/State/input s)
+  (Parser Bool)
+= λprefix λstate
+  let #State{input _} = state
   let result = (String/starts-with input prefix)
   #Done{
-    #MkReply{
-      state: s
+    #Reply{
+      state: state
       value: result
     }
   }
 // Test: Starts with matching prefix
 TEST_0 : (Equal
   (Result (Parser/Reply Bool) Parser/Error)
-  (Parser/starts-with "hello" (Parser/State/new "hello world" #0))
-  #Done{#MkReply{
-    state: (Parser/State/new "hello world" #0)
+  (Parser/starts-with "hello" (#State{"hello world" #0}))
+  #Done{#Reply{
+    state: (#State{"hello world" #0})
     value: #True
   }}
 ) = #Refl
 
-// // Test: Starts with non-matching prefix
-// T1 : (Equal
-//   (Result (Parser/Reply Bool) Parser/Error)
-//   (Parser/starts-with "hello" (Parser/State/new "goodbye world" #0))
-//   #Done{#MkReply{
-//     state: (Parser/State/new "goodbye world" #0)
-//     value: #False
-//   }}
-// ) = #Refl
+// Test: Starts with non-matching prefix
+TEST_1 : (Equal
+  (Result (Parser/Reply Bool) Parser/Error)
+  (Parser/starts-with "hello" (#State{"goodbye world" #0}))
+  #Done{#Reply{
+    state: (#State{"goodbye world" #0})
+    value: #False
+  }}
+) = #Refl
 
 // Test: Starts with empty string
 TEST_2 : (Equal
   (Result (Parser/Reply Bool) Parser/Error)
-  (Parser/starts-with "" (Parser/State/new "any string" #0))
-  #Done{#MkReply{
-    state: (Parser/State/new "any string" #0)
+  (Parser/starts-with "" (#State{"any string" #0}))
+  #Done{#Reply{
+    state: (#State{"any string" #0})
     value: #True
   }}
 ) = #Refl

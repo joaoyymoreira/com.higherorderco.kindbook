@@ -1,14 +1,45 @@
 // Inspects the next 'count' characters in the text without consuming them.
 // - count: The number of characters to peek.
 // = A Parser that returns a Maybe String containing the peeked characters, or None if there aren't enough characters.
-Pair/peek_many
+Parser/peek-many
 : ∀(count: Nat)
-  (Pair/Parser (Maybe String))
+  (Parser (Maybe String))
 = λcount λstate
-  let chars  = (Pair/State/input state)
+  let #State{chars index} = state
   let peeked = (List/take Char count chars)
-  let #Pair{str-peeked length-peeked} = (String/length-got peeked)
-  let enough = (Nat/eq (length-peeked) count)
-  let result = (Bool/if (Maybe String) enough #Some{str-peeked} #None)
-  // #Done{#MkReply{state result}}
-  ?b
+  let #Pair{str length} = (String/length-got peeked)
+  let enough = (Nat/eq length count)
+  let result = (Bool/if (Maybe String) (enough) (#Some{str}) (#None))
+  #Done{#Reply{state result}}
+
+  // Test: Peek 3 characters from a 6-character string
+TEST_0 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #3 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #Some{"abc"}}}))
+= #Refl
+
+// Test: Peek all 6 characters from a 6-character string
+TEST_1 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #6 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #Some{"abcdef"}}}))
+= #Refl
+
+// Test: Attempt to peek more characters than available
+TEST_2 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #10 #State{"abcdef" #0})
+  (#Done{#Reply{#State{"abcdef" #0} #None}}))
+= #Refl
+
+// Test: Peek from an empty string
+TEST_3 
+: (Equal
+  (Result (Parser/Reply (Maybe String)) Parser/Error)
+  (Parser/peek-many #3 #State{"" #0})
+  (#Done{#Reply{#State{"" #0} #None}}))
+= #Refl

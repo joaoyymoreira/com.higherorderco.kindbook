@@ -5,11 +5,13 @@
 Parser/fail
 : ∀(A: *)
   ∀(msg: String)
-  (Parser/Parser A)
-= λA λmsg λs
+  (Parser A)
+= λA λmsg λstate
   #Fail{
-    #MkError{
-      index: (Parser/State/index s)
+    #Error{
+      index: 
+        let #State{_ index} = state
+        index
       error: msg
     }
   }
@@ -18,8 +20,8 @@ Parser/fail
 TEST_0
 : (Equal
     (Result (Parser/Reply String) Parser/Error)
-    ((Parser/fail String "Test error") (Parser/State/new "abcdef" #0))
-    (#Fail{#MkError{#0 "Test error"}})
+    ((Parser/fail String "Test error") #State{"abcdef" #0})
+    (#Fail{#Error{#0 "Test error"}})
   )
 = #Refl
 
@@ -27,8 +29,8 @@ TEST_0
 TEST_1
 : (Equal
     (Result (Parser/Reply Nat) Parser/Error)
-    ((Parser/fail Nat "Empty input") (Parser/State/new "" #0))
-    (#Fail{#MkError{#0 "Empty input"}})
+    ((Parser/fail Nat "Empty input") #State{"" #0})
+    (#Fail{#Error{#0 "Empty input"}})
   )
 = #Refl
 
@@ -36,7 +38,7 @@ TEST_1
 TEST_2
 : (Equal
     (Result (Parser/Reply Bool) Parser/Error)
-    ((Parser/fail Bool "Error at index 5") (Parser/State/new "hello world" #5))
-    (#Fail{#MkError{#5 "Error at index 5"}})
+    ((Parser/fail Bool "Error at index 5") #State{"hello world" #5})
+    (#Fail{#Error{#5 "Error at index 5"}})
   )
 = #Refl
