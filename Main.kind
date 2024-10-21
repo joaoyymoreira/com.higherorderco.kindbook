@@ -1,6 +1,8 @@
-Main : (Pair String *) -> (Pair (List U32) *)
-| str = str
+//Main : (Pair String *) -> (Pair (List U32) *)
+//| str = str
 
+main : String/View
+= #View { "// Comment 1\/ Comment 2\nabc" }
 
 
 

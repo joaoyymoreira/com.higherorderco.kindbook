@@ -1,5 +1,5 @@
-String/View
-: *
-= data[]{
-  #View{ text: String }: String/View
+// A view of a string.
+// - text: The string content.
+data String/View {
+  #View { text: String }
 }
