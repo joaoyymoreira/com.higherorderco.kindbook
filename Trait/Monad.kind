@@ -7,7 +7,7 @@ Trait/Monad
     bind: ∀(A: *) ∀(B: *) ∀(ma: (M A)) ∀(f: ∀(a: A) (M B)) (M B)
     pure: ∀(A: *) ∀(a: A) (M A)
   } : (Trait/Monad M)
-}
+} : (Trait/Monad M)
 
 // Accessor for the bind field
 Trait/Monad/bind

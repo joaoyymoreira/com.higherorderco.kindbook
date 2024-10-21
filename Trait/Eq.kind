@@ -7,7 +7,7 @@ Trait/Eq
     eq: ∀(x: A) ∀(y: A) Bool
     neq: ∀(x: A) ∀(y: A) Bool
   } : (Trait/Eq A)
-}
+} : (Trait/Eq A)
 
 // Accessor for the eq field
 Trait/Eq/eq

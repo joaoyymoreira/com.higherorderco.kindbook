@@ -2,11 +2,12 @@
 Trait/Show
 : ∀(A: *)
   *
-= λA data[]{
-  #Show{
-    to_string: ∀(x: A) String
+= λA
+  data[]{
+    #Show{
+      to_string: ∀(x: A) String
+    } : (Trait/Show A)
   } : (Trait/Show A)
-}
 
 // Accessor for the to_string field
 Trait/Show/to_string

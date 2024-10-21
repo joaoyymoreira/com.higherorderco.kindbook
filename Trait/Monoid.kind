@@ -7,7 +7,7 @@ Trait/Monoid
     memp: A
     mapp: ∀(x: A) ∀(y: A) A
   } : (Trait/Monoid A)
-}
+} : (Trait/Monoid A)
 
 // Accessor for the memp field
 Trait/Monoid/memp

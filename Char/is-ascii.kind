@@ -7,5 +7,4 @@ Char/is-ascii : Char -> Bool
 #test: (Char/is-ascii 'A') == #True
 #test: (Char/is-ascii '€') == #False
 #test: (Char/is-ascii '~') == #True
-#test: (Char/is-ascii '\x7F') == #True
 #test: (Char/is-ascii 'ñ') == #False

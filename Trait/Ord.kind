@@ -4,78 +4,78 @@ Trait/Ord
   *
 = λA data[]{
   #Ord{
-    compare: ∀(x: A) ∀(y: A) Ordering
+    compare: ∀(x: A) ∀(y: A) Ord
     lt: ∀(x: A) ∀(y: A) Bool
     gt: ∀(x: A) ∀(y: A) Bool
     lte: ∀(x: A) ∀(y: A) Bool
     gte: ∀(x: A) ∀(y: A) Bool
   } : (Trait/Ord A)
-}
+} : (Trait/Ord A)
 
-// Accessor for the compare field
-Trait/Ord/compare
-: ∀(A: *)
-  ∀(o: (Trait/Ord A))
-  ∀(x: A)
-  ∀(y: A)
-  Ordering
-= λA λ{
-  #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.compare x y)
-}
+//// Accessor for the compare field
+//Trait/Ord/compare
+//: ∀(A: *)
+  //∀(o: (Trait/Ord A))
+  //∀(x: A)
+  //∀(y: A)
+  //Ord
+//= λA λ{
+  //#Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.compare x y)
+//}
 
-// Accessor for the lt field
-Trait/Ord/lt
-: ∀(A: *)
-  ∀(o: (Trait/Ord A))
-  ∀(x: A)
-  ∀(y: A)
-  Bool
-= λA λ{
-  #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lt x y)
-}
+//// Accessor for the lt field
+//Trait/Ord/lt
+//: ∀(A: *)
+  //∀(o: (Trait/Ord A))
+  //∀(x: A)
+  //∀(y: A)
+  //Bool
+//= λA λ{
+  //#Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lt x y)
+//}
 
-// Accessor for the gt field
-Trait/Ord/gt
-: ∀(A: *)
-  ∀(o: (Trait/Ord A))
-  ∀(x: A)
-  ∀(y: A)
-  Bool
-= λA λ{
-  #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gt x y)
-}
+//// Accessor for the gt field
+//Trait/Ord/gt
+//: ∀(A: *)
+  //∀(o: (Trait/Ord A))
+  //∀(x: A)
+  //∀(y: A)
+  //Bool
+//= λA λ{
+  //#Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gt x y)
+//}
 
-// Accessor for the lte field
-Trait/Ord/lte
-: ∀(A: *)
-  ∀(o: (Trait/Ord A))
-  ∀(x: A)
-  ∀(y: A)
-  Bool
-= λA λ{
-  #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lte x y)
-}
+//// Accessor for the lte field
+//Trait/Ord/lte
+//: ∀(A: *)
+  //∀(o: (Trait/Ord A))
+  //∀(x: A)
+  //∀(y: A)
+  //Bool
+//= λA λ{
+  //#Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.lte x y)
+//}
 
-// Accessor for the gte field
-Trait/Ord/gte
-: ∀(A: *)
-  ∀(o: (Trait/Ord A))
-  ∀(x: A)
-  ∀(y: A)
-  Bool
-= λA λ{
-  #Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gte x y)
-}
+//// Accessor for the gte field
+//Trait/Ord/gte
+//: ∀(A: *)
+  //∀(o: (Trait/Ord A))
+  //∀(x: A)
+  //∀(y: A)
+  //Bool
+//= λA λ{
+  //#Ord: λo.compare λo.lt λo.gt λo.lte λo.gte λx λy (o.gte x y)
+//}
 
-// Derives an Ord instance from a compare function
-Trait/Ord/derive
-: ∀(A: *)
-  ∀(compare: ∀(x: A) ∀(y: A) Ordering)
-  (Trait/Ord A)
-= λA λcompare #Ord{
-  compare: compare
-  lt: λx λy (Ordering/eq (compare x y) #LT)
-  gt: λx λy (Ordering/eq (compare x y) #GT)
-  lte: λx λy (Ordering/neq (compare x y) #GT)
-  gte: λx λy (Ordering/neq (compare x y) #LT)
-}
+//// Derives an Ord instance from a compare function
+//Trait/Ord/derive
+//: ∀(A: *)
+  //∀(compare: ∀(x: A) ∀(y: A) Ord)
+  //(Trait/Ord A)
+//= λA λcompare #Ord{
+  //compare: compare
+  //lt: λx λy (Ord/eq (compare x y) #LT)
+  //gt: λx λy (Ord/eq (compare x y) #GT)
+  //lte: λx λy (Ord/neq (compare x y) #GT)
+  //gte: λx λy (Ord/neq (compare x y) #LT)
+//}

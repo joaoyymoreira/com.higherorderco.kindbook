@@ -6,7 +6,7 @@ Trait/Add
   #MkAdd{
     add: ∀(x: A) ∀(y: A) A
   } : (Trait/Add A)
-}
+} : (Trait/Add A)
 
 // Accessor for the add field
 Trait/Add/add
