@@ -1,28 +1,14 @@
-// Zips two lists into a single list using a combining function.
-// - A: The type of elements in the first list.
-// - B: The type of elements in the second list.
-// - C: The type of elements in the resulting list.
-// - f: The function to combine elements from both lists.
-// - xs: The first input list.
-// - ys: The second input list.
-// = A new list where each element is the result of applying f to
-//   corresponding elements from xs and ys.
-List/zip-with
-: ∀(A: *)
-  ∀(B: *)
-  ∀(C: *)
-  ∀(f: ∀(a: A) ∀(b: B) C)
-  ∀(xs: (List A))
-  ∀(ys: (List B))
-  (List C)
-= λA λB λC λf λ{
-  #Nil: λys #Nil
-  #Cons: λxs.head λxs.tail λ{
-    #Nil: #Nil
-    #Cons: λys.head λys.tail
-      #Cons{
-        head: (f xs.head ys.head)
-        tail: (List/zip-with _ _ _ f xs.tail ys.tail)
-      }
-  }
-}
+// Zips two lists with a combining function.
+// - A: First input type.
+// - B: Second input type.
+// - C: Output type.
+// - f: Combining function.
+// - xs: First input list.
+// - ys: Second input list.
+// = Combined list.
+List/zip-with : ∀(A: *) ∀(B: *) ∀(C: *) (A -> B -> C) -> (List A) -> (List B) -> (List C)
+| A B C f #Nil        ys          = #Nil
+| A B C f #Cons{x xs} #Nil        = #Nil
+| A B C f #Cons{x xs} #Cons{y ys} = #Cons{(f x y) (List/zip-with A B C f xs ys)}
+
+#test: (List/zip-with U32 U32 U32 U32/add [1 2 3] [4 5 6]) == [5 7 9]

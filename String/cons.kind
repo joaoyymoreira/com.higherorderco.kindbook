@@ -1,6 +1,9 @@
-String/cons
-: ∀(head: Char)
-  ∀(tail: String)
-  String
-= λhead λtail
-  #Cons{ head tail }
+// Prepends a character to a string.
+// - head: The character to prepend.
+// - tail: The original string.
+// = A new string with the character prepended.
+String/cons : Char -> String -> String
+| head tail = #Cons{head tail}
+
+#test: (String/cons 'a' String/nil) == ['a']
+#test: (String/cons 'H' "ello") == "Hello"

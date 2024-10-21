@@ -1,26 +1,25 @@
-// Applies a function to each element of a list, passing the mapped value to a monadic function.
-// This allows for lazy evaluation of the mapped values.
-// - M: The monad type constructor.
-// - m: The Monad instance for M.
-// - A: The type of elements in the input list.
-// - B: The type of elements in the output list.
-// - f: The function to apply to each element.
-// - xs: The elements to apply f to.
-// = A new list with the mapped values from g applied to the results of f.
+// Applies a monadic function to each element of a list.
+// - M: Monad type constructor.
+// - m: Monad instance for M.
+// - A: Input type.
+// - B: Output type.
+// - f: Function to apply.
+// - x: Input list.
+// = Monadic list of results.
 List/mmap
 : ∀(M: ∀(A: *) *)
   ∀(m: (Trait/Monad M))
   ∀(A: *)
   ∀(B: *)
-  ∀(f: ∀(a: A) (M B))
-  ∀(xs: (List A))
-  (M (List B))
-= λM λm λA λB λf λ{
-  #Nil: (Trait/Monad/pure M m _ #Nil)
-  #Cons: λxs.head λxs.tail
-    let bind = (Trait/Monad/bind M m)
-    let pure = (Trait/Monad/pure M m)
-    (bind _ _ (f xs.head) λy
-    (bind _ _ (List/mmap M m A B f xs.tail) λys
-    (pure _ (#Cons{y ys}))))
-}
+  ∀(f: A -> (M B))
+  (List A) -> (M (List B))
+| M m A B f #Nil             = (Trait/Monad/pure M m (List B) #Nil)
+| M m A B f #Cons{head tail} =
+  let bind = (Trait/Monad/bind M m)
+  let pure = (Trait/Monad/pure M m)
+  (bind B (List B) (f head) λy
+  (bind (List B) (List B) (List/mmap M m A B f tail) λys
+  (pure (List B) (#Cons{y ys}))))
+
+#test: (List/mmap Maybe Maybe/Trait/Monad U32 U32 (λx (Maybe/Monad/pure U32 x)) [1 2 3]) == #Some{[1 2 3]}
+#test: (List/mmap Maybe Maybe/Trait/Monad U32 U32 (λx #None) [1 2 3]) == #None

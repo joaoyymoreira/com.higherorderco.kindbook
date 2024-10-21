@@ -1,7 +1,10 @@
-// Performs the boolean "or" operation between all elements of a list.
-// - xs: The input list of boolean values.
-// = True if any element is True, False otherwise.
-List/or
-: ∀(xs: (List Bool))
-  Bool
-= λxs (List/foldr _ Bool Bool/or #False xs)
+// Applies logical OR to all elements in the list.
+// - x: Input list of Bool values.
+// = Result of OR-ing all elements.
+List/or : (List Bool) -> Bool
+| #Nil             = #False
+| #Cons{head tail} = (Bool/or head (List/or tail))
+
+#test: (List/or [#True #False #True]) == #True
+#test: (List/or [#False #False #False]) == #False
+#test: (List/or []) == #False

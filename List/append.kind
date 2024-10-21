@@ -1,14 +1,12 @@
 // Appends two lists.
-// - 1st: The type of elements in the lists.
-// - 2nd: The first list.
-// - 3rd: The second list.
+// - A: The type of elements in the lists.
+// - xs: The first list.
+// - ys: The second list.
 // = A new list containing all elements from both input lists.
-List/append
-: ∀(A: *)
-  ∀(xs: (List A))
-  ∀(ys: (List A))
-  (List A)
-= λA λ{
-	#Nil: λys ys 
-	#Cons: λhead λtail λys #Cons{head (List/append A tail ys)}
-}
+List/append : ∀(A: *) (List A) -> (List A) -> (List A)
+| A #Nil             ys = ys
+| A #Cons{head tail} ys = #Cons{head (List/append A tail ys)}
+
+#test: (List/append U32 [1 2] [3 4]) == [1 2 3 4]
+#test: (List/append U32 [] [1 2 3]) == [1 2 3]
+#test: (List/append U32 [1 2 3] []) == [1 2 3]

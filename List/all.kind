@@ -1,0 +1,12 @@
+// Checks if all elements of a list satisfy a condition.
+// - A: Element type.
+// - cond: Condition function.
+// - x: Input list.
+// = True if all elements satisfy the condition, False otherwise.
+List/all : ∀(A: *) (A -> Bool) -> (List A) -> Bool
+| A cond #Nil             = #True
+| A cond #Cons{head tail} = (Bool/and (cond head) (List/all A cond tail))
+
+#test: (List/all U32 (λx (U32/to-bool (== x 1))) [1 1 1]) == #True
+#test: (List/all U32 (λx (U32/to-bool (== x 1))) [1 2 1]) == #False
+#test: (List/all U32 (λx (U32/to-bool (== x 1))) []) == #True

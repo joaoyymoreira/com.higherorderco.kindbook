@@ -4,26 +4,17 @@
 // - xs: The first list.
 // - ys: The second list.
 // = LT if xs < ys, EQ if xs = ys, GT if xs > ys.
-List/compare
-: ∀(A: *)
-  ∀(ord: (Trait/Ord A))
-  ∀(xs: (List A))
-  ∀(ys: (List A))
-  Ordering
-= λA λord λ{
-  #Nil: λ{
-    #Nil: #EQ
-    #Cons: λys.head λys.tail #LT
-  }
-  #Cons: λxs.head λxs.tail λ{
-    #Nil: #GT
-    #Cons: λys.head λys.tail
-      let head_cmp = (Trait/Ord/compare A ord xs.head ys.head)
-      (Ordering/match
-        Ordering
-        #LT
-        (List/compare A ord xs.tail ys.tail)
-        #GT
-        head_cmp)
-  }
-}
+List/compare : ∀(A: *) (Trait/Ord A) -> (List A) -> (List A) -> Ord
+| A ord #Nil             #Nil             = #EQ
+| A ord #Nil             #Cons{y ys}      = #LT
+| A ord #Cons{x xs}      #Nil             = #GT
+| A ord #Cons{x xs}      #Cons{y ys}      =
+  let head_cmp = (Trait/Ord/compare A ord x y)
+  (Ord/match Ord #LT (List/compare A ord xs ys) #GT head_cmp)
+
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [] []) == #EQ
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [] [#1]) == #LT
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1] []) == #GT
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1 #2] [#1 #2]) == #EQ
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#1 #2] [#1 #3]) == #LT
+#test: (List/compare Nat (Trait/Ord/derive Nat Nat/compare) [#2] [#1 #1]) == #GT

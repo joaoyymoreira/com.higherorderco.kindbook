@@ -1,16 +1,12 @@
 // Safely retrieves the last element of a list.
-// - A: The type of elements in the list.
-// - xs: The input list.
-// = Some x if the list is non-empty (where x is the last element),
-//   None if the list is empty.
-List/last
-: ∀(A: *)
-  ∀(xs: (List A))
-  (Maybe A)
-= λA λ{
-  #Nil: #None
-  #Cons: λxs.head λ{
-    #Nil: #Some{xs.head}
-    #Cons: λxs.tail.head λxs.tail.tail (List/last _ (#Cons{xs.tail.head xs.tail.tail}))
-  }
-}
+// - A: Element type.
+// - xs: Input list.
+// = Some x if non-empty (x is last element), None if empty.
+List/last : ∀(A: *) (List A) -> (Maybe A)
+| A #Nil                    = #None
+| A #Cons{head #Nil}        = #Some{head}
+| A #Cons{head #Cons{x xs}} = (List/last A #Cons{x xs})
+
+#test: (List/last U32 []) == #None
+#test: (List/last U32 [1]) == #Some{1}
+#test: (List/last U32 [1 2 3]) == #Some{3}

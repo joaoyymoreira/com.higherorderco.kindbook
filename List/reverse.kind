@@ -1,9 +1,9 @@
-// Reverses the order of elements in a list.
-// - 1st: The type of elements in the list.
-// - 2nd: The input list to be reversed.
-// = A new list with the elements in reverse order.
-List/reverse
-: ∀(A: *)
-  ∀(xs: (List A))
-  (List A)
-= λA λxs (List/foldl _ _ (λxs λx #Cons{x xs}) #Nil xs)
+// Reverses a list.
+// - A: Input type.
+// - xs: Input list.
+// = Reversed list.
+List/reverse : ∀(A: *) (List A) -> (List A)
+| A xs = (List/foldl (List A) A (λxs λx #Cons{x xs}) #Nil xs)
+
+#test: (List/reverse U32 [1 2 3]) == [3 2 1]
+#test: (List/reverse U32 []) == []

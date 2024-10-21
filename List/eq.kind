@@ -1,39 +1,19 @@
 // Checks if two lists are equal.
-// - A: The type of elements in the lists.
-// - e: An equality function for type A.
-// - xs: The first list.
-// - ys: The second list.
-// = True if the lists are equal, False otherwise.
+// - A: Element type.
+// - e: Equality function for A.
+// - xs: First list.
+// - ys: Second list.
+// = True if equal, False otherwise.
 List/eq : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
-= λA λe λ{
-  #Nil: λ{
-    #Nil: #True
-    #Cons: λys.head λys.tail #False
+| A e #Nil        #Nil        = #True
+| A e #Nil        #Cons{y ys} = #False
+| A e #Cons{x xs} #Nil        = #False
+| A e #Cons{x xs} #Cons{y ys} = 
+  if (Trait/Eq/eq A e x y) {
+    (List/eq A e xs ys)
+  } else {
+    #False
   }
-  #Cons: λxs.head λxs.tail λ{
-    #Nil: #False
-    #Cons: λys.head λys.tail
-      (Bool/and
-        (Trait/Eq/eq A e xs.head ys.head)
-        (List/eq A e xs.tail ys.tail))
-  }
-}
 
-// -- TODO: flatten the case tree into equational clauses
-
-// List/eq : ∀ A → (Trait/Eq A) → (List A) → (List A) → Bool
-// List/eq A e #Nil #Nil = #True
-
-// List/eq A e #Nil (#Cons ys.head ys.tail) = #False
-// List/eq A e (#Cons xs.head xs.tail) #Nil = #False
-// List/eq A e (#Cons xs.head xs.tail) (#Cons ys.head ys.tail) =
-//   Bool/and (Trait/Eq/eq A e xs.head ys.head) (List/eq A e xs.tail ys.tail)
-
-// Test: Different lists should not be equal
-List/test_eq_different_lists
-: (Equal
-    (List/eq (List Bool) #Cons{#True #Cons{#True #Cons{#True #Nil}}} 
-                          #Cons{#True #Cons{#True #Cons{#True #Nil}}})
-    #True)
-= λa #Refl
-
+#test: (List/eq Bool (Trait/Eq/derive Bool Bool/eq) [#True #False] [#True #False]) == #True
+#test: (List/eq Bool (Trait/Eq/derive Bool Bool/eq) [#True #False] [#True #True]) == #False

@@ -1,55 +1,13 @@
-// Helper function for enumerate
-// Recursively builds the enumerated list starting from a given index
-List/enumerate-go
-: ∀(A: *)
-  ∀(n: Nat)
-  ∀(xs: (List A))
-  (List (Pair/Pair Nat A))
-= λA λn λ{
-  #Nil: #Nil
-  #Cons: λxs.head λxs.tail
-    #Cons{
-      #Pair{n xs.head}
-      (List/enumerate-go A (#Succ{n}) xs.tail)
-    }
-}
+// Enumerates a list, pairing each element with its index.
+// - A: Element type.
+// - xs: Input list.
+// = List of (index, element) pairs.
+List/enumerate : ∀(A: *) (List A) -> (List (Pair Nat A))
+= λA λxs (List/enumerate/go A #Zero xs)
 
-// Enumerates a list, pairing each element with its index
-// - A: The type of elements in the input list
-// - xs: The input list
-// = A new list where each element is paired with its index
-List/enumerate
-: ∀(A: *)
-  ∀(xs: (List A))
-  (List (Pair/Pair Nat A))
-= λA λxs (List/enumerate-go A #Zero xs)
+// Recursive helper for enumerate.
+List/enumerate/go : ∀(A: *) Nat -> (List A) -> (List (Pair Nat A))
+| A n #Nil        = #Nil
+| A n #Cons{x xs} = #Cons{#Pair{n x} (List/enumerate/go A (#Succ{n}) xs)}
 
-// Examples and properties of the enumerate function
-
-// Example: enumerate ["0", "1", "2"] ≡ [(0, "0"), (1, "1"), (2, "2")]
-List/enumerate/example0
-: (Equal
-    (List (Pair/Pair Nat (List U32)))
-    (List/enumerate (List U32) (#Cons{"0" (#Cons{"1" (#Cons{"2" #Nil})})}))
-    (#Cons{(Pair/Pair #Zero "0") (#Cons{(Pair/Pair #1 "1") (#Cons{(Pair/Pair #2 "2") #Nil})})})
-)
-= #Refl 
-
-// ✓ List/enumerate/empty
-// ERROR:
-// - expected: ?type_annotation
-// - detected: ?untyped_match
-// - bad_term: λ{ #Cons: ?a #Nil: ?b }
-// unknown_file
-// Could not read source file.
-// ✗ List/enumerate/example0
-
-// Property: enumerate [] ≡ []
-List/enumerate/empty
-: ∀(A: *)
-  (Equal
-    (List (Pair/Pair Nat A))
-    (List/enumerate A #Nil)
-    #Nil
-  )
-= λA #Refl
+#test: (List/enumerate (List U32) ["0" "1"]) == [#Pair{#0 "0"} #Pair{#1 "1"}]

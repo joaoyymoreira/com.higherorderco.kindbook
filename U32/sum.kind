@@ -2,7 +2,12 @@
 // - x: The upper bound of the sum.
 // = The sum of all numbers from 0 to x, exclusive.
 U32/sum : U32 -> U32
-= λ{
-  0: 0
-  _{p}: (+ p (U32/sum p))
-}
+= λx
+  if (U32/to-bool x) {
+    (+ (- x 1) (U32/sum (- x 1)))
+  } else {
+    0
+  }
+
+#test: (U32/sum 5) == 10
+#test: (U32/sum 3) == 3

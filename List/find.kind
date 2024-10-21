@@ -1,18 +1,16 @@
-// Finds the first element in a list that satisfies a given predicate.
-// - A: The type of elements in the list.
-// - pred: The predicate function to test elements.
-// - xs: The input list to search.
-// = Some x if an element x satisfying the predicate is found,
-//   None if no such element exists in the list.
-List/find
-: ∀(A: *)
-  ∀(pred: ∀(a: A) Bool)
-  ∀(xs: (List A))
-  (Maybe A)
-= λA λpred λ{
-  #Nil: #None
-  #Cons: λxs.head λxs.tail
-    (Bool/if _ (pred xs.head)
-      (#Some{xs.head})
-      (List/find _ pred xs.tail))
-}
+// Finds the first element satisfying a predicate.
+// - A: Element type.
+// - fn: Predicate function.
+// - xs: Input list.
+// = Some x if found, None otherwise.
+List/find : ∀(A: *) (A -> Bool) -> (List A) -> (Maybe A)
+| A fn #Nil             = #None
+| A fn #Cons{head tail} =
+  if (fn head) {
+    #Some{head}
+  } else {
+    (List/find A fn tail)
+  }
+
+#test: (List/find U32 (λx (U32/to-bool (== x 2))) [1 2 3]) == #Some{2}
+#test: (List/find U32 (λx (U32/to-bool (== x 4))) [1 2 3]) == #None

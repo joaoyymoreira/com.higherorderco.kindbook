@@ -1,15 +1,8 @@
 // Computes the diagonal of a list of lists.
-// - A: The type of elements in the lists.
-// - xss: The input list of lists.
-// = A list containing the diagonal elements of the input.
-List/diagonal
-: ∀(A: *)
-  ∀(xss: (List (List A)))
-  (List A)
-= λA λxss
-  (List/foldr
-    (List A)
-    (List A)
-    (List/append A)
-    #Nil
-    (List/stripe A xss))
+// - A: Element type.
+// - xss: Input list of lists.
+// = List containing diagonal elements.
+List/diagonal : ∀(A: *) (List (List A)) -> (List A)
+| A xss = (List/concat A (List/stripe A xss))
+
+#test: (List/diagonal U32 [[1 2 3] [4 5 6] [7 8 9]]) == [1 2 4 3 5 7 6 8 9]

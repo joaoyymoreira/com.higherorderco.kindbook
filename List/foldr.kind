@@ -1,16 +1,13 @@
-// FIXME: this will be deprecated in favor of List/fold
-
-// Performs a right fold over a list.
-// - 1st: The type of elements in the input list.
-// - 2nd: The type of the result.
-// - 3rd: The combining function.
-// - 4th: The initial value (for the empty list case).
-// - 5th: The list to fold over.
-// = The result of folding the list.
+// Right-folds a list.
+// - A: Input type.
+// - B: Result type.
+// - f: Combining function.
+// - z: Initial value.
+// - xs: Input list.
+// = Folded result.
 List/foldr : ∀(A: *) ∀(B: *) (A -> B -> B) -> B -> (List A) -> B
-= λA λB λf λz λ{
-  #Nil: z
-  #Cons: λxs.head λxs.tail 
-		let acc = (List/foldr A B f z xs.tail)
-		(f xs.head acc)
-	}
+| A B f z #Nil             = z
+| A B f z #Cons{head tail} = (f head (List/foldr A B f z tail))
+
+#test: (List/foldr U32 U32 (λx λacc (+ x acc)) 0 [1 2 3]) == 6
+#test: (List/foldr U32 (List U32) (λx λacc #Cons{x acc}) #Nil [1 2 3]) == [1 2 3]

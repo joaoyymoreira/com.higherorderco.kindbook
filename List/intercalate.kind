@@ -1,19 +1,18 @@
-// Intercalates a list between all lists in a list of lists.
-// - A: The type of elements in the lists.
-// - xs: The list to be inserted between other lists.
-// - yss: The list of lists to intercalate xs into.
-// = A new list with xs inserted between all lists in yss.
-List/intercalate
-: ∀(A: *)
-  ∀(xs: (List A))
-  ∀(yss: (List (List A)))
-  (List A)
-= λA λxs λ{
-  #Nil: #Nil
-  #Cons: λyshead λystail 
-    (List/match (List A) ystail
-      yshead
-      (λhead λtail (List/append A yshead
-                     (List/append A xs
-                       (List/intercalate A xs ystail)))))
-}
+// Intercalates a list between lists in a list of lists.
+// - A: Element type.
+// - xs: List to insert between other lists.
+// - yss: List of lists to intercalate xs into.
+// = New list with xs inserted between all lists in yss.
+List/intercalate : ∀(A: *) (List A) -> (List (List A)) -> (List A)
+| A xs #Nil             = #Nil
+| A xs #Cons{head tail} = 
+  if (List/is-nil (List A) tail) {
+    head
+  } else {
+    (List/append A head (List/append A xs (List/intercalate A xs tail)))
+  }
+
+//#test: (List/intercalate U32 [0] [[1 2] [3 4] [5 6]]) == [1 2 0 3 4 0 5 6]
+//#test: (List/intercalate U32 [9 9] [[1] [2] [3]]) == [1 9 9 2 9 9 3]
+//#test: (List/intercalate U32 [0] [[1]]) == [1]
+//#test: (List/intercalate U32 [0] []) == []

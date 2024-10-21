@@ -1,17 +1,9 @@
 // Checks if a list contains a specific element.
-// - A: The type of elements in the list.
-// - e: An equality function for type A.
-// - x: The element to search for.
-// - xs: The list to search in.
-// = True if the element is found, False otherwise.
-List/contains
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  ∀(x: A)
-  ∀(xs: (List A))
-  Bool
-= λA λe λx λ{
-  #Nil: #False
-  #Cons: λxs.head λxs.tail
-    (Bool/or (Trait/Eq/eq _ e x xs.head) (List/contains _ e x xs.tail))
-}
+// - A: Element type.
+// - e: Equality function for A.
+// - x: Element to search for.
+// - xs: List to search in.
+// = True if found, False otherwise.
+List/contains : ∀(A: *) (Trait/Eq A) -> A -> (List A) -> Bool
+| A e x #Nil             = #False
+| A e x #Cons{head tail} = (Bool/or (Trait/Eq/eq A e x head) (List/contains A e x tail))

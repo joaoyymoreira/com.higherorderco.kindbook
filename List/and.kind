@@ -1,7 +1,10 @@
-// Performs the boolean "and" operation between all elements of a list.
-// - xs: The input list of boolean values.
-// = True if all elements are True, False otherwise.
-List/and
-: ∀(xs: (List Bool))
-  Bool
-= λxs (List/foldr _ Bool Bool/and #True xs)
+// Applies logical AND to all elements in the list.
+// - xs: Input list of Bool values.
+// = Result of AND-ing all elements.
+List/and : (List Bool) -> Bool
+| #Nil             = #True
+| #Cons{head tail} = (Bool/and head (List/and tail))
+
+#test: (List/and [#True #True #True]) == #True
+#test: (List/and [#True #False #True]) == #False
+#test: (List/and []) == #True

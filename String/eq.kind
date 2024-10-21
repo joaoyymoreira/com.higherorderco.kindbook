@@ -2,20 +2,14 @@
 // - a: The first string to compare.
 // - b: The second string to compare.
 // = A boolean value indicating whether the strings are equal.
-String/eq
-: ∀(a: String)
-  ∀(b: String)
-  Bool
-= λ{
-  #Nil: λ{
-    #Nil: #True
-    #Cons: λb.head λb.tail #False
-  }
-  #Cons: λa.head λa.tail λ{
-    #Nil: #False
-    #Cons: λb.head λb.tail
-      let head_eq = (U32/eq a.head b.head)
-      let tail_eq = (String/eq a.tail b.tail)
-      (Bool/and head_eq tail_eq)
-  }
-}
+String/eq : String -> String -> Bool
+| #Nil         #Nil         = #True
+| #Nil         #Cons{_  _}  = #False
+| #Cons{_  _}  #Nil         = #False
+| #Cons{a0 as} #Cons{b0 bs} = (Bool/and (Char/eq a0 b0) (String/eq as bs))
+
+#test: (String/eq "" "") == #True
+#test: (String/eq "hello" "hello") == #True
+#test: (String/eq "hello" "world") == #False
+#test: (String/eq "a" "A") == #False
+#test: (String/eq "abc" "ab") == #False

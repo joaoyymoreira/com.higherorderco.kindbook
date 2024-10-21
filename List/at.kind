@@ -1,17 +1,15 @@
-// Get an element at a given index (if exists).
+// Gets an element at a given index (if exists).
 // - A: The type of elements in the list.
 // - xs: The input list.
 // - i: The index of the element to search.
 // = A Maybe element of type A.
-List/at
-: ∀(A: *)
-  ∀(xs: (List A))
-  ∀(i: Nat)
-  (Maybe A)
-= λA λ{
-  #Nil: λi #None
-  #Cons: λxs.head λxs.tail λ{
-    #Zero: #Some{xs.head}
-    #Succ: λi.pred (List/at A xs.tail i.pred)
-  }
-}
+List/at : ∀(A: *) (List A) -> Nat -> (Maybe A)
+| A #Nil             i        = #None
+| A #Cons{head tail} #Zero    = #Some{head}
+| A #Cons{head tail} #Succ{i} = (List/at A tail i)
+
+#test: (List/at U32 [1 2 3] #0) == #Some{1}
+#test: (List/at U32 [1 2 3] #1) == #Some{2}
+#test: (List/at U32 [1 2 3] #2) == #Some{3}
+#test: (List/at U32 [1 2 3] #3) == #None
+#test: (List/at U32 [] #0) == #None

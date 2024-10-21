@@ -1,16 +1,16 @@
-// Filters a list based on a predicate function.
-// - A: The type of elements in the list.
-// - fn: The function used to test each element.
-// - xs: The input list.
-// = A new list containing only elements that satisfy the predicate.
-List/filter
-: ∀(A: *)
-  ∀(fn: ∀(a: A) Bool)
-  ∀(xs: (List A))
-  (List A)
-= λA λfn λ{
-  #Nil: #Nil
-  #Cons: λxs.head λxs.tail
-    let tail = (List/filter _ fn xs.tail)
-    (Bool/if _ (fn xs.head) (#Cons{xs.head tail}) tail)
-}
+// Filters a list based on a predicate.
+// - A: Element type.
+// - fn: Predicate function.
+// - xs: Input list.
+// = New list with elements satisfying the predicate.
+List/filter : ∀(A: *) (A -> Bool) -> (List A) -> (List A)
+| A fn #Nil             = #Nil
+| A fn #Cons{head tail} =
+  if (fn head) {
+    #Cons{head (List/filter A fn tail)}
+  } else {
+    (List/filter A fn tail)
+  }
+
+#test: (List/filter U32 (λx (U32/to-bool (== x 2))) [1 2 3 2 1]) == [2 2]
+#test: (List/filter U32 (λx (U32/to-bool (> x 2))) [1 2 3 4 5]) == [3 4 5]

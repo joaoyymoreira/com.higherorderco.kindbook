@@ -1,25 +1,10 @@
 // Checks if two lists are not equal.
-// - A: The type of elements in the lists.
-// - e: An equality function for type A.
-// - xs: The first list.
-// - ys: The second list.
-// = True if the lists are not equal, False otherwise.
-List/neq
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  ∀(xs: (List A))
-  ∀(ys: (List A))
-  Bool
-= λA λe λxs λys
-  (Bool/not (List/eq A e xs ys))
+// - A: Element type.
+// - e: Equality function for A.
+// - xs: First list.
+// - ys: Second list.
+// = True if not equal, False otherwise.
+List/neq : ∀(A: *) (Trait/Eq A) -> (List A) -> (List A) -> Bool
+| A e xs ys = (Bool/not (List/eq A e xs ys))
 
-// Test case for neq function with boolean lists
-List/test-neq-bool-lists
-: (Equal
-    Bool
-    (List/neq
-      (Bool/Eq/derive Bool/eq)
-      (Bool/Cons #True (Bool/Cons #False Bool/Nil))
-      (Bool/Cons #True (Bool/Cons #True Bool/Nil)))
-    #True)
-= #Refl
+#test: (List/neq Bool (Trait/Eq/derive Bool Bool/eq) [#True #False] [#True #True]) == #True

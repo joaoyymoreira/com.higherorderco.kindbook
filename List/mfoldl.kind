@@ -1,12 +1,12 @@
-// Performs a monadic left fold over a list.
-// - M: The monad to operate in.
-// - A: The type of elements in the input list.
-// - B: The type of the accumulator and result.
-// - m: The Monad instance for M.
-// - f: The combining function that returns a monadic value.
-// - z: The initial value (for the empty list case).
-// - xs: The list to fold over.
-// = A monadic value containing the result of folding the list.
+// Monadic left fold over a list.
+// - M: Monad to operate in.
+// - m: Monad instance for M.
+// - A: Input type.
+// - B: Accumulator type.
+// - f: Combining function.
+// - z: Initial value.
+// - x: Input list.
+// = Monadic result of folding the list.
 List/mfoldl
 : ∀(M: ∀(A: *) *)
   ∀(m: (Trait/Monad M))
@@ -14,11 +14,7 @@ List/mfoldl
   ∀(B: *)
   ∀(f: ∀(b: B) ∀(a: A) (M B))
   ∀(z: B)
-  ∀(xs: (List A))
+  ∀(x: (List A))
   (M B)
-= λM λm λA λB λf λz λ{
-  #Nil: (Trait/Monad/pure M m _ z)
-  #Cons: λxs.head λxs.tail
-    (Trait/Monad/bind M m _ _ (f z xs.head) λz1
-    (List/mfoldl M m A B f z1 xs.tail))
-}
+| M m A B f z #Nil             = (Trait/Monad/pure M m B z)
+| M m A B f z #Cons{head tail} = (Trait/Monad/bind M m B B (f z head) λz1 (List/mfoldl M m A B f z1 tail))

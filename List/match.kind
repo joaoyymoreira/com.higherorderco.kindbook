@@ -1,10 +1,10 @@
 // Dependent eliminator for lists.
-// - A: The type of elements in the list.
-// - P: The motive (type family) for the elimination.
-// - nil: The result for the empty list case.
-// - cons: The function to apply for the cons case.
-// - xs: The list to eliminate (scrutinee).
-// = The result of the elimination, whose type depends on the input list.
+// - A: Element type.
+// - P: Motive.
+// - nil: Empty list case.
+// - cons: Non-empty list case.
+// - xs: Input list.
+// = Elimination result.
 List/match
 : ∀(A: *)
   ∀(P: ∀(xs: (List A)) *)
@@ -12,7 +12,5 @@ List/match
   ∀(cons: ∀(x: A) ∀(xs: (List A)) (P (#Cons{x xs})))
   ∀(xs: (List A))
   (P xs)
-= λA λP λnil λcons λ{
-  #Nil: nil
-  #Cons: λxs.head λxs.tail (cons xs.head xs.tail)
-}
+| A P nil cons #Nil             = nil
+| A P nil cons #Cons{head tail} = (cons head tail)

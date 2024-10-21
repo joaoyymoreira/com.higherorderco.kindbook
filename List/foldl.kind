@@ -1,20 +1,13 @@
-// Performs a left fold over a list.
-// - 1st: The type of the accumulator.
-// - 2nd: The type of elements in the input list.
-// - 3rd: The combining function.
-// - 4th: The initial value (for the empty list case).
-// - 5th: The list to fold over.
-// = The result of folding the list.
-List/foldl
-: ∀(A: *)
-  ∀(B: *)
-  ∀(f: ∀(acc: A) ∀(elem: B) A)
-  ∀(z: A)
-  ∀(xs: (List B))
-  A
-= λA λB λf λz λ{
-  #Nil: z
-  #Cons: λxs.head λxs.tail 
-		let acc = (f z xs.head)
-		(List/foldl A B f acc xs.tail)
-	}
+// Left-folds a list.
+// - A: Accumulator type.
+// - B: Element type.
+// - f: Combining function.
+// - z: Initial value.
+// - xs: Input list.
+// = Folded result.
+List/foldl : ∀(A: *) ∀(B: *) (A -> B -> A) -> A -> (List B) -> A
+| A B f z #Nil             = z
+| A B f z #Cons{head tail} = (List/foldl A B f (f z head) tail)
+
+#test: (List/foldl U32 U32 (λacc λx (+ acc x)) 0 [1 2 3]) == 6
+#test: (List/foldl (List U32) U32 (λacc λx #Cons{x acc}) [] [1 2 3]) == [3 2 1]

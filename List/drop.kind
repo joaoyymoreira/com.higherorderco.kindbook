@@ -1,17 +1,13 @@
 // Drops the first n elements from a list.
-// - A: The type of elements in the list.
-// - n: The number of elements to drop.
-// - xs: The input list.
-// = The list without its first n elements.
-List/drop
-: ∀(A: *)
-  ∀(n: Nat)
-  ∀(xs: (List A))
-  (List A)
-= λA λ{
-  #Zero: λxs xs
-  #Succ: λn.pred λ{
-    #Nil: #Nil
-    #Cons: λxs.head λxs.tail (List/drop A n.pred xs.tail)
-  }
-}
+// - A: Element type.
+// - n: Number of elements to drop.
+// - xs: Input list.
+// = List without its first n elements.
+List/drop : ∀(A: *) Nat -> (List A) -> (List A)
+| A #Zero    xs            = xs
+| A #Succ{n} #Nil          = #Nil
+| A #Succ{n} #Cons{x tail} = (List/drop A n tail)
+
+#test: (List/drop U32 #0 [1 2 3]) == [1 2 3]
+#test: (List/drop U32 #2 [1 2 3]) == [3]
+#test: (List/drop U32 #4 [1 2 3]) == []

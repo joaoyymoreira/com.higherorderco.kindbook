@@ -1,19 +1,17 @@
-// Counts the occurrences of a given element in a list.
-// - A: The type of elements in the list.
-// - e: An equality function for type A.
-// - x: The element to count.
-// - xs: The list to search.
-// = The number of occurrences of the given element in the list.
-List/count
-: ∀(A: *)
-  ∀(e: (Trait/Eq A))
-  ∀(x: A)
-  ∀(xs: (List A))
-  Nat
-= λA λe λx λ{
-  #Nil: #Zero
-  #Cons: λxs.head λxs.tail
-    let head_count = (Bool/if Nat (Trait/Eq/eq _ e x xs.head) #1 #Zero)
-    let tail_count = (List/count _ e x xs.tail)
-    (Nat/add head_count tail_count)
-}
+// Counts occurrences of an element in a list.
+// - A: Element type.
+// - e: Equality function for A.
+// - x: Element to count.
+// - xs: Input list.
+// = Number of occurrences.
+List/count : ∀(A: *) (Trait/Eq A) -> A -> (List A) -> Nat
+| A e x #Nil             = #Zero
+| A e x #Cons{head tail} =
+  let count_head = (Bool/if Nat (Trait/Eq/eq A e x head) #1 #Zero)
+  let count_tail = (List/count A e x tail)
+  (Nat/add count_head count_tail)
+
+#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #2 [#1 #2 #3 #2 #4 #2]) == #3
+#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #5 [#1 #2 #3 #2 #4 #2]) == #0
+#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #1 [#1]) == #1
+#test: (List/count Nat (Trait/Eq/derive Nat Nat/eq) #1 []) == #0

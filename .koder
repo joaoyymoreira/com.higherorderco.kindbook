@@ -43,3 +43,25 @@ Nat/double : Nat -> Nat
 ```
 
 NOTE: tests should always be one-liners, and without comments.
+
+NOTE: keep comments concise and less redundant. Example:
+
+Instead of:
+
+"The type of elements in the input list."
+
+You should write:
+
+"Input type."
+
+In general, current comments are overly verbose and you should make them more terse and objective.
+
+NOTE: auxiliary functions should be called "/go" (not "/aux" nor "/helper"), and should be placed AFTER the main function, note before.
+
+NOTE: you should use 'if x { t } else { f }' (where 'x' is a Bool, not an U32) instead of U32/if or similar
+
+NOTE: U32 functions like '==' and '>' return an U32, not a Bool. when a Bool is needed, use U32/to-bool
+
+NOTE: do not create tests with functions that you've not been explicitly shown. you tend to hallucinate functions that don't exist. don't do that.
+
+NOTE: do NOT change the logic or algorithm used in the implementations in any way. just update to the newer syntax, keeping the same logic closely.

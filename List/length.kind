@@ -1,12 +1,10 @@
 // Computes the length of a list.
-// - A: The type of elements in the list.
-// - xs: The input list.
-// = The number of elements in the list.
-List/length
-: ∀(A: *)
-  ∀(xs: (List A))
-  Nat
-= λA λ{
-  #Nil: #Zero
-  #Cons: λxs.head λxs.tail #Succ{(List/length _ xs.tail)}
-}
+// - A: Element type.
+// - xs: Input list.
+// = Number of elements.
+List/length : ∀(A: *) (List A) -> Nat
+| A #Nil             = #Zero
+| A #Cons{head tail} = #Succ{(List/length A tail)}
+
+#test: (List/length _ []) == #0
+#test: (List/length _ [1 2 3]) == #3

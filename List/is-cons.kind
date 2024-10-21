@@ -1,12 +1,11 @@
-// Checks if a list is non-empty (cons).
-// - A: The type of elements in the list.
-// - xs: The list to check.
-// = True if the list is non-empty, False otherwise.
-List/is-cons
-: ∀(A: *)
-  ∀(xs: (List A))
-  Bool
-= λA λ{
-  #Nil: #False
-  #Cons: λxs.head λxs.tail #True
-}
+// Checks if a list is non-empty.
+// - A: Element type.
+// - xs: List to check.
+// = True if non-empty, False otherwise.
+List/is-cons : ∀(A: *) (List A) -> Bool
+| A #Nil             = #False
+| A #Cons{head tail} = #True
+
+#test: (List/is-cons U32 []) == #False
+#test: (List/is-cons U32 [1]) == #True
+#test: (List/is-cons U32 [1 2 3]) == #True

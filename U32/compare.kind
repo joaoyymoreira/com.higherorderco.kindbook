@@ -1,19 +1,19 @@
-// Compares two U32 numbers using pattern matching.
-// This function determines the relative order of two given U32 numbers.
-// - 1st: The U32 number to compare.
-// - 2nd: The U32 number to compare.
-// = An Ordering value: LT if 1st < 2nd, EQ if 1st = 2nd, GT if 1st > 2nd.
-U32/compare
-: ∀(a: U32)
-  ∀(b: U32)
-  Ordering
-= λ{
-  0: λ{
-    0: #EQ
-    _: λb.pred #LT
+// Compares two U32 numbers.
+// - a: The first U32 number to compare.
+// - b: The second U32 number to compare.
+// = An Ord value: LT if a < b, EQ if a = b, GT if a > b.
+U32/compare : U32 -> U32 -> Ord
+= λa λb
+  if (U32/to-bool (U32/eql a b)) {
+    #EQ
+  } else {
+    if (U32/to-bool (< a b)) {
+      #LT
+    } else {
+      #GT
+    }
   }
-  _: λa.pred λ{
-    0: #GT
-    _: λb.pred (U32/compare a.pred b.pred)
-  }
-}
+
+#test: (U32/compare 5 3) == #GT
+#test: (U32/compare 3 5) == #LT
+#test: (U32/compare 5 5) == #EQ

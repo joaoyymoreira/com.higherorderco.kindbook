@@ -1,18 +1,13 @@
 // Takes the first n elements from a list.
-// If n is greater than the length of the list, returns the entire list.
-// - A: The type of elements in the list.
-// - n: The number of elements to take.
-// - xs: The input list.
-// = A list containing the first n elements of xs, or all of xs if n > length xs.
-List/take
-: ∀(A: *)
-  ∀(n: Nat)
-  ∀(xs: (List A))
-  (List A)
-= λA λ{
-  #Zero: λxs []
-  #Succ: λpred λ{
-    #Nil: [] 
-    #Cons: λhead λtail #Cons{head (List/take A pred tail)}
-  }
-} 
+// - A: Element type.
+// - n: Number of elements to take.
+// - xs: Input list.
+// = List with first n elements of xs, or all of xs if n > length xs.
+List/take : ∀(A: *) Nat -> (List A) -> (List A)
+| A #Zero    xs            = #Nil
+| A #Succ{n} #Nil          = #Nil
+| A #Succ{n} #Cons{x tail} = #Cons{x (List/take A n tail)}
+
+#test: (List/take U32 #0 [1 2 3]) == []
+#test: (List/take U32 #2 [1 2 3]) == [1 2]
+#test: (List/take U32 #5 [1 2 3]) == [1 2 3]

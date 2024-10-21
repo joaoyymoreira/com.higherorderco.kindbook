@@ -1,10 +1,9 @@
 // Checks if two U32 values are equal.
-// - 1st: The U32 value to compare.
-// - 2nd: The U32 value to compare.
+// - a: The first U32 value to compare.
+// - b: The second U32 value to compare.
 // = True if the values are equal, False otherwise.
-U32/eq
-: ∀(a: U32)
-  ∀(b: U32)
-  Bool
-= λa λb 
-	(U32/to-bool (U32/eql a b))
+U32/eq : U32 -> U32 -> Bool
+= λa λb (U32/to-bool (U32/eql a b))
+
+#test: (U32/eq 5 5) == #True
+#test: (U32/eq 5 3) == #False

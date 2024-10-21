@@ -1,10 +1,10 @@
-// Concatenates a list of lists into a single list.
-// - A: The type of elements in the inner lists.
-// - xss: The input list of lists.
-// = A new list containing all elements from all inner lists.
-List/concat
-: ∀(A: *)
-  ∀(xss: (List (List A)))
-  (List A)
-= λA λxss
-  (List/foldr _ (List A) (List/append _) #Nil xss)
+// Concatenates a list of lists.
+// - A: Element type.
+// - xss: Input list of lists.
+// = Single list with all elements.
+List/concat : ∀(A: *) (List (List A)) -> (List A)
+| A xss = (List/foldr (List A) (List A) (List/append A) #Nil xss)
+
+#test: (List/concat U32 [[1 2] [3 4] [5 6]]) == [1 2 3 4 5 6]
+#test: (List/concat U32 [[1] [] [2 3] []]) == [1 2 3]
+#test: (List/concat U32 []) == []

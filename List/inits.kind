@@ -1,32 +1,15 @@
 // Returns all initial segments of a list, shortest first.
-// - A: The type of elements in the list.
-// - xs: The input list.
-// = A list of lists, containing all initial segments of xs.
-List/inits
-: ∀(A: *)
-  ∀(xs: (List A))
-  (List (List A))
-= λA λxs
-  #Cons{
-    #Nil
-    (List/inits/tail A xs)
-  }
+// - A: Element type.
+// - xs: Input list.
+// = List of all initial segments of xs.
+List/inits : ∀(A: *) (List A) -> (List (List A))
+| A xs = #Cons{#Nil (List/inits/go A xs)}
 
-// Helper function to generate the tail of the inits list
-List/inits/tail
-: ∀(A: *)
-  ∀(xs: (List A))
-  (List (List A))
-= λA λ{
-  #Nil: #Nil
-  #Cons: λxs.head λxs.tail
-    #Cons{
-      #Cons{xs.head #Nil}
-      (List/map
-        (List A)
-        (List A)
-        (λy #Cons{xs.head y})
-        (List/inits/tail A xs.tail)
-      )
-    }
-}
+// Generates the tail of the inits list
+List/inits/go : ∀(A: *) (List A) -> (List (List A))
+| A #Nil             = #Nil
+| A #Cons{head tail} = #Cons{#Cons{head #Nil} (List/map (List A) (List A) (λy #Cons{head y}) (List/inits/go A tail)) }
+
+#test: (List/inits U32 []) == [[]]
+#test: (List/inits U32 [1]) == [[] [1]]
+#test: (List/inits U32 [1 2 3]) == [[] [1] [1 2] [1 2 3]]
