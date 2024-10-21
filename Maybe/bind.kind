@@ -1,0 +1,12 @@
+// Applies a function that returns a Maybe to a Maybe value.
+// - A: Input type.
+// - B: Output type.
+// - m: The input Maybe value.
+// - f: The function to apply.
+// = The result of applying f to the value inside m, if it exists.
+Maybe/bind : ∀(A: *) ∀(B: *) (Maybe A) -> (A -> (Maybe B)) -> (Maybe B)
+| A B #None    f = #None
+| A B #Some{x} f = (f x)
+
+#test: (Maybe/bind U32 U32 #None (λx (Maybe/pure U32 (+ x 1)))) == #None
+#test: (Maybe/bind U32 U32 (Maybe/pure U32 41) (λx (Maybe/pure U32 (+ x 1)))) == (Maybe/pure U32 42)

@@ -4,7 +4,7 @@
 // - input: Input string to parse.
 // = Some parsed-value if successful, None if failed.
 Parser/run : ∀(A: *) (Parser A) -> String -> (Maybe A)
-| A parser input = match (parser (Parser/new-parser-state input)) {
+| A parser input = match (parser (Parser/new-state input)) {
   #Done{reply}: match reply {
     #Reply{_ value}: #Some{value}
   }

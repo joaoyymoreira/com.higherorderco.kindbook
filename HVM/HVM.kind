@@ -178,7 +178,7 @@ HVM/get-rot : (HVM/HVM HVM/RTerm)
 // Initialization
 // --------------
 
-HVM/net_new : HVM/RNet
+HVM/Net/new : HVM/RNet
 = #RNet{
   bag_buf: (BinMap/new _)
   bag_len: #E
@@ -417,7 +417,7 @@ HVM/shut : (HVM/HVM HVM/Net)
 }
 
 HVM/run : ∀(A: *) (HVM/HVM A) -> (Maybe A)
-= λA λhvm match (hvm HVM/net_new) {
+= λA λhvm match (hvm HVM/Net/new) {
   #None: #None
   #Some: λ{ #Pair{net x}: #Some{x} }
 }
@@ -494,24 +494,26 @@ HVM/RNet/to-string : HVM/RNet -> String
 HVM/parse-term : ∀(p: HVM/Pol) (Parser (HVM/Term p))
 | #Pos = do Parser {
   ask Parser/skip-trivia
+  ask text = Parser/get-input
   ask head = Parser/peek-one
   when (Maybe/eq-with _ U32/eq) head {
     #Some{'('} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "(")
+      ask text = Parser/get-input
       ask var = (HVM/parse-term #Neg)
       ask bod = (HVM/parse-term #Pos)
-      ask (Parser/consume #Nil)
+      ask (Parser/consume ")")
       ret #Lam { var bod }
     }
     #Some{'{'} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "{")
       ask tm1 = (HVM/parse-term #Pos)
       ask tm2 = (HVM/parse-term #Pos)
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "}")
       ret #Sup { tm1 tm2 }
     }
     #Some{'*'} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "*")
       ret #Nul
     }
     _ : do Parser {
@@ -525,21 +527,21 @@ HVM/parse-term : ∀(p: HVM/Pol) (Parser (HVM/Term p))
   ask head = Parser/peek-one
   when (Maybe/eq-with _ U32/eq) head {
     #Some{'('} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "(")
       ask arg = (HVM/parse-term #Pos)
       ask ret = (HVM/parse-term #Neg)
-      ask (Parser/consume #Nil)
+      ask (Parser/consume ")")
       ret #App { arg ret }
     }
     #Some{'{'} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "{")
       ask dp1 = (HVM/parse-term #Neg)
       ask dp2 = (HVM/parse-term #Neg)
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "}")
       ret #Dup { dp1 dp2 }
     }
     #Some{'*'} : do Parser {
-      ask (Parser/consume #Nil)
+      ask (Parser/consume "*")
       ret #Era
     }
     _ : do Parser {
@@ -702,3 +704,15 @@ main
   use map = (BinMap/set _ map (key 123) 420)
   use got = (BinMap/get _ map (key 123))
   got
+
+//main
+//= log (String/append "foo" "bar")
+  //12
+
+main
+: (Maybe String/View)
+= do Maybe {
+  ask term = (Parser/run _ (HVM/parse-term #Pos) "((x x) (y y))")
+  ret #View{(HVM/Term/to-string #Pos term)}
+}
+

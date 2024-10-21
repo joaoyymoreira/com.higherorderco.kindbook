@@ -1,0 +1,6 @@
+// Returns the current input string.
+// = A parser that succeeds with the current input string.
+Parser/get-input : (Parser String)
+| #State{input index} = #Done{#Reply{#State{input index} input}}
+
+#test: (Parser/get-input #State{"hello" #3}) == #Done{#Reply{#State{"hello" #3} "hello"}}
