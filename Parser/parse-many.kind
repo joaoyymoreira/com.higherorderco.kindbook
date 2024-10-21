@@ -3,7 +3,7 @@
 // - p: Parser to be repeatedly applied.
 // = Parser that returns a list of all successfully parsed elements.
 Parser/parse-many : ∀(A: *) (Parser A) -> (Parser (List A))
-| A p = (Parser/parse-many/go A p #Nil)
+| A p = (Parser/parse-many/go A p [])
 
 // Accumulates parsed results.
 // - A: Input type.
@@ -11,9 +11,15 @@ Parser/parse-many : ∀(A: *) (Parser A) -> (Parser (List A))
 // - acc: Accumulator list of already parsed elements.
 // = Parser that returns the final list of all parsed elements.
 Parser/parse-many/go : ∀(A: *) (Parser A) -> (List A) -> (Parser (List A))
-| A p acc state = match (p state) {
-  #Done{r}: match r {
-    #Reply{state value}: (Parser/parse-many/go A p #Cons{value acc} state)
+| A p acc state = 
+  match (p state) {
+    #Done{reply}: 
+      match reply {
+        #Reply{state value}: (Parser/parse-many/go A p #Cons{head: value tail: acc} state)
+      }
+    #Fail{_}: #Done{#Reply{state value: (List/reverse A acc)}}
   }
-  #Fail{e}: #Done{#Reply{state (List/reverse A acc)}}
-}
+
+#test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "abc") == #Some{['a' 'b' 'c']}
+// #test: (Parser/run String (Parser/parse-many Char (Parser/pure Char 'x')) "abc") == #Some{['x' 'x' 'x']}
+#test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "") == #Some{[]}
