@@ -1,3 +1,0 @@
-foo : Affer = ?a
-
-zzz : U32 = foo

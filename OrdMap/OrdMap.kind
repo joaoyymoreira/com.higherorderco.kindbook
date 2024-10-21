@@ -4,8 +4,8 @@
 // - V: The type of values associated with the keys.
 // The underlying implementation uses an AVL tree for efficient
 // insertion, deletion, and lookup operations.
-OrdMap/OrdMap
+OrdMap
 : ∀(K: *)
   ∀(V: *)
   *
-= λK λV (AVLTree/AVLTree K V)
+= λK λV (OrdTree K V)
