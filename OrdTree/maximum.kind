@@ -1,0 +1,9 @@
+// Retrieves the maximum key-value pair from an AVL tree.
+// - K: The type of keys in the tree.
+// - V: The type of values in the tree.
+// - tree: The AVL tree to search in.
+// = Some (key, value) if the tree is not empty, None otherwise.
+OrdTree/maximum : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Maybe (Pair K V))
+| K V #Leaf = #None
+| K V #Node{key-value balance left #Leaf} = #Some{key-value}
+| K V #Node{key-value balance left right} = (OrdTree/maximum K V right)

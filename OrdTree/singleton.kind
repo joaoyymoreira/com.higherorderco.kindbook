@@ -1,0 +1,12 @@
+// Creates a singleton AVL tree with one element.
+// - K: The type of keys in the tree.
+// - V: The type of values in the tree.
+// - p: The key-value pair to be stored in the tree.
+// = An AVL tree containing only the given key-value pair.
+OrdTree/singleton : ∀(K: *) ∀(V: *) (Pair K V) -> (OrdTree K V)
+| K V p = #Node{
+  key-value: p
+  balance: #Zero
+  left: #Leaf
+  right: #Leaf
+}
