@@ -1,0 +1,12 @@
+// Checks if a U32 is zero.
+// - x: The U32 to check.
+// = True if the input is zero, False otherwise.
+U32/is-zero : U32 -> Bool
+= λ{
+  0: #True
+  _{p}: #False
+}
+
+#test: (U32/is-zero 0) == #True
+#test: (U32/is-zero 1) == #False
+#test: (U32/is-zero 42) == #False

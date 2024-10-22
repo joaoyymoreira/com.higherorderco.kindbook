@@ -1,0 +1,27 @@
+// Converts a U32 to its string representation.
+// - n: The U32 to convert.
+// = The string representation of the number.
+U32/to-string : U32 -> String
+= λn (U32/to-string/go n String/nil)
+
+// Recursively builds the reversed string representation of a U32.
+// - n: The U32 to convert.
+// - k: The accumulator for the reversed string.
+// = The reversed string representation of the number.
+U32/to-string/go : U32 -> String -> String
+| n k =
+  if (U32/to-bool (== n 0)) {
+    match k {
+      #Nil: (String/cons '0' String/nil)
+      #Cons{h t}: k
+    }
+  } else {
+    let n10 = (/ n 10)
+    let rem = (% n 10)
+    let dig = (+ rem 48)
+    (U32/to-string/go n10 (String/cons dig k))
+  }
+
+#test: (U32/to-string 0) == "0"
+#test: (U32/to-string 42) == "42"
+#test: (U32/to-string 123456789) == "123456789"
