@@ -1,0 +1,12 @@
+// Converts Time to Tick for a state machine.
+// - S: State type.
+// - A: Action type.
+// - mach: State machine.
+// - time: Time to convert.
+// = Corresponding Tick value.
+UG/SM/Time/time-to-tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Time -> UG/SM/Tick
+| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} time =
+  let ticks = (Nat/mul time ticks-per-second)
+  (Nat/div ticks #1000)
+
+#test: (UG/SM/Time/time-to-tick Bool Bool #Mach{ticks-per-second: #2 genesis-tick: #0 cached-tick: #0 state-logs: #None action-logs: (BinMap/new (List Bool)) action-eq: Bool/eq} #500) == #1
