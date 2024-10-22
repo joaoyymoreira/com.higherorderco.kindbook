@@ -1,0 +1,5 @@
+// IsEqual instance for BinTree
+BinTree/IsEqual : ∀(A: *) (IsEqual A) -> (IsEqual (BinTree A))
+| A e = #IsEqual{
+  eq: (BinTree/eq A e)
+}
