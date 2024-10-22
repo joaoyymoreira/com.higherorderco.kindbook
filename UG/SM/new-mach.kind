@@ -1,0 +1,19 @@
+// Creates a new state machine.
+// - S: State type.
+// - A: Action type.
+// - ticks-per-second: Number of ticks per second.
+// - action-eq: Function to compare actions.
+// = A new state machine.
+UG/SM/new-mach : ∀(S: *) ∀(A: *) Nat -> (A -> A -> Bool) -> (UG/SM/Mach S A)
+| S A ticks-per-second action-eq =
+  #Mach{
+    ticks-per-second: ticks-per-second
+    // FIXME: use U32
+    genesis-tick: #100
+    cached-tick: #0
+    state-logs: (Maybe/none (UG/SM/StateLogs/StateNode S))
+    action-logs: (BinMap/new (List A))
+    action-eq: action-eq
+  }
+
+#test: (UG/SM/Mach/action-logs U32 U32 (UG/SM/new-mach U32 U32 #100 (λx λy (U32/to-bool (== x y))))) == (BinMap/new (List U32))

@@ -1,0 +1,39 @@
+// Computes the state of the game at a given time.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - game: The game rules.
+// - time: The target time.
+// = The computed state at the given time.
+UG/SM/compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/SM/Time -> (Pair S (UG/SM/Mach S A))
+| S A mach game time =
+  let end-t = (UG/SM/Time/time-to-tick S A mach time)
+  let #Pair{state start-tick} = (UG/SM/get-initial-state S A mach game)
+  let diff = (Nat/sub end-t start-tick)
+  if (Nat/gt diff #1000000) {
+    #Pair{state mach}
+  } else {
+    (UG/SM/compute/go S A mach game state start-tick end-t)
+  }
+
+// Helper function for UG/SM/compute.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - game: The game rules.
+// - state: The current state.
+// - current-tick: The current tick.
+// - end-tick: The target tick.
+// = The computed state at the end tick.
+UG/SM/compute/go : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> S -> UG/SM/Tick -> UG/SM/Tick -> (Pair S (UG/SM/Mach S A))
+| S A mach game state current-tick end-tick =
+  if (Nat/eq current-tick end-tick) {
+    #Pair{state mach}
+  } else {
+    let next-tick = (Nat/add current-tick #1)
+    let actions = (UG/SM/ActionLogs/get-actions A (UG/SM/Mach/action-logs S A mach) current-tick)
+    let state-with-actions = (List/foldr A S (UG/SM/Game/when S A game) state actions)
+    let next-state = ((UG/SM/Game/tick S A game) state-with-actions)
+    let updated-mach = (UG/SM/update-mach S A mach current-tick state)
+    (UG/SM/compute/go S A updated-mach game next-state next-tick end-tick)
+  }
