@@ -1,0 +1,5 @@
+// IsEqual instance for Bits
+Bits/IsEqual : (IsEqual Bits)
+= #IsEqual{
+    eq: Bits/eq
+  }
