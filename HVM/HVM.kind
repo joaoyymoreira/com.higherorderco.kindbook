@@ -612,17 +612,19 @@ HVM/do-parse-net : String -> HVM/CNet
 //| l #None                 = do HVM { ret #Unit }
 
 HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
-| a b = log #LINK{a b} match a {
-  #RTerm{at al}: match (HVM/RTag/is-sub at) { 
-    #True  : do HVM { ask x = (HVM/swap al #Some{b}) (HVM/link-sub al x) }
-    #False : match b {
-      #RTerm{bt bl}: match (HVM/RTag/is-var bt) {
-        #True  : do HVM { ask x = (HVM/swap bl #Some{a}) (HVM/link-var bl x) }
-        #False : do HVM { ask (HVM/push-redex #Pair{a b}) ret #Unit }
+| a b =
+  //log #LINK{a b}
+  match a {
+    #RTerm{at al}: match (HVM/RTag/is-sub at) { 
+      #True  : do HVM { ask x = (HVM/swap al #Some{b}) (HVM/link-sub al x) }
+      #False : match b {
+        #RTerm{bt bl}: match (HVM/RTag/is-var bt) {
+          #True  : do HVM { ask x = (HVM/swap bl #Some{a}) (HVM/link-var bl x) }
+          #False : do HVM { ask (HVM/push-redex #Pair{a b}) ret #Unit }
+        }
       }
     }
   }
-}
 
 HVM/link-sub : Bits -> (Maybe HVM/RTerm) -> (HVM Unit)
 | l #None    = do HVM { ret #Unit }
@@ -646,73 +648,132 @@ HVM/link-var : Bits -> (Maybe HVM/RTerm) -> (HVM Unit)
 // -----------
 
 HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
-| #RTerm{#APP app} #RTerm{#LAM lam} = log "APP-LAM" do HVM {
-  ask arg = (HVM/take (HVM/at #1 app))
-  ask ret = (HVM/take (HVM/at #2 app))
-  ask var = (HVM/take (HVM/at #1 lam))
-  ask bod = (HVM/take (HVM/at #2 lam))
-  ask (HVM/link var arg)
-  ask (HVM/link ret bod)
-  ret #Unit
-}
-| #RTerm{#DUP dup} #RTerm{#SUP sup} = log "DUP-SUP" do HVM {
-  ask dp1 = (HVM/take (HVM/at #1 dup))
-  ask dp2 = (HVM/take (HVM/at #2 dup))
-  ask tm1 = (HVM/take (HVM/at #1 sup))
-  ask tm2 = (HVM/take (HVM/at #2 sup))
-  ask (HVM/link dp1 tm1)
-  ask (HVM/link dp2 tm2)
-  ret #Unit
-}
-| #RTerm{#DUP dup} #RTerm{#LAM lam} = log "DUP-LAM" do HVM {
-  ask dp1 = (HVM/take (HVM/at #1 dup))
-  ask dp2 = (HVM/take (HVM/at #2 dup))
-  ask var = (HVM/take (HVM/at #1 lam))
-  ask bod = (HVM/take (HVM/at #2 lam))
-  ask co1 = (HVM/alloc-node #3)
-  ask co2 = (HVM/alloc-node #3)
-  ask du1 = (HVM/alloc-node #3)
-  ask du2 = (HVM/alloc-node #3)
-  ask (HVM/set (HVM/at #1 co1) (#RTerm{ #SUB (HVM/at #1 co1) }))
-  ask (HVM/set (HVM/at #2 co1) (#RTerm{ #VAR (HVM/at #1 du2) }))
-  ask (HVM/set (HVM/at #1 co2) (#RTerm{ #SUB (HVM/at #1 co2) }))
-  ask (HVM/set (HVM/at #2 co2) (#RTerm{ #VAR (HVM/at #2 du2) }))
-  ask (HVM/set (HVM/at #1 du1) (#RTerm{ #VAR (HVM/at #1 co1) }))
-  ask (HVM/set (HVM/at #2 du1) (#RTerm{ #VAR (HVM/at #1 co2) }))
-  ask (HVM/set (HVM/at #1 du2) (#RTerm{ #SUB (HVM/at #1 du2) }))
-  ask (HVM/set (HVM/at #2 du2) (#RTerm{ #SUB (HVM/at #2 du2) }))
-  ask (HVM/link dp1 (#RTerm{ #LAM co1 }))
-  ask (HVM/link dp2 (#RTerm{ #LAM co2 }))
-  ask (HVM/link var (#RTerm{ #SUP du1 }))
-  ask (HVM/link (#RTerm{ #DUP du2 }) bod)
-  ret #Unit
-}
-| #RTerm{#APP app} #RTerm{#SUP sup} = log "APP-SUP" do HVM {
-  ask arg = (HVM/take (HVM/at #1 app))
-  ask ret = (HVM/take (HVM/at #2 app))
-  ask tm1 = (HVM/take (HVM/at #1 sup))
-  ask tm2 = (HVM/take (HVM/at #2 sup))
-  ask dp1 = (HVM/alloc-node #3)
-  ask dp2 = (HVM/alloc-node #3)
-  ask cn1 = (HVM/alloc-node #3)
-  ask cn2 = (HVM/alloc-node #3)
-  ask (HVM/set (HVM/at #1 dp1) (#RTerm{ #SUB (HVM/at #1 dp1) }))
-  ask (HVM/set (HVM/at #2 dp1) (#RTerm{ #SUB (HVM/at #2 dp1) }))
-  ask (HVM/set (HVM/at #1 dp2) (#RTerm{ #VAR (HVM/at #2 cn1) }))
-  ask (HVM/set (HVM/at #2 dp2) (#RTerm{ #VAR (HVM/at #2 cn2) }))
-  ask (HVM/set (HVM/at #1 cn1) (#RTerm{ #VAR (HVM/at #1 dp1) }))
-  ask (HVM/set (HVM/at #2 cn1) (#RTerm{ #SUB (HVM/at #2 cn1) }))
-  ask (HVM/set (HVM/at #1 cn2) (#RTerm{ #VAR (HVM/at #2 dp1) }))
-  ask (HVM/set (HVM/at #2 cn2) (#RTerm{ #SUB (HVM/at #2 cn2) }))
-  ask (HVM/link (#RTerm{ #DUP dp1 }) arg)
-  ask (HVM/link ret (#RTerm{ #SUP dp2 }))
-  ask (HVM/link (#RTerm{ #APP cn1 }) tm1)
-  ask (HVM/link (#RTerm{ #APP cn2 }) tm2)
-  ret #Unit
-}
-| a b = log "NOPE" do HVM {
-  ret #Unit
-}
+| #RTerm{at al} #RTerm{bt bl} = (HVM/interact/go at al bt bl)
+
+HVM/interact/go : HVM/RTag -> HVM/RLoc -> HVM/RTag -> HVM/RLoc -> (HVM Unit)
+| #APP app #LAM lam =
+  log "APP-LAM"
+  do HVM {
+    ask arg = (HVM/take (HVM/at #1 app))
+    ask ret = (HVM/take (HVM/at #2 app))
+    ask var = (HVM/take (HVM/at #1 lam))
+    ask bod = (HVM/take (HVM/at #2 lam))
+    ask (HVM/link var arg)
+    ask (HVM/link ret bod)
+    ret #Unit
+  }
+| #APP app #SUP sup =
+  log "APP-SUP"
+  do HVM {
+    ask arg = (HVM/take (HVM/at #1 app))
+    ask ret = (HVM/take (HVM/at #2 app))
+    ask tm1 = (HVM/take (HVM/at #1 sup))
+    ask tm2 = (HVM/take (HVM/at #2 sup))
+    ask dp1 = (HVM/alloc-node #3)
+    ask dp2 = (HVM/alloc-node #3)
+    ask cn1 = (HVM/alloc-node #3)
+    ask cn2 = (HVM/alloc-node #3)
+    ask (HVM/set (HVM/at #1 dp1) (#RTerm{ #SUB (HVM/at #1 dp1) }))
+    ask (HVM/set (HVM/at #2 dp1) (#RTerm{ #SUB (HVM/at #2 dp1) }))
+    ask (HVM/set (HVM/at #1 dp2) (#RTerm{ #VAR (HVM/at #2 cn1) }))
+    ask (HVM/set (HVM/at #2 dp2) (#RTerm{ #VAR (HVM/at #2 cn2) }))
+    ask (HVM/set (HVM/at #1 cn1) (#RTerm{ #VAR (HVM/at #1 dp1) }))
+    ask (HVM/set (HVM/at #2 cn1) (#RTerm{ #SUB (HVM/at #2 cn1) }))
+    ask (HVM/set (HVM/at #1 cn2) (#RTerm{ #VAR (HVM/at #2 dp1) }))
+    ask (HVM/set (HVM/at #2 cn2) (#RTerm{ #SUB (HVM/at #2 cn2) }))
+    ask (HVM/link (#RTerm{ #DUP dp1 }) arg)
+    ask (HVM/link ret (#RTerm{ #SUP dp2 }))
+    ask (HVM/link (#RTerm{ #APP cn1 }) tm1)
+    ask (HVM/link (#RTerm{ #APP cn2 }) tm2)
+    ret #Unit
+  }
+| #APP app #NUL nul =
+  log "APP-NUL"
+  do HVM {
+    ask arg = (HVM/take (HVM/at #1 app))
+    ask ret = (HVM/take (HVM/at #2 app))
+    ask (HVM/link (#RTerm{ #ERA #E }) arg)
+    ask (HVM/link ret (#RTerm{ #NUL #E }))
+    ret #Unit
+  }
+| #DUP dup #SUP sup =
+  log "DUP-SUP"
+  do HVM {
+    ask dp1 = (HVM/take (HVM/at #1 dup))
+    ask dp2 = (HVM/take (HVM/at #2 dup))
+    ask tm1 = (HVM/take (HVM/at #1 sup))
+    ask tm2 = (HVM/take (HVM/at #2 sup))
+    ask (HVM/link dp1 tm1)
+    ask (HVM/link dp2 tm2)
+    ret #Unit
+  }
+| #DUP dup #LAM lam =
+  log "DUP-LAM"
+  do HVM {
+    ask dp1 = (HVM/take (HVM/at #1 dup))
+    ask dp2 = (HVM/take (HVM/at #2 dup))
+    ask var = (HVM/take (HVM/at #1 lam))
+    ask bod = (HVM/take (HVM/at #2 lam))
+    ask co1 = (HVM/alloc-node #3)
+    ask co2 = (HVM/alloc-node #3)
+    ask du1 = (HVM/alloc-node #3)
+    ask du2 = (HVM/alloc-node #3)
+    ask (HVM/set (HVM/at #1 co1) (#RTerm{ #SUB (HVM/at #1 co1) }))
+    ask (HVM/set (HVM/at #2 co1) (#RTerm{ #VAR (HVM/at #1 du2) }))
+    ask (HVM/set (HVM/at #1 co2) (#RTerm{ #SUB (HVM/at #1 co2) }))
+    ask (HVM/set (HVM/at #2 co2) (#RTerm{ #VAR (HVM/at #2 du2) }))
+    ask (HVM/set (HVM/at #1 du1) (#RTerm{ #VAR (HVM/at #1 co1) }))
+    ask (HVM/set (HVM/at #2 du1) (#RTerm{ #VAR (HVM/at #1 co2) }))
+    ask (HVM/set (HVM/at #1 du2) (#RTerm{ #SUB (HVM/at #1 du2) }))
+    ask (HVM/set (HVM/at #2 du2) (#RTerm{ #SUB (HVM/at #2 du2) }))
+    ask (HVM/link dp1 (#RTerm{ #LAM co1 }))
+    ask (HVM/link dp2 (#RTerm{ #LAM co2 }))
+    ask (HVM/link var (#RTerm{ #SUP du1 }))
+    ask (HVM/link (#RTerm{ #DUP du2 }) bod)
+    ret #Unit
+  }
+| #DUP dup #NUL nul =
+  log "DUP-NUL"
+  do HVM {
+    ask dp1 = (HVM/take (HVM/at #1 dup))
+    ask dp2 = (HVM/take (HVM/at #2 dup))
+    ask (HVM/link dp1 (#RTerm{ #NUL #E }))
+    ask (HVM/link dp2 (#RTerm{ #NUL #E }))
+    ret #Unit
+  }
+| #ERA era #LAM lam =
+  log "ERA-LAM"
+  do HVM {
+    ask var = (HVM/take (HVM/at #1 lam))
+    ask bod = (HVM/take (HVM/at #2 lam))
+    ask (HVM/link var (#RTerm{ #NUL #E }))
+    ask (HVM/link (#RTerm{ #ERA #E }) bod)
+    ret #Unit
+  }
+| #ERA era #SUP sup =
+  log "ERA-SUP"
+  do HVM {
+    ask tm1 = (HVM/take (HVM/at #1 sup))
+    ask tm2 = (HVM/take (HVM/at #2 sup))
+    ask (HVM/link (#RTerm{ #ERA #E }) tm1)
+    ask (HVM/link (#RTerm{ #ERA #E }) tm2)
+    ret #Unit
+  }
+| #ERA era #NUL nul =
+  log "ERA-NUL"
+  do HVM {
+    ret #Unit
+  }
+| at al bt bl =
+  //log #NOPE{at al bt bl}
+  do HVM {
+    ret #Unit
+  }
+
+
+
+
+
 
 // Evaluation
 // ----------
@@ -724,7 +785,7 @@ HVM/eval-one : (HVM Bool)
     #Some{ab}:
       let #Pair{a b} = ab
       do HVM {
-        log #RULE{a b}
+        //log #RULE{a b}
         ask (HVM/interact a b)
         ret #True
       }
@@ -752,19 +813,34 @@ main
 : (Maybe String/View)
 = (HVM/run _ do HVM {
 
-  // Parses Net
-  use src = "e & ((d d) e) ~ ({(b c) (a b)} (a c))"
-  let net = (HVM/do-parse-net src)
+  // Net Source
+  //use src = "e & ((d d) e) ~ ({(b c) (a b)} (a c))"
+  //use src = "y & ((((* (u u)) ((v (* v)) w)) w) ((x (* x)) y)) ~ (q (s t)) & (r (s t)) ~ ({(g h) {(f g) {(e f) {(d e) {(c d) {(b c) (a b)}}}}}} (a h)) & (q r) ~ ({(o p) {(n o) {(m n) {(l m) {(k l) {(j k) (i j)}}}}}} (i p))"
+  // 67 interactions
+  use src = "
+    o
+    & ((((* (k k)) ((l (* l)) m)) m) ((n (* n)) o)) ~ (g (i j))
+    & (h (i j)) ~ ({(b c) (a b)} (a c))
+    & (g h) ~ ({(e f) (d e)} (d f))
+  "
+  // 2367 interactions (takes ~2 mins)
+  //use src = "
+    //ib
+    //& ((((* (eb eb)) ((fb (* fb)) gb)) gb) ((hb (* hb)) ib)) ~ (ab (cb db))
+    //& (bb (cb db)) ~ ({(l m) {(k l) {(j k) {(i j) {(h i) {(g h) {(f g) {(e f) {(d e) {(c d) {(b c) (a b)}}}}}}}}}}} (a m))
+    //& (ab bb) ~ ({(y z) {(x y) {(w x) {(v w) {(u v) {(t u) {(s t) {(r s) {(q r) {(p q) {(o p) (n o)}}}}}}}}}}} (n z))
+  //"
 
   // Boots Net
-  ask (HVM/boot net)
+  ask (HVM/boot (HVM/do-parse-net src))
 
   // Evaluation
-  ask HVM/eval-one
-  ask HVM/eval-one
-  ask HVM/eval-one
-  ask HVM/eval-one
-  ask HVM/eval-one
+  //ask HVM/eval-one
+  //ask HVM/eval-one
+  //ask HVM/eval-one
+  //ask HVM/eval-one
+  //ask HVM/eval-one
+  ask HVM/eval-strict
 
   // Gets resulting net
   ask cnet = HVM/get-cnet

@@ -1,3 +1,7 @@
-@main = e & ({(b c) (a b)} (a c)) ~ ((d d) e)
+@main =
+    o
+    & ((((* (k k)) ((l (* l)) m)) m) ((n (* n)) o)) ~ (g (i j))
+    & (h (i j)) ~ ({(b c) (a b)} (a c))
+    & (g h) ~ ({(e f) (d e)} (d f))
 
 
