@@ -2,7 +2,7 @@
 // - c: The input char.
 // = Some n if c is a digit, where n is the corresponding nat, None otherwise.
 Char/digit-to-nat : Char -> (Maybe Nat)
-= λc
+| c =
   let n = (- c '0')
   if (U32/to-bool (& (<= 0 n) (<= n 9))) {
     #Some{(U32/to-nat n)}

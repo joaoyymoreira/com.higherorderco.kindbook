@@ -2,17 +2,17 @@
 // - c: The input char.
 // = Some n if c is a digit, where n is the corresponding U32 number, None otherwise.
 Char/digit-to-u32 : Char -> (Maybe U32)
-= λc
+| c =
   let n = (- c '0')
-  if (Bool/and (U32/to-bool (>= n 0)) (U32/to-bool (<= n 9))) {
-    (Maybe/some U32 n)
+  if (U32/to-bool (& (<= 0 n) (<= n 9))) {
+    #Some{n}
   } else {
-    (Maybe/none U32)
+    #None
   }
 
-#test: (Char/digit-to-u32 '0') == (Maybe/some U32 0)
-#test: (Char/digit-to-u32 '5') == (Maybe/some U32 5)
-#test: (Char/digit-to-u32 '9') == (Maybe/some U32 9)
-#test: (Char/digit-to-u32 'a') == (Maybe/none U32)
-#test: (Char/digit-to-u32 '!') == (Maybe/none U32)
-#test: (Char/digit-to-u32 ' ') == (Maybe/none U32)
+#test: (Char/digit-to-u32 '0') == #Some{0}
+#test: (Char/digit-to-u32 '5') == #Some{5}
+#test: (Char/digit-to-u32 '9') == #Some{9}
+#test: (Char/digit-to-u32 'a') == #None
+#test: (Char/digit-to-u32 '!') == #None
+#test: (Char/digit-to-u32 ' ') == #None

@@ -1,8 +1,8 @@
 // Compares two characters.
 // - x: First character.
 // - y: Second character.
-// = Ord: LT, EQ, or GT.
-Char/compare : Char -> Char -> Ord
+// = Cmp: LT, EQ, or GT.
+Char/compare : Char -> Char -> Cmp
 = λx λy (U32/compare x y)
 
 #test: (Char/compare 'a' 'a') == #EQ
