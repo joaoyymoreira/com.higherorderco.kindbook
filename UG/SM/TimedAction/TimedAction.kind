@@ -1,0 +1,8 @@
+// Binds an action to a timestamp.
+// - A: Action type.
+data UG/SM/TimedAction (A: *) {
+  #TimedAction {
+    action: A
+    time: UG/SM/Time
+  }
+}
