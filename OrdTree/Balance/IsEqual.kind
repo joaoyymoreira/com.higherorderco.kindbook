@@ -1,0 +1,5 @@
+// IsEqual instance for OrdTree/Balance
+OrdTree/IsEqual : (IsEqual OrdTree/Balance)
+= #IsEqual{
+    eq: OrdTree/Balance/eq
+  }

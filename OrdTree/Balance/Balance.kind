@@ -1,9 +1,9 @@
 // Represents the balance factor of an AVL tree node.
-// - Neg: Left subtree is taller by 1.
-// - Zero: Left and right subtrees have the same height.
-// - Pos: Right subtree is taller by 1.
-Bool/Balance : * = data[]{
-  #MinusOne : Bool/Balance
-  #Zero     : Bool/Balance
-  #PlusOne  : Bool/Balance
+// - MinusOne: The left subtree is taller by 1.
+// - Zero: The left and right subtrees have the same height.
+// - PlusOne: The right subtree is taller by 1.
+data OrdTree/Balance {
+  #MinusOne
+  #Zero
+  #PlusOne
 }
