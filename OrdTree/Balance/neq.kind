@@ -1,25 +1,16 @@
 // Inequality for Balance values.
 // - a: The first Balance value.
 // - b: The second Balance value.
-// = True if 'a' and 'b' are different Balance values, False otherwise.
-AVLTree/neq
-: ∀(a: AVLTree/Balance)
-  ∀(b: AVLTree/Balance)
-  Bool
-= λ{
-  #MinusOne: λ{
-    #MinusOne:  #False
-    #Zero:      #True
-    #PlusOne:   #True
-  }
-  #Zero: λ{
-    #MinusOne:  #True
-    #Zero:      #False
-    #PlusOne:   #True
-  }
-  #PlusOne: λ{
-    #MinusOne:  #True
-    #Zero:      #True
-    #PlusOne:   #False
-  }
-}
+// = True if the Balance values are different, False otherwise.
+OrdTree/Balance/neq : OrdTree/Balance -> OrdTree/Balance -> Bool
+| #MinusOne #MinusOne = #False
+| #Zero     #Zero     = #False
+| #PlusOne  #PlusOne  = #False
+| a         b         = #True
+
+#test: (OrdTree/Balance/neq #MinusOne #MinusOne) == #False
+#test: (OrdTree/Balance/neq #Zero #Zero) == #False
+#test: (OrdTree/Balance/neq #PlusOne #PlusOne) == #False
+#test: (OrdTree/Balance/neq #MinusOne #Zero) == #True
+#test: (OrdTree/Balance/neq #Zero #PlusOne) == #True
+#test: (OrdTree/Balance/neq #MinusOne #PlusOne) == #True
