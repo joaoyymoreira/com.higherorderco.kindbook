@@ -1,0 +1,5 @@
+// Ord instance for Char
+Char/Ord : (Ord Char)
+= #Ord{
+    compare: Char/compare
+  }
