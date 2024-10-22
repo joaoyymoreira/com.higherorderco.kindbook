@@ -2,7 +2,7 @@
 // - c: The char to check.
 // = True if newline, False otherwise.
 Parser/is-newline : Char -> Bool
-| c = (U32/to-bool (U32/eql c 10))
+| c = (Char/eq c 10) // 10 is the ASCII code for newline
 
 #test: (Parser/is-newline '\n') == #True
 #test: (Parser/is-newline 'a') == #False
