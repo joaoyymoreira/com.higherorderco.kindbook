@@ -1,0 +1,48 @@
+// Rolls back the state logs.
+// - S: State type.
+// - amount: States to roll back.
+// - states: Current state logs.
+// = New state logs after rolling back.
+UG/SM/StateLogs/rollback : ∀(S: *) Nat -> (UG/SM/StateLogs S) -> (UG/SM/StateLogs S)
+| S amount states =
+  match states {
+    #None: #None
+    #Some{state}:
+      let pair = (UG/SM/StateLogs/rollback/go S #0 amount states #0)
+      match pair {
+        #Pair{rolled_states cut}:
+          match rolled_states {
+            #None: #None
+            #Some{node}:
+              let tick  = (UG/SM/StateLogs/StateNode/tick S node)
+              let life  = (Nat/add (UG/SM/StateLogs/StateNode/life S node) cut)
+              let state = (UG/SM/StateLogs/StateNode/state S node)
+              let older = (UG/SM/StateLogs/StateNode/older S node)
+              #Some{#StateNode{tick #0 life state older}}
+          }
+      }
+  }
+
+// Auxiliary function for rollback operation.
+// - S: State type.
+// - i: Current iteration count.
+// - amount: Total states to roll back.
+// - states: Current state of the logs.
+// - cut: Accumulated life of removed states.
+// = Pair of rolled back states and total cut amount.
+UG/SM/StateLogs/rollback/go : ∀(S: *) Nat -> Nat -> (UG/SM/StateLogs S) -> Nat -> (Pair (UG/SM/StateLogs S) Nat)
+| S i amount states cut =
+  let is_done = (Nat/lt amount i)
+  if (U32/to-bool (U32/from-bool is_done)) {
+    #Pair{states cut}
+  } else {
+    match states {
+      #None: #Pair{#None cut}
+      #Some{state}:
+        let cut    = (Nat/add cut (Nat/add (UG/SM/StateLogs/StateNode/life S state) #1))
+        let states = (UG/SM/StateLogs/StateNode/older S state)
+        (UG/SM/StateLogs/rollback/go S (Nat/add i #1) amount states cut)
+    }
+  }
+
+#test: (UG/SM/StateLogs/rollback U32 #0 #None) == #None
