@@ -6,6 +6,6 @@ List/is-nil : ∀(A: *) (List A) -> Bool
 | A #Nil             = #True
 | A #Cons{head tail} = #False
 
-#test: (List/is-nil U32 []) == #True
-#test: (List/is-nil U32 [1]) == #False
-#test: (List/is-nil U32 [1 2 3]) == #False
+#test: (List/is-nil U64 []) == #True
+#test: (List/is-nil U64 [1]) == #False
+#test: (List/is-nil U64 [1 2 3]) == #False

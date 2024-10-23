@@ -5,9 +5,9 @@ Char/is-hex-digit : Char -> Bool
 | c = 
   if (Char/is-digit c) {
     #True
-  } else if (Bool/and (U32/gte c 65) (U32/lte c 70)) {
+  } else if (Bool/and (U64/gte c 65) (U64/lte c 70)) {
     #True
-  } else if (Bool/and (U32/gte c 97) (U32/lte c 102)) {
+  } else if (Bool/and (U64/gte c 97) (U64/lte c 102)) {
     #True
   } else {
     #False

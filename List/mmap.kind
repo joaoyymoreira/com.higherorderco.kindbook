@@ -19,5 +19,5 @@ List/mmap
   (bind (List B) (List B) (List/mmap M #Monad{pure bind} A B f tail) λys
   (pure (List B) (#Cons{y ys}))))
 
-//#test: (List/mmap Maybe Maybe/Monad U32 U32 (λx (Maybe/Monad/pure U32 x)) [1 2 3]) == #Some{[1 2 3]}
-//#test: (List/mmap Maybe Maybe/Monad U32 U32 (λx #None) [1 2 3]) == #None
+//#test: (List/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/Monad/pure U64 x)) [1 2 3]) == #Some{[1 2 3]}
+//#test: (List/mmap Maybe Maybe/Monad U64 U64 (λx #None) [1 2 3]) == #None

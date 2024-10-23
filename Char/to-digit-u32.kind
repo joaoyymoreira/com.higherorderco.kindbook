@@ -1,12 +1,12 @@
-// Converts a digit character to its U32 value.
+// Converts a digit character to its U64 value.
 // - c: The digit character.
-// = The U32 value of the digit, or 10 if not a digit.
-Char/to-digit-u32 : U32 -> Char -> (Maybe U32)
+// = The U64 value of the digit, or 10 if not a digit.
+Char/to-digit-u32 : U64 -> Char -> (Maybe U64)
 | base code =
-  let is_base_2  = (U32/eq base 2)
-  let is_base_8  = (U32/eq base 8)
-  let is_base_10 = (U32/eq base 10)
-  let is_base_16 = (U32/eq base 16)
+  let is_base_2  = (U64/eq base 2)
+  let is_base_8  = (U64/eq base 8)
+  let is_base_10 = (U64/eq base 10)
+  let is_base_16 = (U64/eq base 16)
   
   let is_binary  = (Bool/and is_base_2  (Char/is-binary-digit code))
   let is_octal   = (Bool/and is_base_8  (Char/is-octal-digit code))

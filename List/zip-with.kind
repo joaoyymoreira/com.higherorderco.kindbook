@@ -11,4 +11,4 @@ List/zip-with : ∀(A: *) ∀(B: *) ∀(C: *) (A -> B -> C) -> (List A) -> (List
 | A B C f #Cons{x xs} #Nil        = #Nil
 | A B C f #Cons{x xs} #Cons{y ys} = #Cons{(f x y) (List/zip-with A B C f xs ys)}
 
-#test: (List/zip-with U32 U32 U32 U32/add [1 2 3] [4 5 6]) == [5 7 9]
+#test: (List/zip-with U64 U64 U64 U64/add [1 2 3] [4 5 6]) == [5 7 9]

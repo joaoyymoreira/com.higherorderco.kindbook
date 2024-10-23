@@ -8,5 +8,5 @@ Maybe/bind : ∀(A: *) ∀(B: *) (Maybe A) -> (A -> (Maybe B)) -> (Maybe B)
 | A B #None    f = #None
 | A B #Some{x} f = (f x)
 
-#test: (Maybe/bind U32 U32 #None (λx (Maybe/pure U32 (+ x 1)))) == #None
-#test: (Maybe/bind U32 U32 (Maybe/pure U32 41) (λx (Maybe/pure U32 (+ x 1)))) == (Maybe/pure U32 42)
+#test: (Maybe/bind U64 U64 #None (λx (Maybe/pure U64 (+ x 1)))) == #None
+#test: (Maybe/bind U64 U64 (Maybe/pure U64 41) (λx (Maybe/pure U64 (+ x 1)))) == (Maybe/pure U64 42)

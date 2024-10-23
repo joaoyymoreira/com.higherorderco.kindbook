@@ -18,3 +18,9 @@ UG/SM/add-action-to-logs : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick ->
   }
 
 //#test: (UG/SM/ActionLogs/get-actions Nat (UG/SM/Mach/action-logs Nat Nat (UG/SM/add-action-to-logs Nat Nat #Mach{#10 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #1 #2)) #1) == [#2]
+
+mach : (UG/SM/Mach Nat Nat)
+= #Mach {#1 #10 #0 #None (BinMap/new (List Nat)) Nat/eq}
+
+
+

@@ -5,5 +5,5 @@
 Maybe/pure : ∀(A: *) A -> (Maybe A)
 | A x = #Some{x}
 
-#test: (Maybe/pure U32 42) == #Some{42}
+#test: (Maybe/pure U64 42) == #Some{42}
 #test: (Maybe/pure Bool #True) == #Some{#True}

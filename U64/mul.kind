@@ -1,0 +1,9 @@
+// Multiplies two 32-bit unsigned integers.
+// - a: The first U64 value.
+// - b: The second U64 value.
+// = The product of 'a' and 'b' as a U64 value.
+U64/mul : U64 -> U64 -> U64
+= λa λb (* a b)
+
+#test: (U64/mul 5 3) == 15
+#test: (U64/mul 0 7) == 0

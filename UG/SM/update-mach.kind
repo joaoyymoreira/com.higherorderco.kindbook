@@ -18,4 +18,4 @@ UG/SM/update-mach : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> S -> (
     action-eq
   }
 
-#test: (UG/SM/Mach/cached-tick U32 U32 (UG/SM/update-mach U32 U32 (UG/SM/new-mach U32 U32 #10 U32/eq) #5 3)) == #5
+#test: (UG/SM/Mach/cached-tick U64 U64 (UG/SM/update-mach U64 U64 (UG/SM/new-mach U64 U64 #10 U64/eq) #5 3)) == #5

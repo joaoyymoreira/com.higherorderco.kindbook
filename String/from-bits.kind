@@ -4,7 +4,7 @@
 String/from-bits : Bits -> String
 = λbits
   let chunks = (Bits/split-chunks #21 bits)
-  (List/map Bits U32 Bits/to-char chunks)
+  (List/map Bits U64 Bits/to-char chunks)
 
 #test: (String/from-bits #E) == ""
 #test: (String/from-bits (Nat/to-bits #65)) == "A"

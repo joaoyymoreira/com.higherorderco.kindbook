@@ -7,6 +7,6 @@
 Function/const : ∀(A: *) ∀(B: *) A -> B -> A
 | A B x y = x
 
-#test: (Function/const U32 Bool 42 #True) == 42
-#test: (Function/const U32 Bool 42 #False) == 42
-#test: (Function/const String U32 "hello" 123) == "hello"
+#test: (Function/const U64 Bool 42 #True) == 42
+#test: (Function/const U64 Bool 42 #False) == 42
+#test: (Function/const String U64 "hello" 123) == "hello"

@@ -10,6 +10,6 @@ List/inits/go : ∀(A: *) (List A) -> (List (List A))
 | A #Nil             = #Nil
 | A #Cons{head tail} = #Cons{#Cons{head #Nil} (List/map (List A) (List A) (λy #Cons{head y}) (List/inits/go A tail)) }
 
-#test: (List/inits U32 []) == [[]]
-#test: (List/inits U32 [1]) == [[] [1]]
-#test: (List/inits U32 [1 2 3]) == [[] [1] [1 2] [1 2 3]]
+#test: (List/inits U64 []) == [[]]
+#test: (List/inits U64 [1]) == [[] [1]]
+#test: (List/inits U64 [1 2 3]) == [[] [1] [1 2] [1 2 3]]

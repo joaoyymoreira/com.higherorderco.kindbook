@@ -8,6 +8,6 @@ List/take : ∀(A: *) Nat -> (List A) -> (List A)
 | A #Succ{n} #Nil          = #Nil
 | A #Succ{n} #Cons{x tail} = #Cons{x (List/take A n tail)}
 
-#test: (List/take U32 #0 [1 2 3]) == []
-#test: (List/take U32 #2 [1 2 3]) == [1 2]
-#test: (List/take U32 #5 [1 2 3]) == [1 2 3]
+#test: (List/take U64 #0 [1 2 3]) == []
+#test: (List/take U64 #2 [1 2 3]) == [1 2]
+#test: (List/take U64 #5 [1 2 3]) == [1 2 3]

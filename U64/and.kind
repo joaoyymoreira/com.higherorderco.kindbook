@@ -1,0 +1,9 @@
+// Performs bitwise AND operation on two U64 values.
+// - a: The first U64 value.
+// - b: The second U64 value.
+// = The result of bitwise AND operation between the two input values.
+U64/and : U64 -> U64 -> U64
+= λa λb (& a b)
+
+#test: (U64/and 5 3) == 1
+#test: (U64/and 15 7) == 7

@@ -4,6 +4,6 @@
 Maybe/none : ∀(A: *) (Maybe A)
 = λA #None
 
-#test: (Maybe/none U32) == #None
+#test: (Maybe/none U64) == #None
 #test: (Maybe/none Bool) == #None
-#test: (Maybe/none (List U32)) == #None
+#test: (Maybe/none (List U64)) == #None

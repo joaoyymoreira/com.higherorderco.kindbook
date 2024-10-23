@@ -9,6 +9,6 @@ Maybe/match : ∀(A: *) ∀(P: (Maybe A) -> *) (P #None) -> (∀(x: A) (P (#Some
 | A P none some #None        = none
 | A P none some #Some{value} = (some value)
 
-#test: (Maybe/match U32 (λx Bool) #True (λy #False) #None) == #True
-#test: (Maybe/match U32 (λx Bool) #False (λy #True) (#Some{42})) == #True
-#test: (Maybe/match U32 (λx (Maybe U32)) #None (λy (#Some{(+ y 1)})) (#Some{41})) == (#Some{42})
+#test: (Maybe/match U64 (λx Bool) #True (λy #False) #None) == #True
+#test: (Maybe/match U64 (λx Bool) #False (λy #True) (#Some{42})) == #True
+#test: (Maybe/match U64 (λx (Maybe U64)) #None (λy (#Some{(+ y 1)})) (#Some{41})) == (#Some{42})

@@ -13,6 +13,6 @@ Cmp/match : ∀(A: *) A -> A -> A -> Cmp -> A
 #test: (Cmp/match Bool #True #False #True #LT) == #True
 #test: (Cmp/match Bool #True #False #True #EQ) == #False
 #test: (Cmp/match Bool #True #False #True #GT) == #True
-#test: (Cmp/match U32 1 2 3 #LT) == 1
-#test: (Cmp/match U32 1 2 3 #EQ) == 2
-#test: (Cmp/match U32 1 2 3 #GT) == 3
+#test: (Cmp/match U64 1 2 3 #LT) == 1
+#test: (Cmp/match U64 1 2 3 #EQ) == 2
+#test: (Cmp/match U64 1 2 3 #GT) == 3

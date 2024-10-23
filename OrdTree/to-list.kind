@@ -11,6 +11,6 @@ OrdTree/to-list : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List (Pair K V))
   use value_list = #Cons{key-value []} 
   (List/append (Pair K V) left_list (List/append (Pair K V) value_list right_list))
 
-#test: (OrdTree/to-list U32 U32 #Leaf) == []
-#test: (OrdTree/to-list U32 U32 (#Node{#Pair{1 10} #Zero #Leaf #Leaf})) == [#Pair{1 10}]
-#test: (OrdTree/to-list U32 U32 (#Node{#Pair{2 20} #Zero (#Node{#Pair{1 10} #Zero #Leaf #Leaf}) (#Node{#Pair{3 30} #Zero #Leaf #Leaf})})) == [#Pair{1 10} #Pair{2 20} #Pair{3 30}]
+#test: (OrdTree/to-list U64 U64 #Leaf) == []
+#test: (OrdTree/to-list U64 U64 (#Node{#Pair{1 10} #Zero #Leaf #Leaf})) == [#Pair{1 10}]
+#test: (OrdTree/to-list U64 U64 (#Node{#Pair{2 20} #Zero (#Node{#Pair{1 10} #Zero #Leaf #Leaf}) (#Node{#Pair{3 30} #Zero #Leaf #Leaf})})) == [#Pair{1 10} #Pair{2 20} #Pair{3 30}]

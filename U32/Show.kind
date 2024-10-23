@@ -1,5 +1,0 @@
-// Instance of Show for U32
-U32/Show : (Show U32)
-= #Show{
-    to-string: U32/to-string
-  }

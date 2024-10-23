@@ -5,7 +5,7 @@ Char/hex-to-bits : Char -> (Maybe Bits)
 | c =
   do Maybe {
     ask val = (Char/hex-to-u32 c)
-    ret (U32/to-bits val)
+    ret (U64/to-bits val)
   }
 
 #test: (Char/hex-to-bits '0') == #Some{#E}

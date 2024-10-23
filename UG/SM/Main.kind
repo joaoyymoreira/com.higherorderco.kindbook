@@ -1,0 +1,55 @@
+// A simple game state with a counter
+data GameState {
+  #GameState { counter: Nat }
+}
+
+gm : GameState
+= #GameState {#3}
+
+// Actions for our simple game
+data GameAction {
+  #Increment
+}
+
+GameState/counter : GameState -> Nat
+| #GameState {counter} = counter
+
+// Equality function for GameAction
+GameAction/eq : GameAction -> GameAction -> Bool
+| #Increment #Increment = #True
+
+// Our simple game definition
+simple-game : (UG/SM/Game GameState GameAction)
+= #Game{
+  init: #GameState{counter: #0}
+  when: λaction λstate
+    match action {
+      #Increment: #GameState{counter: (Nat/add (GameState/counter state) #1)}
+    }
+  tick: λstate state
+}
+
+// Simulates the game for a given number of ticks
+simulate-game : Nat -> (UG/SM/Mach GameState GameAction)
+| ticks =
+  let mach = (UG/SM/new-mach GameState GameAction #60 GameAction/eq)
+  let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: #0})
+  mach
+
+//main : GameState
+//= (Pair/get-fst GameState (UG/SM/Mach GameState GameAction) (simulate-game #1))
+
+//#test: (example == #GameState{counter: #42})
+
+main : (UG/SM/Mach GameState GameAction)
+= (simulate-game #1)
+
+mach : (UG/SM/Mach GameState GameAction)
+= #Mach{#60 #100 #0 #None (BinMap/new (List GameAction)) GameAction/eq}
+
+#test: ((simulate-game #1) == mach)
+
+
+
+
+

@@ -1,0 +1,15 @@
+// Returns the minimum of two U64 numbers.
+// - a: The first U64 number.
+// - b: The second U64 number.
+// = The smaller of the two input numbers.
+U64/min : U64 -> U64 -> U64
+= λa λb
+  if (U64/to-bool (<= a b)) {
+    a
+  } else {
+    b
+  }
+
+#test: (U64/min 5 3) == 3
+#test: (U64/min 3 5) == 3
+#test: (U64/min 5 5) == 5

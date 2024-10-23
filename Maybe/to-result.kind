@@ -8,7 +8,7 @@ Maybe/to-result : ∀(A: *) ∀(E: *) (Maybe A) -> E -> (Result A E)
 | A E #None        e = #Fail{e}
 | A E #Some{value} e = #Done{value}
 
-#test: (Maybe/to-result U32 String #None "Error") == #Fail{"Error"}
-#test: (Maybe/to-result U32 String (#Some{42}) "Error") == #Done{42}
-#test: (Maybe/to-result Bool U32 (#Some{#True}) 0) == #Done{#True}
-#test: (Maybe/to-result Bool U32 #None 404) == #Fail{404}
+#test: (Maybe/to-result U64 String #None "Error") == #Fail{"Error"}
+#test: (Maybe/to-result U64 String (#Some{42}) "Error") == #Done{42}
+#test: (Maybe/to-result Bool U64 (#Some{#True}) 0) == #Done{#True}
+#test: (Maybe/to-result Bool U64 #None 404) == #Fail{404}

@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if printable, False otherwise.
 Char/is-print : Char -> Bool
-= λcode (Bool/and (U32/gte code 32) (U32/lte code 126))
+= λcode (Bool/and (U64/gte code 32) (U64/lte code 126))
 
 #test: (Char/is-print 'a') == #True
 #test: (Char/is-print 'Z') == #True
