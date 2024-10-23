@@ -1,0 +1,9 @@
+// Computes the dot product of two 2D vectors.
+// - a: The first vector.
+// - b: The second vector.
+// = The dot product of the two vectors.
+V2/dot : V2 -> V2 -> U32
+| #V2{ax ay} #V2{bx by} = (+ (* ax bx) (* ay by))
+
+#test: (V2/dot #V2{x: 3 y: 4} #V2{x: 1 y: 2}) == 11
+#test: (V2/dot #V2{x: 0 y: 0} #V2{x: 5 y: 5}) == 0

@@ -1,0 +1,12 @@
+// Divides a V2 vector by another V2 vector component-wise.
+// - a: The dividend vector.
+// - b: The divisor vector.
+// = The resulting vector.
+V2/div : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{
+    x: (U32/div x0 x1)
+    y: (U32/div y0 y1)
+  }
+
+#test: (V2/div #V2{x: 10 y: 20} #V2{x: 2 y: 4}) == #V2{x: 5 y: 5}
+#test: (V2/div #V2{x: 100 y: 50} #V2{x: 10 y: 5}) == #V2{x: 10 y: 10}

@@ -1,0 +1,12 @@
+// Divides a V2 vector by a scalar.
+// - v: The input vector.
+// - s: The scalar divisor.
+// = The resulting vector.
+V2/div-scalar : V2 -> U32 -> V2
+| #V2{x y} s = #V2{
+    x: (U32/div x s)
+    y: (U32/div y s)
+  }
+
+#test: (V2/div-scalar #V2{x: 10 y: 20} 2) == #V2{x: 5 y: 10}
+#test: (V2/div-scalar #V2{x: 7 y: 13} 3) == #V2{x: 2 y: 4}

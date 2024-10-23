@@ -1,0 +1,13 @@
+// Checks if two V2 vectors are equal.
+// - a: The first V2 vector.
+// - b: The second V2 vector.
+// = True if both vectors are equal, False otherwise.
+V2/eq : V2 -> V2 -> Bool
+| #V2{x0 y0} #V2{x1 y1} =
+  (Bool/and
+    (U32/to-bool (U32/eql x0 x1))
+    (U32/to-bool (U32/eql y0 y1)))
+
+#test: (V2/eq #V2{x: 1 y: 2} #V2{x: 1 y: 2}) == #True
+#test: (V2/eq #V2{x: 1 y: 2} #V2{x: 2 y: 1}) == #False
+#test: (V2/eq #V2{x: 0 y: 0} #V2{x: 0 y: 0}) == #True
