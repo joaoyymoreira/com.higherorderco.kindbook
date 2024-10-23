@@ -6,3 +6,8 @@
 List/head : ∀(A: *) (List A) -> (Maybe A)
 | A #Nil             = #None
 | A #Cons{head tail} = #Some{ head }
+
+
+#test: (List/head Nat []) == #None
+#test: (List/head U32 [97]) == #Some{97}
+#test: (List/head Char [97 98 99]) == #Some{97}
