@@ -1,0 +1,12 @@
+// Subtracts two V2 vectors.
+// - a: First vector.
+// - b: Second vector.
+// = Difference of the vectors.
+V2/sub : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{
+    x: (- x0 x1)
+    y: (- y0 y1)
+  }
+
+#test: (V2/sub #V2{x: 5 y: 3} #V2{x: 2 y: 1}) == #V2{x: 3 y: 2}
+#test: (V2/sub #V2{x: 1 y: 1} #V2{x: 2 y: 2}) == #V2{x: 0 y: 0}

@@ -1,0 +1,10 @@
+// Returns the component-wise minimum of two V2 vectors.
+// - a: The first V2 vector.
+// - b: The second V2 vector.
+// = A new V2 vector with the minimum values for each component.
+V2/min : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{(U32/min x0 x1) (U32/min y0 y1)}
+
+#test: (V2/min #V2{3 5} #V2{4 2}) == #V2{3 2}
+#test: (V2/min #V2{10 20} #V2{30 40}) == #V2{10 20}
+#test: (V2/min #V2{0 0} #V2{0 0}) == #V2{0 0}

@@ -1,0 +1,14 @@
+// Checks if two V2 vectors are not equal.
+// - a: The first V2 vector.
+// - b: The second V2 vector.
+// = True if vectors are different, False otherwise.
+V2/neq : V2 -> V2 -> Bool
+| #V2{x0 y0} #V2{x1 y1} =
+  (Bool/or
+    (U32/neq x0 x1)
+    (U32/neq y0 y1))
+
+#test: (V2/neq #V2{x: 1 y: 2} #V2{x: 1 y: 2}) == #False
+#test: (V2/neq #V2{x: 1 y: 2} #V2{x: 3 y: 2}) == #True
+#test: (V2/neq #V2{x: 1 y: 2} #V2{x: 1 y: 3}) == #True
+#test: (V2/neq #V2{x: 1 y: 2} #V2{x: 3 y: 4}) == #True

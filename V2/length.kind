@@ -1,0 +1,8 @@
+// Computes the length of a 2D vector.
+// - v: The input vector.
+// = The length of the vector as a U32.
+V2/length : V2 -> U32
+| #V2{x y} = (+ (* x x) (* y y))
+
+#test: (V2/length #V2{x: 3 y: 4}) == 25
+#test: (V2/length #V2{x: 0 y: 0}) == 0

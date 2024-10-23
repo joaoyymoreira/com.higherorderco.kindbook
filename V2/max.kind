@@ -1,0 +1,10 @@
+// Returns the component-wise maximum of two V2 vectors.
+// - a: The first V2 vector.
+// - b: The second V2 vector.
+// = A new V2 vector with the maximum values for each component.
+V2/max : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{(U32/max x0 x1) (U32/max y0 y1)}
+
+#test: (V2/max #V2{3 5} #V2{5 3}) == #V2{5 5}
+#test: (V2/max #V2{0 0} #V2{1 1}) == #V2{1 1}
+#test: (V2/max #V2{10 20} #V2{5 25}) == #V2{10 25}

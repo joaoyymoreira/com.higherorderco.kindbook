@@ -1,0 +1,11 @@
+// Multiplies two V2 vectors component-wise.
+// - a: The first vector.
+// - b: The second vector.
+// = The resulting vector.
+V2/mul : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{
+    x: (U32/mul x0 x1)
+    y: (U32/mul y0 y1)
+  }
+
+#test: (V2/mul #V2{x: 2 y: 3} #V2{x: 4 y: 5}) == #V2{x: 8 y: 15}
