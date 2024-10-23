@@ -1,3 +1,13 @@
+Main : ∀(b: (List U32)) U32
+= λ{
+  #Cons{h t}: (+ h 1)
+  #Nil: 0
+}
+
+
+
+
+
 //Main : (Pair String *) -> (Pair (List U32) *)
 //| str = str
 
@@ -5,7 +15,7 @@
 //= #View { "// Comment 1\/ Comment 2\nabc" }
 
 
-main = Parser/parse-unicode-escape
+//main = Parser/parse-unicode-escape
 
 
 
@@ -91,14 +101,13 @@ main = Parser/parse-unicode-escape
 //}
 
 //Main
-//: ∀(p: (Pair/Pair U32 Bool))
-  //∀(k: (MB/Maybe (Pair/Pair U32 Bool)))
-  //(MB/Maybe U32)
-//= λp λk do MB/Monad {
+//: ∀(p: (Pair U32 Bool))
+  //∀(k: (Maybe (Pair U32 Bool)))
+  //(Maybe U32)
+//= λp λk do Maybe {
   //ask x = #Some{50}
-  //?a
-  ////ask y = #Some{20}
-  ////ret (+ x y)
+  //ask y = #Some{20}
+  //ret (+ x y)
 //}
 
 //use Maybe/ as Maybe/

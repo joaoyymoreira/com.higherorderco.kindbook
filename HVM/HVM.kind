@@ -325,11 +325,12 @@ HVM/recover-var : Bits -> HVM/RTerm -> (HVM (HVM/CTerm #Pos))
 | var #RTerm{#NUL loc} = (HVM/recover-term #Pos (#RTerm{ #NUL loc }))
 | var #RTerm{#LAM loc} = (HVM/recover-term #Pos (#RTerm{ #LAM loc }))
 | var #RTerm{#SUP loc} = (HVM/recover-term #Pos (#RTerm{ #SUP loc }))
-| var #RTerm{#SUB loc} = if (Bits/eq var loc) {
-  do HVM { ret #Var{loc} }
+| var #RTerm{#SUB loc} = if (Bits/eq var loc) do HVM {
+  ret #Var{loc}
 } else {
   (HVM/recover-term #Pos (#RTerm{ #SUB loc }))
 }
+
 
 HVM/recover-sub : Bits -> HVM/RTerm -> (HVM (HVM/CTerm #Neg))
 | sub #RTerm{#NUL loc} = λnet #None
@@ -339,8 +340,8 @@ HVM/recover-sub : Bits -> HVM/RTerm -> (HVM (HVM/CTerm #Neg))
 | sub #RTerm{#ERA loc} = (HVM/recover-term #Neg (#RTerm{ #ERA loc }))
 | sub #RTerm{#APP loc} = (HVM/recover-term #Neg (#RTerm{ #APP loc }))
 | sub #RTerm{#DUP loc} = (HVM/recover-term #Neg (#RTerm{ #DUP loc }))
-| sub #RTerm{#SUB loc} = if (Bits/eq sub loc) {
-  do HVM { ret #Sub{loc} }
+| sub #RTerm{#SUB loc} = if (Bits/eq sub loc) do HVM {
+  ret #Sub{loc}
 } else {
   (HVM/recover-term #Neg (#RTerm{ #SUB loc }))
 }
@@ -770,11 +771,6 @@ HVM/interact/go : HVM/RTag -> HVM/RLoc -> HVM/RTag -> HVM/RLoc -> (HVM Unit)
     ret #Unit
   }
 
-
-
-
-
-
 // Evaluation
 // ----------
 
@@ -800,9 +796,7 @@ HVM/eval-strict : (HVM Unit)
   ask changed = HVM/eval-one
   match changed {
     #True: HVM/eval-strict
-    #False: do HVM {
-      ret #Unit
-    }
+    #False: do HVM { ret #Unit }
   }
 }
 
