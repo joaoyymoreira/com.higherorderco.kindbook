@@ -1,0 +1,18 @@
+// Checks if an action is in a list of actions.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - a: The action to search for.
+// - xs: The list of actions to search in.
+// = True if the action is in the list, False otherwise.
+UG/SM/action-in-list : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> A -> (List A) -> Bool
+| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} a #Nil = #False
+| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} a #Cons{head tail} = 
+  if (action-eq a head) {
+    #True
+  } else {
+    (UG/SM/action-in-list S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} a tail)
+  }
+
+#test: (UG/SM/action-in-list Nat Nat #Mach{#0 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #0 #Nil) == #False
+#test: (UG/SM/action-in-list Nat Nat #Mach{#0 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #0 [#0]) == #True

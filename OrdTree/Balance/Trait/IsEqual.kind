@@ -1,5 +1,0 @@
-// IsEqual instance for AVLTree/Balance
-AVLTree/Trait/IsEqual : (IsEqual AVLTree/Balance)
-= #IsEqual{
-    fn: AVLTree/Balance/eq
-  }

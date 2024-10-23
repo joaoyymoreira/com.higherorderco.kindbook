@@ -1,0 +1,35 @@
+// Converts a digit character to its binary representation.
+// - c: The digit character.
+// = The Bits representation of the digit, or #E if not a digit.
+Char/to-digit-bits: U32 -> Char -> (Maybe Bits)
+| base code =
+  let is_base_2  = (U32/eq base 2)
+  let is_base_8  = (U32/eq base 8)
+  let is_base_10 = (U32/eq base 10)
+  let is_base_16 = (U32/eq base 16)
+  
+  let is_binary  = (Bool/and is_base_2  (Char/is-binary-digit code))
+  let is_octal   = (Bool/and is_base_8  (Char/is-octal-digit code))
+  let is_decimal = (Bool/and is_base_10 (Char/is-digit code))
+  let is_hex     = (Bool/and is_base_16 (Char/is-hex-digit code))
+  
+  if is_binary {
+   (Char/digit-to-bits code)
+  } else if is_octal {
+   (Char/digit-to-bits code)
+  } else if is_decimal {
+   (Char/digit-to-bits code)
+  } else if is_hex {
+    (Char/hex-to-bits code)
+  } else {
+    #None
+  }
+
+#test: (Char/to-digit-bits 8  '5') == #Some{#I{#O{#I{#E}}}}
+#test: (Char/to-digit-bits 10 '8') == #Some{#O{#O{#O{#I{#E}}}}}
+#test: (Char/to-digit-bits 2  '0') == #Some{#E}
+#test: (Char/to-digit-bits 10 '9') == #Some{#I{#O{#O{#I{#E}}}}}
+#test: (Char/to-digit-bits 16 'A') == #Some{#O{#I{#O{#I{#E}}}}}
+#test: (Char/to-digit-bits 16 'f') == #Some{#I{#I{#I{#I{#E}}}}}
+#test: (Char/to-digit-bits 10 'G') == #None
+#test: (Char/to-digit-bits 16 'h') == #None

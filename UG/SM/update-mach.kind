@@ -1,0 +1,21 @@
+// Updates a machine with a new tick and state.
+// - S: State type.
+// - A: Action type.
+// - mach: The machine to be updated.
+// - t: The new tick to update the machine with.
+// - s: The new state to be added to the state logs.
+// = Updated Mach with the new tick and state.
+UG/SM/update-mach : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> S -> (UG/SM/Mach S A)
+| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} t s
+= let new-cached-tick = (Nat/max cached-tick t)
+  let new-state-logs  = (UG/SM/StateLogs/push S s state-logs t)
+  #Mach{
+    ticks-per-second
+    genesis-tick
+    cached-tick: new-cached-tick
+    state-logs: new-state-logs
+    action-logs
+    action-eq
+  }
+
+#test: (UG/SM/Mach/cached-tick U32 U32 (UG/SM/update-mach U32 U32 (UG/SM/new-mach U32 U32 #10 U32/eq) #5 3)) == #5

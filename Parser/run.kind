@@ -5,11 +5,13 @@
 // = Some parsed-value if successful, None if failed.
 Parser/run : ∀(A: *) (Parser A) -> String -> (Maybe A)
 | A parser input = match (parser (Parser/new-state input)) {
-  #Done{reply}: match reply {
-    #Reply{_ value}: #Some{value}
-  }
+  #Done{reply}: 
+    match reply {
+      #Reply{x value}: #Some{value}
+    }
   #Fail{_}: #None
 }
 
+#test: (Parser/run Char (Parser/pure Char 'x') "hello") == (#Some{'x'})
 #test: (Parser/run Nat (Parser/pure Nat #42) "hello") == (#Some{#42})
 #test: (Parser/run Nat (Parser/fail Nat "error") "hello") == (#None)

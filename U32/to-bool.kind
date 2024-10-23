@@ -7,6 +7,6 @@ U32/to-bool : U32 -> Bool
   _{p}: #True
 }
 
-//#test: (U32/to-bool 0) == #False
-//#test: (U32/to-bool 1) == #True
-//#test: (U32/to-bool 5) == #True
+#test: (U32/to-bool 0) == #False
+#test: (U32/to-bool 1) == #True
+#test: (U32/to-bool 5) == #True

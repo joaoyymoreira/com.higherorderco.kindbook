@@ -3,31 +3,30 @@
 // - 2nd: The queue to which the element will be added.
 // - 3rd: The element to be added to the queue.
 // = A new queue with the element added to the end.
-  // #MkQueue{ front back: #Cons{a back} }
 Queue/enqueue
 : ∀(A: *)
   ∀(q: (Queue A))
   ∀(a: A)
   (Queue A)
 = λA λ{
-  #MkQueue: λfront λback λa #MkQueue{front #Cons{a back}}
+  #Queue: λfront λback λa #Queue{front #Cons{a back}}
 }
 // Test: Enqueue to an empty queue
 TEST_0
-: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Nil #Nil} 1) #MkQueue{#Nil #Cons{1 #Nil}})
+: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Nil #Nil} 1) #Queue{#Nil #Cons{1 #Nil}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in front
 TEST_1
-: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Cons{1 #Cons{2 #Nil}} #Nil} 3) #MkQueue{#Cons{1 #Cons{2 #Nil}} #Cons{3 #Nil}})
+: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Cons{1 #Cons{2 #Nil}} #Nil} 3) #Queue{#Cons{1 #Cons{2 #Nil}} #Cons{3 #Nil}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in back
 TEST_2
-: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{#Nil #Cons{2 #Cons{1 #Nil}}} 3) #MkQueue{#Nil #Cons{3 #Cons{2 #Cons{1 #Nil}}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Nil #Cons{2 #Cons{1 #Nil}}} 3) #Queue{#Nil #Cons{3 #Cons{2 #Cons{1 #Nil}}}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in both front and back
 TEST_3
-: (Equal (Queue U32) (Queue/enqueue U32 #MkQueue{ #Cons{1 #Nil} #Cons{3 #Cons{2 #Nil}}} 4) #MkQueue{ #Cons{1 #Nil} #Cons{4 #Cons{3 #Cons{2 #Nil}}}})
+: (Equal (Queue U32) (Queue/enqueue U32 #Queue{ #Cons{1 #Nil} #Cons{3 #Cons{2 #Nil}}} 4) #Queue{ #Cons{1 #Nil} #Cons{4 #Cons{3 #Cons{2 #Nil}}}})
 = #Refl

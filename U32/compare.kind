@@ -1,8 +1,8 @@
 // Compares two U32 numbers.
 // - a: The first U32 number to compare.
 // - b: The second U32 number to compare.
-// = An Ord value: LT if a < b, EQ if a = b, GT if a > b.
-U32/compare : U32 -> U32 -> Ord
+// = An Cmp value: LT if a < b, EQ if a = b, GT if a > b.
+U32/compare : U32 -> U32 -> Cmp
 = λa λb
   if (U32/to-bool (U32/eql a b)) {
     #EQ

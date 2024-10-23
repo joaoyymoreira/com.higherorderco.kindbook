@@ -1,15 +1,23 @@
 // Performs a left rotation on an AVL tree to fix an imbalance of +2.
-// - K: The type of keys in the AVL tree.
-// - V: The type of values in the AVL tree.
+// - K: The type of keys in the tree.
+// - V: The type of values in the tree.
 // - tree: The AVL tree to rotate.
 // = A pair containing the rotated AVL tree and a boolean indicating if the height of the root stayed the same.
-AVLTree/rotate_left
-: ∀(K: *)
-  ∀(V: *)
-  ∀(tree: (AVLTree/AVLTree K V))
-  (Pair/Pair (AVLTree/AVLTree K V) Bool)
-= λK λV λ{
-  #Node: 
-  #Lead: 
-
-  }
+OrdTree/Balance/rotate-left : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (OrdTree K V) Bool)
+| K V #Leaf = #Pair{#Leaf #False}
+| K V #Node{v1 #PlusOne l #Node{v2 #PlusOne rl rr}} =
+  #Pair{#Node{v2 #Zero #Node{v1 #Zero l rl} rr} #False}
+| K V #Node{v1 #PlusOne l #Node{v2 #Zero rl rr}} =
+  #Pair{#Node{v2 #MinusOne #Node{v1 #PlusOne l rl} rr} #True}
+| K V #Node{v1 #PlusOne l #Node{v2 #MinusOne #Node{v3 balance rll rlr} rr}} =
+  let rotated = 
+    (Bool/if (OrdTree K V)
+      (OrdTree/Balance/eq balance #PlusOne)
+      #Node{v3 #Zero #Node{v1 #MinusOne l rll} #Node{v2 #Zero rlr rr}}
+      (Bool/if (OrdTree K V)
+        (OrdTree/Balance/eq balance #MinusOne)
+        #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #PlusOne rlr rr}}
+        #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #Zero rlr rr}}))
+  #Pair{rotated #False}
+//FIXME: tree - undefined
+| K V tree = #Pair{tree #False} 

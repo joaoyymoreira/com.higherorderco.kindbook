@@ -1,25 +1,16 @@
-// Equality for Balance values.
-// - x: The 1st Balance value.
-// - y: The 2nd Balance value.
-// = True if x and y are the same Balance value, False otherwise.
-AVLTree/Balance/eq
-: ∀(x: AVLTree/Balance)
-  ∀(y: AVLTree/Balance)
-  Bool
-= λ{
-  #MinusOne: λ{
-    #MinusOne:  #True
-    #Zero:      #False
-    #PlusOne:   #False
-  }
-  #Zero: λ{
-    #MinusOne:  #False
-    #Zero:      #True
-    #PlusOne:   #False
-  }
-  #PlusOne: λ{
-    #MinusOne:  #False
-    #Zero:      #False
-    #PlusOne:   #True
-  }
-}
+// Checks equality for Balance values.
+// - a: The first Balance value.
+// - b: The second Balance value.
+// = True if the Balance values are equal, False otherwise.
+OrdTree/Balance/eq : OrdTree/Balance -> OrdTree/Balance -> Bool
+| #MinusOne #MinusOne = #True
+| #Zero     #Zero     = #True
+| #PlusOne  #PlusOne  = #True
+| a         b         = #False
+
+#test: (OrdTree/Balance/eq #MinusOne #MinusOne) == #True
+#test: (OrdTree/Balance/eq #Zero #Zero) == #True
+#test: (OrdTree/Balance/eq #PlusOne #PlusOne) == #True
+#test: (OrdTree/Balance/eq #MinusOne #Zero) == #False
+#test: (OrdTree/Balance/eq #Zero #PlusOne) == #False
+#test: (OrdTree/Balance/eq #MinusOne #PlusOne) == #False

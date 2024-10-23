@@ -1,0 +1,36 @@
+// Represents a game with state type S and action type A
+// Fields:
+//   init: The initial state of the game
+//   when: A function that updates the state based on an action
+//   tick: A function that updates the state on each tick (time step)
+data UG/SM/Game (S: *) (A: *) {
+  #Game{
+    init: S
+    when: A -> S -> S
+    tick: S -> S
+  }
+}
+
+// Gets the initial state of the game.
+// - S: State type.
+// - A: Action type.
+// - game: The game.
+// = The initial state.
+UG/SM/Game/init : ∀(S: *) ∀(A: *) (UG/SM/Game S A) -> S
+| S A #Game{init when tick} = init
+
+// Gets the state update function for actions.
+// - S: State type.
+// - A: Action type.
+// - game: The game.
+// = The state update function.
+UG/SM/Game/when : ∀(S: *) ∀(A: *) (UG/SM/Game S A) -> A -> S -> S
+| S A #Game{init when tick} = when
+
+// Gets the tick update function.
+// - S: State type.
+// - A: Action type.
+// - game: The game.
+// = The tick update function.
+UG/SM/Game/tick : ∀(S: *) ∀(A: *) (UG/SM/Game S A) -> S -> S
+| S A #Game{init when tick} = tick

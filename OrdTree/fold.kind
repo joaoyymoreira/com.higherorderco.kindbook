@@ -1,0 +1,14 @@
+// Performs a fold operation over an AVL tree.
+// - K: The type of keys in the tree.
+// - V: The type of values in the tree.
+// - A: The type of the accumulator and result.
+// - f: The combining function.
+// - z: The initial value (for the empty tree case).
+// - tree: The AVL tree to fold over.
+// = The result of folding the tree.
+OrdTree/fold : ∀(K: *) ∀(V: *) ∀(A: *) ((Pair K V) -> A -> A) -> A -> (OrdTree K V) -> A
+| K V A f z #Leaf = z
+| K V A f z #Node{key-value balance left right} =
+  let left-result = (OrdTree/fold K V A f z left)
+  let curr-result = (f key-value left-result)
+  (OrdTree/fold K V A f curr-result right)

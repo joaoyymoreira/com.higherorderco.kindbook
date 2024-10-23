@@ -1,0 +1,20 @@
+// Adds an action to the logs of a state machine.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - tick: The tick to add the action to.
+// - action: The action to add.
+// = Updated state machine with the new action in its logs.
+UG/SM/add-action-to-logs : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> A -> (UG/SM/Mach S A)
+| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} tick action =
+  let new_logs = (UG/SM/ActionLogs/add-action A action-logs tick action)
+  #Mach{
+    ticks-per-second: ticks-per-second
+    genesis-tick:     genesis-tick
+    cached-tick:      cached-tick
+    state-logs:       state-logs
+    action-logs:      new_logs
+    action-eq:        action-eq
+  }
+
+//#test: (UG/SM/ActionLogs/get-actions Nat (UG/SM/Mach/action-logs Nat Nat (UG/SM/add-action-to-logs Nat Nat #Mach{#10 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #1 #2)) #1) == [#2]

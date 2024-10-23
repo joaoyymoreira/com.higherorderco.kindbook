@@ -1,0 +1,5 @@
+// Instance of Show for Nat
+Nat/Show : (Show Nat)
+= #Show{
+    to-string: Nat/to-string
+  }

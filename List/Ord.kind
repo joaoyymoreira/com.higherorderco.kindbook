@@ -1,0 +1,5 @@
+// Ord instance for List
+List/Ord : ∀(A: *) (Ord A) -> (Ord (List A))
+| A e = #Ord{
+  compare: (List/compare A e)
+}

@@ -8,9 +8,9 @@ Nat/compare : Nat -> Nat -> Cmp
 | #Succ{m} #Zero    = #GT
 | #Succ{m} #Succ{n} = (Nat/compare m n)
 
-#test: (Nat/compare #Zero #Zero) == #EQ
-#test: (Nat/compare #Zero #5) == #LT
-#test: (Nat/compare #5 #Zero) == #GT
+#test: (Nat/compare #0 #0) == #EQ
+#test: (Nat/compare #0 #5) == #LT
+#test: (Nat/compare #5 #0) == #GT
 #test: (Nat/compare #3 #3) == #EQ
 #test: (Nat/compare #2 #7) == #LT
-#test: (Nat/compare (#8) (#4)) == #GT
+#test: (Nat/compare #8 #4) == #GT

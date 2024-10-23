@@ -1,9 +1,6 @@
-// Creates an empty OrdTree.
+// Creates an empty AVL tree.
 // - K: The type of keys in the tree.
 // - V: The type of values in the tree.
-// = An empty OrdTree.
-OrdTree/empty
-: ∀(K: *)
-  ∀(V: *)
-  (OrdTree K V)
-= λK λV #Leaf
+// = An empty AVL tree.
+OrdTree/empty : ∀(K: *) ∀(V: *) (OrdTree K V)
+| K V = #Leaf

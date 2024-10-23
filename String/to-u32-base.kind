@@ -1,0 +1,27 @@
+// Converts a string to a U32 in the given base.
+// - base: Base for conversion.
+// - str: String to convert.
+// = Maybe U32 with converted number if successful, None otherwise.
+String/to-u32-base : U32 -> String -> (Maybe U32)
+| base #Nil         = #None
+| base #Cons{hd tl} = (String/to-u32-base/go base #Cons{hd tl} 0)
+
+// Helper function for String/to-u32-base
+// - base: Base for conversion.
+// - chars: List of characters to convert.
+// - acc: Accumulator for the result.
+// = Maybe U32 with converted number if successful, None otherwise.
+String/to-u32-base/go : U32 -> String -> U32 -> (Maybe U32)
+| base #Nil         acc = #Some{acc}
+| base #Cons{hd tl} acc =
+  let digit = (Char/to-digit-u32 base hd)
+  (Maybe/fold U32 (Maybe U32) #None
+    (λvalue (String/to-u32-base/go base tl (+ (* acc base) value)))
+    digit)
+
+#test: (String/to-u32-base 10 "123") == #Some{123}
+#test: (String/to-u32-base 16 "FF") == #Some{255}
+#test: (String/to-u32-base 2 "1010") == #Some{10}
+#test: (String/to-u32-base 8 "777") == #Some{511}
+#test: (String/to-u32-base 10 "") == #None
+#test: (String/to-u32-base 16 "GG") == #None
