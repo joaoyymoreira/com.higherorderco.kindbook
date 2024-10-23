@@ -4,7 +4,7 @@ Parser/parse-name : (Parser String)
 | state = match (Parser/take-while Parser/is-name-char state) {
   #Done{reply}: match reply {
     #Reply{_ value}: match value {
-      #Nil: (Parser/fail _ "Expected a name" state)
+      #Nil: (Parser/fail String "Expected a name" state)
       #Cons{head tail}: #Done{reply}
     }
   }

@@ -2,7 +2,7 @@
 // - pred: Function that takes a Char and returns a Bool, used as the predicate.
 // = Parser that returns a String containing the consumed characters.
 Parser/take-while : (Char -> Bool) -> (Parser String)
-| pred = λstate
+| pred state = 
   let #State{inp idx} = state
   let consumed        = (List/take-while Char pred inp)
   let #Pair{cs count} = (String/length-got consumed)

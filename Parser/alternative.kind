@@ -4,9 +4,9 @@
 // - q: The parser to try if the first fails.
 // = A new parser that succeeds if either of the input parsers succeeds.
 Parser/alternative : ∀(A: *) (Parser A) -> (Parser A) -> (Parser A)
-| A p q s = match (p s) {
+| A p q state = match (p state) {
   #Done{r}: #Done{r}
-  #Fail{_}: (q s)
+  #Fail{_}: (q state)
 }
 
 #test: (Parser/run U32 (Parser/alternative U32 (Parser/pure U32 1) (Parser/pure U32 2)) "") == #Some{1}

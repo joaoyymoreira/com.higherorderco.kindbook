@@ -6,10 +6,12 @@ Parser/consume : String -> (Parser Unit)
   if (String/starts-with input target) {
     #Done{
       #Reply{
-        state: #State{
-          input: (String/drop (String/length target) input)
-          index: (Nat/add index (String/length target))
-        }
+        state: 
+          let length = (String/length target)
+          #State{
+            input: (String/drop length input)
+            index: (Nat/add index length)
+          }
         value: #Unit
       }
     }

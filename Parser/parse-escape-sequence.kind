@@ -4,16 +4,16 @@ Parser/parse-escape-sequence : (Parser Char)
 = do Parser {
   ask mc = (Parser/advance-one)
   match mc {
-    #None: (Parser/fail _ "unexpected-eof")
+    #None: (Parser/fail Char "unexpected-eof")
     #Some{c}: when Char/eq c {
-      'n'  : (Parser/pure _ '\n')
-      'r'  : (Parser/pure _ '\r')
-      't'  : (Parser/pure _ '\t')
-      '\\' : (Parser/pure _ '\\')
-      '\'' : (Parser/pure _ '\'')
-      '\"' : (Parser/pure _ '\"')
+      'n'  : (Parser/pure Char '\n')
+      'r'  : (Parser/pure Char '\r')
+      't'  : (Parser/pure Char '\t')
+      '\\' : (Parser/pure Char '\\')
+      '\'' : (Parser/pure Char '\'')
+      '\"' : (Parser/pure Char '\"')
       'u'  : Parser/parse-unicode-escape
-      _    : (Parser/fail _ (String/append "invalid-escape-char:" (String/from-char c)))
+      _    : (Parser/fail Char (String/append "invalid-escape-char:" (String/from-char c)))
     }
   }
 }

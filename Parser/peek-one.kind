@@ -1,5 +1,5 @@
 // Peeks at the next character in the input without consuming it.
-// - s: The current parser state.
+// - state: The current parser state.
 // = A Reply containing the current state and the next character (if any).
 Parser/peek-one : (Parser (Maybe Char))
 | state =
