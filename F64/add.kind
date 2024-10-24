@@ -1,0 +1,8 @@
+// Adds two F64s.
+// - a: The first F64.
+// - b: The second F64.
+// = The sum of a and b.
+F64/add : F64 -> F64 -> F64
+= λa λb (+ a b)
+
+#test: (F64/add 3.14 2.86) == 6.0

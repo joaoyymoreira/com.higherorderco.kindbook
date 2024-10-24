@@ -1,0 +1,8 @@
+// Doubles a given F64 value.
+// - x: The F64 value to be doubled.
+// = The input value multiplied by 2.
+F64/double : F64 -> F64
+= λx (F64/mul x 2.0)
+
+#test: (F64/double 3.0) == 6.0
+#test: (F64/double 0.0) == 0.0

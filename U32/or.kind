@@ -1,9 +1,0 @@
-// Performs bitwise OR operation on two U32 values.
-// - a: The first U32 value.
-// - b: The second U32 value.
-// = The result of bitwise OR operation between the two input values.
-U32/or : U32 -> U32 -> U32
-= λa λb (| a b)
-
-#test: (U32/or 5 3) == 7
-#test: (U32/or 12 5) == 13

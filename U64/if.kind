@@ -1,0 +1,17 @@
+// Conditional expression for U64 values.
+// - A: The type of the result.
+// - cond: The condition to evaluate.
+// - then: The value to return if the condition is true.
+// - else: The value to return if the condition is false.
+// = The 'then' value if 'cond' is non-zero, otherwise the 'else' value.
+U64/if : ∀(A: *) U64 -> A -> A -> A
+= λA λcond λt λf
+  if (U64/to-bool cond) {
+    t
+  } else {
+    f
+  }
+
+#test: (U64/if Bool 1 #True #False) == #True
+#test: (U64/if Bool 0 #True #False) == #False
+#test: (U64/if U64 5 10 20) == 10

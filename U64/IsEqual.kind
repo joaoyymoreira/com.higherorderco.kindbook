@@ -1,0 +1,5 @@
+// IsEqual instance for U64
+U64/IsEqual : (IsEqual U64)
+= #IsEqual{
+  eq: U64/eq
+}

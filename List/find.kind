@@ -12,5 +12,5 @@ List/find : ∀(A: *) (A -> Bool) -> (List A) -> (Maybe A)
     (List/find A fn tail)
   }
 
-#test: (List/find U32 (λx (U32/to-bool (== x 2))) [1 2 3]) == #Some{2}
-#test: (List/find U32 (λx (U32/to-bool (== x 4))) [1 2 3]) == #None
+#test: (List/find U64 (λx (U64/to-bool (== x 2))) [1 2 3]) == #Some{2}
+#test: (List/find U64 (λx (U64/to-bool (== x 4))) [1 2 3]) == #None

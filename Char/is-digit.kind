@@ -2,7 +2,7 @@
 // - c: The character to check.
 // = True if digit, False otherwise.
 Char/is-digit : Char -> Bool
-= λc (Bool/and (U32/gte c 48) (U32/lte c 57))
+= λc (Bool/and (U64/gte c 48) (U64/lte c 57))
 
 #test: (Char/is-digit '0') == #True
 #test: (Char/is-digit '9') == #True

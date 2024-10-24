@@ -12,6 +12,6 @@ BinMap/set : ∀(A: *) (BinMap A) -> Bits -> A -> (BinMap A)
 | A #Node{x l r} #O{b} v = #Node{x (BinMap/set A l b v) r}
 | A #Node{x l r} #I{b} v = #Node{x l (BinMap/set A r b v)}
 
-#test: (BinMap/set U32 (BinMap/empty U32) #E 42) == #Node{#Some{42} #Leaf #Leaf}
-#test: (BinMap/set U32 (BinMap/empty U32) #O{#E} 42) == #Node{#None #Node{#Some{42} #Leaf #Leaf} #Leaf}
-#test: (BinMap/set U32 (BinMap/empty U32) #I{#E} 42) == #Node{#None #Leaf #Node{#Some{42} #Leaf #Leaf}}
+#test: (BinMap/set U64 (BinMap/empty U64) #E 42) == #Node{#Some{42} #Leaf #Leaf}
+#test: (BinMap/set U64 (BinMap/empty U64) #O{#E} 42) == #Node{#None #Node{#Some{42} #Leaf #Leaf} #Leaf}
+#test: (BinMap/set U64 (BinMap/empty U64) #I{#E} 42) == #Node{#None #Leaf #Node{#Some{42} #Leaf #Leaf}}

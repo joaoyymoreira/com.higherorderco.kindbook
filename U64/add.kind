@@ -1,0 +1,10 @@
+// Adds two U64s.
+// - a: The first U64.
+// - b: The second U64.
+// = The sum of a and b.
+U64/add : U64 -> U64 -> U64
+| a b = (+ a b)
+
+#test: (U64/add 5 3) == 8
+#test: (U64/add 0 7) == 7
+

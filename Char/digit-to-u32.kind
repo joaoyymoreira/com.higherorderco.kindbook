@@ -1,10 +1,10 @@
-// Converts a digit char to its corresponding U32 number.
+// Converts a digit char to its corresponding U64 number.
 // - c: The input char.
-// = Some n if c is a digit, where n is the corresponding U32 number, None otherwise.
-Char/digit-to-u32 : Char -> (Maybe U32)
+// = Some n if c is a digit, where n is the corresponding U64 number, None otherwise.
+Char/digit-to-u32 : Char -> (Maybe U64)
 | c =
   let n = (- c '0')
-  if (U32/to-bool (& (<= 0 n) (<= n 9))) {
+  if (U64/to-bool (& (<= 0 n) (<= n 9))) {
     #Some{n}
   } else {
     #None

@@ -12,6 +12,6 @@ List/take-while : ∀(A: *) (A -> Bool) -> (List A) -> (List A)
     #Nil
   }
 
-#test: (List/take-while U32 (λx (U32/to-bool (< x 3))) [1 2 3 4 5]) == [1 2]
-#test: (List/take-while U32 (λx (U32/to-bool (> x 3))) [1 2 3 4 5]) == []
-#test: (List/take-while U32 (λx (U32/to-bool (< x 10))) [1 2 3 4 5]) == [1 2 3 4 5]
+#test: (List/take-while U64 (λx (U64/to-bool (< x 3))) [1 2 3 4 5]) == [1 2]
+#test: (List/take-while U64 (λx (U64/to-bool (> x 3))) [1 2 3 4 5]) == []
+#test: (List/take-while U64 (λx (U64/to-bool (< x 10))) [1 2 3 4 5]) == [1 2 3 4 5]

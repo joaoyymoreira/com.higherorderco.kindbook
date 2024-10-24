@@ -19,5 +19,4 @@ OrdTree/Balance/rotate-left : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (OrdTre
         #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #PlusOne rlr rr}}
         #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #Zero rlr rr}}))
   #Pair{rotated #False}
-//FIXME: tree - undefined
-| K V tree = #Pair{tree #False} 
+| K V tree = #Pair{tree #False}

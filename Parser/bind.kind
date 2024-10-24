@@ -5,8 +5,8 @@
 // - f: A function that takes the result of the first parser and returns a new parser
 // = A new parser that combines the results of both parsers
 Parser/bind : ∀(A: *) ∀(B: *) (Parser A) -> (A -> (Parser B)) -> (Parser B)
-| A B p f s = match (p s) {
-  #Done: λ{ #Reply{state value}: (f value state) }
+| A B p f state = match (p state) {
+  #Done: λ{ #Reply{new_state value}: (f value new_state) }
   #Fail: λe #Fail{e}
 }
 

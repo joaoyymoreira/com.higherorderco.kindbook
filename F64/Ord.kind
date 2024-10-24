@@ -1,0 +1,6 @@
+// Ord instance for F64
+F64/Ord : (Ord F64)
+= #Ord{
+    compare: F64/compare
+  }
+

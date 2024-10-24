@@ -1,0 +1,11 @@
+// Divides a V2 vector by another V2 vector component-wise.
+// - a: Dividend vector.
+// - b: Divisor vector.
+// = Resulting vector.
+V2/div : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{
+    x: (F64/div x0 x1)
+    y: (F64/div y0 y1)
+  }
+
+#test: (V2/div #V2{x: 6.0 y: 8.0} #V2{x: 2.0 y: 4.0}) == #V2{x: 3.0 y: 2.0}

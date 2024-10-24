@@ -1,0 +1,5 @@
+// IsEqual instance for F64
+F64/IsEqual : (IsEqual F64)
+= #IsEqual{
+  eq: F64/eq
+}

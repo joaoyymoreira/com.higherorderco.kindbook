@@ -1,13 +1,13 @@
-// Converts a hex char to its U32 value.
+// Converts a hex char to its U64 value.
 // - c: The hex char.
-// = The U32 value, or None if invalid.
-Char/hex-to-u32 : Char -> (Maybe U32)
+// = The U64 value, or None if invalid.
+Char/hex-to-u32 : Char -> (Maybe U64)
 | c =
   if (Char/is-digit c) {
     #Some{(-c '0')}
   } else {
     let upper = (Char/to-upper c)
-    if (U32/to-bool (& (>= upper 'A') (<= upper 'F'))) {
+    if (U64/to-bool (& (>= upper 'A') (<= upper 'F'))) {
       #Some{(+10 (- upper 'A'))}
     } else {
       #None

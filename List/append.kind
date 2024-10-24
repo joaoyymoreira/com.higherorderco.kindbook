@@ -7,6 +7,6 @@ List/append : ∀(A: *) (List A) -> (List A) -> (List A)
 | A #Nil             ys = ys
 | A #Cons{head tail} ys = #Cons{head (List/append A tail ys)}
 
-#test: (List/append U32 [1 2] [3 4]) == [1 2 3 4]
-#test: (List/append U32 [] [1 2 3]) == [1 2 3]
-#test: (List/append U32 [1 2 3] []) == [1 2 3]
+#test: (List/append U64 [1 2] [3 4]) == [1 2 3 4]
+#test: (List/append U64 [] [1 2 3]) == [1 2 3]
+#test: (List/append U64 [1 2 3] []) == [1 2 3]

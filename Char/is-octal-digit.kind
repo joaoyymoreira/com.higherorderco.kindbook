@@ -2,7 +2,7 @@
 // - c: The character to check.
 // = True if octal digit, False otherwise.
 Char/is-octal-digit : Char -> Bool
-= λc (Bool/and (U32/gte c 48) (U32/lte c 55))
+= λc (Bool/and (U64/gte c 48) (U64/lte c 55))
 
 #test: (Char/is-octal-digit '0') == #True
 #test: (Char/is-octal-digit '7') == #True

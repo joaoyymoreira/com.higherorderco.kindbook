@@ -12,6 +12,6 @@ BinMap/swap : ∀(A: *) (BinMap A) -> Bits -> (Maybe A) -> (Pair (BinMap A) (May
 | A #Node{x l r} #I{b} v = let #Pair{r old} = (BinMap/swap A r b v) #Pair{#Node{x l r} old}
 | A #Node{x l r} #E    v = #Pair{#Node{v l r} x}
 
-#test: (BinMap/swap U32 #Leaf #E #Some{42}) == #Pair{#Node{#Some{42} #Leaf #Leaf} #None}
-#test: (BinMap/swap U32 (BinMap/set U32 #Leaf #E 10) #E #Some{20}) == #Pair{#Node{#Some{20} #Leaf #Leaf} #Some{10}}
-#test: (BinMap/swap U32 (BinMap/set U32 #Leaf #E 10) #E #None) == #Pair{#Node{#None #Leaf #Leaf} #Some{10}}
+#test: (BinMap/swap U64 #Leaf #E #Some{42}) == #Pair{#Node{#Some{42} #Leaf #Leaf} #None}
+#test: (BinMap/swap U64 (BinMap/set U64 #Leaf #E 10) #E #Some{20}) == #Pair{#Node{#Some{20} #Leaf #Leaf} #Some{10}}
+#test: (BinMap/swap U64 (BinMap/set U64 #Leaf #E 10) #E #None) == #Pair{#Node{#None #Leaf #Leaf} #Some{10}}

@@ -1,0 +1,11 @@
+// Subtracts two V2 vectors.
+// - a: First vector.
+// - b: Second vector.
+// = Difference of the vectors.
+V2/sub : V2 -> V2 -> V2
+| #V2{x0 y0} #V2{x1 y1} = #V2{
+    (F64/sub x0 x1)
+    (F64/sub y0 y1)
+  }
+
+#test: (V2/sub #V2{x: 3.0 y: 4.0} #V2{x: 1.0 y: 2.0}) == #V2{x: 2.0 y: 2.0}

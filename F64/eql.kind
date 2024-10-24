@@ -1,0 +1,9 @@
+// Compares two F64 values for equality.
+// - a: The first F64 value to compare.
+// - b: The second F64 value to compare.
+// = Returns 1 if the values are equal, 0 otherwise.
+F64/eql : F64 -> F64 -> U64
+| a b = (== a b)
+
+#test: (F64/eql 5.0 5.0) == 1
+#test: (F64/eql 5.0 3.0) == 0

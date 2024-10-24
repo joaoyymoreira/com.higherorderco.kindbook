@@ -2,7 +2,7 @@
 // - state: The current parser state.
 // = A Reply containing the updated state and the consumed character (if any).
 Parser/advance-one : (Parser (Maybe Char))
-= λstate
+| state =
   let #State{input index} = state
   match (String/uncons input) {
     #None: 
@@ -13,6 +13,6 @@ Parser/advance-one : (Parser (Maybe Char))
       #Done{#Reply{#State{tail #Succ{index}} #Some{head}}}
   }
 
-#test: (Parser/advance-one #State{"abc" #Zero}) == (#Done{#Reply{#State{"bc" #1} #Some{97}}})
-#test: (Parser/advance-one #State{"" #Zero}) == (#Done{#Reply{#State{"" #Zero} #None}})
-#test: (Parser/advance-one #State{"!@#" #Zero}) == (#Done{#Reply{#State{"@#" #1} #Some{33}}})
+#test: (Parser/advance-one #State{"abc" #0}) == (#Done{#Reply{#State{"bc" #1} #Some{97}}})
+#test: (Parser/advance-one #State{"" #0}) == (#Done{#Reply{#State{"" #0} #None}})
+#test: (Parser/advance-one #State{"!@#" #0}) == (#Done{#Reply{#State{"@#" #1} #Some{33}}})

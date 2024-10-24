@@ -6,5 +6,5 @@ List/empty : ∀(A: *) (List A) -> Bool
 | A #Nil           = #True
 | A #Cons{head tail} = #False
 
-#test: (List/empty U32 []) == #True
-#test: (List/empty U32 [1]) == #False
+#test: (List/empty U64 []) == #True
+#test: (List/empty U64 [1]) == #False

@@ -9,5 +9,5 @@ List/foldl : ∀(A: *) ∀(B: *) (A -> B -> A) -> A -> (List B) -> A
 | A B f z #Nil             = z
 | A B f z #Cons{head tail} = (List/foldl A B f (f z head) tail)
 
-#test: (List/foldl U32 U32 (λacc λx (+ acc x)) 0 [1 2 3]) == 6
-#test: (List/foldl (List U32) U32 (λacc λx #Cons{x acc}) [] [1 2 3]) == [3 2 1]
+#test: (List/foldl U64 U64 (λacc λx (+ acc x)) 0 [1 2 3]) == 6
+#test: (List/foldl (List U64) U64 (λacc λx #Cons{x acc}) [] [1 2 3]) == [3 2 1]

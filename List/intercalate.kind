@@ -12,7 +12,7 @@ List/intercalate : ∀(A: *) (List A) -> (List (List A)) -> (List A)
     (List/append A head (List/append A xs (List/intercalate A xs tail)))
   }
 
-//#test: (List/intercalate U32 [0] [[1 2] [3 4] [5 6]]) == [1 2 0 3 4 0 5 6]
-//#test: (List/intercalate U32 [9 9] [[1] [2] [3]]) == [1 9 9 2 9 9 3]
-//#test: (List/intercalate U32 [0] [[1]]) == [1]
-//#test: (List/intercalate U32 [0] []) == []
+//#test: (List/intercalate U64 [0] [[1 2] [3 4] [5 6]]) == [1 2 0 3 4 0 5 6]
+//#test: (List/intercalate U64 [9 9] [[1] [2] [3]]) == [1 9 9 2 9 9 3]
+//#test: (List/intercalate U64 [0] [[1]]) == [1]
+//#test: (List/intercalate U64 [0] []) == []

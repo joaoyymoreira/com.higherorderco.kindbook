@@ -4,7 +4,7 @@ Parser/parse-chars : (Parser String)
 = do Parser {
   ask c = Parser/parse-char
   if (Char/eq c 34) {
-     (Parser/pure _ "")
+     (Parser/pure String "")
   } else {
     do Parser {
       ask cs = Parser/parse-chars
@@ -13,6 +13,6 @@ Parser/parse-chars : (Parser String)
   }
 }
 
-#test: (Parser/run _ Parser/parse-chars "abc\"") == #Some{"abc"}
-#test: (Parser/run _ Parser/parse-chars "\"") == #Some{""}
-#test: (Parser/run _ Parser/parse-chars "a\\\"b\"") == #Some{"a"}
+#test: (Parser/run String Parser/parse-chars "abc\"") == #Some{"abc"}
+#test: (Parser/run String Parser/parse-chars "\"") == #Some{""}
+#test: (Parser/run String Parser/parse-chars "a\\\"b\"") == #Some{"a"}

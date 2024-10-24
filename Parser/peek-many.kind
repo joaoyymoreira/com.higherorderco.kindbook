@@ -2,7 +2,7 @@
 // - count: Number of characters to peek.
 // = Parser that returns a Maybe String with peeked characters, or None if not enough.
 Parser/peek-many : Nat -> (Parser (Maybe String))
-| count = λstate
+| count state = 
   let #State{input index} = state
   let peeked              = (List/take Char count input)
   let #Pair{str length}   = (String/length-got peeked)

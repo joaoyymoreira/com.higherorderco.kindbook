@@ -1,7 +1,4 @@
 // Parses a quoted character.
-// - 1st: Consumes the opening single quote.
-// - 2nd: Parses a single character.
-// - 3rd: Consumes the closing single quote.
 // = Returns the parsed character.
 Parser/parse-quoted-char : (Parser Char)
 = do Parser {

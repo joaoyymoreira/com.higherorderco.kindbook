@@ -8,4 +8,4 @@ Equal/sym : ∀(A: *) ∀(x: A) ∀(y: A) (Equal A x y) -> (Equal A y x)
 | A x y #Refl = #Refl
 
 #test: (Equal/sym Bool #True #True #Refl) == #Refl
-#test: (Equal/sym U32 3 3 #Refl) == #Refl
+#test: (Equal/sym U64 3 3 #Refl) == #Refl

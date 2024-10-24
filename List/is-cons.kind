@@ -6,6 +6,6 @@ List/is-cons : ∀(A: *) (List A) -> Bool
 | A #Nil             = #False
 | A #Cons{head tail} = #True
 
-#test: (List/is-cons U32 []) == #False
-#test: (List/is-cons U32 [1]) == #True
-#test: (List/is-cons U32 [1 2 3]) == #True
+#test: (List/is-cons U64 []) == #False
+#test: (List/is-cons U64 [1]) == #True
+#test: (List/is-cons U64 [1 2 3]) == #True

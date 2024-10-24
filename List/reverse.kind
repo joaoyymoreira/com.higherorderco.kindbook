@@ -5,5 +5,5 @@
 List/reverse : ∀(A: *) (List A) -> (List A)
 | A xs = (List/foldl (List A) A (λxs λx #Cons{x xs}) #Nil xs)
 
-#test: (List/reverse U32 [1 2 3]) == [3 2 1]
-#test: (List/reverse U32 []) == []
+#test: (List/reverse U64 [1 2 3]) == [3 2 1]
+#test: (List/reverse U64 []) == []

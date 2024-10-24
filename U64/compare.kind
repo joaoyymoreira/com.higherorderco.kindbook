@@ -1,0 +1,19 @@
+// Compares two U64 numbers.
+// - a: The first U64 number to compare.
+// - b: The second U64 number to compare.
+// = An Cmp value: LT if a < b, EQ if a = b, GT if a > b.
+U64/compare : U64 -> U64 -> Cmp
+= λa λb
+  if (U64/to-bool (U64/eql a b)) {
+    #EQ
+  } else {
+    if (U64/to-bool (< a b)) {
+      #LT
+    } else {
+      #GT
+    }
+  }
+
+#test: (U64/compare 5 3) == #GT
+#test: (U64/compare 3 5) == #LT
+#test: (U64/compare 5 5) == #EQ

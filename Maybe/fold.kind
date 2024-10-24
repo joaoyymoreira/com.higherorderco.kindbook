@@ -9,5 +9,5 @@ Maybe/fold : ∀(A: *) ∀(B: *) B -> (A -> B) -> (Maybe A) -> B
 | A B d f #None        = d
 | A B d f #Some{value} = (f value)
 
-#test: (Maybe/fold U32 U32 0 (λx (+ x 1)) #None) == 0
-#test: (Maybe/fold U32 U32 0 (λx (+ x 1)) #Some{5}) == 6
+#test: (Maybe/fold U64 U64 0 (λx (+ x 1)) #None) == 0
+#test: (Maybe/fold U64 U64 0 (λx (+ x 1)) #Some{5}) == 6

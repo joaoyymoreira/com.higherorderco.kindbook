@@ -11,11 +11,10 @@ OrdTree/Balance/rotate-right : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (OrdTr
   #Pair{(#Node{v2 #PlusOne ll #Node{v1 #MinusOne lr r}}) #True}
 | K V #Node{v1 #MinusOne #Node{v2 #PlusOne ll #Node{v3 balance lll llr}} r} =
   (Bool/if (Pair (OrdTree K V) Bool)
-    (Balance/eq balance #PlusOne)
+    (OrdTree/Balance/eq balance #PlusOne)
     (#Pair{(#Node{v3 #Zero #Node{v2 #MinusOne ll lll} #Node{v1 #Zero llr r}}) #False})
     (Bool/if (Pair (OrdTree K V) Bool)
-      (Balance/eq balance #MinusOne)
+      (OrdTree/Balance/eq balance #MinusOne)
       (#Pair{(#Node{v3 #Zero #Node{v2 #Zero ll lll} #Node{v1 #PlusOne llr r}}) #False})
       (#Pair{(#Node{v3 #Zero #Node{v2 #Zero ll lll} #Node{v1 #Zero llr r}}) #False})))
-//FIXME: tree - undefined
-| K V tree = #Pair{tree #False} 
+| K V tree = #Pair{tree #False}

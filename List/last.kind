@@ -7,6 +7,6 @@ List/last : ∀(A: *) (List A) -> (Maybe A)
 | A #Cons{head #Nil}        = #Some{head}
 | A #Cons{head #Cons{x xs}} = (List/last A #Cons{x xs})
 
-#test: (List/last U32 []) == #None
-#test: (List/last U32 [1]) == #Some{1}
-#test: (List/last U32 [1 2 3]) == #Some{3}
+#test: (List/last U64 []) == #None
+#test: (List/last U64 [1]) == #Some{1}
+#test: (List/last U64 [1 2 3]) == #Some{3}

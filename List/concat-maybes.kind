@@ -10,6 +10,6 @@ List/concat-maybes/go : ∀(A: *) (Maybe A) -> (List A) -> (List A)
 | A #None        acc = acc
 | A #Some{value} acc = #Cons{value acc}
 
-#test: (List/concat-maybes U32 [#Some{1} #None #Some{2} #Some{3}]) == [1 2 3]
-#test: (List/concat-maybes U32 [#None #None]) == []
-#test: (List/concat-maybes U32 []) == []
+#test: (List/concat-maybes U64 [#Some{1} #None #Some{2} #Some{3}]) == [1 2 3]
+#test: (List/concat-maybes U64 [#None #None]) == []
+#test: (List/concat-maybes U64 []) == []

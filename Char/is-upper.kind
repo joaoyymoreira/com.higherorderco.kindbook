@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if uppercase, False otherwise.
 Char/is-upper : Char -> Bool
-= λcode (Bool/and (U32/gte code 65) (U32/lte code 90))
+= λcode (Bool/and (U64/gte code 65) (U64/lte code 90))
 
 #test: (Char/is-upper 'A') == #True
 #test: (Char/is-upper 'a') == #False

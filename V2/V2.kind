@@ -1,0 +1,9 @@
+// A 2D vector with F64 components.
+// - x: The x-coordinate.
+// - y: The y-coordinate.
+data V2 {
+  #V2 {
+    x: F64
+    y: F64
+  }
+}

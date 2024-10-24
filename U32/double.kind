@@ -1,8 +1,0 @@
-// Doubles a given U32 value.
-// - x: The U32 value to be doubled.
-// = The input value multiplied by 2.
-U32/double : U32 -> U32
-= λx (U32/mul x 2)
-
-#test: (U32/double 5) == 10
-#test: (U32/double 0) == 0

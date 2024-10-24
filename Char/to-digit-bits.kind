@@ -1,12 +1,12 @@
 // Converts a digit character to its binary representation.
 // - c: The digit character.
 // = The Bits representation of the digit, or #E if not a digit.
-Char/to-digit-bits: U32 -> Char -> (Maybe Bits)
+Char/to-digit-bits: U64 -> Char -> (Maybe Bits)
 | base code =
-  let is_base_2  = (U32/eq base 2)
-  let is_base_8  = (U32/eq base 8)
-  let is_base_10 = (U32/eq base 10)
-  let is_base_16 = (U32/eq base 16)
+  let is_base_2  = (U64/eq base 2)
+  let is_base_8  = (U64/eq base 8)
+  let is_base_10 = (U64/eq base 10)
+  let is_base_16 = (U64/eq base 16)
   
   let is_binary  = (Bool/and is_base_2  (Char/is-binary-digit code))
   let is_octal   = (Bool/and is_base_8  (Char/is-octal-digit code))

@@ -1,3 +1,6 @@
+// Defines a data type for parser replies
+// - state: The current state of the parser.
+// - value: The parsed value of type A.
 data Parser/Reply (A : Set) {
   #Reply {
     state: Parser/State

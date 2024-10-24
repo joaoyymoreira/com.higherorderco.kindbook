@@ -1,0 +1,5 @@
+// Ord instance for U64
+U64/Ord : (Ord U64)
+= #Ord{
+    compare: U64/compare
+  }

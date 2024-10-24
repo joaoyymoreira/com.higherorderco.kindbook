@@ -1,5 +1,5 @@
 // Converts a string to a list of characters.
 // - str: Input string.
 // = List of characters.
-String/to-list : String -> (List U32)
+String/to-list : String -> (List U64)
 | str = str

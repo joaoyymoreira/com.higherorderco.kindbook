@@ -3,7 +3,7 @@
 // - y: Second character.
 // = Cmp: LT, EQ, or GT.
 Char/compare : Char -> Char -> Cmp
-= λx λy (U32/compare x y)
+= λx λy (U64/compare x y)
 
 #test: (Char/compare 'a' 'a') == #EQ
 #test: (Char/compare 'a' 'b') == #LT

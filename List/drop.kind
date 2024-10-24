@@ -8,6 +8,6 @@ List/drop : ∀(A: *) Nat -> (List A) -> (List A)
 | A #Succ{n} #Nil          = #Nil
 | A #Succ{n} #Cons{x tail} = (List/drop A n tail)
 
-#test: (List/drop U32 #0 [1 2 3]) == [1 2 3]
-#test: (List/drop U32 #2 [1 2 3]) == [3]
-#test: (List/drop U32 #4 [1 2 3]) == []
+#test: (List/drop U64 #0 [1 2 3]) == [1 2 3]
+#test: (List/drop U64 #2 [1 2 3]) == [3]
+#test: (List/drop U64 #4 [1 2 3]) == []

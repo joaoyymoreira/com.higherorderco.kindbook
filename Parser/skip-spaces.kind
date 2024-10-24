@@ -1,5 +1,5 @@
 // Skips spaces in the text and returns the number of spaces skipped.
-// - s: The parser state.
+// - state: The parser state.
 // = A Reply containing the updated state and the number of spaces skipped.
 Parser/skip-spaces : (Parser Nat)
 | state =

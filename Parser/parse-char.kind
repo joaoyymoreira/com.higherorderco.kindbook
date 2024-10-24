@@ -4,11 +4,11 @@ Parser/parse-char : (Parser Char)
 = do Parser {
   ask mc = Parser/advance-one
   match mc {
-    #None: (Parser/fail _ "Unexpected end of input")
+    #None: (Parser/fail Char "Unexpected end of input")
     #Some{c}: if (Char/eq c '\\') {
       Parser/parse-escape-sequence
     } else {
-      (Parser/pure _ c)
+      (Parser/pure Char c)
     }
   }
 }

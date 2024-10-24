@@ -6,5 +6,5 @@ Maybe/to-list : ∀(A: *) (Maybe A) -> (List A)
 | A #None        = #Nil
 | A #Some{value} = #Cons{value #Nil}
 
-#test: (Maybe/to-list U32 #None) == #Nil
-#test: (Maybe/to-list U32 #Some{42}) == #Cons{42 #Nil}
+#test: (Maybe/to-list U64 #None) == #Nil
+#test: (Maybe/to-list U64 #Some{42}) == #Cons{42 #Nil}

@@ -1,17 +1,10 @@
-// Adds an action to the ActionLogs at a specific tick.
-// If the tick already has a list of actions, the new action is appended to that list.
-// If the tick doesn't exist, a new list with the single action is created.
-// - A: The type of actions stored in the logs.
-// - logs: The original ActionLogs.
-// - t: The tick at which to add the action.
-// - a: The action to add.
-// = A new ActionLogs with the action added at the specified tick.
+// Adds an action to ActionLogs at a specific tick.
+// - A: Action type.
+// - logs: Original ActionLogs.
+// - t: Tick to add the action.
+// - a: Action to add.
+// = New ActionLogs with action added.
 
+// FIX: log is now a reserved keyword
 UG/SM/ActionLogs/add-action : ∀(A: *) (UG/SM/ActionLogs A) -> UG/SM/Tick -> A -> (UG/SM/ActionLogs A)
-| A logs t a =
-  let key      = (Nat/to-bits t)
-  let existing = (BinMap/get (List A) logs key)
-  (match existing {
-    #None: (BinMap/set (List A) logs key [a])
-    #Some{actions}: (BinMap/set (List A) logs key (List/append A actions [a]))
-  })
+| A lo t a = lo

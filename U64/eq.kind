@@ -1,0 +1,9 @@
+// Checks if two U64 values are equal.
+// - a: The first U64 value to compare.
+// - b: The second U64 value to compare.
+// = True if the values are equal, False otherwise.
+U64/eq : U64 -> U64 -> Bool
+= λa λb (U64/to-bool (U64/eql a b))
+
+#test: (U64/eq 5 5) == #True
+#test: (U64/eq 5 3) == #False

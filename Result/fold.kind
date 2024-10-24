@@ -10,11 +10,11 @@ Result/fold : ∀(A: *) ∀(B: *) ∀(E: *) (A -> B) -> (E -> B) -> (Result A E)
 | A B E done fail #Done{value} = (done value)
 | A B E done fail #Fail{error} = (fail error)
 
-#test: (Result/fold U32 U32 U32 (λx (+ x 1)) (λe (- e 1)) (#Done{5})) == 6
-#test: (Result/fold U32 U32 U32 (λx (+ x 1)) (λe (- e 1)) (#Fail{10})) == 9
-#test: (Result/fold U32 U32 U32 (λx (* x 2)) (λe (* e 3)) (#Done{4})) == 8
-#test: (Result/fold U32 U32 U32 (λx (* x 2)) (λe (* e 3)) (#Fail{6})) == 18
-#test: (Result/fold U32 U32 U32 (λx x) (λe (+ e 2)) (#Done{100})) == 100
-#test: (Result/fold U32 U32 U32 (λx (* x 10)) (λe e) (#Fail{42})) == 42
-#test: (Result/fold U32 U32 U32 (λx (+ x 5)) (λe (* e 5)) (#Done{7})) == 12
-#test: (Result/fold U32 U32 U32 (λx (* x 5)) (λe (+ e 5)) (#Fail{3})) == 8
+#test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Done{5})) == 6
+#test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Fail{10})) == 9
+#test: (Result/fold U64 U64 U64 (λx (* x 2)) (λe (* e 3)) (#Done{4})) == 8
+#test: (Result/fold U64 U64 U64 (λx (* x 2)) (λe (* e 3)) (#Fail{6})) == 18
+#test: (Result/fold U64 U64 U64 (λx x) (λe (+ e 2)) (#Done{100})) == 100
+#test: (Result/fold U64 U64 U64 (λx (* x 10)) (λe e) (#Fail{42})) == 42
+#test: (Result/fold U64 U64 U64 (λx (+ x 5)) (λe (* e 5)) (#Done{7})) == 12
+#test: (Result/fold U64 U64 U64 (λx (* x 5)) (λe (+ e 5)) (#Fail{3})) == 8

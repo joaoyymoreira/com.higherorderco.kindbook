@@ -1,26 +1,30 @@
 // Parses as many occurrences of the given parser as possible.
 // - A: Input type.
-// - p: Parser to be repeatedly applied.
+// - parser: Parser to be repeatedly applied.
 // = Parser that returns a list of all successfully parsed elements.
 Parser/parse-many : ∀(A: *) (Parser A) -> (Parser (List A))
-| A p state = (Parser/parse-many/go A p state [])
+| A parser state = (Parser/parse-many/go A parser state [])
 
 // Accumulates parsed results.
 // - A: Input type.
-// - p: Parser to be repeatedly applied.
+// - parser: Parser to be repeatedly applied.
+// - state: The parser state.
 // - acc: Accumulator list of already parsed elements.
 // = Parser that returns the final list of all parsed elements.
 Parser/parse-many/go : ∀(A: *) (Parser A) -> Parser/State -> (List A) -> (Result (Parser/Reply (List A)) Parser/Error)
-| A p state acc = 
-  match (p state) {
+| A parser #State{#Nil index} acc = #Done{#Reply{#State{#Nil index} (List/reverse A acc)}}
+| A parser state              acc = 
+  match (parser state) {
     #Done{reply}: 
       match reply {
-        #Reply{state value}: (Parser/parse-many/go A p state #Cons{value acc})
+        #Reply{new_state value}: 
+          let #State{input index} = new_state
+          let next_str            = (String/tail input)
+          (Parser/parse-many/go A parser #State{next_str index} #Cons{value acc})
       }
     #Fail{_}: #Done{#Reply{state (List/reverse A acc)}}
   }
 
-
-// #test: (Parser/run String (Parser/parse-many Char (Parser/pure Char 'x')) "abc") == #Some{"xxx"} // killed
+#test: (Parser/run String (Parser/parse-many Char (Parser/pure Char 'x')) "abc") == #Some{"xxx"} 
 #test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "") == #Some{[]}
 #test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "abc") == #Some{"abc"}

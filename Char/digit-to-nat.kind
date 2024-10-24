@@ -4,8 +4,8 @@
 Char/digit-to-nat : Char -> (Maybe Nat)
 | c =
   let n = (- c '0')
-  if (U32/to-bool (& (<= 0 n) (<= n 9))) {
-    #Some{(U32/to-nat n)}
+  if (U64/to-bool (& (<= 0 n) (<= n 9))) {
+    #Some{(U64/to-nat n)}
   } else {
     #None
   }

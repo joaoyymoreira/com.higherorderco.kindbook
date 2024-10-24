@@ -9,5 +9,5 @@ List/foldr : ∀(A: *) ∀(B: *) (A -> B -> B) -> B -> (List A) -> B
 | A B f z #Nil             = z
 | A B f z #Cons{head tail} = (f head (List/foldr A B f z tail))
 
-#test: (List/foldr U32 U32 (λx λacc (+ x acc)) 0 [1 2 3]) == 6
-#test: (List/foldr U32 (List U32) (λx λacc #Cons{x acc}) #Nil [1 2 3]) == [1 2 3]
+#test: (List/foldr U64 U64 (λx λacc (+ x acc)) 0 [1 2 3]) == 6
+#test: (List/foldr U64 (List U64) (λx λacc #Cons{x acc}) #Nil [1 2 3]) == [1 2 3]
