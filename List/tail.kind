@@ -7,5 +7,5 @@ List/tail : ∀(A: *) (List A) -> (List A)
 | A #Cons{head tail} = tail 
 
 #test: (List/tail Nat []) == []
-#test: (List/tail U32 [97]) == []
+#test: (List/tail U64 [97]) == []
 #test: (List/tail Char [97 98 99]) == [98 99]
