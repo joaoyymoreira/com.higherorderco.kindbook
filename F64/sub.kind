@@ -1,0 +1,10 @@
+// Subtracts two F64s.
+// - a: The minuend.
+// - b: The subtrahend.
+// = The difference of a and b.
+F64/sub : F64 -> F64 -> F64
+= λa λb (- a b)
+
+#test: (F64/sub 5.0 3.0) == 2.0
+#test: (F64/sub 10.0 7.5) == 2.5
+#test: (F64/sub 3.0 5.0) == -2.0
