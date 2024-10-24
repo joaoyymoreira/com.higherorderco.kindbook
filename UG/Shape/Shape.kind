@@ -1,0 +1,13 @@
+// Represents a geometric shape.
+// - Circle: A circle with a center point and radius.
+// - Polygon: A polygon with a center point and list of vertices.
+data UG/Shape {
+  #Circle {
+    center: V2
+    radius: F64
+  }
+  #Polygon {
+    center: V2
+    vertices: (List V2)
+  }
+}

@@ -1,0 +1,25 @@
+// Creates a square Shape centered at a given point with a specified side length.
+// - center: The center point of the square.
+// - side_length: The length of each side.
+// = A Shape representing the square.
+Shape/square : V2 -> F64 -> Shape
+| center side_length =
+  let half_side = (F64/div side_length 2.0)
+  let neg_half = (F64/sub 0.0 half_side)
+  let top_left     = (#V2 neg_half half_side)
+  let top_right    = (#V2 half_side half_side)
+  let bottom_right = (#V2 half_side neg_half)
+  let bottom_left  = (#V2 neg_half neg_half)
+  let vertices = (#Cons top_left
+                (#Cons top_right
+                (#Cons bottom_right
+                (#Cons bottom_left #Nil))))
+  #Polygon{center vertices}
+
+#test: (Shape/square (#V2 0.0 0.0) 2.0) == (#Polygon{
+  center: (#V2 0.0 0.0)
+  vertices: (#Cons (#V2 -1.0 1.0)
+           (#Cons (#V2 1.0 1.0)
+           (#Cons (#V2 1.0 -1.0)
+           (#Cons (#V2 -1.0 -1.0) #Nil))))
+})
