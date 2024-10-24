@@ -1,9 +1,0 @@
-// Converts a Bool to a U32.
-// - x: The Bool value to convert.
-// = 1 if the input is True, 0 if the input is False.
-U32/from-bool : Bool -> U32
-| #True  = 1
-| #False = 0
-
-#test: (U32/from-bool #True) == 1
-#test: (U32/from-bool #False) == 0

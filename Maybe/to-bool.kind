@@ -6,7 +6,7 @@ Maybe/to-bool : ∀(A: *) (Maybe A) -> Bool
 | A #None        = #False
 | A #Some{value} = #True
 
-#test: (Maybe/to-bool U32 (Maybe/none U32)) == #False
-#test: (Maybe/to-bool U32 (Maybe/some U32 42)) == #True
+#test: (Maybe/to-bool U64 (Maybe/none U64)) == #False
+#test: (Maybe/to-bool U64 (Maybe/some U64 42)) == #True
 #test: (Maybe/to-bool Bool (Maybe/some Bool #True)) == #True
-#test: (Maybe/to-bool (Maybe U32) (Maybe/some (Maybe U32) (Maybe/none U32))) == #True
+#test: (Maybe/to-bool (Maybe U64) (Maybe/some (Maybe U64) (Maybe/none U64))) == #True

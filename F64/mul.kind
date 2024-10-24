@@ -1,0 +1,9 @@
+// Multiplies two F64 values.
+// - a: First F64 value.
+// - b: Second F64 value.
+// = Product of 'a' and 'b'.
+F64/mul : F64 -> F64 -> F64
+= λa λb (* a b)
+
+#test: (F64/mul 2.0 3.0) == 6.0
+#test: (F64/mul 0.5 4.0) == 2.0

@@ -1,0 +1,12 @@
+// Converts a U64 to a Natural number.
+// - x: The U64 value to convert.
+// = The Natural number equivalent of the input U64 value.
+U64/to-nat : U64 -> Nat
+= λx if (U64/to-bool x) {
+  #Succ{(U64/to-nat (- x 1))}
+} else {
+  #Zero
+}
+
+#test: (U64/to-nat 0) == #Zero
+#test: (U64/to-nat 2) == #Succ{#Succ{#Zero}}

@@ -8,7 +8,7 @@ Nat/to-string : Nat -> String
 // Converts a digit (0-9) to its corresponding character code.
 // - n: The digit to convert.
 // = The character code representing the digit.
-Nat/digit-to-char : Nat -> U32
+Nat/digit-to-char : Nat -> U64
 | #Zero                                                                = 48
 | #Succ{#Zero}                                                         = 49
 | #Succ{#Succ{#Zero}}                                                  = 50

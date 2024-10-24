@@ -7,15 +7,15 @@ Char/hex-to-nat : Char -> (Maybe Nat)
   let case_0_9 = (- code 48)
   let case_A_F = (- code 55)
   let case_a_f = (- code 87)
-  use value = if (U32/to-bool (< code 58)) {
+  use value = if (U64/to-bool (< code 58)) {
     case_0_9
-  } else if (U32/to-bool (< code 97)) {
+  } else if (U64/to-bool (< code 97)) {
     case_A_F
   } else {
     case_a_f
   }
   if is_hex {
-    (Maybe/some Nat (U32/to-nat value))
+    (Maybe/some Nat (U64/to-nat value))
   } else {
     (Maybe/none Nat)
   }

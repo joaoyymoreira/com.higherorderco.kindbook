@@ -436,7 +436,7 @@ HVM/run : ∀(A: *) (HVM A) -> (Maybe A)
 // -------
 
 HVM/CTerm/to-string : ∀(p: HVM/CPol) (HVM/CTerm p) -> String
-| #Pos #Var{uid}     = (String/join "" ["+" (U32/to-string (Bits/to-u32 uid))])
+| #Pos #Var{uid}     = (String/join "" ["+" (U64/to-string (Bits/to-u32 uid))])
 | #Pos #Sub{uid}     = #void
 | #Pos #Nul          = "+*"
 | #Pos #Era          = #void
@@ -445,7 +445,7 @@ HVM/CTerm/to-string : ∀(p: HVM/CPol) (HVM/CTerm p) -> String
 | #Pos #Sup{tm1 tm2} = (String/join "" ["+{" (HVM/CTerm/to-string #Pos tm1) " " (HVM/CTerm/to-string #Pos tm2) "}"])
 | #Pos #Dup{dp1 dp2} = #void
 | #Neg #Var{uid}     = #void
-| #Neg #Sub{uid}     = (String/join "" ["-" (U32/to-string (Bits/to-u32 uid))])
+| #Neg #Sub{uid}     = (String/join "" ["-" (U64/to-string (Bits/to-u32 uid))])
 | #Neg #Nul          = #void
 | #Neg #Era          = "-*"
 | #Neg #Lam{var bod} = #void
@@ -461,7 +461,7 @@ HVM/CNet/to-string : HVM/CNet -> String
 | #Net{rot bag} = (String/join "" [(HVM/CTerm/to-string #Pos rot) (HVM/CBag/to-string bag)])
 
 HVM/RLoc/to-string : Bits -> String
-| loc = (String/pad-left #4 '0' (U32/to-string (Bits/to-u32 loc)))
+| loc = (String/pad-left #4 '0' (U64/to-string (Bits/to-u32 loc)))
 
 HVM/RTerm/to-string : HVM/RTerm -> String 
 | #RTerm{#VAR loc} = (String/join "" ["VAR:" (HVM/RLoc/to-string loc)])
@@ -476,7 +476,7 @@ HVM/RTerm/to-string : HVM/RTerm -> String
 HVM/RMem/to-string : HVM/RMem -> String
 | mem = (List/fold _ (BinMap/to-list _ mem) _ "" (λkv λtxt
   let #Pair{k v} = kv
-  let addr       = (String/pad-left #4 '0' (U32/to-string (Bits/to-u32 k)))
+  let addr       = (String/pad-left #4 '0' (U64/to-string (Bits/to-u32 k)))
   let term       = (HVM/RTerm/to-string v)
   (String/join "" [addr " → " term "\n" txt])
 ))
@@ -487,7 +487,7 @@ HVM/RDex/to-string : HVM/RDex -> String
 HVM/RBag/to-string : HVM/RBag -> String
 | bag = (List/fold _ (BinMap/to-list _ bag) _ "" (λkv λtxt
   let #Pair{k v} = kv
-  let addr       = (String/pad-left #4 '0' (U32/to-string (Bits/to-u32 k)))
+  let addr       = (String/pad-left #4 '0' (U64/to-string (Bits/to-u32 k)))
   let dex        = (HVM/RDex/to-string v)
   (String/join "" [addr " → " dex "\n" txt])
 ))
@@ -506,7 +506,7 @@ HVM/parse-term : ∀(p: HVM/CPol) (Parser (HVM/CTerm p))
   ask Parser/skip-trivia
   ask text = Parser/get-input
   ask head = Parser/peek-one
-  when (Maybe/eq-with _ U32/eq) head {
+  when (Maybe/eq-with _ U64/eq) head {
     #Some{'('} : do Parser {
       ask (Parser/consume "(")
       ask text = Parser/get-input
@@ -535,7 +535,7 @@ HVM/parse-term : ∀(p: HVM/CPol) (Parser (HVM/CTerm p))
 | #Neg = do Parser {
   ask Parser/skip-trivia
   ask head = Parser/peek-one
-  when (Maybe/eq-with _ U32/eq) head {
+  when (Maybe/eq-with _ U64/eq) head {
     #Some{'('} : do Parser {
       ask (Parser/consume "(")
       ask arg = (HVM/parse-term #Pos)
@@ -565,7 +565,7 @@ HVM/parse-bag : (Parser HVM/CBag)
 = do Parser {
   ask Parser/skip-trivia
   ask head = Parser/peek-one
-  when (Maybe/eq-with _ U32/eq) head {
+  when (Maybe/eq-with _ U64/eq) head {
     #Some{'&'} : do Parser {
       ask (Parser/consume "&")
       ask neg = (HVM/parse-term #Neg)

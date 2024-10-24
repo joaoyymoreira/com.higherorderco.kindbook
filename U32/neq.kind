@@ -1,9 +1,0 @@
-// Checks if two U32 values are not equal.
-// - a: The first U32 value.
-// - b: The second U32 value.
-// = True if the first value is not equal to the second, False otherwise.
-U32/neq : U32 -> U32 -> Bool
-= λa λb (U32/to-bool (!= a b))
-
-#test: (U32/neq 5 3) == #True
-#test: (U32/neq 5 5) == #False

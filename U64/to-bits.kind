@@ -1,0 +1,23 @@
+// Converts a U64 value to its binary representation as Bits.
+// - n: The U64 value to convert.
+// = The binary representation of the input U64 value as Bits.
+U64/to-bits : U64 -> Bits
+= λ{
+  0: #E{}
+  _: λ{
+    0: #I{#E{}}
+    _{pred}:
+      let quotient = (U64/div (+ 2 pred) 2)
+      let remainder = (U64/mod (+ 2 pred) 2)
+      if (U64/to-bool remainder) {
+        #I{(U64/to-bits quotient)}
+      } else {
+        #O{(U64/to-bits quotient)}
+      }
+  }
+}
+
+#test: (U64/to-bits 0) == #E
+#test: (U64/to-bits 1) == #I{#E}
+#test: (U64/to-bits 5) == #I{#O{#I{#E}}}
+#test: (U64/to-bits 8) == #O{#O{#O{#I{#E}}}}

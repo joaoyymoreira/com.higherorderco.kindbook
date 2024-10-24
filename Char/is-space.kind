@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if whitespace, False otherwise.
 Char/is-space : Char -> Bool
-= λcode (U32/to-bool 
+= λcode (U64/to-bool 
   (| (== code 32)  // space
   (| (== code 9)   // tab
   (| (== code 10)  // newline

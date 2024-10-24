@@ -1,0 +1,9 @@
+// Performs right shift operation on a U64 value.
+// - a: The U64 value.
+// - n: The number of positions to shift right.
+// = The result of right shifting the input value by the specified positions.
+U64/rshift : U64 -> U64 -> U64
+= λa λn (>> a n)
+
+#test: (U64/rshift 8 1) == 4
+#test: (U64/rshift 16 2) == 4

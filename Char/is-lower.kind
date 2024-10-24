@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if lowercase, False otherwise.
 Char/is-lower : Char -> Bool
-= λcode (Bool/and (U32/gte code 97) (U32/lte code 122))
+= λcode (Bool/and (U64/gte code 97) (U64/lte code 122))
 
 #test: (Char/is-lower 'a') == #True
 #test: (Char/is-lower 'A') == #False

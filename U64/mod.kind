@@ -1,0 +1,9 @@
+// Calculates the modulo (remainder) of two 32-bit unsigned integers.
+// - a: The dividend.
+// - b: The divisor.
+// = The remainder of the division as a U64 value.
+U64/mod : U64 -> U64 -> U64
+= λa λb (% a b)
+
+#test: (U64/mod 7 3) == 1
+#test: (U64/mod 10 5) == 0

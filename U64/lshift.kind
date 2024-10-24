@@ -1,0 +1,9 @@
+// Performs left shift operation on a U64 value.
+// - a: The U64 value.
+// - n: The number of positions to shift left.
+// = The result of left shifting the input value by the specified positions.
+U64/lshift : U64 -> U64 -> U64
+= λa λn (<< a n)
+
+#test: (U64/lshift 1 2) == 4
+#test: (U64/lshift 5 1) == 10

@@ -2,7 +2,7 @@
 // - c: The character to check.
 // = True if the character is in the Latin-1 set, False otherwise.
 Char/is-latin1 : Char -> Bool
-= λc (U32/to-bool (<= c 255))
+= λc (U64/to-bool (<= c 255))
 
 #test: (Char/is-latin1 'A') == #True
 #test: (Char/is-latin1 'ñ') == #True

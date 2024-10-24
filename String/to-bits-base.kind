@@ -2,9 +2,9 @@
 // - base: Base for conversion.
 // - str: String to convert.
 // = Maybe Bits with converted number if successful, None otherwise.
-String/to-bits-base : U32 -> String -> (Maybe Bits)
+String/to-bits-base : U64 -> String -> (Maybe Bits)
 | base str = 
-  (Maybe/map U32 Bits U32/to-bits (String/to-u32-base base str))
+  (Maybe/map U64 Bits U64/to-bits (String/to-u32-base base str))
 
 #test: (String/to-bits-base 10 "123") == #Some{#I{#I{#O{#I{#I{#I{#I{#E{}}}}}}}}}
 #test: (String/to-bits-base 16 "FF") == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}

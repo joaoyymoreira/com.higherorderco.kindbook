@@ -1,0 +1,15 @@
+// Returns the maximum of two U64 numbers.
+// - a: The first U64 number.
+// - b: The second U64 number.
+// = The larger of the two input numbers.
+U64/max : U64 -> U64 -> U64
+= λa λb
+  if (U64/to-bool (>= a b)) {
+    a
+  } else {
+    b
+  }
+
+#test: (U64/max 5 3) == 5
+#test: (U64/max 3 5) == 5
+#test: (U64/max 5 5) == 5

@@ -1,0 +1,9 @@
+// Performs integer division of two 32-bit unsigned integers.
+// - a: The dividend.
+// - b: The divisor.
+// = The quotient of the division as a U64 value.
+U64/div : U64 -> U64 -> U64
+= λa λb (/ a b)
+
+#test: (U64/div 10 2) == 5
+#test: (U64/div 7 3) == 2

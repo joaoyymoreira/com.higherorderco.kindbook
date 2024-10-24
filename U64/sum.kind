@@ -1,0 +1,13 @@
+// Sums numbers up to an upper bound, exclusive.
+// - x: The upper bound of the sum.
+// = The sum of all numbers from 0 to x, exclusive.
+U64/sum : U64 -> U64
+= λx
+  if (U64/to-bool x) {
+    (+ (- x 1) (U64/sum (- x 1)))
+  } else {
+    0
+  }
+
+#test: (U64/sum 5) == 10
+#test: (U64/sum 3) == 3

@@ -8,8 +8,8 @@ List/at : ∀(A: *) (List A) -> Nat -> (Maybe A)
 | A #Cons{head tail} #Zero    = #Some{head}
 | A #Cons{head tail} #Succ{i} = (List/at A tail i)
 
-#test: (List/at U32 [1 2 3] #0) == #Some{1}
-#test: (List/at U32 [1 2 3] #1) == #Some{2}
-#test: (List/at U32 [1 2 3] #2) == #Some{3}
-#test: (List/at U32 [1 2 3] #3) == #None
-#test: (List/at U32 [] #0) == #None
+#test: (List/at U64 [1 2 3] #0) == #Some{1}
+#test: (List/at U64 [1 2 3] #1) == #Some{2}
+#test: (List/at U64 [1 2 3] #2) == #Some{3}
+#test: (List/at U64 [1 2 3] #3) == #None
+#test: (List/at U64 [] #0) == #None

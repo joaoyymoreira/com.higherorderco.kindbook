@@ -1,5 +1,0 @@
-// IsEqual instance for U32
-U32/IsEqual : (IsEqual U32)
-= #IsEqual{
-  eq: U32/eq
-}

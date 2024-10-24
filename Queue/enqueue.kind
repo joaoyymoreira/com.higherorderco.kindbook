@@ -13,20 +13,20 @@ Queue/enqueue
 }
 // Test: Enqueue to an empty queue
 TEST_0
-: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Nil #Nil} 1) #Queue{#Nil #Cons{1 #Nil}})
+: (Equal (Queue U64) (Queue/enqueue U64 #Queue{#Nil #Nil} 1) #Queue{#Nil #Cons{1 #Nil}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in front
 TEST_1
-: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Cons{1 #Cons{2 #Nil}} #Nil} 3) #Queue{#Cons{1 #Cons{2 #Nil}} #Cons{3 #Nil}})
+: (Equal (Queue U64) (Queue/enqueue U64 #Queue{#Cons{1 #Cons{2 #Nil}} #Nil} 3) #Queue{#Cons{1 #Cons{2 #Nil}} #Cons{3 #Nil}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in back
 TEST_2
-: (Equal (Queue U32) (Queue/enqueue U32 #Queue{#Nil #Cons{2 #Cons{1 #Nil}}} 3) #Queue{#Nil #Cons{3 #Cons{2 #Cons{1 #Nil}}}})
+: (Equal (Queue U64) (Queue/enqueue U64 #Queue{#Nil #Cons{2 #Cons{1 #Nil}}} 3) #Queue{#Nil #Cons{3 #Cons{2 #Cons{1 #Nil}}}})
 = #Refl
 
 // Test: Enqueue to a queue with elements in both front and back
 TEST_3
-: (Equal (Queue U32) (Queue/enqueue U32 #Queue{ #Cons{1 #Nil} #Cons{3 #Cons{2 #Nil}}} 4) #Queue{ #Cons{1 #Nil} #Cons{4 #Cons{3 #Cons{2 #Nil}}}})
+: (Equal (Queue U64) (Queue/enqueue U64 #Queue{ #Cons{1 #Nil} #Cons{3 #Cons{2 #Nil}}} 4) #Queue{ #Cons{1 #Nil} #Cons{4 #Cons{3 #Cons{2 #Nil}}}})
 = #Refl

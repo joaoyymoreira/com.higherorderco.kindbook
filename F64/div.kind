@@ -1,0 +1,10 @@
+// Performs division of two F64 values.
+// - a: The dividend.
+// - b: The divisor.
+// = The quotient of the division.
+F64/div : F64 -> F64 -> F64
+= λa λb (/ a b)
+
+#test: (F64/div 6.0 2.0) == 3.0
+#test: (F64/div 10.0 5.0) == 2.0
+#test: (F64/div 10.2 2.0) == 5.1

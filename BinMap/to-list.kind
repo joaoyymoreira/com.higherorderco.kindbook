@@ -14,20 +14,20 @@ BinMap/to-list/go : ∀(A: *) (List (Pair Bits (BinMap A))) -> (List (Pair Bits 
 | A #Cons{#Pair{k #Leaf}               q} = (BinMap/to-list/go A q)
 
 #test:
-  let map = (BinMap/empty U32)
-  (BinMap/to-list U32 map) == #Nil
+  let map = (BinMap/empty U64)
+  (BinMap/to-list U64 map) == #Nil
 
 #test:
-  let map = (BinMap/empty U32)
-  let map = (BinMap/set U32 map #O{#E} 0)
-  let map = (BinMap/set U32 map #I{#E} 1)
-  (BinMap/to-list U32 map) == [#Pair{#O{#E} 0} #Pair{#I{#E} 1}]
+  let map = (BinMap/empty U64)
+  let map = (BinMap/set U64 map #O{#E} 0)
+  let map = (BinMap/set U64 map #I{#E} 1)
+  (BinMap/to-list U64 map) == [#Pair{#O{#E} 0} #Pair{#I{#E} 1}]
 
 #test:
-  let map = (BinMap/empty U32)
-  let map = (BinMap/set U32 map #O{#O{#E}} 0)
-  let map = (BinMap/set U32 map #I{#O{#E}} 1)
-  let map = (BinMap/set U32 map #O{#I{#E}} 2)
-  let map = (BinMap/set U32 map #I{#I{#E}} 3)
-  (BinMap/to-list U32 map) == [#Pair{#O{#O{#E}} 0} #Pair{#I{#O{#E}} 1} #Pair{#O{#I{#E}} 2} #Pair{#I{#I{#E}} 3}]
+  let map = (BinMap/empty U64)
+  let map = (BinMap/set U64 map #O{#O{#E}} 0)
+  let map = (BinMap/set U64 map #I{#O{#E}} 1)
+  let map = (BinMap/set U64 map #O{#I{#E}} 2)
+  let map = (BinMap/set U64 map #I{#I{#E}} 3)
+  (BinMap/to-list U64 map) == [#Pair{#O{#O{#E}} 0} #Pair{#I{#O{#E}} 1} #Pair{#O{#I{#E}} 2} #Pair{#I{#I{#E}} 3}]
 

@@ -2,7 +2,7 @@
 // - code: The character to check.
 // = True if ASCII, False otherwise.
 Char/is-ascii : Char -> Bool
-= λcode (U32/to-bool (< code 128))
+= λcode (U64/to-bool (< code 128))
 
 #test: (Char/is-ascii 'A') == #True
 #test: (Char/is-ascii '€') == #False

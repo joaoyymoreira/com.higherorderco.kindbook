@@ -5,5 +5,5 @@
 Maybe/some : ∀(A: *) A -> (Maybe A)
 | A value = #Some{value}
 
-#test: (Maybe/some U32 42) == #Some{42}
+#test: (Maybe/some U64 42) == #Some{42}
 #test: (Maybe/some Bool #True) == #Some{#True}

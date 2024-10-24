@@ -7,7 +7,7 @@ Maybe/run : ∀(A: *) A -> (Maybe A) -> A
 | A d #None        = d
 | A d #Some{value} = value
 
-#test: (Maybe/run U32 42 #None) == 42
-#test: (Maybe/run U32 42 #Some{7}) == 7
+#test: (Maybe/run U64 42 #None) == 42
+#test: (Maybe/run U64 42 #Some{7}) == 7
 #test: (Maybe/run String "default" #None) == "default"
 #test: (Maybe/run String "default" #Some{"hello"}) == "hello"

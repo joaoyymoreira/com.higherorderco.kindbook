@@ -7,5 +7,5 @@
 Pair/map : ∀(A: *) ∀(B: *) (A -> B) -> (Pair A A) -> (Pair B B)
 | A B f #Pair{fst snd} = #Pair{(f fst) (f snd)}
 
-#test: (Pair/map U32 U32 (λx (+ x 1)) #Pair{1 2}) == #Pair{2 3}
+#test: (Pair/map U64 U64 (λx (+ x 1)) #Pair{1 2}) == #Pair{2 3}
 #test: (Pair/map Bool Bool Bool/not #Pair{#True #False}) == #Pair{#False #True}

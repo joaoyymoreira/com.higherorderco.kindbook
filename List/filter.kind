@@ -12,5 +12,5 @@ List/filter : ∀(A: *) (A -> Bool) -> (List A) -> (List A)
     (List/filter A fn tail)
   }
 
-#test: (List/filter U32 (λx (U32/to-bool (== x 2))) [1 2 3 2 1]) == [2 2]
-#test: (List/filter U32 (λx (U32/to-bool (> x 2))) [1 2 3 4 5]) == [3 4 5]
+#test: (List/filter U64 (λx (U64/to-bool (== x 2))) [1 2 3 2 1]) == [2 2]
+#test: (List/filter U64 (λx (U64/to-bool (> x 2))) [1 2 3 4 5]) == [3 4 5]

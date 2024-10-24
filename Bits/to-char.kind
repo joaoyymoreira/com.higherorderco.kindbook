@@ -4,7 +4,7 @@
 Bits/to-char
 : ∀(bits: Bits)
   Char
-= λbits (U32/from-bits bits)
+= λbits (U64/from-bits bits)
 
 #test: (Bits/to-char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) == 'A'
 #test: (Bits/to-char #O{#O{#O{#O{#O{#I{#E}}}}}}) == ' '

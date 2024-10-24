@@ -1,9 +1,0 @@
-// Performs left shift operation on a U32 value.
-// - a: The U32 value.
-// - n: The number of positions to shift left.
-// = The result of left shifting the input value by the specified positions.
-U32/lshift : U32 -> U32 -> U32
-= λa λn (<< a n)
-
-#test: (U32/lshift 1 2) == 4
-#test: (U32/lshift 5 1) == 10

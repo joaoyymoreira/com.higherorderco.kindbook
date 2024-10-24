@@ -1,8 +1,8 @@
-// Converts a string to a U32 in the given base.
+// Converts a string to a U64 in the given base.
 // - base: Base for conversion.
 // - str: String to convert.
-// = Maybe U32 with converted number if successful, None otherwise.
-String/to-u32-base : U32 -> String -> (Maybe U32)
+// = Maybe U64 with converted number if successful, None otherwise.
+String/to-u32-base : U64 -> String -> (Maybe U64)
 | base #Nil         = #None
 | base #Cons{hd tl} = (String/to-u32-base/go base #Cons{hd tl} 0)
 
@@ -10,12 +10,12 @@ String/to-u32-base : U32 -> String -> (Maybe U32)
 // - base: Base for conversion.
 // - chars: List of characters to convert.
 // - acc: Accumulator for the result.
-// = Maybe U32 with converted number if successful, None otherwise.
-String/to-u32-base/go : U32 -> String -> U32 -> (Maybe U32)
+// = Maybe U64 with converted number if successful, None otherwise.
+String/to-u32-base/go : U64 -> String -> U64 -> (Maybe U64)
 | base #Nil         acc = #Some{acc}
 | base #Cons{hd tl} acc =
   let digit = (Char/to-digit-u32 base hd)
-  (Maybe/fold U32 (Maybe U32) #None
+  (Maybe/fold U64 (Maybe U64) #None
     (λvalue (String/to-u32-base/go base tl (+ (* acc base) value)))
     digit)
 

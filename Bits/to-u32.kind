@@ -1,14 +1,14 @@
-// Converts a Bits representation to U32.
+// Converts a Bits representation to U64.
 // - bits: The Bits to convert.
-// = The U32 representation of the input Bits.
-Bits/to-u32 : Bits -> U32
+// = The U64 representation of the input Bits.
+Bits/to-u32 : Bits -> U64
 | bits = (Bits/to-u32-go bits 1)
 
 // Helper function for Bits/to-u32.
 // - bits: The Bits to convert.
 // - mult: The weight for the current bit position.
-// = The U32 representation after recursive processing.
-Bits/to-u32-go : Bits -> U32 -> U32
+// = The U64 representation after recursive processing.
+Bits/to-u32-go : Bits -> U64 -> U64
 | #E       mult = 0
 | #O{tail} mult = (Bits/to-u32-go tail (* 2 mult))
 | #I{tail} mult = (+ mult (Bits/to-u32-go tail (* 2 mult)))

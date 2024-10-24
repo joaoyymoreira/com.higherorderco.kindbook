@@ -1,0 +1,10 @@
+// Checks if one U64 is greater than another.
+// - a: The first U64 value.
+// - b: The second U64 value.
+// = True if the first value is greater than the second, False otherwise.
+U64/gt : U64 -> U64 -> Bool
+= λa λb (U64/to-bool (> a b))
+
+#test: (U64/gt 5 3) == #True
+#test: (U64/gt 3 5) == #False
+#test: (U64/gt 5 5) == #False

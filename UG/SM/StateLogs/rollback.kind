@@ -33,7 +33,7 @@ UG/SM/StateLogs/rollback : ∀(S: *) Nat -> (UG/SM/StateLogs S) -> (UG/SM/StateL
 UG/SM/StateLogs/rollback/go : ∀(S: *) Nat -> Nat -> (UG/SM/StateLogs S) -> Nat -> (Pair (UG/SM/StateLogs S) Nat)
 | S i amount states cut =
   let is_done = (Nat/lt amount i)
-  if (U32/to-bool (U32/from-bool is_done)) {
+  if (U64/to-bool (U64/from-bool is_done)) {
     #Pair{states cut}
   } else {
     match states {
@@ -45,4 +45,4 @@ UG/SM/StateLogs/rollback/go : ∀(S: *) Nat -> Nat -> (UG/SM/StateLogs S) -> Nat
     }
   }
 
-#test: (UG/SM/StateLogs/rollback U32 #0 #None) == #None
+#test: (UG/SM/StateLogs/rollback U64 #0 #None) == #None

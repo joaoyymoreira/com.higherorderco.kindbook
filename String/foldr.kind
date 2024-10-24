@@ -4,5 +4,5 @@
 // - n: Initial value.
 // - s: Input string.
 // = Folded result.
-String/foldr : ∀(B: *) (U32 -> B -> B) -> B -> String -> B
-| A c n s = (List/foldr U32 A c n s)
+String/foldr : ∀(B: *) (U64 -> B -> B) -> B -> String -> B
+| A c n s = (List/foldr U64 A c n s)

@@ -3,8 +3,8 @@
 // = Binary representation as Bits, each char using 21 bits.
 String/to-bits : String -> Bits
 = λs
-  use char-to-bits = λx (Bits/pad-zeros #21 (U32/to-bits x))
-  use bits-list = (List/map U32 Bits char-to-bits s)
+  use char-to-bits = λx (Bits/pad-zeros #21 (U64/to-bits x))
+  use bits-list = (List/map U64 Bits char-to-bits s)
   (Bits/concat bits-list)
 
 #test: (String/to-bits "") == #E

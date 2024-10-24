@@ -1,0 +1,6 @@
+// Checks if two F64 values are not equal.
+// - a: First F64 value.
+// - b: Second F64 value.
+// = True if not equal, False otherwise.
+F64/neq : F64 -> F64 -> Bool
+= λa λb (U64/to-bool (!= a b))

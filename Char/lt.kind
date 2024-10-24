@@ -3,7 +3,7 @@
 // - y: The 2nd character.
 // = True if x is less than y, False otherwise.
 Char/lt : Char -> Char -> Bool
-= λx λy (U32/to-bool (< x y))
+= λx λy (U64/to-bool (< x y))
 
 #test: (Char/lt 'a' 'A') == #False
 #test: (Char/lt 'a' 'b') == #True

@@ -9,6 +9,6 @@ BinMap/contains : ∀(A: *) (BinMap A) -> Bits -> Bool
 | A #Node{x l r} #O{b} = (BinMap/contains A l b)
 | A #Node{x l r} #I{b} = (BinMap/contains A r b)
 
-#test: (BinMap/contains U32 (BinMap/empty U32) #E) == #False
-#test: (BinMap/contains U32 (BinMap/set U32 (BinMap/empty U32) #E 3) #E) == #True
-#test: (BinMap/contains U32 (BinMap/set U32 (BinMap/empty U32) #I{#E} 3) #O{#E}) == #False
+#test: (BinMap/contains U64 (BinMap/empty U64) #E) == #False
+#test: (BinMap/contains U64 (BinMap/set U64 (BinMap/empty U64) #E 3) #E) == #True
+#test: (BinMap/contains U64 (BinMap/set U64 (BinMap/empty U64) #I{#E} 3) #O{#E}) == #False

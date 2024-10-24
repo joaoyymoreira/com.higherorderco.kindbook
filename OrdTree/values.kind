@@ -11,8 +11,8 @@ OrdTree/values : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List V)
   let node_value   = (Pair/get-snd K V key-value)
   (List/append V left_values #Cons{node_value right_values})
 
-#test: (OrdTree/values U32 U32 #Leaf) == []
-#test: (OrdTree/values U32 U32 #Node{#Pair{1 10} #Zero #Leaf #Leaf}) == [10]
-#test: (OrdTree/values U32 U32 #Node{#Pair{2 20} #Zero 
+#test: (OrdTree/values U64 U64 #Leaf) == []
+#test: (OrdTree/values U64 U64 #Node{#Pair{1 10} #Zero #Leaf #Leaf}) == [10]
+#test: (OrdTree/values U64 U64 #Node{#Pair{2 20} #Zero 
                                     (#Node{#Pair{1 10} #Zero #Leaf #Leaf})
                                     (#Node{#Pair{3 30} #Zero #Leaf #Leaf})}) == [10 20 30]
