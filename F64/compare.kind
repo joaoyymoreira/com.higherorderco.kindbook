@@ -1,19 +1,19 @@
-// Compares two F64 numbers.
-// - a: First F64 number.
-// - b: Second F64 number.
-// = Cmp value: LT if a < b, EQ if a = b, GT if a > b.
+// Compares two U64 numbers.
+// - a: The first U64 number to compare.
+// - b: The second U64 number to compare.
+// = An Cmp value: LT if a < b, EQ if a = b, GT if a > b.
 F64/compare : F64 -> F64 -> Cmp
 = λa λb
-  if (U32/to-bool (F64/eql a b)) {
+  if (U64/to-bool (F64/eql a b)) {
     #EQ
   } else {
-    if (U32/to-bool (F64/ltn a b)) {
+    if (U64/to-bool (< a b)) {
       #LT
     } else {
       #GT
     }
   }
 
-#test: (F64/compare 1.0 1.0) == #EQ
-#test: (F64/compare 1.0 2.0) == #LT
-#test: (F64/compare 2.0 1.0) == #GT
+#test: (F64/compare 5.0 3.0) == #GT
+#test: (F64/compare 3.0 5.0) == #LT
+#test: (F64/compare 5.0 5.0) == #EQ
