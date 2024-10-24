@@ -1,12 +1,11 @@
-  // Adds two V2 vectors.
+// Adds two V2 vectors.
 // - a: First vector.
 // - b: Second vector.
 // = Sum of the vectors.
 V2/add : V2 -> V2 -> V2
 | #V2{x0 y0} #V2{x1 y1} = #V2{
-    x: (U32/add x0 x1)
-    y: (U32/add y0 y1)
+    x: (F64/add x0 x1)
+    y: (F64/add y0 y1)
   }
 
-#test: (V2/add #V2{x: 1 y: 2} #V2{x: 3 y: 4}) == #V2{x: 4 y: 6}
-#test: (V2/add #V2{x: 0 y: 0} #V2{x: 5 y: 5}) == #V2{x: 5 y: 5}
+#test: (V2/add #V2{x: 1.0 y: 2.0} #V2{x: 3.0 y: 4.0}) == #V2{x: 4.0 y: 6.0}

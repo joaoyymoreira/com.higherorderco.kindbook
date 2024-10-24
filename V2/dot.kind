@@ -1,9 +1,10 @@
-// Computes the dot product of two 2D vectors.
-// - a: The first vector.
-// - b: The second vector.
-// = The dot product of the two vectors.
-V2/dot : V2 -> V2 -> U32
-| #V2{ax ay} #V2{bx by} = (+ (* ax bx) (* ay by))
+// Dot product of two 2D vectors.
+// - a: First vector.
+// - b: Second vector.
+// = Dot product.
+V2/dot : V2 -> V2 -> F64
+| #V2{ax ay} #V2{bx by} = 
+  (F64/add (F64/mul ax bx) (F64/mul ay by))
 
-#test: (V2/dot #V2{x: 3 y: 4} #V2{x: 1 y: 2}) == 11
-#test: (V2/dot #V2{x: 0 y: 0} #V2{x: 5 y: 5}) == 0
+#test: (V2/dot #V2{x: 3.0 y: 4.0} #V2{x: 1.0 y: 2.0}) == 11.0
+#test: (V2/dot #V2{x: 0.0 y: 0.0} #V2{x: 5.0 y: 5.0}) == 0.0

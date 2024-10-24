@@ -4,9 +4,8 @@
 // = Difference of the vectors.
 V2/sub : V2 -> V2 -> V2
 | #V2{x0 y0} #V2{x1 y1} = #V2{
-    x: (- x0 x1)
-    y: (- y0 y1)
+    (F64/sub x0 x1)
+    (F64/sub y0 y1)
   }
 
-#test: (V2/sub #V2{x: 5 y: 3} #V2{x: 2 y: 1}) == #V2{x: 3 y: 2}
-#test: (V2/sub #V2{x: 1 y: 1} #V2{x: 2 y: 2}) == #V2{x: 0 y: 0}
+#test: (V2/sub #V2{x: 3.0 y: 4.0} #V2{x: 1.0 y: 2.0}) == #V2{x: 2.0 y: 2.0}

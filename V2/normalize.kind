@@ -4,11 +4,11 @@
 V2/normalize : V2 -> (Maybe V2)
 | #V2{x y} =
   if (V2/is-zero #V2{x y}) {
-    #None
+    (Maybe/none V2)
   } else {
     let len = (V2/length #V2{x y})
-    #Some{(V2/div-scalar #V2{x y} len)}
+    (Maybe/some V2 (V2/div-scalar #V2{x y} len))
   }
 
-#test: (V2/normalize #V2{x: 3 y: 4}) == #Some{#V2{x: 3 y: 4}}
-#test: (V2/normalize #V2{x: 0 y: 0}) == #None
+#test: (V2/normalize #V2{x: 0.0 y: 0.0}) == (Maybe/none V2)
+#test: (V2/normalize #V2{x: 3.0 y: 4.0}) == (Maybe/some V2 #V2{x: 0.6 y: 0.8})

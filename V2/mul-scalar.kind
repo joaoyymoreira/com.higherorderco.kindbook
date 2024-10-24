@@ -2,10 +2,10 @@
 // - v: Input vector.
 // - s: Scalar multiplier.
 // = Resulting vector.
-V2/mul-scalar : V2 -> U32 -> V2
+V2/mul-scalar : V2 -> F64 -> V2
 | #V2{x y} s = #V2{
-    x: (U32/mul x s)
-    y: (U32/mul y s)
+    x: (F64/mul x s)
+    y: (F64/mul y s)
   }
 
-#test: (V2/mul-scalar #V2{x: 2 y: 3} 4) == #V2{x: 8 y: 12}
+#test: (V2/mul-scalar #V2{x: 2.0 y: 3.0} 2.0) == #V2{x: 4.0 y: 6.0}
