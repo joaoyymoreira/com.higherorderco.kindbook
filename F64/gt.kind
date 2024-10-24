@@ -1,0 +1,10 @@
+// Checks if one F64 is greater than another.
+// - a: The first F64 value.
+// - b: The second F64 value.
+// = True if the first value is greater than the second, False otherwise.
+F64/gt : F64 -> F64 -> Bool
+= λa λb (U64/to-bool (> a b))
+
+#test: (F64/gt 5.0 3.0) == #True
+#test: (F64/gt 3.0 5.0) == #False
+#test: (F64/gt 5.0 5.0) == #False
