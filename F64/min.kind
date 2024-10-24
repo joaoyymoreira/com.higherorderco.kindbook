@@ -1,0 +1,11 @@
+// Returns the minimum of two F64 numbers.
+// - a: First F64 number.
+// - b: Second F64 number.
+// = Smaller of the two input numbers.
+F64/min : F64 -> F64 -> F64
+= λa λb
+  if (U64/to-bool (<= a b)) {
+    a
+  } else {
+    b
+  }

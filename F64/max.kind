@@ -1,0 +1,14 @@
+// Returns the maximum of two F64 numbers.
+// - a: The first F64 number.
+// - b: The second F64 number.
+// = The larger of the two input numbers.
+F64/max : F64 -> F64 -> F64
+= λa λb
+  if (U64/to-bool (>= a b)) {
+    a
+  } else {
+    b
+  }
+
+#test: (F64/max 3.14 2.71) == 3.14
+#test: (F64/max -1.0 1.0) == 1.0
