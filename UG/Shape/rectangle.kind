@@ -4,12 +4,12 @@
 // - height: The height of the rectangle.
 // = A Shape representing a rectangle.
 UG/Shape/rectangle : V2 -> F64 -> F64 -> UG/Shape
-= λcenter λwidth λheight
-  let half_width  = (F64/div width 2.0)
-  let half_height = (F64/div height 2.0)
-  let top_left     = (#V2 (F64/sub 0.0 half_width) (F64/sub 0.0 half_height))
-  let top_right    = (#V2 half_width (F64/sub 0.0 half_height))
-  let bottom_right = (#V2 half_width half_height)
-  let bottom_left  = (#V2 (F64/sub 0.0 half_width) half_height)
-  let vertices     = (#Cons top_left (#Cons top_right (#Cons bottom_right (#Cons bottom_left #Nil))))
-  #Polygon{center vertices}
+| center width height = 
+  let half_w   = (F64/div width 2.0)
+  let half_h   = (F64/div height 2.0)
+  let top_l    = (V2/new (- 0.0 half_w) (- 0.0 half_h))
+  let top_r    = (V2/new half_w (- 0.0 half_h))
+  let bottom_r = (V2/new half_w half_h)
+  let bottom_l = (V2/new (- 0.0 half_w) half_h)
+ 
+  #Polygon {center [top_l top_r bottom_r bottom_l]}
