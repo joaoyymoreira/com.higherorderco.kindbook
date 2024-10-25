@@ -1,0 +1,5 @@
+// Ord instance for String
+String/Ord : (Ord String)
+= #Ord{
+  compare: String/compare
+}
