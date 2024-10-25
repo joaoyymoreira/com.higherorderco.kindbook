@@ -1,0 +1,8 @@
+// Origin of a source code element
+data Bend/Source/Kind {
+  #Builtin
+  #Generated
+  #User
+  #Imported
+  #Unknown
+}

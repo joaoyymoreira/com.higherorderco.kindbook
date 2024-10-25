@@ -1,0 +1,7 @@
+use Bend/Compile/BendToNet/Encoder as E
+
+// Creates a new Encoder with empty net and var map
+// - name: The name for the new net
+// = A new Encoder with initialized components
+E/new : String -> Bend/Compile/BendToNet/Encoder
+| name =  #Encoder{(Bend/Net/new name) (BinMap/new _)}

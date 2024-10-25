@@ -1,0 +1,20 @@
+// Binary operators between native numbers in Bend.
+data Bend/Fun/Op {
+  #Add  // Addition
+  #Sub  // Subtraction
+  #Mul  // Multiplication
+  #Div  // Division
+  #Rem  // Remainder
+  #Eql  // Equality
+  #Neq  // Inequality
+  #Ltn  // Less than
+  #Gtn  // Greater than
+  #Lte  // Less than or equal
+  #Gte  // Greater than or equal
+  #And  // Bitwise AND
+  #Or   // Bitwise OR
+  #Xor  // Bitwise XOR
+  #Shl  // Shift left
+  #Shr  // Shift right
+  #Pow  // Exponentiation
+}

@@ -1,0 +1,18 @@
+// Converts all definitions in a book to a list of flat nets
+// - book: The Book containing function definitions
+// = A List of Nets with the compiled definitions or an error message
+Bend/Compile/BendToNet/book-to-nets (book: Bend/Fun/Book/Book) : (Result (List Bend/Net/Net) String)
+  do Result {
+    let pair = (List/unzip (BinMap/to-list (Bend/Fun/Book/Book.defs book)))
+    let defs = (Pair.snd pair)
+    (List/mmap def-to-net defs)
+  }
+
+def-to-net (def: Bend/Fun/FnDef/FnDef) : (Result Bend/Net/Net String)
+  do Result {
+    let name  = (Bend/Fun/FnDef/FnDef.name def)
+    let rules = (Bend/Fun/FnDef/FnDef.rules def)
+    ask rule  = (Maybe/to-result (List/head rules) (String/append "No rules found for " name))
+    ask enc   = (Bend/Compile/BendToNet/Encoder/encode-term (Bend/Compile/BendToNet/Encoder/new name) (Bend/Fun/Rule/Rule.body rule) Bend/Net/net-root)
+    #Done{(Bend/Compile/BendToNet/Encoder/Encoder.net enc)}
+  }

@@ -1,0 +1,5 @@
+// Represents the kind of fan: tuple or duplication
+data Bend/Fun/FanKind {
+  #Tup
+  #Dup
+}

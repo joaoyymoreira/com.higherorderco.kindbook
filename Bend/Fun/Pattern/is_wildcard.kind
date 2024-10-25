@@ -1,0 +1,6 @@
+// Bend/Fun/Pattern/is_wildcard
+
+Bend/Fun/Pattern/is_wildcard (pat: Bend/Fun/Pattern/Pattern) : Bool
+| #Var _ = #True
+| #Chn _ = #True
+| _      = #False

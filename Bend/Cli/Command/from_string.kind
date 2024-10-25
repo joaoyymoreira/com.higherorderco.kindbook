@@ -1,0 +1,11 @@
+// Converts a string representation of a command to the corresponding Command value.
+// - cmd: The string representation of the command.
+// = Some Command if the string matches a valid command, None otherwise.
+Bend/Cli/Command/from_string (cmd: String) : (Maybe Bend/Cli/Command)
+| cmd with (String/eql cmd "gen-bend")
+           (String/eql cmd "gen-core")
+           (String/eql cmd "gen-hvm")
+. | #True _     _     = #Some{#GenBend}
+. | _     #True _     = #Some{#GenCore}
+. | _     _     #True = #Some{#GenHvm}
+. | _     _     _     = #None

@@ -1,0 +1,5 @@
+Bend/Net/Node/set : Bend/Net/Node -> Nat -> Bend/Net/Port -> (Maybe Bend/Net/Node)
+| #Node{main aux1 aux2 kind} #0 port = #Some{#Node{port aux1 aux2 kind}}
+| #Node{main aux1 aux2 kind} #1 port = #Some{#Node{main port aux2 kind}}
+| #Node{main aux1 aux2 kind} #2 port = #Some{#Node{main aux1 port kind}}
+| #Node{main aux1 aux2 kind} _  _    = #None

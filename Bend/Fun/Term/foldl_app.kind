@@ -1,0 +1,7 @@
+// Bend/Fun/Term/foldl_app
+
+Bend/Fun/Term/foldl_app (fun: Bend/Fun/Term/Term) (arg: (List Bend/Fun/Term/Term)) : Bend/Fun/Term/Term
+  (List/foldl Bend/Fun/Term/foldl_app/app fun arg)
+
+Bend/Fun/Term/foldl_app/app (acc: Bend/Fun/Term/Term) (x: Bend/Fun/Term/Term) : Bend/Fun/Term/Term
+  (Bend/Fun/Term/Term.#App acc x)

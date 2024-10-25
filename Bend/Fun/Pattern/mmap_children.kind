@@ -1,0 +1,22 @@
+// Bend/Fun/Pattern/mmap_children
+
+Bend/Fun/Pattern/mmap_children <M: Type -> Type> (m: Monad M) (f: Bend/Fun/Pattern/Pattern -> M Bend/Fun/Pattern/Pattern) (pat: Bend/Fun/Pattern/Pattern) : (M Bend/Fun/Pattern/Pattern)
+| m f (#Var x) = (Monad.pure m (#Var x))
+| m f (#Chn x) = (Monad.pure m (#Chn x))
+| m f (#Num x) = (Monad.pure m (#Num x))
+| m f (#Str x) = (Monad.pure m (#Str x))
+| m f (#Fan k ps) =
+  do m {
+    ask ps = (List/mmap m f ps)
+    return (#Fan k ps)
+  }
+| m f (#Ctr n ps) =
+  do m {
+    ask ps = (List/mmap m f ps)
+    return (#Ctr n ps)
+  }
+| m f (#Lst ps) =
+  do m {
+    ask ps = (List/mmap m f ps)
+    return (#Lst ps)
+  }

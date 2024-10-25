@@ -1,0 +1,10 @@
+// Bend/Fun/Term/map_children
+
+Bend/Fun/Term/map_children (f: (List String) -> Bend/Fun/Term/Term -> Bend/Fun/Term/Term) (term: Bend/Fun/Term/Term) : Bend/Fun/Term/Term
+  (Bend/Fun/Term/mmap_children Bend/Fun/Term/map_children/identity_monad f term)
+
+Bend/Fun/Term/map_children/identity_monad : (Monad (x => x))
+  (Monad.new
+    (x => x)
+    (x => x)
+  )

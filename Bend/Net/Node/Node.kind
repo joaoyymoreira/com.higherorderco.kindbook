@@ -1,0 +1,8 @@
+data Bend/Net/Node {
+  #Node {
+    main : Bend/Net/Port
+    aux1 : Bend/Net/Port
+    aux2 : Bend/Net/Port
+    kind : Bend/Net/NodeKind
+  }
+}

@@ -1,0 +1,30 @@
+// Bend/Compile/NetToHvm/net_to_hvm
+
+Bend/Compile/NetToHvm/net_to_hvm (net: Bend/Net/Net) : (Result Bend/Hvm/Net/Net String)
+  do Result {
+    let redexes = (Bend/Compile/NetToHvm/get_redexes net)
+    let state   = (Bend/Compile/NetToHvm/State/new (Bend/Net/Net.len net))
+    ask root    = (Maybe/to_result (Bend/Net/get_port net Bend/Net/net_root) "Failed to get root port")
+    ask pair    = (Bend/Compile/NetToHvm/net_to_hvm/var_or_subtree_to_hvm net root state)
+    let root    = (Pair.fst pair)
+    let state   = (Pair.snd pair)
+    ask rbag    = (Bend/Compile/NetToHvm/net_to_hvm/go redexes state)
+    #Done{(Bend/Hvm/Net/Net.new (Bend/Net/Net.name net) root rbag)}
+  }
+
+Bend/Compile/NetToHvm/net_to_hvm/go (redexes: (List (Pair Nat Nat))) (state: Bend/Compile/NetToHvm/State/State) : (Result (List Bend/Hvm/Redex/Redex) String)
+| #Nil state = #Done{#Nil}
+| (#Cons pair redexes) state =
+  do Result {
+    let a = (Pair.fst pair)
+    let b = (Pair.snd pair)
+    ask pair_a = (Bend/Compile/NetToHvm/tree_to_hvm net a state)
+    let a     = (Pair.fst pair_a)
+    let state = (Pair.snd pair_a)
+    ask pair_b = (Bend/Compile/NetToHvm/tree_to_hvm net b state)
+    let b     = (Pair.fst pair_b)
+    let state = (Pair.snd pair_b)
+    let redex = (Bend/Hvm/Redex/Redex.new a b)
+    ask redexes = (Bend/Compile/NetToHvm/net_to_hvm/go redexes state)
+    #Done{#Cons{redex redexes}}
+  }

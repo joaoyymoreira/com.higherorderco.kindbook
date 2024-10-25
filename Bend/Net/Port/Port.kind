@@ -1,0 +1,6 @@
+data Bend/Net/Port {
+  #Port {
+    node: U64
+    slot: U64
+  }
+}

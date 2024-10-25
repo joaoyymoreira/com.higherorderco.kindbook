@@ -1,0 +1,10 @@
+// Function definition
+data Bend/Fun/FnDef {
+  #FnDef {
+    name  : String                // Name of the function
+    type  : Bend/Fun/Type         // Type of the function
+    check : Bool                  // Whether to check the function
+    rules : (List Bend/Fun/Rule)  // Pattern-matching rules defining the function
+    src   : Bend/Source           // Source location of the function
+  }
+}

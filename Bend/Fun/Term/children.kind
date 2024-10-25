@@ -1,0 +1,46 @@
+// Bend/Fun/Term/children
+
+Bend/Fun/Term/children (term: Bend/Fun/Term/Term) : (List (Pair (List String) Bend/Fun/Term/Term))
+| #Var _  = []
+| #Link _ = []
+| #Num _  = []
+| #Str _  = []
+| #Ref _  = []
+| #Era    = []
+| #Open _ _ bnd bod = [(Pair.new (List/concat_maybes bnd) bod)]
+| #Def def nxt      = [(Pair.new [(Bend/Fun/FnDef/FnDef.name def)] nxt)]
+| #With _ bod       = [(Pair.new [] bod)]
+| #App fun arg      = [(Pair.new [] fun) (Pair.new [] arg)]
+| #Oper _ fst snd   = [(Pair.new [] fst) (Pair.new [] snd)]
+| #Fan _ els        = (List/map (x => Pair.new [] x) els)
+| #List els         = (List/map (x => Pair.new [] x) els)
+| #Lam pat bod      = [(Pair.new (Bend/Fun/Pattern/binds pat) bod)]
+| #Let pat val nxt  = [(Pair.new [] val) (Pair.new (Bend/Fun/Pattern/binds pat) nxt)]
+| #Ask pat val nxt  = [(Pair.new [] val) (Pair.new (Bend/Fun/Pattern/binds pat) nxt)]
+| #Use nam val nxt  = [(Pair.new [] val) (Pair.new (Maybe/to_list nam) nxt)]
+| #Mat bnd arg with_bnd with_arg arms =
+  (List/concat
+    [(Pair.new [] arg)]
+    (List/concat
+      (List/map (x => Pair.new [] x) with_arg)
+      (List/map (rule => Pair.new (List/concat_maybes (List/concat [bnd] (List/concat with_bnd (Bend/Fun/MatchRule/MatchRule.bnd rule)))) (Bend/Fun/MatchRule/MatchRule.bod rule)) arms)))
+| #Swt bnd arg with_bnd with_arg pred arms =
+  let pair        = (List/split_at 1 (List/reverse arms))
+  let pred_       = (Pair.fst pair)
+  let nums        = (List/reverse (Pair.snd pair))
+  let with_args   = (List/map (x => Pair.new [] x) with_arg)
+  let nums_pairs  = (List/map (arm => Pair.new (List/concat_maybes (List/concat [bnd] with_bnd)) arm) nums)
+  let pred_pairs  = (List/map (arm => Pair.new (List/concat_maybes (List/concat [bnd] (List/concat with_bnd [pred]))) arm) pred_)
+  (List/concat [(Pair.new [] arg)] (List/concat with_args (List/concat nums_pairs pred_pairs)))
+| #Fold bnd arg with_bnd with_arg arms =
+  (List/concat
+    [(Pair.new [] arg)]
+    (List/concat
+      (List/map (x => Pair.new [] x) with_arg)
+      (List/map (rule => Pair.new (List/concat_maybes (List/concat [bnd] (List/concat with_bnd (Bend/Fun/MatchRule/MatchRule.bnd rule)))) (Bend/Fun/MatchRule/MatchRule.bod rule)) arms)))
+| #Bend bnd arg cond step base =
+  (List/concat
+    (List/map (x => Pair.new [] x) arg)
+    [(Pair.new (List/concat_maybes bnd) cond)
+     (Pair.new (List/concat_maybes bnd) step)
+     (Pair.new (List/concat_maybes bnd) base)])

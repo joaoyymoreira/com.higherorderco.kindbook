@@ -1,0 +1,6 @@
+// Bend/Fun/Book/contains_def
+
+Bend/Fun/Book/contains_def (book: Bend/Fun/Book/Book) (name: String) : Bool
+  let #Book{defs adts ctrs} = book
+  let key = (String/hash name)
+  (BinMap/contains defs key)

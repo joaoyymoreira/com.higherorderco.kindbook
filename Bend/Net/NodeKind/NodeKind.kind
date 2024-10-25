@@ -1,0 +1,11 @@
+data Bend/Net/NodeKind {
+  #Rot
+  #Era
+  #Con
+  #Dup
+  #Var
+  #Ref {nam: String}
+  #Num {num: Bits}
+  #Opr
+  #Swi
+}

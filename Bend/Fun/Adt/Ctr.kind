@@ -1,0 +1,10 @@
+// Bend/Fun/Adt/Ctr
+
+data Bend/Fun/Adt/Ctr {
+  #Ctr {
+    nam : String
+    adt : String
+    typ : Bend/Fun/Type/Type
+    fld : (List Bend/Fun/Adt/CtrField)
+  }
+}

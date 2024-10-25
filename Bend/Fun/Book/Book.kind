@@ -1,0 +1,9 @@
+// Bend/Fun/Book/Book
+
+data Bend/Fun/Book/Book {
+  #Book {
+    defs : (BinMap Bend/Fun/FnDef/FnDef)
+    adts : (BinMap Bend/Fun/Adt/Adt)
+    ctrs : (BinMap Bend/Fun/Adt/Ctr)
+  }
+}

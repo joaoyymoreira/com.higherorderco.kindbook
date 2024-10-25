@@ -1,0 +1,8 @@
+// A rule in a pattern matching expression ('match')
+data Bend/Fun/MatchRule {
+  #MatchRule {
+    nam : (Maybe String)
+    bnd : (List (Maybe String))
+    bod : Bend/Fun/Term
+  }
+}

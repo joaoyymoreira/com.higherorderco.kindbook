@@ -1,0 +1,5 @@
+// Bend/Fun/Term/add_num
+
+Bend/Fun/Term/add_num (term: Bend/Fun/Term/Term) (n: Nat) : Bend/Fun/Term/Term
+| term 0 = term
+| term n = (Bend/Fun/Term/Term.#Oper Bend/Fun/Op/Op.#Add term (Bend/Fun/Term/Term.#Num (Bend/Fun/Num/Num.#U24 n)))

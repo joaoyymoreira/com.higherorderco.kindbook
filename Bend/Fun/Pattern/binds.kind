@@ -1,0 +1,5 @@
+// Bend/Fun/Pattern/binds
+
+Bend/Fun/Pattern/binds (pat: Bend/Fun/Pattern/Pattern) : (List String)
+| #Var (#Some name) = [name]
+| pat               = (List/concat_map Bend/Fun/Pattern/binds (Bend/Fun/Pattern/children pat))
