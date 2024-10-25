@@ -1,14 +1,33 @@
-Main : ∀(b: (List U32)) U32
-= λ{
-  #Cons{h t}: (+ h 1)
-  #Nil: 0
-}
+//Foo : ∀(m: Nat) ∀(n: Nat) Bool
+//| #Zero    #Zero    = #True
+//| #Succ{m} #Succ{n} = (Foo m n)
+//| x        y        = #False
+
+//Bar : U64 -> U64 -> U64 -> U64
+//| a b c = a
+
+//double : ∀(n: Nat) ∀(r: Nat) Nat
+//| n r = match n {
+  //#Zero: r
+  //#Succ: λnp (double np #Succ{#Succ{r}})
+//}
+//main : Nat = (double #20 #0)
+
+
+double : ∀(n: U64) ∀(r: U64) U64
+= λn λr
+  switch n {
+    0: r
+    _{pred}: (double pred (+ r 2))
+  }
+
+main : U64 = (double 1000000 0)
 
 
 
 
 
-//Main : (Pair String *) -> (Pair (List U32) *)
+//Main : (Pair String *) -> (Pair (List U64) *)
 //| str = str
 
 //main : String/View
@@ -22,20 +41,18 @@ Main : ∀(b: (List U32)) U32
 
 
 
-
-
-//main : (Pair/Pair U32 U32)
+//main : (Pair/Pair U64 U64)
 //= #Pair { foo 13 }
 
 //use Bool/ as Bool/
-//use U32/ as U32/
+//use U64/ as U64/
 //use Parser/ as Parser/
 //use Pair/ as Pair/
 
 //foo : (Pair/Parser Unit) = ?oxi
 
-//affer : (Parser/Parser U32)
-//= when U32/eq 50 {
+//affer : (Parser/Parser U64)
+//= when U64/eq 50 {
   //'(' : do Parser/Monad {
     //ask foo
     //ret 12
@@ -45,8 +62,8 @@ Main : ∀(b: (List U32)) U32
   //_   : ?d
 //}
 
-//main : U32
-//= when U32/eq 35 {
+//main : U64
+//= when U64/eq 35 {
   //0  : 0
   //10 : 100
   //20 : 200
@@ -101,9 +118,9 @@ Main : ∀(b: (List U32)) U32
 //}
 
 //Main
-//: ∀(p: (Pair U32 Bool))
-  //∀(k: (Maybe (Pair U32 Bool)))
-  //(Maybe U32)
+//: ∀(p: (Pair U64 Bool))
+  //∀(k: (Maybe (Pair U64 Bool)))
+  //(Maybe U64)
 //= λp λk do Maybe {
   //ask x = #Some{50}
   //ask y = #Some{20}
@@ -113,7 +130,7 @@ Main : ∀(b: (List U32)) U32
 //use Maybe/ as Maybe/
 
 //Main
-//: (Maybe U32)
+//: (Maybe U64)
 //= do Maybe/Monad/ {
   //ask x = #Some { 50 }
   //ask y = #Some { 20 }
@@ -151,3 +168,49 @@ Main : ∀(b: (List U32)) U32
 //}
   
 
+
+
+
+
+
+
+//ct0 = λx match x {
+  //#Succ: λm λx match x {
+    //#Succ: λn ((Foo m) n)
+    //#_: λy #False{}
+  //}
+  //#Zero: λx match x {
+    //#Zero:#True{}
+    //#_:λy #False{}
+  //}
+  //#_:*
+//}
+
+//ct1 = λm λn λv2 λv3 match m {#Succ:λm match n {#Succ:λn ((Foo m) n) #_:#False{} } #Zero:match n {#Zero:#True{} #_:#False{} } #_:* }
+
+
+
+
+
+//pull λx match x {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* } ### dep=0 ari=0 skp=0
+//pull match m {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* } ### dep=1 ari=1 skp=0
+//pull λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } ### dep=1 ari=1 skp=1
+//pull λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } ### dep=2 ari=1 skp=0
+//pull match n {#Succ:λn ((Foo m) n) #_:λy #False{} } ### dep=3 ari=2 skp=0
+//pull λn ((Foo m) n) ### dep=3 ari=2 skp=1
+//pull ((Foo m) n) ### dep=4 ari=2 skp=0
+//pull λy #False{} ### dep=3 ari=2 skp=1
+//pull #False{} ### dep=4 ari=2 skp=0
+//WARNING: inconsistent cross-branch lambda count on: match n {#Succ:λn ((Foo m) n) #_:λy #False{} }
+//pull λx match x {#Zero:#True{} #_:λy #False{} } ### dep=1 ari=1 skp=0
+//pull match n {#Zero:#True{} #_:λy #False{} } ### dep=2 ari=2 skp=0
+//pull #True{} ### dep=2 ari=2 skp=0
+//pull λy #False{} ### dep=2 ari=2 skp=1
+//pull #False{} ### dep=3 ari=2 skp=0
+//WARNING: inconsistent cross-branch lambda count on: match m {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* }
+//pull * ### dep=1 ari=1 skp=1
+//ct0 = λx match x {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* }
+//ct1 = λm λn λv2 λv3 match m {#Succ:λm match n {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:match n {#Zero:#True{} #_:λy #False{} } #_:* }
+//pull ((Foo #Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } }) #Succ{pred:#Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } } }) ### dep=0 ari=0 skp=0
+//ct0 = ((Foo #Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } }) #Succ{pred:#Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } } })
+//ct1 = ((Foo #Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } }) #Succ{pred:#Succ{pred:#Succ{pred:#Succ{pred:#Zero{} } } } })
