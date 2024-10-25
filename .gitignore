@@ -28,3 +28,5 @@ HVM/OLD/
 HVM/context
 agda2kind.txt
 *.bak
+test.js
+HVM/HVM_eval_strict.js

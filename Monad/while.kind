@@ -1,0 +1,18 @@
+// Monadic while loop.
+// - M: Monad type constructor.
+// - m: Monad instance.
+// - S: State type.
+// - s: Initial state.
+// - cond: Loop condition.
+// - loop: Loop body.
+// = Final unit value in the monad.
+Monad/while : ∀(M: * -> *) ∀(m: (Monad M)) ∀(S: *) S -> (S -> Bool) -> (S -> (M S)) -> (M Unit)
+| M m S s cond loop = match m {
+  #Monad{pure bind}:
+    if (cond s) {
+      (bind S Unit (loop s) λs
+      (Monad/while M #Monad{pure bind} S s cond loop))
+    } else {
+      (pure Unit #Unit{})
+    }
+}
