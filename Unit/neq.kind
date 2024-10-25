@@ -1,0 +1,6 @@
+// Inequality check for Unit type.
+// - x: The Unit value.
+// - y: The Unit value.
+// = False, as all Unit values are equal.
+Unit/neq : Unit -> Unit -> Bool
+| x y = #False

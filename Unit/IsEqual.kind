@@ -1,0 +1,5 @@
+// IsEqual instance for Unit
+Unit/IsEqual : (IsEqual Unit)
+= #IsEqual{
+  eq: Unit/eq
+}
