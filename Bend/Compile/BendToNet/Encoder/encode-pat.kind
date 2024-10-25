@@ -1,0 +1,34 @@
+use Bend/Compile/BendToNet/Encoder as E
+
+// Encodes a pattern into the Encoder
+// - enc: The current Encoder state
+// - pat: The Pattern to be encoded
+// - up : The upstream Port to connect the pattern to
+// = The Encoder with the nodes from the compiled pattern or None on error
+E/encode-pat : Bend/Compile/BendToNet/Encoder -> Bend/Fun/Pattern -> Bend/Net/Port -> (Maybe Bend/Compile/BendToNet/Encoder)
+| enc #Var{ #None }         up =
+  let #Pair{node enc} = (E/new-node #Era enc)
+  (E/link enc up #Port{node 0})
+| enc #Var{ #Some{name} }   up = (E/link-var enc name up)
+| enc #Chn{ name }          up = (E/link-var enc (String/append "$" name) up)
+| enc #Fan{ kind pats }     up = (enc-children enc (Bend/Net/NodeKind/from-fan-kind kind) up pats)
+| enc #Ctr{ _ _ }           up = #None
+| enc #Num{ _ }             up = #None
+| enc #Lst{ _ }             up = #None
+| enc #Str{ _ }             up = #None
+
+// Recursively encodes child patterns of a Fan pattern
+// - enc: The current Encoder state
+// - kind: The NodeKind of the Fan
+// - up: The upstream Port to connect to
+// - pats: The list of child Patterns
+// = The Encoder with the nodes from the compiled children or None on error
+enc-children : Bend/Compile/BendToNet/Encoder -> Bend/Net/NodeKind -> Bend/Net/Port -> (List Bend/Fun/Pattern) -> (Maybe Bend/Compile/BendToNet/Encoder)
+| enc kind up #Nil              = #None
+| enc kind up #Cons{ pat #Nil } = (E/encode-pat enc pat up)
+| enc kind up #Cons{ pat pats } = do Maybe {
+  let #Pair{node enc} = (E/new-node kind enc)
+  ask enc             = (E/link enc up #Port{node 0})
+  ask enc             = (E/encode-pat enc pat #Port{node 1})
+  (enc-children enc kind #Port{node 2} pats)
+}

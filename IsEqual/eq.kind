@@ -7,7 +7,7 @@
 IsEqual/eq : ∀(A: *) ∀(e: (IsEqual A)) A -> A -> Bool
 | A #IsEqual{eq} x y = (eq x y)
 
-//#test: (IsEqual/eq Bool Bool/eq #True #True) == #True
-//#test: (IsEqual/eq Bool Bool/eq #True #False) == #False
-//#test: (IsEqual/eq Nat Nat/eq #3 #3) == #True
-//#test: (IsEqual/eq Nat Nat/eq #2 #3) == #False
+#test: (IsEqual/eq Bool Bool/IsEqual #True #True) == #True
+#test: (IsEqual/eq Bool Bool/IsEqual #True #False) == #False
+#test: (IsEqual/eq Nat Nat/IsEqual #3 #3) == #True
+#test: (IsEqual/eq Nat Nat/IsEqual #2 #3) == #False

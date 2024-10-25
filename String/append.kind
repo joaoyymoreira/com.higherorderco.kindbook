@@ -3,7 +3,7 @@
 // - b: Second string.
 // = Concatenated string.
 String/append : String -> String -> String
-| a b = (List/append U64 a b)
+| a b = (List/append Char a b)
 
 #test: (String/append "Hello" "-World") == "Hello-World"
 #test: (String/append "Hello" "") == "Hello"

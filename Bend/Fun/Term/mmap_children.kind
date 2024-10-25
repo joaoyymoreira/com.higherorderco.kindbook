@@ -1,0 +1,110 @@
+// Bend/Fun/Term/mmap_children
+
+Bend/Fun/Term/mmap_children <M: Type -> Type> (m: Monad M) (f: (List String) -> Bend/Fun/Term/Term -> M Bend/Fun/Term/Term) (term: Bend/Fun/Term/Term) : (M Bend/Fun/Term/Term)
+| m f (#Var x)     = (Monad.pure m (#Var x))
+| m f (#Link x)    = (Monad.pure m (#Link x))
+| m f (#Num n)     = (Monad.pure m (#Num n))
+| m f (#Str s)     = (Monad.pure m (#Str s))
+| m f (#Ref nam)   = (Monad.pure m (#Ref nam))
+| m f #Era         = (Monad.pure m #Era)
+| m f (#Lam pat bod) =
+  do m {
+    ask bod = (f (Bend/Fun/Pattern/binds pat) bod)
+    return (#Lam pat bod)
+  }
+| m f (#App fun arg) =
+  do m {
+    ask fun = (f [] fun)
+    ask arg = (f [] arg)
+    return (#App fun arg)
+  }
+| m f (#Let pat val nxt) =
+  do m {
+    ask val = (f [] val)
+    ask nxt = (f (Bend/Fun/Pattern/binds pat) nxt)
+    return (#Let pat val nxt)
+  }
+| m f (#With typ bod) =
+  do m {
+    ask bod = (f [] bod)
+    return (#With typ bod)
+  }
+| m f (#Ask pat val nxt) =
+  do m {
+    ask val = (f [] val)
+    ask nxt = (f (Bend/Fun/Pattern/binds pat) nxt)
+    return (#Ask pat val nxt)
+  }
+| m f (#Use nam val nxt) =
+  do m {
+    ask val = (f [] val)
+    ask nxt = (f (List/concat_maybes [nam]) nxt)
+    return (#Use nam val nxt)
+  }
+| m f (#Fan kind els) =
+  do m {
+    ask els = (List/mmap m (f []) els)
+    return (#Fan kind els)
+  }
+| m f (#List els) =
+  do m {
+    ask els = (List/mmap m (f []) els)
+    return (#List els)
+  }
+| m f (#Oper op fst snd) =
+  do m {
+    ask fst = (f [] fst)
+    ask snd = (f [] snd)
+    return (#Oper op fst snd)
+  }
+| m f (#Open typ var bnd bod) =
+  do m {
+    ask bod = (f (List/concat_maybes bnd) bod)
+    return (#Open typ var bnd bod)
+  }
+| m f (#Def def nxt) =
+  do m {
+    ask nxt = (f [(Bend/Fun/FnDef/FnDef.name def)] nxt)
+    return (#Def def nxt)
+  }
+| m f (#Mat bnd arg with_bnd with_arg arms) =
+  do m {
+    ask arg = (f [] arg)
+    ask with_arg = (List/mmap m (f []) with_arg)
+    ask arms = (List/mmap m (rule =>
+      do m {
+        ask bod = (f (List/concat_maybes (List/cons bnd (Bend/Fun/MatchRule/MatchRule.bnd rule))) (Bend/Fun/MatchRule/MatchRule.bod rule))
+        return (Bend/Fun/MatchRule/MatchRule.new (Bend/Fun/MatchRule/MatchRule.nam rule) (Bend/Fun/MatchRule/MatchRule.bnd rule) bod)
+      }) arms)
+    return (#Mat bnd arg with_bnd with_arg arms)
+  }
+| m f (#Fold bnd arg with_bnd with_arg arms) =
+  do m {
+    ask arg = (f [] arg)
+    ask with_arg = (List/mmap m (f []) with_arg)
+    ask arms = (List/mmap m (rule =>
+      do m {
+        ask bod = (f (List/concat_maybes (List/cons bnd (Bend/Fun/MatchRule/MatchRule.bnd rule))) (Bend/Fun/MatchRule/MatchRule.bod rule))
+        return (Bend/Fun/MatchRule/MatchRule.new (Bend/Fun/MatchRule/MatchRule.nam rule) (Bend/Fun/MatchRule/MatchRule.bnd rule) bod)
+      }) arms)
+    return (#Fold bnd arg with_bnd with_arg arms)
+  }
+| m f (#Swt bnd arg with_bnd with_arg pred arms) =
+  do m {
+    ask arg = (f [] arg)
+    ask with_arg = (List/mmap m (f []) with_arg)
+    let pair = (List/unsnoc arms)
+    let nums = (Pair.fst pair)
+    let succ = (Maybe/fold (Pair.snd pair) #Era (x => x))
+    ask nums = (List/mmap m (f (List/concat_maybes [bnd])) nums)
+    ask succ = (f (List/concat_maybes [bnd pred]) succ)
+    return (#Swt bnd arg with_bnd with_arg pred (List/concat nums [succ]))
+  }
+| m f (#Bend bnd arg cond step base) =
+  do m {
+    ask arg  = (List/mmap m (f []) arg)
+    ask cond = (f (List/concat_maybes bnd) cond)
+    ask step = (f (List/concat_maybes bnd) step)
+    ask base = (f (List/concat_maybes bnd) base)
+    return (#Bend bnd arg cond step base)
+  }

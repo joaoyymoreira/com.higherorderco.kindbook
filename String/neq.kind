@@ -1,0 +1,20 @@
+// Checks if two strings are not equal.
+// - a: First string.
+// - b: Second string.
+// = True if not equal, False otherwise.
+String/neq : String -> String -> Bool
+| #Nil         #Nil         = #False
+| #Nil         #Cons{b0 bs} = #True
+| #Cons{a0 as} #Nil         = #True
+| #Cons{a0 as} #Cons{b0 bs} = 
+  if (Char/neq a0 b0) {
+    (String/neq as bs)
+  } else {
+    #True
+  }
+
+#test: (String/neq "" "") == #False
+#test: (String/neq "hello" "hello") == #False
+#test: (String/neq "hello" "world") == #True
+#test: (String/neq "a" "A") == #True
+#test: (String/neq "abc" "ab") == #True

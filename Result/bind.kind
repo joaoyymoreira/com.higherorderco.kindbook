@@ -1,0 +1,23 @@
+// Applies a function to the value inside a Result, if it's successful.
+// val: The Result value to operate on.
+// fn : The function to apply to the value inside the Result if it's successful.
+// = A new Result value resulting from applying 'fn' to the contents of 'val' if Done,
+//   or the original error if 'val' is Fail.
+Result/bind :  ∀(A: *) ∀(B: *) ∀(E: *) (Result A E) -> (A -> (Result B E)) -> (Result B E)
+| A B E #Done{x} fn = (fn x)
+| A B E #Fail{e} fn = #Fail{e}
+
+// Applying bind to a failed Result returns the same Fail.
+#test: (Result/bind U64 _ String #Fail{"Err"} (λx #Done{(+ x 1)})) == #Fail{"Err"}
+
+// Applying a function to a failure should return the same Fail value.
+#test: (Result/bind U64 _ _ #Fail{10} (λx #Done{(+ x 1)})) == #Fail{10}
+
+// Chain binds where the first result is a Fail.
+#test: (Result/bind U64 _ _ #Fail{7} (λx (Result/bind U64 _ _ #Done{(+ x 2)} (λy #Done{(* y 2)})))) == #Fail{7}
+
+// Chain binds where the second result is a Fail.
+#test: (Result/bind U64 _ _ #Done{3} (λx (Result/bind U64 _ _ #Fail{8} (λy #Done{(* y 2)})))) == #Fail{8}
+
+// Chain binds where both results are successful.
+#test: (Result/bind U64 _ String #Done{3} (λx (Result/bind U64 _ _ #Done{5} (λy #Done{(* y 2)})))) == #Done{15}

@@ -1,0 +1,7 @@
+// Gets the x-coordinate of a V2 vector.
+// - v: The input vector.
+// = The x-coordinate.
+V2/x : V2 -> F64
+| #V2{x y} = x
+
+#test: (V2/x #V2{x: 3.14 y: 2.71}) == 3.14

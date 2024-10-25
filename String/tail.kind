@@ -2,8 +2,8 @@
 // - str: Input string.
 // = String without the first character, or empty string if input was empty.
 String/tail : String -> String
-= λstr (List/tail Char str)
+| str = (List/tail Char str)
 
-#test: (String/tail []) == []
-#test: (String/tail [97]) == []
-#test: (String/tail [97 98 99]) == [98 99]
+#test: (String/tail "") == ""
+#test: (String/tail "a") == ""
+#test: (String/tail "abc") == "bc"

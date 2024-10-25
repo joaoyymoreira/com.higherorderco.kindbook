@@ -1,0 +1,11 @@
+use Bend/Compile/BendToNet/Encoder as Enc
+// Links two ports in the Encoder's net
+// - enc: The current Encoder state
+// - a: The first Port to link
+// - b: The second Port to link
+// = The Encoder with the net updated or None on error
+Enc/link : Enc/ -> Bend/Net/Port -> Bend/Net/Port -> (Maybe Enc/)
+| #Encoder{net vars} a b = do Maybe {
+  ask net = (Bend/Net/link net a b)
+  #Some{#Encoder{net vars}}
+}

@@ -1,0 +1,9 @@
+// State for encoding Bend Terms to the internal flat inet representation
+data Bend/Compile/BendToNet/Encoder {
+  #Encoder {
+    // Current state of the Net being built
+    net  : Bend/Net
+    // Map of variable names to their corresponding Ports
+    vars : (BinMap Bend/Net/Port)
+  }
+}

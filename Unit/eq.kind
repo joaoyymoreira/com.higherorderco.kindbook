@@ -1,0 +1,6 @@
+// Equality check for Unit type.
+// - x: The Unit value.
+// - y: The Unit value.
+// = True, as all Unit values are equal.
+Unit/eq : Unit -> Unit -> Bool
+| x y = #True

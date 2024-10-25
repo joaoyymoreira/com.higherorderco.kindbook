@@ -1,0 +1,16 @@
+// Checks if one list is lexicographically greater than or equal than another.
+// - A: Element type.
+// - O: Ord instance for A.
+// - xs: First list.
+// - ys: Second list.
+// = True if xs >= ys, False otherwise.
+List/gte : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Bool
+| A O #Nil        #Nil        = #True
+| A O #Nil        #Cons{y ys} = #False
+| A O #Cons{x xs} #Nil        = #True
+| A O #Cons{x xs} #Cons{y ys} =
+  match (Ord/compare A O x y) {
+    #LT: #False
+    #GT: #True
+    #EQ: (List/gte A O xs ys)
+  }

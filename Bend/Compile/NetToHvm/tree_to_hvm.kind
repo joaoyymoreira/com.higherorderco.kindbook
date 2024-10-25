@@ -1,0 +1,73 @@
+// Bend/Compile/NetToHvm/tree_to_hvm
+
+Bend/Compile/NetToHvm/tree_to_hvm (net: Bend/Net/Net) (node_id: Nat) (state: Bend/Compile/NetToHvm/State/State) : (Result (Pair Bend/Hvm/Term/Term Bend/Compile/NetToHvm/State/State) String)
+| net node_id (#State vars n_vars 0) = #Fail{"cycle in tree"}
+| net node_id (#State vars n_vars (Nat/succ n_nodes)) =
+  do Result {
+    let state = (#State vars n_vars n_nodes)
+    ask node  = (Bend/Net/get_node net node_id)
+    let #Node{main aux1 aux2 kind} = node
+    match Bend/Net/NodeKind/NodeKind kind {
+      #Con:
+        ask pair_lft = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux1 state)
+        let lft   = (Pair.fst pair_lft)
+        let state = (Pair.snd pair_lft)
+        ask pair_rgt = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux2 state)
+        let rgt   = (Pair.fst pair_rgt)
+        let state = (Pair.snd pair_rgt)
+        #Done{(Pair.new (Bend/Hvm/Term/Term.#Con lft rgt) state)}
+      #Dup:
+        ask pair_lft = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux1 state)
+        let lft   = (Pair.fst pair_lft)
+        let state = (Pair.snd pair_lft)
+        ask pair_rgt = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux2 state)
+        let rgt   = (Pair.fst pair_rgt)
+        let state = (Pair.snd pair_rgt)
+        #Done{(Pair.new (Bend/Hvm/Term/Term.#Dup lft rgt) state)}
+      #Era:
+        #Done{(Pair.new Bend/Hvm/Term/Term.#Era state)}
+      #Var:
+        let pair = (Bend/Compile/NetToHvm/tree_to_hvm/make_var (Bend/Net/Port/Port.new node_id 1) aux1 state)
+        #Done{pair}
+      #Rot:
+        #Fail{"attempted to compile root node"}
+      (#Num num):
+        #Done{(Pair.new Bend/Hvm/Term/Term.#Era state)}
+      (#Ref name):
+        #Done{(Pair.new Bend/Hvm/Term/Term.#Era state)}
+      #Opr:
+        #Done{(Pair.new Bend/Hvm/Term/Term.#Era state)}
+      #Swi:
+        ask pair_lft = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux1 state)
+        let lft   = (Pair.fst pair_lft)
+        let state = (Pair.snd pair_lft)
+        ask pair_rgt = (Bend/Compile/NetToHvm/var_or_subtree_to_hvm net aux2 state)
+        let rgt   = (Pair.fst pair_rgt)
+        let state = (Pair.snd pair_rgt)
+        #Done{(Pair.new (Bend/Hvm/Term/Term.#Con lft rgt) state)}
+    }
+  }
+
+Bend/Compile/NetToHvm/var_or_subtree_to_hvm (net: Bend/Net/Net) (port: Bend/Net/Port/Port) (state: Bend/Compile/NetToHvm/State/State) : (Result (Pair Bend/Hvm/Term/Term Bend/Compile/NetToHvm/State/State) String)
+  if (Nat/eq (Bend/Net/Port/Port.slot port) 0) {
+    (Bend/Compile/NetToHvm/tree_to_hvm net (Bend/Net/Port/Port.node port) state)
+  } else {
+    do Result {
+      ask port = (Bend/Net/get_port net port)
+      #Done{(Bend/Compile/NetToHvm/tree_to_hvm/make_var port port state)}
+    }
+  }
+
+Bend/Compile/NetToHvm/tree_to_hvm/make_var (a: Bend/Net/Port/Port) (b: Bend/Net/Port/Port) (state: Bend/Compile/NetToHvm/State/State) : (Pair Bend/Hvm/Term/Term Bend/Compile/NetToHvm/State/State)
+| a b (#State vars n_vars n_nodes) =
+  let key_a = (Bend/Net/Port/to_bits a)
+  match (BinMap/get vars key_a) {
+    #Some{var}: (Pair.new (Bend/Hvm/Term/Term.#Var var) (#State vars n_vars n_nodes))
+    #None:
+      let key_b  = (Bend/Net/Port/to_bits b)
+      let name   = (Bend/nat_to_name n_vars)
+      let n_vars = (Nat/succ n_vars)
+      let vars   = (BinMap/set vars key_a name)
+      let vars   = (BinMap/set vars key_b name)
+      (Pair.new (Bend/Hvm/Term/Term.#Var name) (#State vars n_vars n_nodes))
+  }

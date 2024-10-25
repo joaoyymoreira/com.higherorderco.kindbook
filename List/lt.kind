@@ -14,3 +14,4 @@ List/lt : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Bool
     #GT: #False
     #EQ: (List/lt A O xs ys)
   }
+  

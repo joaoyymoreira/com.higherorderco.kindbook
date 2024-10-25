@@ -4,5 +4,5 @@
 // - n: Initial value.
 // - s: Input string.
 // = Folded result.
-String/fold : ∀(B: *) (U64 -> B -> B) -> B -> String -> B
-= λB λc λn λs (List/fold U64 s B n c)
+String/fold : ∀(B: *) (Char -> B -> B) -> B -> String -> B
+| B c n s = (List/fold Char s B n c)

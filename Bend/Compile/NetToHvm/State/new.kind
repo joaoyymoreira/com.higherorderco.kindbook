@@ -1,0 +1,4 @@
+// Bend/Compile/NetToHvm/State/new
+
+Bend/Compile/NetToHvm/State/new (n_nodes: Nat) : Bend/Compile/NetToHvm/State/State
+  (Bend/Compile/NetToHvm/State/State.new (BinMap/new) 0 (Nat/succ n_nodes))

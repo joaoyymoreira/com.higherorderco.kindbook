@@ -3,9 +3,9 @@
 // - c: Character to use for padding.
 // - s: Input string to pad.
 // = New string padded to length n with character c on the left side.
-String/pad-left : Nat -> U64 -> String -> String
+String/pad-left : Nat -> Char -> String -> String
 | n c s =
-  let #Pair{str len} = (List/length-got U64 s)
+  let #Pair{str len} = (List/length-got Char s)
   if (Nat/lt len n) {
     (String/append (String/replicate (Nat/sub n len) c) str)
   } else {

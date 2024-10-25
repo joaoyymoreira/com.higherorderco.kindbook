@@ -1,0 +1,14 @@
+// Compares two string.
+// - a: First string.
+// - b: Second string.
+// = LT if a < b, EQ if a = b, GT if a > b.
+String/compare : (String) -> (String) -> Cmp
+| #Nil         #Nil         = #EQ
+| #Nil         #Cons{b0 bs} = #LT
+| #Cons{a0 as} #Nil         = #GT
+| #Cons{a0 as} #Cons{b0 bs} =
+  match (Ord/compare Char Char/Ord a0 b0) {
+    #LT: #LT
+    #EQ: (String/compare as bs)
+    #GT: #GT
+  }

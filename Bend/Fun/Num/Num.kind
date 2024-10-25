@@ -1,0 +1,6 @@
+// Native numeric types in Bend.
+data Bend/Fun/Num {
+  #U24{ val: U64 }
+  #I24{ val: Int }
+  #F24{ val: F64 }
+}

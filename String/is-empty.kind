@@ -6,4 +6,4 @@ String/is-empty : String -> Bool
 | #Cons{hd tl} = #False
 
 #test: (String/is-empty String/nil) == #True
-#test: (String/is-empty (String/cons 97 String/nil)) == #False
+#test: (String/is-empty "a") == #False

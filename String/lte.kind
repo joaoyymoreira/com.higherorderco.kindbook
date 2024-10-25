@@ -1,0 +1,15 @@
+// Checks if one list is lexicographically less than or equal to another.
+// - a: First string.
+// - b: Second string.
+// = True if a <= b, False otherwise.
+String/lte : String -> String -> Bool
+| #Nil         #Nil         = #True
+| #Nil         #Cons{b0 bs} = #True
+| #Cons{a0 as} #Nil         = #False
+| #Cons{a0 as} #Cons{b0 bs} =
+  match (Ord/compare Char Char/Ord a0 b0) {
+    #LT: #True
+    #GT: #False
+    #EQ: (String/lte as bs)
+  }
+  

@@ -791,13 +791,24 @@ HVM/eval-one : (HVM Bool)
   }
 }
 
+//HVM/eval-strict : (HVM Unit)
+//= do HVM {
+  //ask changed = HVM/eval-one
+  //match changed {
+    //#True: HVM/eval-strict
+    //#False: do HVM { ret #Unit }
+  //}
+//}
+
 HVM/eval-strict : (HVM Unit)
-= do HVM {
-  ask changed = HVM/eval-one
-  match changed {
-    #True: HVM/eval-strict
-    #False: do HVM { ret #Unit }
+= λnet match (HVM/eval-one net) {
+  #Some{pair}: match pair {
+    #Pair{net changed}: match changed {
+      #True: (HVM/eval-strict net)
+      #False: #Some{#Pair{net #Unit}}
+    }
   }
+  #None: #None
 }
 
 // Main

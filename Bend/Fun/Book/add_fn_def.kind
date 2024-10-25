@@ -1,0 +1,8 @@
+// Bend/Fun/Book/add_fn_def
+
+Bend/Fun/Book/add_fn_def (book: Bend/Fun/Book/Book) (fn_def: Bend/Fun/FnDef/FnDef) : Bend/Fun/Book/Book
+  let #Book{defs ctrs adts} = book
+  let name = (Bend/Fun/FnDef/FnDef.name fn_def)
+  let key  = (String/hash name)
+  let defs = (BinMap/set defs key fn_def)
+  #Book{defs ctrs adts}

@@ -1,0 +1,20 @@
+// Bend/Fun/Term/mmap_children_with
+
+Bend/Fun/Term/mmap_children_with <M: Type -> Type> <S: Type> (m: Monad M) (f: (List String) -> Bend/Fun/Term/Term -> S -> M (Pair Bend/Fun/Term/Term S)) (t: Bend/Fun/Term/Term) (s: S) : M (Pair Bend/Fun/Term/Term S)
+  ((Bend/Fun/Term/mmap_children (Monad.state_t S M m) f t) s)
+
+// Assuming StateT monad transformer is defined elsewhere
+// If not, you might need to define it:
+
+// Monad/state_t <S: Type> <M: Type -> Type> (m: Monad M) : (Monad (x => S -> M (Pair x S)))
+//   (Monad.new
+//     (x => s => (Monad.pure m (Pair.new x s)))
+//     (ma => f => s =>
+//       do m {
+//         ask pair = (ma s)
+//         let a = (Pair.fst pair)
+//         let s = (Pair.snd pair)
+//         (f a s)
+//       }
+//     )
+//   )

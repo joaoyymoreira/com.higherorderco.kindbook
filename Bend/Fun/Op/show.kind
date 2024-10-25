@@ -1,0 +1,23 @@
+// Bend/Fun/Op/show
+
+Bend/Fun/Op/show : (Show Bend/Fun/Op/Op)
+  (Show.new Bend/Fun/Op/show/show_op)
+
+Bend/Fun/Op/show/show_op (op: Bend/Fun/Op/Op) : String
+| #Add = "+"
+| #Sub = "-"
+| #Mul = "*"
+| #Div = "/"
+| #Rem = "%"
+| #Eql = "=="
+| #Neq = "!="
+| #Ltn = "<"
+| #Gtn = ">"
+| #Lte = "<="
+| #Gte = ">="
+| #And = "&"
+| #Or  = "|"
+| #Xor = "^"
+| #Shl = "<<"
+| #Shr = ">>"
+| #Pow = "**"

@@ -1,0 +1,52 @@
+// Bend/Fun/Book/recursive_defs
+
+Bend/Fun/Book/recursive_defs (book: Bend/Fun/Book/Book) : (List String)
+  let deps  = (Bend/Fun/Book/recursive_defs/book_deps book)
+  let defs  = (List/map (x => Bend/Fun/FnDef/FnDef.name x) (BinMap/values (Bend/Fun/Book/Book.defs book)))
+  let cycles = (Bend/Fun/Book/recursive_defs/book_cycles deps defs)
+  (List/dedup (List/concat cycles))
+
+Bend/Fun/Book/recursive_defs/term_deps (term: Bend/Fun/Term/Term) : (List String)
+| #Ref{nam} = [nam]
+| term      = (List/concat_map Bend/Fun/Book/recursive_defs/term_deps (Bend/Fun/Term/children term))
+
+Bend/Fun/Book/recursive_defs/def_deps (def: Bend/Fun/FnDef/FnDef) : (BinMap String)
+  let #FnDef{name type check rules src} = def
+  let deps = (List/concat_map (rule => Bend/Fun/Book/recursive_defs/term_deps (Bend/Fun/Rule/Rule.body rule)) rules)
+  (BinMap/from_list (List/map (dep => Pair.new (String/hash dep) dep) deps))
+
+Bend/Fun/Book/recursive_defs/book_deps (book: Bend/Fun/Book/Book) : (BinMap (BinMap String))
+  let #Book{defs adts ctrs} = book
+  (BinMap/map defs Bend/Fun/Book/recursive_defs/def_deps)
+
+Bend/Fun/Book/recursive_defs/def_cycles (deps: (BinMap (BinMap String))) (visited: (BinMap Unit)) (cycles: (List (List String))) (to_visit: (List (Pair String (List String)))) : (List (List String))
+| deps visited cycles #Nil = cycles
+| deps visited cycles (#Cons pair to_visit) =
+  let nam  = (Pair.fst pair)
+  let path = (Pair.snd pair)
+  if (BinMap/contains visited (String/hash nam)) {
+    let cycles = (Bend/Fun/Book/recursive_defs/check_cycle nam path cycles)
+    (Bend/Fun/Book/recursive_defs/def_cycles deps visited cycles to_visit)
+  } else {
+    let visited = (BinMap/set visited (String/hash nam) Unit.new)
+    let path    = (#Cons nam path)
+    let new     = (Bend/Fun/Book/recursive_defs/get_new_deps deps nam path)
+    (Bend/Fun/Book/recursive_defs/def_cycles deps visited cycles (List/concat new to_visit))
+  }
+
+Bend/Fun/Book/recursive_defs/check_cycle (nam: String) (path: (List String)) (cycles: (List (List String))) : (List (List String))
+  let split = (List/split_chunks (x => String/eq x nam) path)
+  match List split {
+    #Cons cycle (#Cons _ _): #Cons (#Cons nam cycle) cycles
+    _: cycles
+  }
+
+Bend/Fun/Book/recursive_defs/get_new_deps (deps: (BinMap (BinMap String))) (nam: String) (path: (List String)) : (List (Pair String (List String)))
+  match (BinMap/get deps (String/hash nam)) {
+    #Some deps: (List/map (dep => Pair.new dep path) (BinMap/values deps))
+    #None: #Nil
+  }
+
+Bend/Fun/Book/recursive_defs/book_cycles (deps: (BinMap (BinMap String))) (defs: (List String)) : (List (List String))
+  let initial = (List/map (def => Pair.new def #Nil) defs)
+  (Bend/Fun/Book/recursive_defs/def_cycles deps (BinMap/new) #Nil initial)

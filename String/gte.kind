@@ -1,0 +1,14 @@
+// Checks if one list is lexicographically greater than or equal than another.
+// - a: First string.
+// - b: Second string.
+// = True if a >= b, False otherwise.
+String/gte : String -> String -> Bool
+| #Nil         #Nil         = #True
+| #Nil         #Cons{b0 bs} = #False
+| #Cons{a0 as} #Nil         = #True
+| #Cons{a0 as} #Cons{b0 bs} =
+  match (Ord/compare Char Char/Ord a0 b0) {
+    #LT: #False
+    #GT: #True
+    #EQ: (String/gte as bs)
+  }

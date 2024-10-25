@@ -2,7 +2,7 @@
 // - str: Input string.
 // = Number of characters.
 String/length : String -> Nat
-= λstr (List/length U64 (String/to-list str))
+| str = (List/length U64 (String/to-list str))
 
 #test: (String/length "Hello") == #5
 #test: (String/length "") == #0

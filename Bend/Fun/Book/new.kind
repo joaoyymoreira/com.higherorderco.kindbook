@@ -1,0 +1,8 @@
+// Bend/Fun/Book/new
+
+Bend/Fun/Book/new : Bend/Fun/Book/Book
+  #Book{
+    defs: (BinMap/new)
+    adts: (BinMap/new)
+    ctrs: (BinMap/new)
+  }

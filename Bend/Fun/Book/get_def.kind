@@ -1,0 +1,6 @@
+// Bend/Fun/Book/get_def
+
+Bend/Fun/Book/get_def (book: Bend/Fun/Book/Book) (name: String) : (Result Bend/Fun/FnDef/FnDef String)
+  let #Book{defs adts ctrs} = book
+  let key = (String/hash name)
+  (Maybe/to_result (BinMap/get defs key) "Def not found")

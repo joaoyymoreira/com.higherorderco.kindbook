@@ -1,0 +1,32 @@
+use Bend/Fun/FanKind as FanKind
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Num as Num
+use Bend/Fun/Op as Op
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/Term as Term
+
+// Represents the various constructs in the language
+data Bend/Fun/Term {
+  #Lam{ pat: Pat/     bod: Term/}
+  #Var{ nam: String }
+  #Lnk{ nam: String }
+  #Let{ pat: Pat/     val: Term/ nxt: Term/ }
+  #Wth{ typ: String   bod: Term/}
+  #Ask{ pat: Pat/     val: Term/ nxt: Term/ }
+  #Use{ nam: String   val: Term/ nxt: Term/ }
+  #App{ fun: Term/    arg: Term/ }
+  #Fan{ fan: FanKind/ els: (List Term/) }
+  #Num{ val: Num/ }
+  #Str{ val: String }
+  #Lst{ els: (List Term/) }
+  #Opr{ opr: Op/ fst: Term/ snd: Term/ }
+  #Mat{ bnd: (Maybe String) arg: Term/ with-bnd: (List (Maybe String)) with-arg: (List Term/) arms: (List MatchRule/) }
+  #Swt{ bnd: (Maybe String) arg: Term/ with-bnd: (List (Maybe String)) with-arg: (List Term/) pred: (Maybe String) arms: (List Term/) }
+  #Fld{ bnd: (Maybe String) arg: Term/ with-bnd: (List (Maybe String)) with-arg: (List Term/) arms: (List MatchRule/) }
+  #Bnd{ bnd: (List (Maybe String)) arg: (List Term/) cond: Term/ step: Term/ base: Term/ }
+  #Opn{ typ: String var: (Maybe String) bnd: (List (Maybe String)) bod: Term/ }
+  #Ref{ nam: String }
+  #Def{ def: FnDef/ nxt: Term/ }
+  #Era
+}

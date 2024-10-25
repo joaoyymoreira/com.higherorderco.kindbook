@@ -1,0 +1,51 @@
+// Bend/Fun/Term/map_child_binds
+
+Bend/Fun/Term/map_child_binds (f: (Maybe String) -> (List Bend/Fun/Term/Term) -> (Maybe String)) (term: Bend/Fun/Term/Term) : Bend/Fun/Term/Term
+| f (#Var nam)         = #Var nam
+| f (#Link nam)        = #Link nam
+| f (#With typ bod)    = #With typ bod
+| f (#App fun arg)     = #App fun arg
+| f (#Fan kind els)    = #Fan kind els
+| f (#Num val)         = #Num val
+| f (#Str val)         = #Str val
+| f (#List els)        = #List els
+| f (#Oper op fst snd) = #Oper op fst snd
+| f (#Ref nam)         = #Ref nam
+| f (#Def def nxt)     = #Def def nxt
+| f #Era               = #Era
+| f (#Lam pat bod)     = #Lam (Bend/Fun/Pattern/map_binds (x => f x [bod]) pat) bod
+| f (#Let pat val nxt) = #Let (Bend/Fun/Pattern/map_binds (x => f x [nxt]) pat) val nxt
+| f (#Ask pat val nxt) = #Ask (Bend/Fun/Pattern/map_binds (x => f x [nxt]) pat) val nxt
+| f (#Use nam val nxt) = #Use (f nam [nxt]) val nxt
+| f (#Open typ var bnd bod) = #Open typ var (List/map (x => f x [bod]) bnd) bod
+| f (#Mat bnd arg with_bnd with_arg arms) =
+  #Mat (f bnd (List/map Bend/Fun/MatchRule/MatchRule.bod arms))
+       arg
+       (List/map (b => f b (List/map Bend/Fun/MatchRule/MatchRule.bod arms)) with_bnd)
+       with_arg
+       (List/map (rule => Bend/Fun/MatchRule/MatchRule.new
+         (Bend/Fun/MatchRule/MatchRule.nam rule)
+         (List/map (b => f b [Bend/Fun/MatchRule/MatchRule.bod rule]) (Bend/Fun/MatchRule/MatchRule.bnd rule))
+         (Bend/Fun/MatchRule/MatchRule.bod rule)) arms)
+| f (#Swt bnd arg with_bnd with_arg pred arms) =
+  #Swt (f bnd arms)
+       arg
+       (List/map (b => f b arms) with_bnd)
+       with_arg
+       pred
+       arms
+| f (#Fold bnd arg with_bnd with_arg arms) =
+  #Fold (f bnd (List/map Bend/Fun/MatchRule/MatchRule.bod arms))
+        arg
+        (List/map (b => f b (List/map Bend/Fun/MatchRule/MatchRule.bod arms)) with_bnd)
+        with_arg
+        (List/map (rule => Bend/Fun/MatchRule/MatchRule.new
+          (Bend/Fun/MatchRule/MatchRule.nam rule)
+          (List/map (b => f b [Bend/Fun/MatchRule/MatchRule.bod rule]) (Bend/Fun/MatchRule/MatchRule.bnd rule))
+          (Bend/Fun/MatchRule/MatchRule.bod rule)) arms)
+| f (#Bend bnd arg cond step base) =
+  #Bend (List/map (b => f b [cond step base]) bnd)
+        arg
+        cond
+        step
+        base

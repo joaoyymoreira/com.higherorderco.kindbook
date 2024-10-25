@@ -1,3 +1,18 @@
+Foo : ∀(x: (Maybe (Pair U64 U64))) U64
+= λx match x {
+  #Some{pair}: match pair {
+    #Pair{a b}: match (U64/is-zero a) {
+      #True: (Foo x)
+      #False: 0
+    }
+  }
+  #None: 0
+}
+
+
+
+
+
 //Foo : ∀(m: Nat) ∀(n: Nat) Bool
 //| #Zero    #Zero    = #True
 //| #Succ{m} #Succ{n} = (Foo m n)
@@ -14,14 +29,14 @@
 //main : Nat = (double #20 #0)
 
 
-double : ∀(n: U64) ∀(r: U64) U64
-= λn λr
-  switch n {
-    0: r
-    _{pred}: (double pred (+ r 2))
-  }
+//double : ∀(n: U64) ∀(r: U64) U64
+//= λn λr
+  //switch n {
+    //0: r
+    //_{pred}: (double pred (+ r 2))
+  //}
 
-main : U64 = (double 1000000 0)
+//main : U64 = (double 1000000 0)
 
 
 

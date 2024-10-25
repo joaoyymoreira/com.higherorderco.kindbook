@@ -1,0 +1,10 @@
+// Bend/Fun/Pattern/map_children
+
+Bend/Fun/Pattern/map_children (f: Bend/Fun/Pattern/Pattern -> Bend/Fun/Pattern/Pattern) (pat: Bend/Fun/Pattern/Pattern) : Bend/Fun/Pattern/Pattern
+| f (#Var x)    = #Var x
+| f (#Chn x)    = #Chn x
+| f (#Fan k ps) = #Fan k (List/map f ps)
+| f (#Ctr n ps) = #Ctr n (List/map f ps)
+| f (#Num x)    = #Num x
+| f (#Lst ps)   = #Lst (List/map f ps)
+| f (#Str x)    = #Str x

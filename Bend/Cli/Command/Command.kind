@@ -1,0 +1,6 @@
+// The main Bend CLI commands
+data Bend/Cli/Command {
+  #GenBend
+  #GenCore
+  #GenHvm
+}

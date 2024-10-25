@@ -1,0 +1,7 @@
+// Bend/Compile/book_to_hvm
+
+Bend/Compile/book_to_hvm (book: Bend/Fun/Book/Book) : (Result Bend/Hvm/Book/Book String)
+  do Result {
+    ask nets = (Bend/Compile/BendToNet/book_to_nets book)
+    (Bend/Compile/NetToHvm/nets_to_hvm nets)
+  }

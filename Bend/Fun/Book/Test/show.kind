@@ -1,0 +1,42 @@
+// Bend/Fun/Book/Test/show
+
+Bend/Fun/Book/Test/show/dummy_source : Bend/Source/Source
+  (Bend/Source/Source.new #None #None Bend/Source/SourceKind.#Generated)
+
+Bend/Fun/Book/Test/show/dummy_rule : Bend/Fun/Rule/Rule
+  (Bend/Fun/Rule/Rule.new #Nil (Bend/Fun/Term/Term.#Var "dummy"))
+
+Bend/Fun/Book/Test/show/dummy_fn_def (name: String) : Bend/Fun/FnDef/FnDef
+  (Bend/Fun/FnDef/FnDef.new
+    name
+    (Bend/Fun/Type/Type.#Var "Type")
+    #True
+    [Bend/Fun/Book/Test/show/dummy_rule]
+    Bend/Fun/Book/Test/show/dummy_source)
+
+Bend/Fun/Book/Test/show/dummy_book : Bend/Fun/Book/Book
+  #Book{
+    defs: (BinMap/from_list [
+      (Pair.new (String/hash "func1") (Bend/Fun/Book/Test/show/dummy_fn_def "func1"))
+      (Pair.new (String/hash "func2") (Bend/Fun/Book/Test/show/dummy_fn_def "func2"))
+    ])
+    ctrs: (BinMap/new)
+    adts: (BinMap/new)
+  }
+
+Bend/Fun/Book/Test/show/test_empty_book : (Equal String (Bend/Fun/Book/show Bend/Fun/Book/new) "")
+  Equal.refl
+
+Bend/Fun/Book/Test/show/test_single_function_book : (Equal String
+  (Bend/Fun/Book/show (#Book{
+    defs: (BinMap/from_list [(Pair.new (String/hash "func") (Bend/Fun/Book/Test/show/dummy_fn_def "func"))])
+    ctrs: (BinMap/new)
+    adts: (BinMap/new)
+  }))
+  "func : Type\n(func) = dummy")
+  Equal.refl
+
+Bend/Fun/Book/Test/show/test_multiple_functions_book : (Equal String
+  (Bend/Fun/Book/show Bend/Fun/Book/Test/show/dummy_book)
+  "func1 : Type\n(func1) = dummy\n\nfunc2 : Type\n(func2) = dummy")
+  Equal.refl

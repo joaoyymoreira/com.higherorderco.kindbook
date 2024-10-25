@@ -1,0 +1,9 @@
+// Bend/Fun/Adt/CtrField
+
+data Bend/Fun/Adt/CtrField {
+  #CtrField {
+    nam : String
+    rec : Bool
+    typ : Bend/Fun/Type/Type
+  }
+}

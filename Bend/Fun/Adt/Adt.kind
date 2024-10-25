@@ -1,0 +1,10 @@
+// Bend/Fun/Adt/Adt
+
+data Bend/Fun/Adt/Adt {
+  #Adt {
+    nam : String
+    var : (List String)
+    ctr : (List String)
+    src : Bend/Source/Source
+  }
+}

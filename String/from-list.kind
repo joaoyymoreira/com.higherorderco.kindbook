@@ -4,5 +4,5 @@
 String/from-list : (List U64) -> String
 | chars = chars
 
-#test: (String/from-list [97 98 99]) == [97 98 99]
-#test: (String/from-list String/nil) == String/nil
+#test: (String/from-list "abc") == "abc"
+#test: (String/from-list "") == ""
