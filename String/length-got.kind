@@ -4,6 +4,6 @@
 String/length-got : String -> (Pair String Nat)
 | str = (List/length-got U64 str)
 
-//#test: (Pair/get-snd String Nat (String/length-got "")) == #0
-//#test: (Pair/get-snd String Nat (String/length-got "Hello")) == #5
-//#test: (Pair/get-fst String Nat (String/length-got "Agda")) == "Agda"
+#test: (Pair/get-snd String Nat (String/length-got "")) == #0
+#test: (Pair/get-snd String Nat (String/length-got "Hello")) == #5
+#test: (Pair/get-fst String Nat (String/length-got "Agda")) == "Agda"

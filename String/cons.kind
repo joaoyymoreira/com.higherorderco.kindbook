@@ -5,5 +5,5 @@
 String/cons : Char -> String -> String
 | head tail = #Cons{head tail}
 
-#test: (String/cons 'a' String/nil) == ['a']
+#test: (String/cons 'a' "") == "a"
 #test: (String/cons 'H' "ello") == "Hello"

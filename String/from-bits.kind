@@ -2,9 +2,9 @@
 // - bits: The input Bits value to convert.
 // = String representation of the input Bits.
 String/from-bits : Bits -> String
-= λbits
+| bits = 
   let chunks = (Bits/split-chunks #21 bits)
-  (List/map Bits U64 Bits/to-char chunks)
+  (List/map Bits Char Bits/to-char chunks)
 
 #test: (String/from-bits #E) == ""
 #test: (String/from-bits (Nat/to-bits #65)) == "A"

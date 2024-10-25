@@ -2,7 +2,7 @@
 // - n: Number of repetitions.
 // - c: Char to replicate.
 // = String with n repetitions of c.
-String/replicate : Nat -> U64 -> String
+String/replicate : Nat -> Char -> String
 | #Zero    c = ""
 | #Succ{n} c = (String/append (String/from-char c) (String/replicate n c))
 
