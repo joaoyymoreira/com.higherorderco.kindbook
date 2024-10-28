@@ -1,2 +1,11 @@
+// Wraps a value in a Result.
+// - A: Success type.
+// - E: Error type.
+// - x: Value to wrap.
+// = A Result containing x.
 Result/pure : ∀(A: *) ∀(E: *) A -> (Result A E)
-| A E x = #Done{ x }
+| A E x = #Done{x}
+
+#test: (Result/pure U64 String 42) == #Done{42}
+#test: (Result/pure Bool U64 #True) == #Done{#True}
+#test: (Result/pure (Maybe U64) String #None) == #Done{#None}
