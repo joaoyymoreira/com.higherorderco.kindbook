@@ -1,0 +1,9 @@
+// Computes string length while preserving it.
+// - str: Input string.
+// = Pair of original string and its length.
+String/length-got-u64 : String -> (Pair String U64)
+| str = (List/length-got-u64 Char str)
+
+#test: (Pair/get-snd String U64 (String/length-got-u64 "")) == 0
+#test: (Pair/get-snd String U64 (String/length-got-u64 "Hello")) == 5
+#test: (Pair/get-fst String U64 (String/length-got-u64 "Agda")) == "Agda"
