@@ -1,0 +1,41 @@
+// Rotates a U64 left by a specified number of bits.
+// - n: The U64 value to be rotated.
+// - s: The number of bits to rotate by.
+U64/lrot : U64 -> U64 -> U64
+| n s = (| (<< n s) (>> n (- 64 s)))
+
+// Basic rotation
+// 0x1234567890ABCDEF -> 1311768467294899695
+// 0x3456789ABCDEF12 -> 3771334300722392850
+#test: (U64/lrot 1311768467294899695 8) == 3771334300722392850
+
+// No rotation (0 bits)
+// 0xFFFFFFFFFFFFFFFF -> 18446744073709551615
+#test: (U64/lrot 18446744073709551615 0) == 18446744073709551615
+
+// Full rotation (64 bits, should be the same as input)
+// 0x1234567890ABCDEF -> 1311768467294899695
+#test: (U64/lrot 1311768467294899695 64) == 1311768467294899695
+
+// Rotation by 32 bits (half the width)
+// 0x1234567890ABCDEF -> 1311768467294899695
+// 0x90ABCDEF12345678 -> 10424652189165442680
+#test: (U64/lrot 1311768467294899695 32) == 10424652189165442680
+
+// Rotation of a number with alternating bits
+// 0xAAAAAAAAAAAAAAAA -> 12297829382473034410
+// 0x5555555555555555 -> 6148914691236517205
+#test: (U64/lrot 12297829382473034410 1) == 6148914691236517205
+
+// Rotation of a number with a single bit set
+// 0x0000000000000001 -> 1
+// 0x8000000000000000 -> 9223372036854775808
+#test: (U64/lrot 1 63) == 9223372036854775808
+
+// Rotation of zero
+#test: (U64/lrot 0 45) == 0
+
+// Large rotation on a number with bits set in various positions
+// 0x0123456789ABCDEF -> 81985529216486895
+// 0xF0123456789ABCDE -> 17298946664678735070
+#test: (U64/lrot 81985529216486895 60) == 17298946664678735070
