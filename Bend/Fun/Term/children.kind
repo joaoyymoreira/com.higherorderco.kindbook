@@ -17,7 +17,7 @@ Bend/Fun/Term/children (term: Bend/Fun/Term/Term) : (List (Pair (List String) Be
 | #Lam pat bod      = [(Pair.new (Bend/Fun/Pattern/binds pat) bod)]
 | #Let pat val nxt  = [(Pair.new [] val) (Pair.new (Bend/Fun/Pattern/binds pat) nxt)]
 | #Ask pat val nxt  = [(Pair.new [] val) (Pair.new (Bend/Fun/Pattern/binds pat) nxt)]
-| #Use nam val nxt  = [(Pair.new [] val) (Pair.new (Maybe/to_list nam) nxt)]
+| #Use nam val nxt  = [(Pair.new [] val) (Pair.new (Maybe/to-list nam) nxt)]
 | #Mat bnd arg with_bnd with_arg arms =
   (List/concat
     [(Pair.new [] arg)]

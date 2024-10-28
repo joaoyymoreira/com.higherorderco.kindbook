@@ -1,2 +1,2 @@
 Bend/Compile/NetToHvm/State/new : U64 -> Bend/Compile/NetToHvm/State
-| n_nodes = #State{ BinMap/empty 0 (+ n_nodes 1) }
+| n_nodes = #State{ (BinMap/empty _) 0 (+ n_nodes 1) }

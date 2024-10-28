@@ -1,4 +1,3 @@
-
 data Bend/Compile/NetToHvm/State {
   #State {
     vars    : (BinMap String)

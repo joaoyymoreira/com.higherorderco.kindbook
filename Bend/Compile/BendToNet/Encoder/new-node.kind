@@ -7,5 +7,5 @@ use Bend/Compile/BendToNet/Encoder as Enc
 Enc/new-node : Bend/Net/NodeKind -> Enc -> (Pair U64 Enc)
 | kind #Encoder{net vars} =
   let #Pair{idx net} = (Bend/Net/new-node kind net)
-  let enc            = {#Encoder{net vars} : Enc/}
+  let enc            = {#Encoder{net vars} : Enc}
   #Pair{idx enc}

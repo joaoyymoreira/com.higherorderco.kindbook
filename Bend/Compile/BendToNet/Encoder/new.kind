@@ -3,5 +3,5 @@ use Bend/Compile/BendToNet/Encoder as Enc
 // Creates a new Encoder with empty net and var map
 // - name: The name for the new net
 // = A new Encoder with initialized components
-Enc/new : String -> Enc/
+Enc/new : String -> Enc
 | name =  #Encoder{(Bend/Net/new name) (BinMap/new _)}

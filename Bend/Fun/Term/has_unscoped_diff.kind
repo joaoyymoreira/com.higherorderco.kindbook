@@ -6,6 +6,6 @@ Bend/Fun/Term/has_unscoped_diff (term: Bend/Fun/Term/Term) : Bool
   let uses   = (Pair.snd pair)
   let decls_map = (List/map (x => Pair.new (String/hash x) x) decls)
   let uses_map  = (List/map (x => Pair.new (String/hash x) x) uses)
-  let diff1  = (BinMap/to_list (BinMap/difference (BinMap/from_list uses_map) (BinMap/from_list decls_map)))
-  let diff2  = (BinMap/to_list (BinMap/difference (BinMap/from_list decls_map) (BinMap/from_list uses_map)))
+  let diff1  = (BinMap/to-list (BinMap/difference (BinMap/from_list uses_map) (BinMap/from_list decls_map)))
+  let diff2  = (BinMap/to-list (BinMap/difference (BinMap/from_list decls_map) (BinMap/from_list uses_map)))
   (Bool/or (Bool/not (List/is_nil diff1)) (Bool/not (List/is_nil diff2)))
