@@ -4,7 +4,7 @@
 Char/hex-to-bits : Char -> (Maybe Bits)
 | c =
   do Maybe {
-    ask val = (Char/hex-to-u32 c)
+    ask val = (Char/hex-to-u64 c)
     ret (U64/to-bits val)
   }
 

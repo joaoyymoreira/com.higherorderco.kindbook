@@ -1,7 +1,7 @@
 // Converts a hex char to its U64 value.
 // - c: The hex char.
 // = The U64 value, or None if invalid.
-Char/hex-to-u32 : Char -> (Maybe U64)
+Char/hex-to-u64 : Char -> (Maybe U64)
 | c =
   if (Char/is-digit c) {
     #Some{(-c '0')}
@@ -14,8 +14,8 @@ Char/hex-to-u32 : Char -> (Maybe U64)
     }
   }
 
-#test: (Char/hex-to-u32 '0') == #Some{0}
-#test: (Char/hex-to-u32 '9') == #Some{9}
-#test: (Char/hex-to-u32 'A') == #Some{10}
-#test: (Char/hex-to-u32 'f') == #Some{15}
-#test: (Char/hex-to-u32 'G') == #None
+#test: (Char/hex-to-u64 '0') == #Some{0}
+#test: (Char/hex-to-u64 '9') == #Some{9}
+#test: (Char/hex-to-u64 'A') == #Some{10}
+#test: (Char/hex-to-u64 'f') == #Some{15}
+#test: (Char/hex-to-u64 'G') == #None
