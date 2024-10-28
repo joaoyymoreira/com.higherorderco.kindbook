@@ -1,0 +1,20 @@
+// Filters an AVL tree based on a predicate.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - pred: Predicate function for keys.
+// - tree: Input AVL tree.
+// = Filtered AVL tree.
+OrdTree/filter : ∀(K: *) ∀(V: *) (Ord K) -> (K -> Bool) -> (OrdTree K V) -> (OrdTree K V)
+| K V ord pred tree =
+  use f = λkv λacc
+    if (pred (Pair/get-fst K V kv)) {
+      (OrdTree/insert K V ord kv acc)
+    } else {
+      acc
+    }
+  (OrdTree/fold K V (OrdTree K V) f (OrdTree/empty K V) tree)
+
+#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (== x 2))) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))))) == [#Pair{2 20}]
+#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (> x 1))) (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))))) == [#Pair{2 20} #Pair{3 30}]
+#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (== x 0))) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == []

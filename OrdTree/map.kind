@@ -1,0 +1,14 @@
+// Maps a function over an AVL tree.
+// - K: Input key type.
+// - V: Input value type.
+// - A: Output key type.
+// - B: Output value type.
+// - ord: Ord instance for A.
+// - f: Mapping function.
+// - tree: Input tree.
+// = Mapped tree.
+OrdTree/map : ∀(K: *) ∀(V: *) ∀(A: *) ∀(B: *) (Ord A) -> ((Pair K V) -> (Pair A B)) -> (OrdTree K V) -> (OrdTree A B)
+| K V A B ord f tree = (OrdTree/fold K V (OrdTree A B) λpair λacc (OrdTree/insert A B ord (f pair) acc) (OrdTree/empty A B) tree)
+
+#test: (OrdTree/map U64 U64 U64 U64 U64/Ord (Function/id (Pair U64 U64)) (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
+#test: (OrdTree/to-list U64 U64 (OrdTree/map U64 U64 U64 U64 U64/Ord (Pair/map U64 U64 (λx (+ 1 x))) (OrdTree/insert U64 U64 U64/Ord #Pair{1 1} (OrdTree/empty U64 U64)))) == [#Pair{2 2}]
