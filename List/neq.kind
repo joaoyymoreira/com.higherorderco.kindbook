@@ -5,6 +5,19 @@
 // - ys: Second list.
 // = True if not equal, False otherwise.
 List/neq : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
-| A e xs ys = (Bool/not (List/eq A e xs ys))
+| A e #Nil        #Nil        = #False
+| A e #Nil        #Cons{y ys} = #True
+| A e #Cons{x xs} #Nil        = #True
+| A e #Cons{x xs} #Cons{y ys} = 
+  if (IsEqual/eq A e x y) {
+    (List/neq A e xs ys)
+  } else {
+    #True
+  }
 
+
+#test: (List/neq Bool Bool/IsEqual [] []) == #False
 #test: (List/neq Bool Bool/IsEqual [#True #False] [#True #True]) == #True
+#test: (List/neq Bool Bool/IsEqual [#True #False] [#True #False]) == #False
+#test: (List/neq Bool Bool/IsEqual [#True #False] [#True #True #True]) == #True
+#test: (List/neq Bool Bool/IsEqual [#True #False #False] [#True #True]) == #True
