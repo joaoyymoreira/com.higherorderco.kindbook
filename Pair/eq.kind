@@ -1,0 +1,17 @@
+// Checks if two pairs are equal.
+// - A: First type.
+// - B: Second type.
+// - ea: IsEqual instance for A.
+// - eb: IsEqual instance for B.
+// - p1: First pair.
+// - p2: Second pair.
+// = True if pairs are equal, False otherwise.
+Pair/eq : ∀(A: *) ∀(B: *) (IsEqual A) -> (IsEqual B) -> (Pair A B) -> (Pair A B) -> Bool
+| A B ea eb #Pair{fst1 snd1} #Pair{fst2 snd2} =
+  (Bool/and (IsEqual/eq A ea fst1 fst2) (IsEqual/eq B eb snd1 snd2))
+
+#test: (Pair/eq Nat Nat Nat/IsEqual Nat/IsEqual #Pair{#3 #2} #Pair{#3 #2}) == #True
+#test: (Pair/eq Nat Nat Nat/IsEqual Nat/IsEqual #Pair{#0 #1} #Pair{#1 #0}) == #False
+#test: (Pair/eq Bool Bool Bool/IsEqual Bool/IsEqual #Pair{#True #False} #Pair{#True #False}) == #True
+#test: (Pair/eq Bool Bool Bool/IsEqual Bool/IsEqual #Pair{#True #False} #Pair{#False #True}) == #False
+#test: (Pair/eq String Bool String/IsEqual Bool/IsEqual #Pair{"hello" #True} #Pair{"hello" #True}) == #True
