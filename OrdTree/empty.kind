@@ -1,6 +1,9 @@
 // Creates an empty AVL tree.
-// - K: The type of keys in the tree.
-// - V: The type of values in the tree.
+// - K: Key type.
+// - V: Value type.
 // = An empty AVL tree.
 OrdTree/empty : ∀(K: *) ∀(V: *) (OrdTree K V)
 | K V = #Leaf
+
+#test: (OrdTree/size U64 U64 (OrdTree/empty U64 U64)) == #0
+#test: (OrdTree/height U64 U64 (OrdTree/empty U64 U64)) == #0

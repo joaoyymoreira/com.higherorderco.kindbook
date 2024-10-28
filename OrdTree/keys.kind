@@ -1,12 +1,16 @@
 // Extracts all keys from an AVL tree in inorder traversal.
-// - K: The type of keys in the tree.
-// - V: The type of values in the tree.
-// - tree: The AVL tree to extract keys from.
-// = A list containing all keys from the tree.
+// - K: Key type.
+// - V: Value type.
+// - tree: Input tree.
+// = List of all keys.
 OrdTree/keys : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List K)
-| K V #Leaf = #Nil
-| K V #Node{key-value balance left right} =
+| K V #Leaf                                      = #Nil
+| K V #Node{#Pair{key value} balance left right} =
   let left_keys  = (OrdTree/keys K V left)
   let right_keys = (OrdTree/keys K V right)
-  let node_key   = (Pair/get-fst K V key-value)
-  (List/append K left_keys #Cons{node_key right_keys})
+  (List/append K left_keys #Cons{key right_keys})
+
+#test: (OrdTree/keys U64 String (OrdTree/empty U64 String)) == []
+#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String))) == [1]
+#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{2 "two"} (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String)))) == [1 2]
+#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{3 "three"} (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/insert U64 String (U64/Ord) #Pair{2 "two"} (OrdTree/empty U64 String))))) == [1 2 3]
