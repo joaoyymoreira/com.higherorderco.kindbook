@@ -1,0 +1,2 @@
+Result/pure : ∀(A: *) ∀(E: *) A -> (Result A E)
+| A E x = #Done{ x }
