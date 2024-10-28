@@ -1,0 +1,9 @@
+// Calculates the Euclidean distance between two V2 vectors.
+// - a: The first V2 vector.
+// - b: The second V2 vector.
+// = The distance between the vectors.
+V2/dist : V2 -> V2 -> F64
+| a b = (F64/sqrt (V2/sqr-dist a b))
+
+#test: (V2/dist #V2{0.0 0.0} #V2{3.0 4.0}) == 5.0
+#test: (V2/dist #V2{1.0 1.0} #V2{4.0 5.0}) == 5.0

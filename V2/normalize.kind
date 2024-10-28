@@ -1,14 +1,15 @@
-// Normalizes a V2 vector.
-// - v: Input vector.
-// = Normalized vector or None if zero vector.
-V2/normalize : V2 -> (Maybe V2)
-| #V2{x y} =
-  if (V2/is-zero #V2{x y}) {
-    (Maybe/none V2)
+// Normalizes a V2 vector (makes it a unit vector).
+// - v: The V2 vector to normalize.
+// = A new V2 vector with the same direction but unit length,
+//   or the zero vector if the input is (close to) zero.
+V2/normalize : V2 -> V2
+| v = 
+  if (V2/is-zero v) {
+    v
   } else {
-    let len = (V2/length #V2{x y})
-    (Maybe/some V2 (V2/div-scalar #V2{x y} len))
+    (V2/div-scalar v (V2/length v))
   }
 
-#test: (V2/normalize #V2{x: 0.0 y: 0.0}) == (Maybe/none V2)
-#test: (V2/normalize #V2{x: 3.0 y: 4.0}) == (Maybe/some V2 #V2{x: 0.6 y: 0.8})
+#test: (V2/normalize #V2{x: 0.0 y: 0.0}) == #V2{x: 0.0 y: 0.0}
+#test: (V2/normalize #V2{x: 3.0 y: 4.0}) == #V2{x: 0.6 y: 0.8}
+#test: (V2/normalize #V2{x: 1.0 y: 0.0}) == #V2{x: 1.0 y: 0.0}
