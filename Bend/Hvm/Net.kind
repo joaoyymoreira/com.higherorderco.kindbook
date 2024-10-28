@@ -1,0 +1,7 @@
+data Bend/Hvm/Net {
+  #Net {
+    name: String
+    root: Bend/Hvm/Term
+    rbag: (List Bend/Hvm/Redex)
+  }
+}

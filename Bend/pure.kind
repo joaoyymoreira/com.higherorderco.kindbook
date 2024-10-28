@@ -1,0 +1,2 @@
+Bend/pure : ∀(A: *) (Bend A)
+| A = (Result/pure A String)

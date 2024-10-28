@@ -1,0 +1,19 @@
+
+Bend/Compile/NetToHvm/get-redexes (net: Bend/Net/Net) : (List (Pair Nat Nat))
+  let redexes = (check_nodes (BinMap/to_list (Bend/Net/Net.nodes net)) (BinMap/new))
+  (BinMap/values redexes)
+
+check_nodes (nodes: (List (Pair Bits Bend/Net/Node/Node))) (map: (BinMap (Pair Nat Nat))) : (BinMap (Pair Nat Nat))
+| #Nil map = map
+| (#Cons pair nodes) map =
+  let key_a  = (Pair.fst pair)
+  let node_a = (Pair.snd pair)
+  let port_b = (Bend/Net/Node/Node.main node_a)
+  if (Nat/eq (Bend/Net/Port/Port.slot port_b) 0) {
+    let key   = (Bits/to-bits (Nat/min (Bend/Net/Port/Port.node port_b) (Bits/to_nat key_a)))
+    let value = #Pair{(Bits/to_nat key_a) (Bend/Net/Port/Port.node port_b)}
+    let map   = (BinMap/set _ map key value)
+    (check_nodes nodes map)
+  } else {
+    (check_nodes nodes map)
+  }

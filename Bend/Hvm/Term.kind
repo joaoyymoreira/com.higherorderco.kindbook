@@ -1,0 +1,10 @@
+data Bend/Hvm/Term {
+  #Era
+  #Var { nam: String }
+  #Ref { nam: String }
+  #Num { num: U64 }
+  #Con { fst: Bend/Hvm/Term snd: Bend/Hvm/Term }
+  #Dup { fst: Bend/Hvm/Term snd: Bend/Hvm/Term }
+  #Opr { fst: Bend/Hvm/Term snd: Bend/Hvm/Term }
+  #Swi { fst: Bend/Hvm/Term snd: Bend/Hvm/Term }
+}

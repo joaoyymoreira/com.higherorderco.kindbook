@@ -1,9 +1,8 @@
-// Bend/Fun/Book/Book
-
-data Bend/Fun/Book/Book {
+// The representation of a Bend program as a collection of top-level definitions.
+data Bend/Fun/Book {
   #Book {
-    defs : (BinMap Bend/Fun/FnDef/FnDef)
-    adts : (BinMap Bend/Fun/Adt/Adt)
-    ctrs : (BinMap Bend/Fun/Adt/Ctr)
+    defs : (BinMap Bend/Fun/FnDef) // Map of function definitions
+    adts : (BinMap Bend/Fun/Adt)   // Map of ADTs
+    ctrs : (BinMap Bend/Fun/Ctr)   // Map of constructors
   }
 }

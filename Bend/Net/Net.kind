@@ -1,7 +1,7 @@
 data Bend/Net {
   #Net {
+    nam: String
     nod: (BinMap Bend/Net/Node)
     len: U64
-    nam: String
   }
 }

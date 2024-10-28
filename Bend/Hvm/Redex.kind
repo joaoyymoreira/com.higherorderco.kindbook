@@ -1,0 +1,6 @@
+data Bend/Hvm/Redex {
+  #Redex {
+    lft: Bend/Hvm/Term
+    rgt: Bend/Hvm/Term
+  }
+}

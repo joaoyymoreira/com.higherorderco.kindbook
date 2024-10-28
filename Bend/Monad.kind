@@ -1,0 +1,5 @@
+Bend/Monad : (Monad Bend)
+ = #Monad{
+  pure: Bend/pure
+  bind: Bend/bind
+}

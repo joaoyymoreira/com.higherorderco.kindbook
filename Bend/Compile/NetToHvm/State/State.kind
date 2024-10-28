@@ -1,9 +1,8 @@
-// Bend/Compile/NetToHvm/State/State
 
-data Bend/Compile/NetToHvm/State/State {
+data Bend/Compile/NetToHvm/State {
   #State {
     vars    : (BinMap String)
-    n_vars  : Nat
-    n_nodes : Nat
+    n_vars  : U64
+    n_nodes : U64
   }
 }

@@ -1,0 +1,5 @@
+data Bend/Hvm/Book {
+  #Book {
+    defs: (BinMap Net)
+  }
+}

@@ -1,7 +1,7 @@
 // A pattern matching rule in a function definition
 data Bend/Fun/Rule {
   #Rule {
-    pats : (List Bend/Fun/Pattern)  // Patterns to match against
-    body : Bend/Fun/Term            // Body of the rule
+    pat : (List Bend/Fun/Pattern)  // Patterns to match against
+    bod : Bend/Fun/Term            // Body of the rule
   }
 }

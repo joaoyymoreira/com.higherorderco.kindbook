@@ -1,9 +1,8 @@
-// Bend/Fun/Adt/CtrField
-
+// A field of a constructor.
 data Bend/Fun/Adt/CtrField {
   #CtrField {
-    nam : String
-    rec : Bool
-    typ : Bend/Fun/Type/Type
+    nam : String        // Name of the field
+    rec : Bool          // Whether the field is recursive
+    typ : Bend/Fun/Type // Type of the field
   }
 }
