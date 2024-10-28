@@ -1,7 +1,10 @@
-// Retrieves the 2nd value of a pair.
-// - A: The 1st type.
-// - B: The 2nd type.
-// - p: The pair.
+// Gets the 2nd value of a pair.
+// - A: 1st type.
+// - B: 2nd type.
+// - pair: The pair.
 // = The 2nd value.
 Pair/get-snd : ∀(A: *) ∀(B: *) ∀(pair: (Pair A B)) B
 | A B #Pair{fst snd} = snd
+
+#test: (Pair/get-snd Bool Nat #Pair{#True #3}) == #3
+#test: (Pair/get-snd Nat String #Pair{#0 "hello"}) == "hello"
