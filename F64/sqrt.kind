@@ -1,0 +1,40 @@
+// Calculates the square root of an F64 using Newton-Raphson method.
+// - x: Input value.
+// = Square root of x.
+F64/sqrt : F64 -> F64
+| x = 
+  if (F64/is-zero x) {
+    x
+  } else {
+    (F64/sqrt/go x (F64/div x 2.0) 10)
+  }
+
+// Newton-Raphson iteration for square root.
+// - x: Input value.
+// - guess: Current guess.
+// - iter: Remaining iterations.
+// = Improved square root approximation.
+F64/sqrt/go : F64 -> F64 -> U64 -> F64
+| x guess iter =
+  switch iter {
+    0: guess
+    _{pred}:
+      let next = (F64/div (F64/add guess (F64/div x guess)) 2.0)
+      if (F64/eq guess next) {
+        next
+      } else {
+        (F64/sqrt/go x next pred)
+      }
+  }
+
+#test: (F64/sqrt 0.0) == 0.0
+#test: (F64/sqrt 1.0) == 1.0
+#test: (F64/sqrt 2.0) == 1.4142135623730950
+#test: (F64/sqrt 3.0) == 1.7320508075688772
+#test: (F64/sqrt 4.0) == 2.0
+#test: (F64/sqrt 5.0) == 2.2360679774997900
+#test: (F64/sqrt 6.0) == 2.4494897427831780
+#test: (F64/sqrt 7.0) == 2.6457513110645907
+#test: (F64/sqrt 8.0) == 2.8284271247461900
+#test: (F64/sqrt 9.0) == 3.0
+#test: (F64/sqrt 0.25) == 0.5
