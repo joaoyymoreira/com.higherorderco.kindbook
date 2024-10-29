@@ -1,0 +1,9 @@
+// Checks if two shapes are not equal.
+// - a: First shape.
+// - b: Second shape.
+// = True if not equal, False otherwise.
+UG/Shape/neq : UG/Shape -> UG/Shape -> Bool
+| a b = (Bool/not (UG/Shape/eq a b))
+
+#test: (UG/Shape/neq #Circle{center: #V2{x: 0.0 y: 0.0} radius: 1.0} #Circle{center: #V2{x: 0.0 y: 0.0} radius: 2.0}) == #True
+#test: (UG/Shape/neq #Circle{center: #V2{x: 0.0 y: 0.0} radius: 1.0} #Circle{center: #V2{x: 0.0 y: 0.0} radius: 1.0}) == #False

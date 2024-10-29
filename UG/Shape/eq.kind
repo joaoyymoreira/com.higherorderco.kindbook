@@ -1,0 +1,20 @@
+// Checks if two shapes are equal.
+// - a: First shape.
+// - b: Second shape.
+// = True if equal, False otherwise.
+UG/Shape/eq : UG/Shape -> UG/Shape -> Bool
+| #Circle{center0 radius0} #Circle{center1 radius1} =
+  (Bool/and
+    (V2/eq center0 center1)
+    (F64/eq radius0 radius1))
+| #Polygon{center0 vertices0} #Polygon{center1 vertices1} =
+  (Bool/and
+    (V2/eq center0 center1)
+    (List/eq V2 V2/IsEqual vertices0 vertices1))
+| x y = #False
+
+#test: (UG/Shape/eq (UG/Shape/circle (V2/new 0.0 0.0) 5.0) (UG/Shape/circle (V2/new 0.0 0.0) 5.0)) == #True
+#test: (UG/Shape/eq (UG/Shape/circle (V2/new 0.0 0.0) 5.0) (UG/Shape/circle (V2/new 1.0 1.0) 5.0)) == #False
+#test: (UG/Shape/eq (UG/Shape/rectangle (V2/new 0.0 0.0) 4.0 3.0) (UG/Shape/rectangle (V2/new 0.0 0.0) 4.0 3.0)) == #True
+#test: (UG/Shape/eq (UG/Shape/rectangle (V2/new 0.0 0.0) 4.0 3.0) (UG/Shape/rectangle (V2/new 0.0 0.0) 3.0 4.0)) == #False
+#test: (UG/Shape/eq (UG/Shape/circle (V2/new 0.0 0.0) 5.0) (UG/Shape/rectangle (V2/new 0.0 0.0) 10.0 10.0)) == #False
