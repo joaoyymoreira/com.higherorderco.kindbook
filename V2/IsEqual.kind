@@ -1,0 +1,5 @@
+// IsEqual instance for V2
+V2/IsEqual : (IsEqual V2)
+= #IsEqual{
+  eq: V2/eq
+}
