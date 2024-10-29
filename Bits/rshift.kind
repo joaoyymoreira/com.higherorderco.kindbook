@@ -1,0 +1,15 @@
+// Performs right shift operation on a Bits value.
+// - bits: Input Bits value.
+// - n: Positions to shift right.
+// = Right-shifted result.
+Bits/rshift : Bits -> Nat -> Bits
+| bits     #Zero    = bits
+| #E       n        = #E
+| #O{bits} #Succ{n} = (Bits/rshift bits n)
+| #I{bits} #Succ{n} = (Bits/rshift bits n)
+
+#test: (Bits/rshift #O{#I{#O{#E}}} #0) == #O{#I{#O{#E}}}
+#test: (Bits/rshift #O{#I{#O{#E}}} #1) == #I{#O{#E}}
+#test: (Bits/rshift #O{#I{#O{#E}}} #2) == #O{#E}
+#test: (Bits/rshift #O{#I{#O{#E}}} #3) == #E
+#test: (Bits/rshift #E #1) == #E

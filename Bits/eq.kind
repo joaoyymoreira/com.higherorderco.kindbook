@@ -1,6 +1,6 @@
 // Checks if two Bits values are equal.
-// - a: The 1st Bits value.
-// - b: The 2nd Bits value.
+// - a: The Bits value.
+// - b: The Bits value.
 // = True if a and b are equal, False otherwise.
 Bits/eq : Bits -> Bits -> Bool
 | #E    #E    = #True

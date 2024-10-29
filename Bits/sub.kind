@@ -1,0 +1,25 @@
+// Performs subtraction of two Bits values.
+// - a: The minuend.
+// - b: The subtrahend.
+// = The difference of a and b as Bits.
+Bits/sub : Bits -> Bits -> Bits
+| #E         y          = y
+| x          #E         = x
+| #O{x}      #O{y}      = #O{(Bits/sub x y)}
+| #I{x}      #O{y}      = #I{(Bits/sub x y)}
+| #O{x}      #I{y}      = #I{(Bits/sub (Bits/sub-borrow x) y)}
+| #I{x}      #I{y}      = #O{(Bits/sub x y)}
+
+// Handles borrowing during subtraction.
+// - bits: The Bits to borrow from.
+// = The Bits after borrowing.
+Bits/sub-borrow : Bits -> Bits
+| #E       = #E
+| #I{bits} = #O{bits}
+| #O{bits} = #I{(Bits/sub-borrow bits)}
+
+#test: (Bits/sub #I{#I{#E}} #I{#E}) == #O{#I{#E}}
+#test: (Bits/sub #O{#I{#E}} #O{#I{#E}}) == #O{#O{#E}}
+#test: (Bits/sub #I{#I{#E}} #O{#I{#E}}) == #I{#O{#E}}
+#test: (Bits/sub #I{#O{#I{#E}}} #I{#I{#E}}) == #O{#I{#O{#E}}}
+#test: (Bits/sub #O{#O{#I{#E}}} #I{#I{#E}}) == #I{#O{#O{#E}}}

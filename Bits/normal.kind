@@ -1,0 +1,18 @@
+// Normalizes a Bits representation by removing trailing zeros.
+// - bits: Input Bits value.
+// = Normalized Bits value.
+Bits/normal : Bits -> Bits
+| #E        = #E
+| #I{tail}  = #I{(Bits/normal tail)}
+| #O{tail} with (Bits/normal tail)
+. | #E = #E
+. | bs = #O{bs}
+
+
+#test: (Bits/normal #E) == #E
+#test: (Bits/normal #I{#E}) == #I{#E}
+#test: (Bits/normal #O{#E}) == #E
+#test: (Bits/normal #I{#O{#E}}) == #I{#E}
+#test: (Bits/normal #O{#O{#I{#E}}}) == #O{#O{#I{#E}}}
+#test: (Bits/normal #O{#O{#O{#E}}}) == #E
+#test: (Bits/normal #I{#O{#O{#E}}}) == #I{#E}

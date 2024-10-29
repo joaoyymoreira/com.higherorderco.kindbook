@@ -1,0 +1,20 @@
+// Reverses the order of bits in a binary string.
+// - bits: Input binary string.
+// = Reversed binary string.
+Bits/reverse : Bits -> Bits
+| bits = (Bits/reverse/go #E bits)
+
+// Helper function for Bits/reverse.
+// - acc: Accumulator for reversed bits.
+// - bits: Remaining bits to process.
+// = Reversed binary string.
+Bits/reverse/go : Bits -> Bits -> Bits
+| acc #E       = acc
+| acc #O{tail} = (Bits/reverse/go #O{acc} tail)
+| acc #I{tail} = (Bits/reverse/go #I{acc} tail)
+
+#test: (Bits/reverse #E) == #E
+#test: (Bits/reverse #O{#E}) == #O{#E}
+#test: (Bits/reverse #I{#E}) == #I{#E}
+#test: (Bits/reverse #O{#I{#E}}) == #I{#O{#E}}
+#test: (Bits/reverse #I{#O{#I{#E}}}) == #I{#O{#I{#E}}}

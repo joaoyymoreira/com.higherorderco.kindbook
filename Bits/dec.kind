@@ -1,0 +1,13 @@
+// Decrements a binary string by one. Keeps the same length.
+// - bits: The input binary string.
+// = The decremented binary string.
+Bits/dec : Bits -> Bits
+| #E       = #E
+| #O{bits} = #I{(Bits/dec bits)}
+| #I{bits} = #O{bits}
+
+#test: (Bits/dec #E) == #E
+#test: (Bits/dec #O{#E}) == #I{#E}
+#test: (Bits/dec #I{#E}) == #O{#E}
+#test: (Bits/dec #O{#O{#I{#E}}}) == #I{#I{#O{#E}}}
+#test: (Bits/dec #I{#I{#I{#E}}}) == #O{#I{#I{#E}}}

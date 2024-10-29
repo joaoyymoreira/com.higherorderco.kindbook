@@ -1,0 +1,12 @@
+// Converts a U64 to Bits.
+// - n: The U64 to convert.
+// = The Bits representation of the input U64.
+Bits/from-u64 : U64 -> Bits
+| n = (U64/to-bits n)
+
+#test: (Bits/from-u64 0) == #E
+#test: (Bits/from-u64 1) == #I{#E}
+#test: (Bits/from-u64 2) == #O{#I{#E}}
+#test: (Bits/from-u64 3) == #I{#I{#E}}
+#test: (Bits/from-u64 4) == #O{#O{#I{#E}}}
+#test: (Bits/from-u64 255) == #I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}

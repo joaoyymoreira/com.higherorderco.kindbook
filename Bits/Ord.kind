@@ -1,0 +1,12 @@
+// Ord instance for Bits
+Bits/Ord : (Ord Bits)
+= #Ord{
+    compare: Bits/compare
+  }
+
+#test: (Bits/compare #E #E) == #EQ
+#test: (Bits/compare #O{#E} #I{#E}) == #LT
+#test: (Bits/compare #I{#E} #O{#E}) == #GT
+#test: (Bits/compare #O{#O{#E}} #O{#I{#E}}) == #LT
+#test: (Bits/compare #I{#I{#E}} #I{#I{#E}}) == #EQ
+#test: (Bits/compare #I{#O{#E}} #I{#I{#E}}) == #LT

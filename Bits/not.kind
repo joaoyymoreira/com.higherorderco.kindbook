@@ -1,7 +1,13 @@
 // Performs bitwise NOT operation on a Bits value.
-// - bits: The input Bits value.
-// = A new Bits value representing the bitwise NOT of the input.
+// - bits: Input Bits value.
+// = Bitwise NOT of the input.
 Bits/not : Bits -> Bits
 | #E       = #E
 | #O{tail} = #I{(Bits/not tail)}
 | #I{tail} = #O{(Bits/not tail)}
+
+#test: (Bits/not #E) == #E
+#test: (Bits/not #O{#E}) == #I{#E}
+#test: (Bits/not #O{#I{#O{#E}}}) == #I{#O{#I{#E}}}
+#test: (Bits/not #I{#I{#I{#E}}}) == #O{#O{#O{#E}}}
+#test: (Bits/not (Bits/not #I{#E})) == #I{#E}

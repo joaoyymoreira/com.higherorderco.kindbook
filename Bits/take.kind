@@ -1,0 +1,15 @@
+// Takes the first n bits from a Bits structure.
+// - n: Number of bits to take.
+// - bits: Input Bits structure.
+// = Bits structure with first n bits of input, or all if n > length bits.
+Bits/take : Nat -> Bits -> Bits
+| #Zero    bits     = #E
+| #Succ{n} #E       = #E
+| #Succ{n} #O{tail} = #O{(Bits/take n tail)}
+| #Succ{n} #I{tail} = #I{(Bits/take n tail)}
+
+#test: (Bits/take #0 #O{#I{#E}}) == #E
+#test: (Bits/take #1 #O{#I{#E}}) == #O{#E}
+#test: (Bits/take #2 #O{#I{#E}}) == #O{#I{#E}}
+#test: (Bits/take #3 #O{#I{#E}}) == #O{#I{#E}}
+#test: (Bits/take #2 #E) == #E

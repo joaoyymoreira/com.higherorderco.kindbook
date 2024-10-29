@@ -1,0 +1,16 @@
+// Decrements a binary string by one, potentially reducing its size.
+// - bits: The input binary string.
+// = The decremented binary string, with leading zeros removed.
+Bits/pred : Bits -> Bits
+| #E       = #E
+| #O{#E}   = #E
+| #O{tail} = #I{(Bits/pred tail)}
+| #I{tail} = #O{tail}
+
+#test: (Bits/pred #E)                 == #E
+#test: (Bits/pred #I{#E})             == #O{#E}
+#test: (Bits/pred #O{#I{#E}})         == #I{#O{#E}}
+#test: (Bits/pred #I{#I{#E}})         == #O{#I{#E}}
+#test: (Bits/pred #O{#O{#I{#E}}})     == #I{#I{#O{#E}}}
+#test: (Bits/pred #I{#I{#I{#E}}})     == #O{#I{#I{#E}}}
+#test: (Bits/pred #O{#I{#O{#I{#E}}}}) == #I{#O{#O{#I{#E{}}}}}
