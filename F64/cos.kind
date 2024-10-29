@@ -1,0 +1,5 @@
+// Cosine function for floats.
+// - x: The angle in radians.
+// = The cosine of x.
+F64/cos : F64 -> F64
+| a = (cos a)
