@@ -1,22 +1,15 @@
-// Bend/Fun/Pattern/mmap-children
+use Bend/Fun/Pattern as Pat
 
-Bend/Fun/Pattern/mmap-children <M: Type -> Type> (m: Monad M) (f: Bend/Fun/Pattern -> M Bend/Fun/Pattern) (pat: Bend/Fun/Pattern) : (M Bend/Fun/Pattern)
-| m f (#Var x) = (Monad.pure m (#Var x))
-| m f (#Chn x) = (Monad.pure m (#Chn x))
-| m f (#Num x) = (Monad.pure m (#Num x))
-| m f (#Str x) = (Monad.pure m (#Str x))
-| m f (#Fan k ps) =
-  do m {
-    ask ps = (List/mmap m f ps)
-    return (#Fan k ps)
-  }
-| m f (#Ctr n ps) =
-  do m {
-    ask ps = (List/mmap m f ps)
-    return (#Ctr n ps)
-  }
-| m f (#Lst ps) =
-  do m {
-    ask ps = (List/mmap m f ps)
-    return (#Lst ps)
-  }
+// Maps the children of a pattern using a monadic action.
+// - f: The monadic function to apply to each child.
+// - pat: The pattern whose children we want to map over.
+// = The pattern with its children mapped.
+Pat/mmap-children :
+  ∀(M: * -> *) (Monad M) -> (Pat -> (M Pat)) -> Pat -> (M Pat)
+| M #Monad{pure bind} f #Var{x}    = (pure Pat #Var{x})
+| M #Monad{pure bind} f #Chn{x}    = (pure Pat #Chn{x})
+| M #Monad{pure bind} f #Num{x}    = (pure Pat #Num{x})
+| M #Monad{pure bind} f #Str{x}    = (pure Pat #Str{x})
+| M #Monad{pure bind} f #Fan{k ps} = (bind (List Pat) Pat (List/mmap M #Monad{pure bind} _ _ f ps) λps (pure _ #Fan{k ps}))
+| M #Monad{pure bind} f #Ctr{n ps} = (bind (List Pat) Pat (List/mmap M #Monad{pure bind} _ _ f ps) λps (pure _ #Ctr{n ps}))
+| M #Monad{pure bind} f #Lst{ps}   = (bind (List Pat) Pat (List/mmap M #Monad{pure bind} _ _ f ps) λps (pure _ #Lst{ps}))

@@ -1,10 +1,8 @@
-// Bend/Fun/Pattern/children
-
-Bend/Fun/Pattern/children (pat: Bend/Fun/Pattern) : (List Bend/Fun/Pattern)
-| #Var _      = []
-| #Chn _      = []
-| #Fan _ pats = pats
-| #Ctr _ pats = pats
-| #Num _      = []
-| #Lst pats   = pats
-| #Str _      = []
+Bend/Fun/Pattern/children : Bend/Fun/Pattern -> (List Bend/Fun/Pattern)
+| #Var{_}      = []
+| #Chn{_}      = []
+| #Fan{_ pats} = pats
+| #Ctr{_ pats} = pats
+| #Num{_}      = []
+| #Lst{pats}   = pats
+| #Str{_}      = []

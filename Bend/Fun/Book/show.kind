@@ -3,7 +3,7 @@
 Bend/Fun/Book/show (book: Bend/Fun/Book/Book) : String
   let #Book{defs ctrs adts} = book
   let def_list    = (List/map Pair.snd (BinMap/to-list defs))
-  let sorted_defs = (List/sort (x => y => String/lte (Bend/Fun/FnDef/FnDef.name x) (Bend/Fun/FnDef/FnDef.name y)) def_list)
+  let sorted_defs = (List/sort (λx λy String/lte (Bend/Fun/FnDef/FnDef.name x) (Bend/Fun/FnDef/FnDef.name y)) def_list)
   (String/join "\n\n" (List/map Bend/Fun/FnDef/show sorted_defs))
 
 Bend/Fun/Book/Show : (Show Bend/Fun/Book/Book)

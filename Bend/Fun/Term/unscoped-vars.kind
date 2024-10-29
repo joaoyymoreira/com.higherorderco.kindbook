@@ -1,0 +1,22 @@
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pattern
+
+// Collects unscoped variable declarations and uses in a Term.
+// - term: Term to analyze.
+// = Bound unscoped variables and used unscoped variables.
+Bend/Fun/Term/unscoped_vars : Term/ -> (Pair (List String) (List String))
+| #Lnk{nam}      =
+  #Pair{[] [nam]}
+| #Lam{pat bod}  = 
+  let decls              = (Pattern/unscoped_binds pat)
+  let #Pair{decls_ uses} = (Bend/Fun/Term/unscoped_vars bod)
+  #Pair{(List/concat [decls decls_]) uses}
+| #Let{pat val nxt} =
+  let decls               = (Pattern/unscoped_binds pat)
+  let #Pair{decls1 uses1} = (Bend/Fun/Term/unscoped_vars val)
+  let #Pair{decls2 uses2} = (Bend/Fun/Term/unscoped_vars nxt)
+  #Pair{(List/concat [decls decls1 decls2]) (List/concat [uses1 uses2])}
+| term            =
+  let children_vars = (List/map _ _ (λ{#Pair{_ x}: (Bend/Fun/Term/unscoped_vars x)}) (Term/children term))
+  let #Pair{decls uses} = (List/unzip _ _ children_vars)
+  #Pair{(List/concat decls) (List/concat uses)}

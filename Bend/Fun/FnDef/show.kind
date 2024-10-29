@@ -1,16 +1,16 @@
 // Bend/Fun/FnDef/show
 
-Bend/Fun/FnDef/show (t_show: (Show Bend/Fun/Term/Term)) : (Show Bend/Fun/FnDef/FnDef)
+Bend/Fun/FnDef/show (t_show: (Show Bend/Fun/Term)) : (Show Bend/Fun/FnDef/FnDef)
   (Show.new Bend/Fun/FnDef/show/show_fn_def)
 
-Bend/Fun/FnDef/show/show_rule (t_show: (Show Bend/Fun/Term/Term)) (fname: String) (rule: Bend/Fun/Rule/Rule) : String
+Bend/Fun/FnDef/show/show_rule (t_show: (Show Bend/Fun/Term)) (fname: String) (rule: Bend/Fun/Rule/Rule) : String
   let #Rule{pats body} = rule
   let pats_str = (Bool/if (List/is_nil pats) "" (String/concat " " (String/join " " (List/map Bend/Fun/Pattern/show pats))))
   (String/concat "(" (String/concat fname (String/concat pats_str (String/concat ") = " ((Show.to_string t_show) body)))))
 
-Bend/Fun/FnDef/show/show_fn_def (t_show: (Show Bend/Fun/Term/Term)) (fn_def: Bend/Fun/FnDef/FnDef) : String
+Bend/Fun/FnDef/show/show_fn_def (t_show: (Show Bend/Fun/Term)) (fn_def: Bend/Fun/FnDef/FnDef) : String
   let #FnDef{name type check rules src} = fn_def
   let check_str = (Bool/if check "" "unchecked ")
   let type_str  = (Bend/Fun/Type/show type)
-  let rules_str = (String/join "\n" (List/map (rule => Bend/Fun/FnDef/show/show_rule t_show name rule) rules))
+  let rules_str = (String/join "\n" (List/map (λrule Bend/Fun/FnDef/show/show_rule t_show name rule) rules))
   (String/concat check_str (String/concat name (String/concat " : " (String/concat type_str (String/concat "\n" rules_str)))))

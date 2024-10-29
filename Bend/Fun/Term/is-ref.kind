@@ -1,5 +1,5 @@
 // Bend/Fun/Term/is_ref
 
-Bend/Fun/Term/is_ref (term: Bend/Fun/Term/Term) : Bool
+Bend/Fun/Term/is_ref (term: Bend/Fun/Term) : Bool
 | #Ref _ = #True
 | _      = #False

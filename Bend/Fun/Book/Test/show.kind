@@ -4,7 +4,7 @@ Bend/Fun/Book/Test/show/dummy_source : Bend/Source/Source
   (Bend/Source/Source.new #None #None Bend/Source/SourceKind.#Generated)
 
 Bend/Fun/Book/Test/show/dummy_rule : Bend/Fun/Rule/Rule
-  (Bend/Fun/Rule/Rule.new #Nil (Bend/Fun/Term/Term.#Var "dummy"))
+  (Bend/Fun/Rule/Rule.new #Nil (Bend/Fun/Term.#Var "dummy"))
 
 Bend/Fun/Book/Test/show/dummy_fn_def (name: String) : Bend/Fun/FnDef/FnDef
   (Bend/Fun/FnDef/FnDef.new
@@ -16,7 +16,7 @@ Bend/Fun/Book/Test/show/dummy_fn_def (name: String) : Bend/Fun/FnDef/FnDef
 
 Bend/Fun/Book/Test/show/dummy_book : Bend/Fun/Book/Book
   #Book{
-    defs: (BinMap/from_list [
+    defs: (BinMap/from-list [
       (Pair.new (String/hash "func1") (Bend/Fun/Book/Test/show/dummy_fn_def "func1"))
       (Pair.new (String/hash "func2") (Bend/Fun/Book/Test/show/dummy_fn_def "func2"))
     ])
@@ -29,7 +29,7 @@ Bend/Fun/Book/Test/show/test_empty_book : (Equal String (Bend/Fun/Book/show Bend
 
 Bend/Fun/Book/Test/show/test_single_function_book : (Equal String
   (Bend/Fun/Book/show (#Book{
-    defs: (BinMap/from_list [(Pair.new (String/hash "func") (Bend/Fun/Book/Test/show/dummy_fn_def "func"))])
+    defs: (BinMap/from-list [(Pair.new (String/hash "func") (Bend/Fun/Book/Test/show/dummy_fn_def "func"))])
     ctrs: (BinMap/new)
     adts: (BinMap/new)
   }))

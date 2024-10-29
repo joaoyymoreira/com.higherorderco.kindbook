@@ -1,0 +1,10 @@
+Bend/Fun/Pattern/to-string : Bend/Fun/Pattern -> String
+| #Var{nam}     = (Bend/Fun/show-bnd nam)
+| #Chn{nam}     = (String/append "$" nam)
+| #Fan #Tup els = (String/concat ["(" (String/join ", " (List/map _ _ Bend/Fun/Pattern/to-string els)) ")"])
+| #Fan #Dup els = (String/concat ["{" (String/join " " (List/map _ _ Bend/Fun/Pattern/to-string els)) "}"])
+| #Ctr nam #Nil = (String/concat ["(" nam ")"])
+| #Ctr nam els  = (String/concat ["(" nam " " (String/join " " (List/map _ _ Bend/Fun/Pattern/to-string els)) ")"])
+| #Num val      = (Nat/to-string val)
+| #Lst els      = (String/concat ["[" (String/join ", " (List/map _ _ Bend/Fun/Pattern/to-string els)) "]"])
+| #Str val      = (String/concat ["\"" val "\""])

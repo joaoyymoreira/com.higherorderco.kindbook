@@ -1,23 +1,23 @@
 // Bend/Fun/Term/show
 
-Bend/Fun/Term/show : (Show Bend/Fun/Term/Term)
+Bend/Fun/Term/show : (Show Bend/Fun/Term)
   (Show.new Bend/Fun/Term/show/show_term)
 
-Bend/Fun/Term/show/show_with (with_bnd: (List (Maybe String))) (with_arg: (List Bend/Fun/Term/Term)) : String
+Bend/Fun/Term/show/show_with (with_bnd: (List (Maybe String))) (with_arg: (List Bend/Fun/Term)) : String
 | [] [] = ""
 | with_bnd with_arg =
   (String/concat "with " (String/concat (String/join ", " (List/map Bend/Fun/Term/show/show_bnd_arg (List/zip with_bnd with_arg))) " "))
 
-Bend/Fun/Term/show/show_bnd_arg (pair: (Pair (Maybe String) Bend/Fun/Term/Term)) : String
+Bend/Fun/Term/show/show_bnd_arg (pair: (Pair (Maybe String) Bend/Fun/Term)) : String
   let bnd = (Pair.fst pair)
   let arg = (Pair.snd pair)
   (String/concat (Bend/Fun/show_bnd bnd) (String/concat " = " (Bend/Fun/Term/show/show_term arg)))
 
-Bend/Fun/Term/show/show_term_app (term: Bend/Fun/Term/Term) : String
+Bend/Fun/Term/show/show_term_app (term: Bend/Fun/Term) : String
 | (#App fun arg) = (String/concat (Bend/Fun/Term/show/show_term_app fun) (String/concat " " (Bend/Fun/Term/show/show_term arg)))
 | term           = (Bend/Fun/Term/show/show_term term)
 
-Bend/Fun/Term/show/show_term (term: Bend/Fun/Term/Term) : String
+Bend/Fun/Term/show/show_term (term: Bend/Fun/Term) : String
 | (#Lam pat bod) = (String/concat "λ" (String/concat (Bend/Fun/Pattern/show pat) (String/concat " " (Bend/Fun/Term/show/show_term bod))))
 | (#Var nam)     = nam
 | (#Link nam)    = (String/concat "$" nam)
@@ -41,17 +41,17 @@ Bend/Fun/Term/show/show_term (term: Bend/Fun/Term/Term) : String
 | (#Bend bnd arg cond step base) =
   (String/concat "bend " (String/concat (String/join ", " (List/map Bend/Fun/Term/show/show_bnd_init (List/zip bnd arg))) (String/concat " { " (String/concat "when " (String/concat (Bend/Fun/Term/show/show_term cond) (String/concat ": " (String/concat (Bend/Fun/Term/show/show_term step) (String/concat "; " (String/concat "else: " (String/concat (Bend/Fun/Term/show/show_term base) " }")))))))))
 | (#Open typ var bnd bod) =
-  (String/concat "open " (String/concat typ (String/concat " " (String/concat (Bend/Fun/show_bnd var) (String/concat (String/join "" (List/map (x => String/concat " " (Bend/Fun/show_bnd x)) bnd)) (String/concat "; " (Bend/Fun/Term/show/show_term bod)))))))
+  (String/concat "open " (String/concat typ (String/concat " " (String/concat (Bend/Fun/show_bnd var) (String/concat (String/join "" (List/map (λx String/concat " " (Bend/Fun/show_bnd x)) bnd)) (String/concat "; " (Bend/Fun/Term/show/show_term bod)))))))
 | (#Ref nam) = nam
 | (#Def def nxt) = (String/concat "def " (String/concat (Bend/Fun/FnDef/show def) (String/concat "\n" (Bend/Fun/Term/show/show_term nxt))))
 | #Era = "*"
 
-Bend/Fun/Term/show/show_switch_arms (n: Nat) (pred: (Maybe String)) (arms: (List Bend/Fun/Term/Term)) : String
+Bend/Fun/Term/show/show_switch_arms (n: Nat) (pred: (Maybe String)) (arms: (List Bend/Fun/Term)) : String
 | n pred []         = ""
 | n pred [arm]      = (String/concat "_ " (String/concat (Bend/Fun/show_bnd pred) (String/concat ": " (Bend/Fun/Term/show/show_term arm))))
 | n pred (arm:arms) = (String/concat (Nat/show n) (String/concat ": " (String/concat (Bend/Fun/Term/show/show_term arm) (String/concat "; " (Bend/Fun/Term/show/show_switch_arms (Nat/succ n) pred arms)))))
 
-Bend/Fun/Term/show/show_bnd_init (pair: (Pair (Maybe String) Bend/Fun/Term/Term)) : String
+Bend/Fun/Term/show/show_bnd_init (pair: (Pair (Maybe String) Bend/Fun/Term)) : String
   let fst = (Pair.fst pair)
   let snd = (Pair.snd pair)
   (String/concat (Bend/Fun/show_bnd fst) (String/concat " = " (Bend/Fun/Term/show/show_term snd)))

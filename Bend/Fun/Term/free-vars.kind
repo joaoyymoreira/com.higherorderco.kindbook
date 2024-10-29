@@ -1,9 +1,9 @@
 // Bend/Fun/Term/free_vars
 
-Bend/Fun/Term/free_vars (term: Bend/Fun/Term/Term) : (List String)
+Bend/Fun/Term/free_vars (term: Bend/Fun/Term) : (List String)
   (List/dedup (Bend/Fun/Term/free_vars/go term (BinMap/empty)))
 
-Bend/Fun/Term/free_vars/go (term: Bend/Fun/Term/Term) (scope: (BinMap Unit)) : (List String)
+Bend/Fun/Term/free_vars/go (term: Bend/Fun/Term) (scope: (BinMap Unit)) : (List String)
 | (#Var nam) scope =
   let key = (String/hash nam)
   if (BinMap/contains scope key) {
@@ -13,11 +13,10 @@ Bend/Fun/Term/free_vars/go (term: Bend/Fun/Term/Term) (scope: (BinMap Unit)) : (
   }
 | term scope =
   let cs = (Bend/Fun/Term/children term)
-  let add_scope = (bnd => scope =>
-    let bnd_map = (List/map (b => Pair.new (String/hash b) Unit.new) bnd)
-    (BinMap/union (BinMap/from_list bnd_map) scope))
-  (List/concat (List/map (pair =>
+  let add_scope = (λbnd λscope
+    let bnd_map = (List/map (λb Pair.new (String/hash b) Unit.new) bnd)
+    (BinMap/union (BinMap/from-list bnd_map) scope))
+  (List/concat (List/map (λpair
     let bnd   = (Pair.fst pair)
     let child = (Pair.snd pair)
     (Bend/Fun/Term/free_vars/go child (add_scope bnd scope))) cs))
-
