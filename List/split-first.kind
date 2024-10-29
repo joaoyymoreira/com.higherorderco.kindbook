@@ -1,0 +1,16 @@
+// Splits a list at the first element satisfying a predicate.
+// - A: Element type.
+// - pred: Predicate function.
+// - xs: Input list.
+// = Pair of lists: before and after split (excluding split element).
+List/split-first : ∀(A: *) (A -> Bool) -> (List A) -> (Pair (List A) (List A))
+| A pred #Nil             = #Pair{[] []}
+| A pred #Cons{head tail} with (pred head)
+. | #True  = #Pair{[] tail}
+. | #False with (List/split-first A pred tail)
+. . | #Pair{before after} = #Pair{#Cons{head before} after}
+
+#test: (List/split-first U64 (λx (U64/to-bool (== x 3))) [1 2 3 4 5]) == #Pair{[1 2] [4 5]}
+#test: (List/split-first U64 (λx (U64/to-bool (== x 6))) [1 2 3 4 5]) == #Pair{[1 2 3 4 5] []}
+#test: (List/split-first U64 (λx (U64/to-bool (== x 1))) [1 2 3 4 5]) == #Pair{[] [2 3 4 5]}
+#test: (List/split-first U64 (λx (U64/to-bool (== x 0))) []) == #Pair{[] []}

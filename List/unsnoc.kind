@@ -3,11 +3,10 @@
 // - xs: Input list.
 // = Pair of initial elements and last element (Maybe).
 List/unsnoc : ∀(A: *) (List A) -> (Pair (List A) (Maybe A))
-| A #Nil                = #Pair{#Nil (Maybe/none A)}
-| A #Cons{x #Nil}       = #Pair{#Nil (Maybe/some A x)}
-| A #Cons{x xs}         = 
-  let #Pair{list maybe} = (List/unsnoc A xs)
-  #Pair{#Cons{x list} maybe}
+| A #Nil                = #Pair{#Nil #None}
+| A #Cons{x #Nil}       = #Pair{#Nil #Some{x}}
+| A #Cons{x xs} with (List/unsnoc A xs)
+. | #Pair{init last}    = #Pair{#Cons{x init} last}
 
 #test: (List/unsnoc U64 []) == #Pair{[] #None}
 #test: (List/unsnoc U64 [1]) == #Pair{[] #Some{1}}
