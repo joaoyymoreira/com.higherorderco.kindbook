@@ -1,0 +1,8 @@
+// Concatenates a list of strings.
+// - strs: Input list of strings.
+// = Single string with all elements concatenated.
+String/concat : (List String) -> String
+| strs = (List/concat Char strs)
+
+#test: (String/concat []) == []
+#test: (String/concat ["Hello" " " "World"]) == "Hello World"
