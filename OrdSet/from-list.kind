@@ -1,0 +1,11 @@
+// Creates a set from a list.
+// - K: Element type.
+// - ord: Ord instance for K.
+// - xs: Input list.
+// = Resulting set.
+OrdSet/from-list : ∀(K: *) (Ord K) -> (List K) -> (OrdSet K)
+| K ord xs = (OrdTree/from-list K Unit ord (List/map K (Pair K Unit) (λx #Pair{x #Unit}) xs))
+
+#test: (OrdSet/to-list U64 (OrdSet/from-list U64 U64/Ord [1 2 3])) == [1 2 3]
+#test: (OrdSet/to-list U64 (OrdSet/from-list U64 U64/Ord [3 2 1 2 3])) == [1 2 3]
+#test: (OrdSet/to-list U64 (OrdSet/from-list U64 U64/Ord [])) == []

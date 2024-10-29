@@ -1,0 +1,12 @@
+// Checks if an element is in the set.
+// - K: Element type.
+// - ord: Ord instance for K.
+// - key: Element to check.
+// - set: The set to check in.
+// = True if the element is in the set, False otherwise.
+OrdSet/contains : ∀(K: *) (Ord K) -> K -> (OrdSet K) -> Bool
+| K ord key set = (OrdTree/has-key K Unit ord key set)
+
+#test: (OrdSet/contains Nat Nat/Ord #3 (OrdSet/empty Nat)) == #False
+#test: (OrdSet/contains Nat Nat/Ord #3 (OrdSet/insert Nat Nat/Ord #3 (OrdSet/empty Nat))) == #True
+#test: (OrdSet/contains Nat Nat/Ord #5 (OrdSet/insert Nat Nat/Ord #3 (OrdSet/empty Nat))) == #False

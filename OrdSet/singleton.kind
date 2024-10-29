@@ -1,0 +1,10 @@
+// Creates an OrdSet with a single element.
+// - K: Element type.
+// - ord: Ord instance for K.
+// - x: Element to add.
+// = OrdSet with one element.
+OrdSet/singleton : ∀(K: *) ∀(x: K) (OrdSet K)
+| K x = (OrdTree/singleton K Unit #Pair{x #Unit})
+
+#test: (OrdSet/singleton U64 42) == (OrdTree/singleton U64 Unit #Pair{42 #Unit})
+#test: (OrdSet/singleton Bool #True) == (OrdTree/singleton Bool Unit #Pair{#True #Unit})

@@ -1,0 +1,13 @@
+// Computes the union of two OrdSets.
+// - K: Element type.
+// - ord: Ord instance for K.
+// - s1: First OrdSet.
+// - s2: Second OrdSet.
+// = Union of s1 and s2.
+OrdSet/union : ∀(K: *) (Ord K) -> (OrdSet K) -> (OrdSet K) -> (OrdSet K)
+| K ord s1 s2 = (OrdTree/union K Unit ord s1 s2)
+
+#test: (OrdSet/union U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/from-list U64 U64/Ord [3 4 5])) == (OrdSet/from-list U64 U64/Ord [1 2 3 4 5])
+#test: (OrdSet/union U64 U64/Ord (OrdSet/empty U64) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/from-list U64 U64/Ord [1 2 3])
+#test: (OrdSet/union U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/empty U64)) == (OrdSet/from-list U64 U64/Ord [1 2 3])
+#test: (OrdSet/union U64 U64/Ord (OrdSet/empty U64) (OrdSet/empty U64)) == (OrdSet/empty U64)

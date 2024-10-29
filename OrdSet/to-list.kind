@@ -1,0 +1,10 @@
+// Converts the set to a list.
+// - K: Element type.
+// - set: Input set.
+// = List of elements.
+OrdSet/to-list : ∀(K: *) (OrdSet K) -> (List K)
+| K set = (OrdTree/keys K Unit set)
+
+#test: (OrdSet/to-list U64 (OrdSet/empty U64)) == #Nil
+#test: (OrdSet/to-list U64 (OrdSet/insert U64 U64/Ord 1 (OrdSet/empty U64))) == #Cons{1 #Nil}
+#test: (OrdSet/to-list U64 (OrdSet/from-list U64 U64/Ord [3 1 4 1 5 9])) == [1 3 4 5 9]

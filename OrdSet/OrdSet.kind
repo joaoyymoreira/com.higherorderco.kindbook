@@ -1,0 +1,4 @@
+// Ordered set using OrdTree.
+// - K: Element type.
+OrdSet : * -> *
+| K = (OrdTree K Unit)

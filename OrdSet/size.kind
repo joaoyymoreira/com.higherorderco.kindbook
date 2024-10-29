@@ -1,0 +1,11 @@
+// Gets the set size.
+// - K: Element type.
+// - set: Set to measure.
+// = Number of elements.
+OrdSet/size : ∀(K: *) (OrdSet K) -> Nat
+| K set = (OrdTree/size K Unit set)
+
+#test: (OrdSet/size U64 (OrdSet/empty U64)) == #0
+#test: (OrdSet/size U64 (OrdSet/insert U64 U64/Ord 1 (OrdSet/empty U64))) == #1
+#test: (OrdSet/size U64 (OrdSet/from-list U64 U64/Ord [1 2 3])) == #3
+#test: (OrdSet/size U64 (OrdSet/from-list U64 U64/Ord [1 2 2 3 3 3])) == #3

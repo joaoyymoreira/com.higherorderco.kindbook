@@ -1,0 +1,12 @@
+// Inserts an element into the set.
+// - K: Element type.
+// - ord: Ord instance for K.
+// - key: Element to insert.
+// - set: The set to insert into.
+// = The updated set.
+OrdSet/insert : ∀(K: *) (Ord K) -> K -> (OrdSet K) -> (OrdSet K)
+| K ord key set = (OrdTree/insert K Unit ord #Pair{key #Unit} set)
+
+#test: (OrdSet/insert U64 U64/Ord 5 #Leaf) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}
+#test: (OrdSet/insert U64 U64/Ord 3 (OrdSet/insert U64 U64/Ord 5 #Leaf)) == #Node{#Pair{5 #Unit} #MinusOne #Node{#Pair{3 #Unit} #0 #Leaf #Leaf} #Leaf}
+#test: (OrdSet/insert U64 U64/Ord 5 (OrdSet/insert U64 U64/Ord 5 #Leaf)) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}
