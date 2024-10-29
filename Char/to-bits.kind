@@ -1,0 +1,11 @@
+// Converts a Char to its binary representation.
+// - char: Input Char.
+// = Binary representation as Bits.
+Char/to-bits : Char -> Bits
+| char = (Bits/pad-zeros #21 (U64/to-bits char))
+
+#test: (Char/to-bits 'A') == (Bits/pad-zeros #21 (U64/to-bits 65))
+#test: (Char/to-bits '\0') == (Bits/pad-zeros #21 (U64/to-bits 0))
+#test: (Char/to-bits '~') == (Bits/pad-zeros #21 (U64/to-bits 126))
+#test: (Bits/eq (Char/to-bits 'a') (Char/to-bits 'a')) == #True
+#test: (Bits/eq (Char/to-bits 'a') (Char/to-bits 'b')) == #False
