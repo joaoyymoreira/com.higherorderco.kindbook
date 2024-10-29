@@ -1,0 +1,21 @@
+unbound-refs-term : Bend/Fun/Book -> Bend/Fun/Term -> (Bend Unit)
+| book #Ref{nam} = 
+  if (Bend/Fun/Book/contains-def book nam) {
+    #Done{Unit/new}
+  } else {
+    #Fail{(String/append "Unbound reference '" (String/append nam "'"))}
+  }
+| book term = 
+  (List/mfoldl (λ_ pair 
+    let #Pair{_ child} = pair
+    (unbound-refs-term book child)) Unit/new (Bend/Fun/Term/children term))
+
+// Main function to check unbound references in a book
+Bend/Transform/unbound-refs : Bend/Fun/Book -> (Bend Unit)
+| book = do Bend {
+  let defs = (BinMap/values (Bend/Fun/Book/defs book))
+  (List/mfoldl (λ_ def
+    (List/mfoldl (λ_ rule 
+      (unbound-refs-term book (Bend/Fun/Rule/body rule))) Unit/new (Bend/Fun/FnDef/rules def)))
+    Unit/new defs)
+}

@@ -1,0 +1,67 @@
+Bend/Transform/desugar-local-def : Bend/Fun/Book -> (Bend Bend/Fun/Book)
+| book = do Bend {
+  let defs = (BinMap/values (Bend/Fun/Book/defs book))
+  ask defs = (desugar-defs defs)
+  let defs = (List/map (λdef (Pair (String/hash (Bend/Fun/FnDef/name def)) def)) defs)
+  #Done{(Bend/Fun/Book/set-defs book (BinMap/from-list defs))}
+}
+
+desugar-term : Bend/Fun/FnDef -> U64 -> Bend/Fun/Term -> (Bend (Pair Bend/Fun/Term (Pair (List Bend/Fun/FnDef) U64)))
+| def fresh #Def{local_def nxt} = do Bend {
+  ask _ = (List/mmap (λrule do Bend {
+    let #Rule{pats body} = rule
+    let #Pair{bnds uses} = (Bend/Fun/Term/unscoped-vars body)
+    let bnds = (List/append (List/concat-map Bend/Fun/Pattern/unscoped-binds pats) bnds)
+    if (List/is-nil (List/append (List/difference bnds uses) (List/difference uses bnds)))
+      then #Done{Unit/new}
+      else #Fail{"Can't have non self-contained unscoped variables in a 'def' expression"}
+  }) (Bend/Fun/FnDef/rules local_def))
+
+  let name  = (String/append (Bend/Fun/FnDef/name def) 
+              (String/append "__local_" 
+              (String/append (U64/show fresh)
+              (String/append "_" (Bend/Fun/FnDef/name local_def)))))
+  let rules = (Bend/Fun/FnDef/rules local_def)
+  let fvs   = (List/concat-map (λr 
+    let fvs = (Bend/Fun/Term/free-vars (Bend/Fun/Rule/body r))
+    (List/filter (λx (Bool/not (List/contains x (List/concat-map Bend/Fun/Pattern/binds (Bend/Fun/Rule/pats r))))) fvs)) rules)
+  let fvs   = (List/dedup fvs)
+  let rules = (List/map (λr 
+    let #Rule{p b} = r
+    #Rule{p (Bend/Fun/Term/foldr-lam b (List/map #Some fvs))}) rules)
+  let new_def = (Bend/Fun/FnDef/new-gen name rules (Bend/Fun/FnDef/src def) (Bend/Fun/FnDef/check def))
+  let fresh   = (+ fresh 1)
+  ask #Pair{nxt #Pair{defs fresh}} = (desugar-term def fresh nxt)
+  let call    = (Bend/Fun/Term/foldl-app #Ref{name} (List/map #Var fvs))
+  let nxt     = #Use{#Some{(Bend/Fun/FnDef/name local_def)} call nxt}
+  #Done{#Pair{nxt #Pair{#Cons{new_def defs} fresh}}}
+}
+
+| def fresh term = do Bend {
+  (Bend/Fun/Term/mmap-children-with
+    (λ_ child #Pair{defs fresh} do Bend {
+      ask #Pair{child #Pair{new_defs fresh}} = (desugar-term def fresh child)
+      #Done{#Pair{child #Pair{(List/append new_defs defs) fresh}}}
+    })
+    term #Pair{#Nil fresh})
+}
+
+desugar-rules : Bend/Fun/FnDef -> U64 -> (List Bend/Fun/Rule) -> (Bend (Pair (List Bend/Fun/Rule) (Pair (List Bend/Fun/FnDef) U64)))
+| def fresh #Nil = do Bend {
+  #Done{#Pair{#Nil #Pair{#Nil fresh}}}
+}
+| def fresh #Cons{rule rules} = do Bend {
+  ask #Pair{bod #Pair{new_defs fresh}} = (desugar-term def fresh (Bend/Fun/Rule/body rule))
+  ask #Pair{rules #Pair{defs fresh}}   = (desugar-rules def fresh rules)
+  let rule = (Bend/Fun/Rule/set-body rule bod)
+  #Done{#Pair{#Cons{rule rules} #Pair{(List/append new_defs defs) fresh}}}
+}
+
+desugar-defs : (List Bend/Fun/FnDef) -> (Bend (List Bend/Fun/FnDef))
+| #Nil = #Done{#Nil}
+| #Cons{def defs} = do Bend {
+  ask #Pair{rules #Pair{new_defs _}} = (desugar-rules def 0 (Bend/Fun/FnDef/rules def))
+  let def = (Bend/Fun/FnDef/set-rules def rules)
+  ask defs = (desugar-defs (List/append new_defs defs))
+  #Done{#Cons{def defs}}
+}

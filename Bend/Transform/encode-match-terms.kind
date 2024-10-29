@@ -1,0 +1,81 @@
+Bend/Transform/encode-match-terms : Bend/Run/AdtEncoding -> Bend/Fun/Book -> (Bend Bend/Fun/Book)
+| encoding book = do Bend {
+  let defs = (BinMap/to-list (Bend/Fun/Book/defs book))
+  ask defs = (List/mmap (λpair do Bend {
+    let #Pair{key def} = pair
+    ask rules = (List/mmap (λrule do Bend {
+      let #Rule{pats body} = rule
+      ask body = (encode-term encoding body)
+      #Done{#Rule{pats body}}
+    }) (Bend/Fun/FnDef/rules def))
+    #Done{#Pair{key (Bend/Fun/FnDef/set-rules def rules)}}
+  }) defs)
+  #Done{(Bend/Fun/Book/set-defs book (BinMap/from-list defs))}
+}
+
+make-num-scott-swt : (List Bend/Fun/Term) -> (Bend Bend/Fun/Term)
+| #Nil = #Fail{"No match arms"}
+| #Cons{arm #Nil} = #Done{#Lam{#Var{#None} arm}}
+| #Cons{arm arms} = do Bend {
+  let bod = #Swt{#None #Var{"%tag"} #Nil #Nil #None #Cons{arm arms}}
+  #Done{#Lam{#Var{#Some{"%tag"}} bod}}
+}
+
+encode-match : Bend/Run/AdtEncoding -> Bend/Fun/Term -> (List Bend/Fun/MatchRule) -> (Bend Bend/Fun/Term) 
+| Scott arg arms = do Bend {
+  let arms = (List/map (λrule 
+    let #MatchRule{_ bnd bod} = rule
+    (Bend/Fun/Term/foldr-lam bod bnd)) arms)
+  #Done{(Bend/Fun/Term/foldl-app arg arms)}
+}
+| NumScott arg arms = do Bend {
+  let arms = (List/map (λrule 
+    let #MatchRule{_ bnd bod} = rule
+    (Bend/Fun/Term/foldr-lam bod bnd)) arms)
+  ask match = match arms {
+    // If only one arm, we need to add an Era to the end of the tag matching switch
+    #Cons{arm #Nil}: do Bend {
+      let bod = #Swt{#None #Var{"%tag"} #Nil #Nil #None #Cons{arm #Cons{#Era #Nil}}}
+      #Done{#Lam{#Var{#Some{"%tag"}} bod}}
+    }
+    _: (make-num-scott-swt arms)
+  }
+  #Done{#App{arg match}}
+}
+
+// Convert into a sequence of native switches, decrementing by 1 each switch.
+// `switch n {0: A; 1: B; _ n-2   : (C n-2)}`
+// is converted to
+// `switch n {0: A; _: λ%x match %x {0: B; _: λn-2 (C n-2)}}`
+encode-switch : Bend/Fun/Term -> (Maybe String) -> (List Bend/Fun/Term) -> (Bend Bend/Fun/Term)
+| arg pred arms = do Bend {
+  let #Pair{nums succ} = (List/unsnoc arms)
+  ask succ = (Maybe/to-result _ _ succ "Switch with only 1 arms")
+  let succ = #Lam{#Var{pred} succ}
+  let body = (List/foldr (λpair acc 
+    let #Pair{i arm} = pair
+    let arms = #Cons{arm #Cons{acc #Nil}}
+    if (U64/eq i 0)
+      then #Swt{#None arg #Nil #Nil #None arms}
+      else #Lam{#Var{#Some{"%x"}} #Swt{#None #Var{"%x"} #Nil #Nil #None arms}}
+  ) succ (List/enumerate nums))
+  #Done{body}
+}
+
+encode-term : Bend/Run/AdtEncoding -> Bend/Fun/Term -> (Bend Bend/Fun/Term)
+| encoding term = do Bend {
+  ask term = (Bend/Fun/Term/mmap-children (λ_ (encode-term encoding)) term)
+  match term {
+    #Mat{bnd arg with_bnd with_arg arms}: do Bend {
+      if (List/is-nil with_bnd) then #Done{Unit/new} else #Fail{"with-bnd not empty"}
+      if (List/is-nil with_arg) then #Done{Unit/new} else #Fail{"with-arg not empty"}
+      (encode-match encoding arg arms)
+    }
+    #Swt{bnd arg with_bnd with_arg pred arms}: do Bend {
+      if (List/is-nil with_bnd) then #Done{Unit/new} else #Fail{"with-bnd not empty"}
+      if (List/is-nil with_arg) then #Done{Unit/new} else #Fail{"with-arg not empty"}
+      (encode-switch arg pred arms)
+    }
+    _: #Done{term}
+  }
+}

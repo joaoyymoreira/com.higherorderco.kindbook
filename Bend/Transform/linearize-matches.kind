@@ -1,0 +1,56 @@
+// Linearizes all variables used in a matches' arms.
+Bend/Transform/linearize-matches : Bend/Fun/Book -> Bend/Fun/Book
+| book = (Bend/Fun/Book/set-defs book (BinMap/map linearize-def (Bend/Fun/Book/defs book)))
+
+update-with (with_bnd: (List (Maybe String))) (with_arg: (List Bend/Fun/Term)) (free_vars: (List String)) : (Pair (List (Maybe String)) (List Bend/Fun/Term))
+| with_bnd with_arg free_vars = 
+  let no_free = (λpair 
+    let #Pair{bnd arg} = pair
+    (Bool/not (List/contains (Maybe/fold "" (λx x) bnd) free_vars)))
+  (List/unzip (List/filter no_free (List/zip with_bnd with_arg)))
+
+// Lifts free variables in match arms to lambdas
+lift-match-vars (with_bnd: (List (Maybe String))) (with_arg: (List Bend/Fun/Term)) (arms: (List (Pair (List String) Bend/Fun/Term))) : (Pair (List (Maybe String)) (Pair (List Bend/Fun/Term) (List Bend/Fun/Term)))
+| with_bnd with_arg arms = 
+  let free_vars = (List/concat-map (λpair 
+    let #Pair{bnd arm} = pair
+    (List/difference (Bend/Fun/Term/free-vars arm) bnd)) arms)
+  let free_vars = (List/dedup free_vars)
+  let #Pair{with_bnd with_arg} = (update-with with_bnd with_arg free_vars)
+  let free_vars = (List/map #Some free_vars)
+  let arms = (List/map (λpair 
+    let #Pair{_ arm} = pair
+    (Bend/Fun/Term/foldr-lam arm free_vars)) arms)
+  #Pair{with_bnd #Pair{with_arg arms}}
+
+// Linearizes matches in a term
+linearize-term : Bend/Fun/Term -> Bend/Fun/Term
+| term = 
+  let term = (Bend/Fun/Term/map-children (λ_ linearize-term) term)
+  match term {
+    #Mat{bnd arg with_bnd with_arg arms}: 
+      let arms = (List/map (λrule 
+        let #MatchRule{nam bnds bod} = rule
+        #Pair{(List/concat-maybes bnds) bod}) arms)
+      let #Pair{with_bnd #Pair{with_arg bods}} = (lift-match-vars with_bnd with_arg arms)
+      let arms = (List/map (λpair 
+        let #Pair{bod arm} = pair
+        (Bend/Fun/MatchRule/set-body arm bod)) (List/zip bods arms))
+      #Mat{bnd arg with_bnd with_arg arms}
+
+    #Swt{bnd arg with_bnd with_arg pred arms}:
+      let #Pair{nums succ} = (List/unsnoc arms)
+      let succ = (Maybe/fold #Era (λx x) succ)  // succ should never be None here
+      let arms = (List/append (List/map (λarm #Pair{#Nil arm}) nums) #Cons{#Pair{(Maybe/to-list pred) succ} #Nil})
+      let #Pair{with_bnd #Pair{with_arg bods}} = (lift-match-vars with_bnd with_arg arms)
+      #Swt{bnd arg with_bnd with_arg pred bods}
+
+    _: term
+  }
+
+// Linearizes matches in a rule
+linearize-rule : Bend/Fun/Rule -> Bend/Fun/Rule
+| rule = (Bend/Fun/Rule/set-body rule (linearize-term (Bend/Fun/Rule/body rule)))
+
+linearize-def : Bend/Fun/FnDef -> Bend/Fun/FnDef
+| def = (Bend/Fun/FnDef/set-rules def (List/map linearize-rule (Bend/Fun/FnDef/rules def)))

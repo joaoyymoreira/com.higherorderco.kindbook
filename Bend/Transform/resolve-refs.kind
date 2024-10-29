@@ -1,0 +1,33 @@
+// Resolves references in an entire Book
+// - book: The Book to resolve references in
+// = A new Book with resolved references
+Bend/Transform/resolve-refs : Bend/Fun/Book -> Bend/Fun/Book
+| book = 
+  (Bend/Fun/Book/map-rules (λrule 
+    (Bend/Fun/Rule/set-body rule 
+      (resolve-term book BinMap/empty (Bend/Fun/Rule/body rule)))) book)
+
+// Adds a list of names to the scope
+// - scope: The current scope
+// - names: The list of names to add
+// = A new scope with the added names
+add-bnd : (BinMap String) -> (List String) -> (BinMap String)
+| scope names = 
+  (List/foldr (λname acc 
+    (BinMap/set acc (String/hash name) name)) scope names)
+
+// Resolves references in a Term
+// - book: The Book containing all definitions
+// - scope: The current scope
+// - term: The Term to resolve references in
+// = A new Term with resolved references
+resolve-term : Bend/Fun/Book -> (BinMap String) -> Bend/Fun/Term -> Bend/Fun/Term
+| book scope #Var{nam} = 
+  if (Bool/and (Bool/not (BinMap/contains scope (String/hash nam))) 
+               (Bend/Fun/Book/contains-def book nam))
+    then #Ref{nam}
+    else #Var{nam}
+| book scope term = 
+  (Bend/Fun/Term/map-children
+    (λbnd child (resolve-term book (add-bnd scope bnd) child))
+    term)

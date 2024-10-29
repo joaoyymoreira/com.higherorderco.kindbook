@@ -1,0 +1,30 @@
+// Linearizes all variables specified in the `with` clauses of match terms.
+Bend/Transform/linearize-match-with : Bend/Fun/Book -> Bend/Fun/Book
+| book = (Bend/Fun/Book/set-defs book (BinMap/map linearize-def (Bend/Fun/Book/defs book)))
+
+// Linearizes with clauses in a term
+linearize-term : Bend/Fun/Term -> Bend/Fun/Term
+| term = 
+  let term = (Bend/Fun/Term/map-children (λ_ linearize-term) term)
+  match term {
+    #Mat{bnd arg with_bnd with_arg arms}: 
+      let arms = (List/map (λarm 
+        (Bend/Fun/MatchRule/set-body arm 
+          (Bend/Fun/Term/foldr-lam (Bend/Fun/MatchRule/body arm) with_bnd))) arms)
+      let term = #Mat{bnd arg #Nil #Nil arms}
+      (Bend/Fun/Term/foldl-app term with_arg)
+
+    #Swt{bnd arg with_bnd with_arg pred arms}:
+      let arms = (List/map (λarm (Bend/Fun/Term/foldr-lam arm with_bnd)) arms)
+      let term = #Swt{bnd arg #Nil #Nil pred arms}
+      (Bend/Fun/Term/foldl-app term with_arg)
+
+    _: term
+  }
+
+// Linearizes with clauses in a rule
+linearize-rule : Bend/Fun/Rule -> Bend/Fun/Rule
+| rule = (Bend/Fun/Rule/set-body rule (linearize-term (Bend/Fun/Rule/body rule)))
+
+linearize-def : Bend/Fun/FnDef -> Bend/Fun/FnDef
+| def = (Bend/Fun/FnDef/set-rules def (List/map linearize-rule (Bend/Fun/FnDef/rules def)))

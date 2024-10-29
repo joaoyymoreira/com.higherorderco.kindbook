@@ -1,0 +1,107 @@
+map-list : (S: *) -> (Bend/Fun/Term -> S -> (Pair Bend/Fun/Term S)) -> (List Bend/Fun/Term) -> S -> (Pair (List Bend/Fun/Term) S)
+| S f #Nil st = #Pair{#Nil st}
+| S f #Cons{x xs} st = 
+  let #Pair{x st}  = (f x st)
+  let #Pair{xs st} = (map-list S f xs st)
+  #Pair{#Cons{x xs} st}
+
+map-match : (S: *) -> (Bend/Fun/Term -> S -> (Pair Bend/Fun/Term S)) -> (List Bend/Fun/MatchRule) -> S -> (Pair (List Bend/Fun/MatchRule) S)
+| S f #Nil st = #Pair{#Nil st}
+| S f #Cons{#MatchRule{nam bnd bod} xs} st = 
+  let #Pair{bod st} = (f bod st)
+  let #Pair{xs st}  = (map-match S f xs st)
+  #Pair{#Cons{#MatchRule{nam bnd bod} xs} st}
+
+Bend/Transform/FloatCombinators/map-float-children : (S: *) -> (Bend/Fun/Term -> S -> (Pair Bend/Fun/Term S)) -> Bend/Fun/Term -> S -> (Pair Bend/Fun/Term S)
+
+// Consider the entire chain of applications, so that we don't fragment it too much.
+| S f #App{fun@#App{_ _} arg} st = 
+  let #Pair{fun st} = (Bend/Transform/FloatCombinators/map-float-children S f fun st)
+  let #Pair{arg st} = (f arg st)
+  #Pair{#App{fun arg} st}
+
+| S f #App{fun arg} st = 
+  let #Pair{fun st} = (f fun st)
+  let #Pair{arg st} = (f arg st)
+  #Pair{#App{fun arg} st}
+
+| S f #Mat{bnd arg with_bnd with_arg arms} st = 
+  let #Pair{arg st}      = (f arg st)
+  let #Pair{with_arg st} = (map-list S f with_arg st)
+  let #Pair{arms st}     = (map-match S f arms st)
+  #Pair{#Mat{bnd arg with_bnd with_arg arms} st}
+
+| S f #Swt{bnd arg with_bnd with_arg pred arms} st = 
+  let #Pair{arg st}      = (f arg st)
+  let #Pair{with_arg st} = (map-list S f with_arg st)
+  let #Pair{arms st}     = (map-list S f arms st)
+  #Pair{#Swt{bnd arg with_bnd with_arg pred arms} st}
+
+| S f #Fan{kind els} st = 
+  let #Pair{els st} = (map-list S f els st)
+  #Pair{#Fan{kind els} st}
+
+| S f #Lst{els} st = 
+  let #Pair{els st} = (map-list S f els st)
+  #Pair{#Lst{els} st}
+
+| S f #Use{nam val nxt} st = 
+  let #Pair{val st} = (f val st)
+  let #Pair{nxt st} = (f nxt st)
+  #Pair{#Use{nam val nxt} st}
+
+| S f #Let{pat val nxt} st = 
+  let #Pair{val st} = (f val st)
+  let #Pair{nxt st} = (f nxt st)
+  #Pair{#Let{pat val nxt} st}
+
+| S f #Opr{opr fst snd} st = 
+  let #Pair{fst st} = (f fst st)
+  let #Pair{snd st} = (f snd st)
+  #Pair{#Opr{opr fst snd} st}
+
+| S f #Lam{pat bod} st = 
+  let #Pair{bod st} = (f bod st)
+  #Pair{#Lam{pat bod} st}
+
+// These cases should have been removed by now.
+// We can still handle them, but if they occur, it will mess up the calculation of term size.
+| S f #Fold{bnd arg with_bnd with_arg arms} st = 
+  let #Pair{arg st}      = (f arg st)
+  let #Pair{with_arg st} = (map-list S f with_arg st)
+  let #Pair{arms st}     = (map-match S f arms st)
+  #Pair{#Mat{bnd arg with_bnd with_arg arms} st}
+
+| S f #Bend{bnd arg cond step base} st = 
+  let #Pair{arg st}  = (map-list S f arg st)
+  let #Pair{cond st} = (f cond st)
+  let #Pair{step st} = (f step st)
+  let #Pair{base st} = (f base st)
+  #Pair{#Bend{bnd arg cond step base} st}
+
+| S f #Ask{pat val nxt} st = 
+  let #Pair{val st} = (f val st)
+  let #Pair{nxt st} = (f nxt st)
+  #Pair{#Ask{pat val nxt} st}
+
+| S f #Open{typ var bnd bod} st = 
+  let #Pair{bod st} = (f bod st)
+  #Pair{#Open{typ var bnd bod} st}
+
+// These two should have been removed, but disappear during desugar.
+// Therefore, we handle them by deferring to their children.
+| S f #With{typ bod} st = 
+  let #Pair{bod st} = (Bend/Transform/FloatCombinators/map-float-children S f bod st)
+  #Pair{#With{typ bod} st}
+
+| S f #Def{def nxt} st = 
+  let #Pair{nxt st} = (Bend/Transform/FloatCombinators/map-float-children S f nxt st)
+  #Pair{#Def{def nxt} st}
+
+// The remaining cases are terminals.
+| S f #Var{nam} st = #Pair{#Var{nam} st}
+| S f #Link{nam} st = #Pair{#Link{nam} st}
+| S f #Era st = #Pair{#Era st}
+| S f #Num{val} st = #Pair{#Num{val} st}
+| S f #Str{val} st = #Pair{#Str{val} st}
+| S f #Ref{nam} st = #Pair{#Ref{nam} st}

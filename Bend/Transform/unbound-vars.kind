@@ -1,0 +1,86 @@
+// Adds a list of names to the scope
+add-bnd : (List String) -> (List String) -> (List String)
+| scope names = (List/append names scope)
+
+// Checks if a name is in the scope
+scope-contains : String -> (List String) -> Bool
+| nam scope = (Maybe/to-bool (List/find (λx (String/eq x nam)) scope))
+
+// Updates the usage count of a global variable
+use-global : (BinMap (Pair String (Pair U64 U64))) -> String -> (BinMap (Pair String (Pair U64 U64)))
+| global nam = 
+  match (BinMap/get global (String/hash nam)) {
+    #Some{#Pair{_ #Pair{bnd use}}}: 
+      (BinMap/set global (String/hash nam) #Pair{nam #Pair{bnd (+ use 1)}})
+    #None: 
+      (BinMap/set global (String/hash nam) #Pair{nam #Pair{0 1}})
+  }
+
+// Updates the binding count of global variables
+bnd-global : (BinMap (Pair String (Pair U64 U64))) -> (List String) -> (BinMap (Pair String (Pair U64 U64)))
+| global #Cons{nam nams} = 
+  let global = match (BinMap/get global (String/hash nam)) {
+    #Some{#Pair{_ #Pair{bnd use}}}: 
+      (BinMap/set global (String/hash nam) #Pair{nam #Pair{(+ bnd 1) use}})
+    #None: 
+      (BinMap/set global (String/hash nam) #Pair{nam #Pair{1 0}})
+  }
+  (bnd-global global nams)
+| global #Nil = global
+
+// Checks for unbound variables in a term
+unbound-vars-term : Bend/Fun/Term -> (List String) -> (BinMap (Pair String (Pair U64 U64))) -> (Bend (BinMap (Pair String (Pair U64 U64))))
+| #Var{nam} scope global = 
+  if (scope-contains nam scope) {
+    #Done{global}
+  } else {
+    #Fail{(String/append "Unbound variable '" (String/append nam "'"))}
+  }
+
+| #Link{nam} scope global = 
+  #Done{(use-global global nam)}
+
+| term scope global = 
+  let global = match term {
+    #Lam{pat _}: (bnd-global global (Bend/Fun/Pattern/unscoped-binds pat))
+    #Let{pat _ _}: (bnd-global global (Bend/Fun/Pattern/unscoped-binds pat))
+    _: global
+  }
+  (List/mfoldl (λglobal pair 
+    let #Pair{bnd child} = pair
+    (unbound-vars-term child (List/append bnd scope) global))
+    global (Bend/Fun/Term/children term))
+
+// Checks for unbound variables in a function definition
+unbound-vars-def : Bend/Fun/FnDef -> (Bend Unit)
+| def = do Bend {
+  ask global = (List/mfoldl (λglobal rule do Bend {
+    let scope = (List/concat (List/map Bend/Fun/Pattern/binds (Bend/Fun/Rule/pats rule)))
+    ask global = (unbound-vars-term (Bend/Fun/Rule/body rule) scope global)
+    #Done{global}
+  }) BinMap/new (Bend/Fun/FnDef/rules def))
+  
+  let errs = (List/foldr (λpair acc 
+    let #Pair{var #Pair{declared used}} = pair
+    if (U64/eq declared 0) {
+      #Cons{(String/append "Unbound unscoped variable '" (String/append var "'")) acc}
+    } else if (Bool/and (U64/eq declared 1) (U64/eq used 1)) {
+      acc
+    } else if (U64/eq used 0) {
+      #Cons{(String/append "Unscoped variable '" (String/append var "' is never used")) acc}
+    } else {
+      #Cons{(String/append "Unscoped variable '" (String/append var "' is declared or used more than once")) acc}
+    }) #Nil (BinMap/values global))
+  
+  match errs {
+    #Nil: #Done{Unit/new}
+    #Cons{err _}: #Fail{err}
+  }
+}
+
+// Checks for unbound variables in an entire Book
+Bend/Transform/unbound-vars : Bend/Fun/Book -> (Bend Unit)
+| book = 
+  (List/mfoldl (λ_ def (unbound-vars-def def))
+    Unit/new
+    (BinMap/values (Bend/Fun/Book/defs book)))

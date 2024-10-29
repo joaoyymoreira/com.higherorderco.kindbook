@@ -1,0 +1,119 @@
+// Given the rules of a match term, return the bodies that match each of the
+// constructors of the matched ADT.
+// If one of the constructors is not covered, it won't be present in the map.
+term-per-ctr : String -> Bend/Fun/Book -> String -> (BinMap Bend/Fun/Term) -> (List Bend/Fun/MatchRule) -> (Bend (BinMap Bend/Fun/Term))
+| bnd book adt_nam bods #Nil = #Done{bods}
+| bnd book adt_nam bods #Cons{#MatchRule{nam _ bod} arms} = 
+  match (Bend/Fun/Book/get-ctr book (Maybe/fold "" (λx x) nam)) {
+    // Concrete constructor case
+    #Done{#Ctr{nam adt _ fields}}: do Bend {
+      if (String/neq adt_nam adt)
+        then #Fail{(String/append "ADT mismatch in match term. Expected constructor of type " 
+                  (String/append adt_nam 
+                  (String/append ", but got " 
+                  (String/append nam 
+                  (String/append "of type " adt)))))}
+        else #Done{Unit/new}
+      if (BinMap/contains bods (String/hash nam))
+        then #Fail{(String/append "Duplicate match arms for constructor " nam)}
+        else #Done{Unit/new}
+      let bods = (BinMap/set bods (String/hash nam) bod)
+      (term-per-ctr bnd book adt_nam bods arms)
+    }
+    // Var case, use the body of this rule for all remaining constructors
+    #Fail{_}: do Bend {
+      ask ctrs = (Bend/Fun/Book/get-adt-ctrs book adt_nam)
+      let cases = (List/foldr (λctr acc do Bend {
+        let key = (String/hash (Bend/Fun/Adt/Ctr/nam ctr))
+        if (BinMap/contains bods key)
+          then acc
+          else #Cons{#Pair{key #Use{nam #Var{bnd} bod}} acc}
+      }) #Nil ctrs)
+      if (List/is-nil cases)
+        then #Fail{"Redundant variable case in match"}
+        else #Done{Unit/new}
+      let bods = (List/foldr (λpair bods 
+        let #Pair{key bod} = pair
+        (BinMap/set bods key bod)) bods cases)
+      (term-per-ctr bnd book adt_nam bods arms)
+    }
+  }
+
+// Makes the normalized version of one of a match's arms.
+fix-match-arm -> String -> (BinMap Bend/Fun/Term) -> Bend/Fun/Adt/Ctr -> (Bend Bend/Fun/MatchRule)
+| bnd bods #Ctr{nam adt typ fields} = do Bend {
+  let bnds = (List/map _ _ Bend/Fun/Adt/CtrField/nam fields)
+  let bnds = (List/map _ _ (λb #Some{(String/append bnd (String/append "." b))}) bnds)
+  ask bod = (Maybe/to-result _ _ (BinMap/get bods (String/hash nam)) 
+            (String/append "Non exhaustive match of type " 
+            (String/append adt 
+            (String/append ", missing " 
+            (String/append nam " case")))))
+  #Done{#MatchRule{#Some{nam} bnds bod}}
+}
+
+// Makes the normalized version of all of a match's arms.
+fix-match : Bend/Fun/Book -> (Maybe String) -> Bend/Fun/Term -> (List (Maybe String)) -> (List Bend/Fun/Term) -> (List Bend/Fun/MatchRule) -> (Bend (List Bend/Fun/MatchRule)) 
+| book bnd arg with_bnd with_arg #Cons{#MatchRule{nam bnds body} _} = 
+  match (Bend/Fun/Book/get-ctr book (Maybe/fold "" (λx x) nam)) {
+    #Done{#Ctr{nam adt _ fields}}: do Bend {
+      ask bnd  = (Maybe/to-result _ _ bnd "Match with no bind")
+      ask ctrs = (Bend/Fun/Book/get-adt-ctrs book adt)
+      ask bods = (term-per-ctr bnd book adt BinMap/empty arms)
+      ask arms = (List/mmap (fix-match-arm bnd bods) ctrs)
+      #Done{arms}
+    }
+    #Fail{_}: #Fail{"Irrefutable match"}  // TODO: A warning + make it a let/use term.
+  }
+| book bnd arg with_bnd with_arg #Nil = #Fail{"Empty match arms"}
+
+// Normalizes all the pattern matching sub-terms in a term.
+fix-term : Bend/Fun/Book -> Bend/Fun/Term -> (Bend Bend/Fun/Term)
+| book term = do Bend {
+  ask term = (Bend/Fun/Term/mmap-children (λ_ (fix-term book)) term)
+  match term {
+    #Mat{bnd arg with_bnd with_arg arms}: do Bend {
+      ask arms = (fix-match book bnd arg with_bnd with_arg arms)
+      #Done{#Mat{bnd arg with_bnd with_arg arms}}
+    }
+    #Open{typ nam bnd nxt}: do Bend {
+      ask ctrs = (Bend/Fun/Book/get-adt-ctrs book typ)
+      let arms = (List/map (λctr #MatchRule{#Some{(Bend/Fun/Adt/Ctr/nam ctr)} bnd nxt}) ctrs)
+      ask arms = (fix-match book #None (Bend/Fun/Term/var-or-era nam) #Nil #Nil arms)
+      ask #MatchRule{nam bnd nxt} = (Maybe/to-result _ _ (List/head arms) "empty open")
+      #Done{#Open{typ nam bnd nxt}}
+    }
+    #Fold{bnd arg with_bnd with_arg arms}: do Bend {
+      ask arms = (fix-match book bnd arg with_bnd with_arg arms)
+      #Done{#Fold{bnd arg with_bnd with_arg arms}}
+    }
+    _: #Done{term}
+  }
+}
+
+fix-rule : Bend/Fun/Book -> Bend/Fun/Rule -> (Bend Bend/Fun/Rule)
+| book #Rule{pats bod} = do Bend {
+  ask bod = (fix-term book bod)
+  #Done{#Rule{pats bod}}
+}
+
+fix-def : Bend/Fun/Book -> Bend/Fun/FnDef -> (Bend Bend/Fun/FnDef)
+| book #FnDef{name typ check rules src} = do
+ Bend {
+  ask rules = (List/mmap (fix-rule book) rules)
+  #Done{#FnDef{name typ check rules src}}
+}
+
+// Convert all match terms to a normalized form.
+// * Resolve the constructors and create the name of the field variables.
+// * Check for redundant arms and non-exhaustive matches.
+// * Converts the initial bind to an alias on every arm, rebuilding the eliminated constructor
+Bend/Transform/fix-match-terms : Bend/Fun/Book -> (Bend Bend/Fun/Book)
+| book = do Bend {
+  ask defs = (List/mmap (λpair do Bend {
+    let #Pair{key def} = pair
+    ask def = (fix-def book def)
+    #Done{#Pair{key def}}
+  }) (BinMap/to-list (Bend/Fun/Book/defs book)))
+  #Done{(Bend/Fun/Book/set-defs book (BinMap/from-list defs))}
+}

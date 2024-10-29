@@ -1,0 +1,49 @@
+// A term can be considered safe if it is:
+// - A Number or an Eraser.
+// - A Tuple or Superposition where all elements are safe.
+// - An application or numeric operation where all arguments are safe.
+// - A safe Lambda, e.g. a nullary constructor or a lambda with safe body.
+// - A Reference with a safe body.
+//
+// A reference to a recursive definition (or mutually recursive) is not safe.
+Bend/Transform/FloatCombinators/is-safe : Bend/Transform/FloatCombinators/Ctx -> (List String) -> Bend/Fun/Term -> Bool
+| ctx seen #Num{_}          = #True
+| ctx seen #Era             = #True
+| ctx seen #Fan{_ els}      = (List/all-true (Bend/Transform/FloatCombinators/is-safe ctx seen) els)
+| ctx seen #App{fun arg}    = (Bool/and (Bend/Transform/FloatCombinators/is-safe ctx seen fun) (Bend/Transform/FloatCombinators/is-safe ctx seen arg))
+| ctx seen #Opr{_ fst snd}  = (Bool/and (Bend/Transform/FloatCombinators/is-safe ctx seen fst) (Bend/Transform/FloatCombinators/is-safe ctx seen snd))
+| ctx seen #Lam{_ bod}      = (is-safe-lambda ctx seen #Nil bod)
+| ctx seen #Ref{nam}        = 
+  // TODO: Constructors are safe
+  if (List/contains nam seen) {
+    #False  // A recursive function, not safe
+  } else {
+    let seen = #Cons{nam seen}
+    let def  = (BinMap/get (Bend/Fun/Book/defs (Bend/Transform/FloatCombinators/Ctx/book ctx)) (String/hash nam))
+    let comb = (BinMap/get (Bend/Transform/FloatCombinators/Ctx/combinators ctx) (String/hash nam))
+    match #Pair{def comb} {
+      #Pair{#Some{def} _}: (is-safe-def ctx seen def)
+      #Pair{#None #Some{#Pair{#True _}}}: #True  // A previously floated, safe combinator
+      _: #False
+    }
+  }
+// TODO: This is overly conservative.
+//       Variables can be safe depending on how they're used.
+//       For example, in a well-typed numop they're safe.
+| ctx _ _                   = #False
+
+// A sequence of lambdas is safe if the body of the last lambda is safe.
+// If the body is a reference, it's not in active position, so it's safe.
+// If it's a variable bound in the lambdas, it's a nullary constructor, so it's safe.
+is-safe-lambda : Bend/Transform/FloatCombinators/Ctx -> (List String) -> (List String) -> Bend/Fun/Term -> Bool
+| ctx seen bnd #Lam{pat bod} = (is-safe-lambda ctx seen (List/append (Bend/Fun/Pattern/binds pat) bnd) bod)
+| ctx seen bnd #Var{nam}     = (List/contains nam bnd)  // Nullary-constructor
+| ctx seen bnd #Ref{_}       = #True                    // Reference to preexisting definition
+| ctx seen bnd term          = (Bend/Transform/FloatCombinators/is-safe ctx seen term)
+
+is-safe-def : Bend/Transform/FloatCombinators/Ctx -> (List String) -> Bend/Fun/FnDef -> Bool
+| ctx seen #FnDef{_ _ _ #Nil _} = #True   // Invalid, but technically safe
+| ctx seen #FnDef{_ _ _ #Cons{rule #Nil} _} = 
+  let bnd = (List/concat-map Bend/Fun/Pattern/binds (Bend/Fun/Rule/pats rule))
+  (is-safe-lambda ctx seen bnd (Bend/Fun/Rule/body rule))
+| ctx seen #FnDef{_ _ _ #Cons{_ _} _} = #False  // More than one rule == match, not safe

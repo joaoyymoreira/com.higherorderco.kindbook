@@ -1,4 +1,4 @@
-Bend/Net/Node/get : Bend/Net/Node -> Nat -> (Maybe Bend/Net/Port)
+Bend/Net/Node/get : Bend/Net/Node -> U64 -> (Maybe Bend/Net/Port)
 | #Node{main aux1 aux2 _} n =
   switch n {
     0: #Some{main}

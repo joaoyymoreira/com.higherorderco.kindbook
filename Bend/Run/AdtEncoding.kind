@@ -1,0 +1,10 @@
+// The lambda encoding of ADTs.
+type Bend/Run/AdtEncoding {
+  // Scott encoding
+  // λa1 .. λan λx1 .. λxm (xi a1 .. an)
+  Scott
+
+  // Scott encoding, but using a number to indicate the variant 
+  // λa1 .. λan λx (x i a1 .. an)
+  NumScott
+}
