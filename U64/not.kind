@@ -1,0 +1,10 @@
+// Performs bitwise NOT operation on a U64 value.
+// - x: Input value.
+// = Bitwise NOT of the input.
+U64/not : U64 -> U64
+| x = (^ x 18446744073709551615)
+
+#test: (U64/not 0) == 18446744073709551615
+#test: (U64/not (U64/not 42)) == 42
+#test: (U64/not 18446744073709551615) == 0
+#test: (U64/not 18446744073709551573) == 42
