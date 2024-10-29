@@ -4,7 +4,8 @@
 // - t: Tick to add the action.
 // - a: Action to add.
 // = New ActionLogs with action added.
-
-// FIX: log is now a reserved keyword
 UG/SM/ActionLogs/add-action : ∀(A: *) (UG/SM/ActionLogs A) -> UG/SM/Tick -> A -> (UG/SM/ActionLogs A)
-| A lo t a = lo
+| A map tick action with (BinMap/get (List A) map (Nat/to-bits tick))
+. | #None = (BinMap/set (List A) map (Nat/to-bits tick) [action])
+. | #Some{actions} = (BinMap/set (List A) map (Nat/to-bits tick) (List/append A actions [action]))
+

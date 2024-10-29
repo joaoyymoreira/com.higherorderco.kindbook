@@ -5,9 +5,9 @@
 // - t: The tick for which to retrieve actions.
 // = The list of actions for the specified tick, or an empty list if none exist.
 UG/SM/ActionLogs/get-actions : ∀(A: *) (UG/SM/ActionLogs A) -> UG/SM/Tick -> (List A)
-| A logs t =
+| A lgs t =
   let key = (Nat/to-bits t)
   (Maybe/match (List A) (λx (List A))
     #Nil
     (λactions actions)
-    (BinMap/get (List A) logs key))
+    (BinMap/get (List A) lgs key))
