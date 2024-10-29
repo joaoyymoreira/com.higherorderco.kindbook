@@ -1,0 +1,25 @@
+// Applies a monadic function to a Maybe value.
+// - M: Monad type constructor.
+// - m: Monad instance for M.
+// - A: Input type.
+// - B: Output type.
+// - f: Monadic function to apply.
+// - ma: Input Maybe value.
+// = Monadic Maybe value after applying f.
+Maybe/mmap
+: ∀(M: ∀(A: *) *)
+  ∀(m: (Monad M))
+  ∀(A: *)
+  ∀(B: *)
+  (A -> (M B))
+  -> (Maybe A)
+  -> (M (Maybe B))
+| M #Monad{pure bind} A B f #None        = (pure (Maybe B) #None)
+| M #Monad{pure bind} A B f #Some{value} = 
+  (bind B (Maybe B) (f value) λx
+  (pure (Maybe B) (#Some{x})))
+
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 x)) #None) == #Some{#None}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 (+ x 1))) (#Some{3})) == #Some{#Some{4}}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx #None) (#Some{3})) == #None
+#test: (Maybe/mmap Maybe Maybe/Monad U64 Bool (λx (Maybe/pure Bool (U64/to-bool (== x 0)))) (#Some{0})) == #Some{#Some{#True}}

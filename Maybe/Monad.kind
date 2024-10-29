@@ -1,0 +1,6 @@
+// Monad instance for Maybe.
+Maybe/Monad : (Monad Maybe)
+= #Monad{
+  pure: Maybe/pure
+  bind: Maybe/bind
+}
