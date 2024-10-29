@@ -1,15 +1,107 @@
-Foo : ∀(x: (Maybe (Pair U64 U64))) U64
-= λx match x {
-  #Some{pair}: match pair {
-    #Pair{a b}: match (U64/is-zero a) {
-      #True: (Foo x)
-      #False: 0
-    }
-  }
-  #None: 0
-}
+//Main : ∀(str: String) Char
+//= λstr match str {
+  //#Cons{h t}: h
+  //#Nil: 'a'
+//}
 
 
+
+
+main : ∀(b: Bool) U64
+= λb
+  let x = match b { #True: 0 #False: 1 } :: U64
+  x
+
+
+
+
+
+
+
+// TODO: inspired on double, create a fib function with U64 inputs
+// it must be a tail recursive function
+// remember the switch syntax is:
+// switch n { 0: ... _{np}: ... } // here, np is n-1
+// it can NOT have more than 2 cases.
+
+//o bλ__0 match __0 {#Pair:λ__0 match __0 {#A:λv 5 #B:λv 6 } }
+//~λx0 match x0 {#Pair:λ__0 match __0 {#A:λv 5 #B:λv 6 } }
+
+//~λ__0 match __0 {#Pair:λ__0 match __0 {#A:λv 5 #B:λv 6 } }
+//~λx0 match x0 {#Pair:λfst0 λsnd1 match fst0 {#A:5 #B:6 } }
+
+//main : Bool = (String/eq "(" ")")
+
+//main : Bits = (String/to-bits "o")
+//main : Bits = (Bits/concat [#O{#I{#E}} #I{#O{#E}}])
+
+
+//main : ∀(x: (Pair U64 U64)) (Pair U64 U64)
+//| state =
+  //let #Pair{input index} = state
+  //#Pair{input index}
+
+
+//data T {
+  //#A
+  //#B
+//}
+
+//// \/ TODO: this compiles worse. investigate
+//Foo : ∀(x: (Pair T U64)) U64
+//| #Pair{#A v} = v
+//| #Pair{#B v} = v
+
+//Foo : ∀(x: (Pair T T)) U64
+//= λx match x {
+  //#Pair{k v}: match k {
+    //#A: 5
+    //#B: 6
+  //}
+//}
+
+//main : U64 = (Foo #Pair{#A 5})
+
+
+
+//fib/go : ∀(n: U64) ∀(a: U64) ∀(b: U64) U64
+//= λn λa λb
+  //switch n {
+    //0: a
+    //_{pred}: (fib/go pred b (+ a b))
+  //}
+
+//// create fib now
+//fib : ∀(n: U64) U64
+//= λn (fib/go n 0 1)
+
+//// create a main
+//main : U64
+//= let x = (fib/go 0)
+  //let y = (fib/go 0 0)
+  //let z = (fib/go 0 0 0)
+  //(fib 1000000)
+
+
+
+//Foo : ∀(x: (Maybe (Pair U64 U64))) U64
+//= λx match x {
+  //#Some{pair}: match pair {
+    //#Pair{a b}: match (U64/is-zero a) {
+      //#True: (Foo x)
+      //#False: 0
+    //}
+  //}
+  //#None: 0
+//}
+
+
+//main : (Maybe U64)
+//= do Maybe {
+  //ask x = #Some{1}
+  //ask y = #Some{2}
+  //ret (+ x y)
+//}
 
 
 
