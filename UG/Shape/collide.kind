@@ -1,0 +1,68 @@
+// Checks if any edge of a polygon intersects with a circle.
+// - center: Circle center.
+// - radius: Circle radius.
+// - vertices: Polygon vertices.
+// - original: Original vertices (for wrapping).
+// = True if any edge intersects, False otherwise.
+UG/Shape/check-edges : V2 -> F64 -> (List V2) -> (List V2) -> Bool
+| center radius #Nil                    original = #False
+| center radius #Cons{head #Nil}        original = #False
+| center radius #Cons{head #Cons{v2 vs}} original =
+  if (UG/Shape/line-circle-intersection head v2 center radius) {
+    #True
+  } else {
+    (UG/Shape/check-edges center radius #Cons{v2 vs} original)
+  }
+
+// Checks if any vertex of the first list is inside the polygon formed by the second list.
+// - l: List of vertices to check.
+// - polygon: List of vertices forming the polygon.
+// = True if any vertex is inside, False otherwise.
+UG/Shape/any-vertex-inside : (List V2) -> (List V2) -> Bool
+| #Nil         polygon = #False
+| #Cons{x xs}  polygon = (Bool/or (UG/Shape/point-in-polygon x polygon) (UG/Shape/any-vertex-inside xs polygon))
+
+// Checks if a line segment intersects with any edge of a polygon.
+// - p1: Start point of the line segment.
+// - p2: End point of the line segment.
+// - vertices: List of polygon vertices.
+// - original: Original list of vertices.
+// = True if there's an intersection, False otherwise.
+UG/Shape/check-against-all : V2 -> V2 -> (List V2) -> (List V2) -> Bool
+| p1 p2 #Nil original = #False
+| p1 p2 #Cons{w1 #Nil} original = #False
+| p1 p2 #Cons{w1 #Cons{w2 ws}} original = (Bool/or (UG/Shape/line-line-intersection p1 p2 w1 w2) (UG/Shape/check-against-all p1 p2 #Cons{w2 ws} original))
+
+// Checks if any edge of the first polygon intersects with any edge of the second polygon.
+// - poly1: Vertices of the first polygon.
+// - poly2: Vertices of the second polygon.
+// = True if there's an intersection, False otherwise.
+UG/Shape/any-edges-intersect : (List V2) -> (List V2) -> Bool
+| #Nil poly2 = #False
+| #Cons{v1 #Nil} poly2 = #False
+| #Cons{v1 #Cons{v2 vs}} poly2 = (Bool/or (UG/Shape/check-against-all v1 v2 poly2 poly2) (UG/Shape/any-edges-intersect #Cons{v2 vs} poly2))
+
+// Checks if two shapes collide.
+// - shape1: First shape.
+// - shape2: Second shape.
+// = True if shapes collide, False otherwise.
+UG/Shape/collide : UG/Shape -> UG/Shape -> Bool
+| #Circle{c1 r1} #Circle{c2 r2} =
+  let center-dist = (V2/dist c1 c2)
+  let rsum = (F64/add r1 r2) 
+  (F64/lte center-dist rsum)
+| #Circle{c1 r1} #Polygon{c2 vertices} =
+  let closest = (UG/Shape/closest-point-on-polygon c1 (UG/Shape/abs-vertices #Polygon{c2 vertices}))
+  let dst     = (V2/dist c1 closest)
+  (F64/lte dst r1)
+| #Polygon{c2 v2} #Circle{c1 radius} =
+  let closest = (UG/Shape/closest-point-on-polygon c1 (UG/Shape/abs-vertices #Polygon{c2 v2}))
+  let dst = (V2/dist c1 closest)
+  (F64/lte dst radius)
+| #Polygon{c2 v2} #Polygon{c1 v1} =
+  let abs-p1 = (UG/Shape/abs-vertices #Polygon{c1 v1})
+  let abs-p2 = (UG/Shape/abs-vertices #Polygon{c2 v2})
+  let p1-in-p2 = (UG/Shape/any-vertex-inside abs-p1 abs-p2)
+  let p2-in-p1 = (UG/Shape/any-vertex-inside abs-p2 abs-p1)
+  let edges-intersect = (UG/Shape/any-edges-intersect abs-p1 abs-p2)
+  (Bool/or (Bool/or p1-in-p2 p2-in-p1) edges-intersect)
