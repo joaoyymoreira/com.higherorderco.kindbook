@@ -1,0 +1,19 @@
+// Inserts an element into a sorted list, maintaining the sort order.
+// - A: Element type.
+// - leq: Less-than-or-equal comparison function.
+// - x: Element to insert.
+// - xs: Sorted input list.
+// = New sorted list with x inserted in the correct position.
+List/insert-at-sorted : ∀(A: *) (A -> A -> Bool) -> A -> (List A) -> (List A)
+| A leq x #Nil = #Cons{x #Nil}
+| A leq x #Cons{head tail} =
+  if (leq x head) {
+    #Cons{x #Cons{head tail}}
+  } else {
+    #Cons{head (List/insert-at-sorted A leq x tail)}
+  }
+
+#test: (List/insert-at-sorted Nat Nat/lte #2 [#1 #3 #5]) == [#1 #2 #3 #5]
+#test: (List/insert-at-sorted Nat Nat/lte #0 [#1 #2 #3]) == [#0 #1 #2 #3]
+#test: (List/insert-at-sorted Nat Nat/lte #4 [#1 #2 #3]) == [#1 #2 #3 #4]
+#test: (List/insert-at-sorted Nat Nat/lte #1 []) == [#1]
