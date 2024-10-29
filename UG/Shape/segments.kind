@@ -1,0 +1,12 @@
+// Extracts line segments from a list of vertices representing a polygon.
+// - vertices: The list of V2 points representing the polygon's vertices.
+// = A list of pairs of V2, where each pair represents a line segment of the polygon.
+UG/Shape/segments : (List V2) -> (List (Pair V2 V2))
+| #Nil             = #Nil
+| #Cons{head tail} = 
+  let next_points = (List/append _ tail #Cons{head #Nil})
+  (List/zip _ _ #Cons{head tail} next_points)
+
+#test: (UG/Shape/segments #Nil) == #Nil
+#test: (UG/Shape/segments [#V2{0.0 0.0}]) == [#Pair{#V2{0.0 0.0} #V2{0.0 0.0}}]
+#test: (UG/Shape/segments [#V2{0.0 0.0} #V2{1.0 0.0} #V2{0.0 1.0}]) == [#Pair{#V2{0.0 0.0} #V2{1.0 0.0}} #Pair{#V2{1.0 0.0} #V2{0.0 1.0}} #Pair{#V2{0.0 1.0} #V2{0.0 0.0}}]
