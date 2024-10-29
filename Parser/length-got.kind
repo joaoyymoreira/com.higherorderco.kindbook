@@ -1,0 +1,10 @@
+// Gets input length and updates state.
+// - state: Current parser state.
+// = Pair of updated state and input length.
+Parser/length-got : Parser/State -> (Pair Parser/State Nat)
+| #State{input index} =
+  let #Pair{new_input length} = (String/length-got input)
+  #Pair{#State{new_input index} length}
+
+#test: (Parser/length-got (Parser/new-state "hello")) == #Pair{#State{input: "hello" index: #0} #5}
+#test: (Parser/length-got (Parser/new-state "")) == #Pair{#State{input: "" index: #0} #0}

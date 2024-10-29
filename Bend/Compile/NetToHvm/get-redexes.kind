@@ -1,0 +1,23 @@
+// Returns the redexes of the net as pairs of node indices
+Bend/Compile/NetToHvm/get-redexes : Bend/Net -> (List (Pair U64 U64))
+| #Net{nam nod len} =
+  let redexes = (go (BinMap/to-list _ nod) (BinMap/empty _))
+  (BinMap/values _ redexes)
+
+// Check each node in the net: if it's part of a redex, add it to
+// the map, using the smaller node id as the key.
+go : (List (Pair Bits Bend/Net/Node)) -> (BinMap (Pair U64 U64)) -> (BinMap (Pair U64 U64))
+| #Nil map = map
+| #Cons{#Pair{key_a nod_a} nodes} map =
+  let #Node{prt_b _ _ _} = nod_a
+  let #Port{nod_b slt_b} = prt_b
+  if (U64/eq slt_b 0) {
+    // A redex
+    let key = (U64/to-bits (U64/min nod_b (Bits/to-u64 key_a)))
+    let val = #Pair{(Bits/to-u64 key_a) nod_b} :: (Pair _ _)
+    let map = (BinMap/set _ map key val)
+    (go nodes map)
+  } else {
+    // Not a redex, continue
+    (go nodes map)
+  }

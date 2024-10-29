@@ -1,0 +1,18 @@
+// Maps a function over the values of an OrdTree.
+// - K: Key type.
+// - V: Input value type.
+// - B: Output value type.
+// - ord: Ord instance for K.
+// - f: Function to apply to values.
+// - tree: Input tree.
+// = Updated tree with mapped values.
+OrdTree/map-values : ∀(K: *) ∀(V: *) ∀(B: *) (Ord K) -> (V -> B) -> (OrdTree K V) -> (OrdTree K B)
+| K V B ord f tree =
+  (OrdTree/fold K V (OrdTree K B)
+    (λkv λacc (OrdTree/insert K B ord #Pair{(Pair/get-fst K V kv) (f (Pair/get-snd K V kv))} acc))
+    (OrdTree/empty K B)
+    tree)
+
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-values U64 U64 U64 U64/Ord (λx (+ x 1)) (OrdTree/empty U64 U64))) == #Nil
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-values U64 U64 U64 U64/Ord (λx (+ x 1)) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == #Cons{#Pair{1 11} #Nil}
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-values U64 U64 U64 U64/Ord (λx (* x 2)) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))))) == #Cons{#Pair{1 20} #Cons{#Pair{2 40} #Nil}}

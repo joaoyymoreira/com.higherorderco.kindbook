@@ -5,8 +5,8 @@
 // = Closest point on the line segment to p.
 V2/point-to-segment-distance : V2 -> V2 -> V2 -> V2
 | #V2{px py} #V2{ax ay} #V2{bx by} =
-  let ab = #V2{ (F64/sub bx ax) (F64/sub by ay) }
-  let ap = #V2{ (F64/sub px ax) (F64/sub py ay) }
+  let ab = (#V2{ (F64/sub bx ax) (F64/sub by ay) }) :: V2
+  let ap = (#V2{ (F64/sub px ax) (F64/sub py ay) }) :: V2
   let projection = (F64/div (V2/dot ap ab) (V2/dot ab ab))
   if (F64/lt projection 0.0) {
     #V2{ax ay}
@@ -22,5 +22,5 @@ V2/point-to-segment-distance : V2 -> V2 -> V2 -> V2
   }
 
 #test: (V2/point-to-segment-distance #V2{x: 0.0 y: 0.0} #V2{x: 1.0 y: 1.0} #V2{x: 2.0 y: 2.0}) == #V2{x: 1.0 y: 1.0}
-#test: (V2/point-to-segment-distance #V2{x: 3.0 y: 0.0} #V2{x: 0.0 y: 0.0} #V2{x: 2.0 y: 2.0}) == #V2{x: 2.0 y: 2.0}
+#test: (V2/point-to-segment-distance #V2{x: 3.0 y: 0.0} #V2{x: 0.0 y: 0.0} #V2{x: 2.0 y: 2.0}) == #V2{x: 1.5 y: 1.5}
 #test: (V2/point-to-segment-distance #V2{x: 1.0 y: 1.0} #V2{x: 0.0 y: 0.0} #V2{x: 2.0 y: 2.0}) == #V2{x: 1.0 y: 1.0}

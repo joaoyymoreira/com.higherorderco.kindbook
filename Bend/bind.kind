@@ -1,0 +1,2 @@
+Bend/bind : ∀(A: *) ∀(B: *) (Bend A) -> (A -> (Bend B)) -> (Bend B)
+| A B = (Result/bind A B String)

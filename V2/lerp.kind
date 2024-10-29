@@ -1,0 +1,14 @@
+// Linear interpolation between two V2 vectors.
+// - a: Starting vector.
+// - b: Ending vector.
+// - t: Interpolation parameter (0.0 ≤ t ≤ 1.0).
+// = Interpolated vector.
+V2/lerp : V2 -> V2 -> F64 -> V2
+| a b t =
+  let diff = (V2/sub b a)
+  let scaled = (V2/mul-scalar diff t)
+  (V2/add a scaled)
+
+#test: (V2/lerp #V2{x: 0.0 y: 0.0} #V2{x: 10.0 y: 10.0} 0.5) == #V2{x: 5.0 y: 5.0}
+#test: (V2/lerp #V2{x: 0.0 y: 0.0} #V2{x: 10.0 y: 10.0} 0.0) == #V2{x: 0.0 y: 0.0}
+#test: (V2/lerp #V2{x: 0.0 y: 0.0} #V2{x: 10.0 y: 10.0} 1.0) == #V2{x: 10.0 y: 10.0}

@@ -7,8 +7,11 @@
 // - tree: The AVL tree to fold over.
 // = The result of folding the tree.
 OrdTree/fold : ∀(K: *) ∀(V: *) ∀(A: *) ((Pair K V) -> A -> A) -> A -> (OrdTree K V) -> A
-| K V A f z #Leaf = z
+| K V A f z #Leaf                               = z
 | K V A f z #Node{key-value balance left right} =
   let left-result = (OrdTree/fold K V A f z left)
   let curr-result = (f key-value left-result)
   (OrdTree/fold K V A f curr-result right)
+
+#test: (OrdTree/fold U64 String U64 (λp λacc (+ acc 1)) 0 (OrdTree/empty U64 String)) == 0
+#test: (OrdTree/fold U64 String (List (Pair U64 String)) (λp λacc #Cons{p acc}) #Nil (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String))) == [#Pair{1 "one"}]

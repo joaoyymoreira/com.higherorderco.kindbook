@@ -8,9 +8,9 @@ String/neq : String -> String -> Bool
 | #Cons{a0 as} #Nil         = #True
 | #Cons{a0 as} #Cons{b0 bs} = 
   if (Char/neq a0 b0) {
-    (String/neq as bs)
-  } else {
     #True
+  } else {
+    (String/neq as bs)
   }
 
 #test: (String/neq "" "") == #False

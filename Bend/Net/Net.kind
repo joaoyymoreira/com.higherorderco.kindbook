@@ -1,7 +1,8 @@
+// Intermediate representation of the output inet as an array of Nodes.
 data Bend/Net {
   #Net {
-    nod: (BinMap Bend/Net/Node)
-    len: U64
-    nam: String
+    nam: String                 // Name of the inet
+    nod: (BinMap Bend/Net/Node) // Map of node-id to nodes
+    len: U64                    // Number of nodes in the inet
   }
 }

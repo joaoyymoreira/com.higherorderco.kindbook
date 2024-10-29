@@ -1,0 +1,16 @@
+// Checks if two pairs are not equal.
+// - A: First type.
+// - B: Second type.
+// - ea: IsEqual instance for A.
+// - eb: IsEqual instance for B.
+// - p1: First pair.
+// - p2: Second pair.
+// = True if pairs are not equal, False otherwise.
+Pair/neq : ∀(A: *) ∀(B: *) (IsEqual A) -> (IsEqual B) -> (Pair A B) -> (Pair A B) -> Bool
+| A B ea eb #Pair{fst1 snd1} #Pair{fst2 snd2} =
+  (Bool/not (Bool/and (IsEqual/eq A ea fst1 fst2) (IsEqual/eq B eb snd1 snd2)))
+
+#test: (Pair/neq U64 U64 U64/IsEqual U64/IsEqual #Pair{1 2} #Pair{1 2}) == #False
+#test: (Pair/neq U64 U64 U64/IsEqual U64/IsEqual #Pair{1 2} #Pair{2 1}) == #True
+#test: (Pair/neq U64 U64 U64/IsEqual U64/IsEqual #Pair{1 2} #Pair{1 3}) == #True
+#test: (Pair/neq U64 U64 U64/IsEqual U64/IsEqual #Pair{0 0} #Pair{0 0}) == #False

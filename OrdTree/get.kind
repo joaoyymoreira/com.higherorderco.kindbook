@@ -1,0 +1,19 @@
+// Retrieves a value from an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - key: Key to search for.
+// - tree: The AVL tree.
+// = Maybe containing the value if found.
+OrdTree/get : ∀(K: *) ∀(V: *) (Ord K) -> K -> (OrdTree K V) -> (Maybe V)
+| K V ord key #Leaf = #None
+| K V ord key #Node{#Pair{curr-key curr-val} _ left right} =
+  (Cmp/match (Maybe V)
+    (OrdTree/get K V ord key left)
+    (#Some{curr-val})
+    (OrdTree/get K V ord key right)
+    (Ord/compare K ord key curr-key))
+
+#test: (OrdTree/get U64 String U64/Ord 1 (OrdTree/empty U64 String)) == #None
+#test: (OrdTree/get U64 String U64/Ord 1 (OrdTree/singleton U64 String #Pair{1 "one"})) == #Some{"one"}
+#test: (OrdTree/get U64 String U64/Ord 2 (OrdTree/singleton U64 String #Pair{1 "one"})) == #None

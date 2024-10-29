@@ -5,83 +5,83 @@ use Bend/Compile/BendToNet/Encoder as Enc
 // - term: The Term to be encoded
 // - up: The upstream Port to connect the encoded term to
 // = The Encoder with the nodes from the compiled term or None on error
-Enc/encode-term: Enc/ -> Bend/Fun/Term -> Bend/Net/Port -> (Result Enc/ String)
+Enc/encode-term: Enc -> Bend/Fun/Term -> Bend/Net/Port -> (Result Enc String)
 
-| enc #Var{ name } up = do Result {
-  ask enc = (Maybe/to-result Enc/ String (Enc/link-var enc name up) "link var fail")
+| enc #Var{ name } up = do Bend {
+  ask enc = (Maybe/to-result _ _ (Enc/link-var enc name up) "link var fail")
   #Done{enc}
 }
 
-| enc #Lnk{ name } up = do Result {
-  ask enc = (Maybe/to-result Enc/ String (Enc/link-var enc (String/append "$" name) up) "link unscoped fail")
+| enc #Lnk{ name } up = do Bend {
+  ask enc = (Maybe/to-result _ _ (Enc/link-var enc (String/append "$" name) up) "link unscoped fail")
   #Done{enc}
 }
 
-| enc #Lam{ pat bod } up = do Result {
+| enc #Lam{ pat bod } up = do Bend {
   let #Pair{nod enc} = (Enc/new-node #Con enc)
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 0} up) "link lam fail")
-  ask enc            = (Maybe/to-result Enc/ String (Enc/encode-pat enc pat #Port{nod 1}) "encode lam pat fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{nod 0} up) "link lam fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/encode-pat enc pat #Port{nod 1}) "encode lam pat fail")
   ask enc            = (Enc/encode-term enc bod #Port{nod 2})
   #Done{enc}
 }
 
-| enc #Let{ pat val nxt } up = do Result {
+| enc #Let{ pat val nxt } up = do Bend {
   let #Pair{fst enc} = (Enc/new-node #Var enc)
   let #Pair{snd enc} = (Enc/new-node #Var enc)
-  ask enc            = (Maybe/to-result Enc/ String (Enc/encode-pat enc pat #Port{fst 0}) "encode let pat fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/encode-pat enc pat #Port{fst 0}) "encode let pat fail")
   ask enc            = (Enc/encode-term enc val #Port{snd 0})
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{fst 1} #Port{snd 1}) "link let var fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{fst 1} #Port{snd 1}) "link let var fail")
   // Port 2 of vars is unused (unary node)
   ask enc            = (Enc/encode-term enc nxt up)
   #Done{enc}
 }
 
-| enc #App{ fun arg } up = do Result {
+| enc #App{ fun arg } up = do Bend {
   let #Pair{nod enc} = (Enc/new-node #Con enc)
   ask enc            = (Enc/encode-term enc fun #Port{nod 0})
   ask enc            = (Enc/encode-term enc arg #Port{nod 1})
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 2} up) "link app fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{nod 2} up) "link app fail")
   #Done{enc}
 }
 
 | enc #Fan{ kind args } up =
   (enc-fan enc (Bend/Net/NodeKind/from-fan-kind kind) args up)
 
-| enc #Era up = do Result {
+| enc #Era up = do Bend {
   let #Pair{nod enc} = (Enc/new-node #Era enc)
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 0} up) "link era fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{nod 0} up) "link era fail")
   #Done{enc}
 }
 
 | enc #Ref{ name } up =
   let #Pair{nod enc} = (Enc/new-node #Ref{name} enc)
-  (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 0} up) "link ref fail")
+  (Maybe/to-result _ _ (Enc/link enc #Port{nod 0} up) "link ref fail")
 
 | enc #Num{ num } up = 
   let #Pair{nod enc} = (Enc/new-node #Num{(Enc/encode-num num)} enc)
-  (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 0} up) "link num fail")
+  (Maybe/to-result _ _ (Enc/link enc #Port{nod 0} up) "link num fail")
 
-//| enc #Swt{ #None arg [] [] #None [zero succ] } up = do Result {
-//  let #{Pair swt enc} = (Enc/new-node #Swi enc)
-//  let #{Pair con enc} = (Enc/new-node #Con enc)
-//  ask enc             = (Enc/encode-term enc arg #Port{swt 0})
-//  ask enc             = (Maybe/to-result (Enc/link enc #Port{swt 1} #Port{con 0}) "link swt con fail")
-//  ask enc             = (Maybe/to-result (Enc/link enc #Port{swt 2} up) "link swt ret fail")
-//  ask enc             = (Enc/encode-term enc zero #Port{con 1})
-//  ask enc             = (Enc/encode-term enc succ #Port{con 2})
-//  #Done{enc}
-//}
+| enc #Swt{ #None arg [] [] #None [zero succ] } up = do Bend {
+  let #Pair{swt enc}  = (Enc/new-node #Swi enc)
+  let #Pair{con enc}  = (Enc/new-node #Con enc)
+  ask enc             = (Enc/encode-term enc arg #Port{swt 0})
+  ask enc             = (Maybe/to-result _ _ (Enc/link enc #Port{swt 1} #Port{con 0}) "link swt con fail")
+  ask enc             = (Maybe/to-result _ _ (Enc/link enc #Port{swt 2} up) "link swt ret fail")
+  ask enc             = (Enc/encode-term enc zero #Port{con 1})
+  ask enc             = (Enc/encode-term enc succ #Port{con 2})
+  #Done{enc}
+}
 | enc #Swt{ _ _ _ _ _ _ } up = #Fail{"invalid switch in compile"}
 
-| enc #Opr{ opr fst snd } up = do Result {
+| enc #Opr{ opr fst snd } up = do Bend {
   let #Pair{op1 enc} = (Enc/new-node #Opr enc)
   let #Pair{op2 enc} = (Enc/new-node #Opr enc)
   let #Pair{opr enc} = (Enc/new-node #Num{#E} enc)
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{op1 0} #Port{opr 0}) "link oper opr fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{op1 0} #Port{opr 0}) "link oper opr fail")
   ask enc            = (Enc/encode-term enc fst #Port{op1 1})
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{op1 2} #Port{op2 0}) "link oper nodes fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{op1 2} #Port{op2 0}) "link oper nodes fail")
   ask enc            = (Enc/encode-term enc snd #Port{op2 1})
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{op2 2} up) "link oper ret fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{op2 2} up) "link oper ret fail")
   #Done{enc}
 }
 
@@ -96,12 +96,12 @@ Enc/encode-term: Enc/ -> Bend/Fun/Term -> Bend/Net/Port -> (Result Enc/ String)
 | enc #Opn{_ _ _ _}    up = #Fail{"open in compile"}
 | enc #Def{_ _}        up = #Fail{"def in compile"}
 
-enc-fan : Enc/ -> Bend/Net/NodeKind -> (List Bend/Fun/Term) -> Bend/Net/Port -> (Result Enc/ String)
+enc-fan : Enc -> Bend/Net/NodeKind -> (List Bend/Fun/Term) -> Bend/Net/Port -> (Result Enc String)
 | enc kind #Nil            up = #Fail{"fan empty"}
 | enc kind #Cons{ x #Nil } up = (Enc/encode-term enc x up)
-| enc kind #Cons{ x xs }   up = do Result {
+| enc kind #Cons{ x xs }   up = do Bend {
   let #Pair{nod enc} = (Enc/new-node kind enc)
-  ask enc            = (Maybe/to-result Enc/ String (Enc/link enc #Port{nod 0} up) "link fan fail")
+  ask enc            = (Maybe/to-result _ _ (Enc/link enc #Port{nod 0} up) "link fan fail")
   ask enc            = (Enc/encode-term enc x #Port{nod 1})
   (enc-fan enc kind xs #Port{nod 2})
 }

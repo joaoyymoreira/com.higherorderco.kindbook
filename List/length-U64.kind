@@ -1,0 +1,11 @@
+// Computes the length of a list.
+// - A: Element type.
+// - xs: Input list.
+// = Number of elements.
+List/length-u64 : ∀(A: *) (List A) -> U64
+| A #Nil             = 0
+| A #Cons{head tail} = (+ 1 (List/length-u64 A tail))
+
+#test: (List/length-u64 Nat []) == 0
+#test: (List/length-u64 U64 [1 2 3]) == 3
+

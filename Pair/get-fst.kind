@@ -1,7 +1,11 @@
-// Retrieves the 1st value of a pair.
-// - A: The 1st type.
-// - B: The 2nd type.
-// - p: The pair.
+// Gets the 1st value of a pair.
+// - A: 1st type.
+// - B: 2nd type.
+// - pair: The pair.
 // = The 1st value.
 Pair/get-fst : ∀(A: *) ∀(B: *) ∀(pair: (Pair A B)) A
 | A B #Pair{fst snd} = fst
+
+#test: (Pair/get-fst Nat Bool #Pair{#3 #True}) == #3
+#test: (Pair/get-fst Bool Nat #Pair{#False #0}) == #False
+#test: (Pair/get-fst String U64 #Pair{"hello" 42}) == "hello"

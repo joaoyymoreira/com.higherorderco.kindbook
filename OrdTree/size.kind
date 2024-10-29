@@ -1,11 +1,15 @@
-// Calculates the size (number of nodes) of an AVL tree.
-// - K: The type of keys in the tree.
-// - V: The type of values in the tree.
-// - tree: The AVL tree to calculate the size of.
-// = The number of nodes in the tree.
+// Calculates the size of an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - tree: The AVL tree.
+// = Number of nodes in the tree.
 OrdTree/size : ∀(K: *) ∀(V: *) (OrdTree K V) -> Nat
-| K V #Leaf = #Zero
+| K V #Leaf                               = #Zero
 | K V #Node{key-value balance left right} =
   let left_size  = (OrdTree/size K V left)
   let right_size = (OrdTree/size K V right)
   #Succ{(Nat/add left_size right_size)}
+
+#test: (OrdTree/size U64 U64 (OrdTree/empty U64 U64)) == #0
+#test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64))) == #1
+#test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{2 3} (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64)))) == #2

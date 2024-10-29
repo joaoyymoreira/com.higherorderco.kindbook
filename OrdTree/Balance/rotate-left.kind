@@ -1,22 +1,23 @@
-// Performs a left rotation on an AVL tree to fix an imbalance of +2.
-// - K: The type of keys in the tree.
-// - V: The type of values in the tree.
-// - tree: The AVL tree to rotate.
-// = A pair containing the rotated AVL tree and a boolean indicating if the height of the root stayed the same.
+// Left rotation on an AVL tree to fix +2 imbalance.
+// - K: Key type.
+// - V: Value type.
+// - tree: AVL tree to rotate.
+// = Rotated AVL tree and height change indicator.
 OrdTree/Balance/rotate-left : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (OrdTree K V) Bool)
-| K V #Leaf = #Pair{#Leaf #False}
+| K V #Leaf                                         = #Pair{#Leaf #False}
 | K V #Node{v1 #PlusOne l #Node{v2 #PlusOne rl rr}} =
   #Pair{#Node{v2 #Zero #Node{v1 #Zero l rl} rr} #False}
-| K V #Node{v1 #PlusOne l #Node{v2 #Zero rl rr}} =
+| K V #Node{v1 #PlusOne l #Node{v2 #Zero rl rr}}    =
   #Pair{#Node{v2 #MinusOne #Node{v1 #PlusOne l rl} rr} #True}
-| K V #Node{v1 #PlusOne l #Node{v2 #MinusOne #Node{v3 balance rll rlr} rr}} =
-  let rotated = 
-    (Bool/if (OrdTree K V)
-      (OrdTree/Balance/eq balance #PlusOne)
-      #Node{v3 #Zero #Node{v1 #MinusOne l rll} #Node{v2 #Zero rlr rr}}
-      (Bool/if (OrdTree K V)
-        (OrdTree/Balance/eq balance #MinusOne)
-        #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #PlusOne rlr rr}}
-        #Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #Zero rlr rr}}))
-  #Pair{rotated #False}
-| K V tree = #Pair{tree #False}
+| K V #Node{v1 #PlusOne l #Node{v2 #MinusOne #Node{v3 balance rll rlr} rr}} with balance 
+. | #PlusOne  =
+  #Pair{#Node{v3 #Zero #Node{v1 #MinusOne l rll} #Node{v2 #Zero rlr rr}} #False}
+. | #Zero     = 
+  #Pair{#Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #Zero rlr rr}} #False}
+. | #MinusOne = 
+  #Pair{#Node{v3 #Zero #Node{v1 #Zero l rll} #Node{v2 #PlusOne rlr rr}} #False}
+| K V tree                                          = #Pair{tree #False}
+
+#test: (OrdTree/Balance/rotate-left U64 U64 #Leaf) == #Pair{#Leaf #False}
+#test: (OrdTree/Balance/rotate-left U64 U64 #Node{#Pair{1 1} #PlusOne #Leaf #Node{#Pair{2 2} #PlusOne #Leaf #Leaf}}) == #Pair{#Node{#Pair{2 2} #Zero #Node{#Pair{1 1} #Zero #Leaf #Leaf} #Leaf} #False}
+#test: (OrdTree/Balance/rotate-left U64 U64 #Node{#Pair{1 1} #PlusOne #Leaf #Node{#Pair{2 2} #Zero #Leaf #Leaf}}) == #Pair{#Node{#Pair{2 2} #MinusOne #Node{#Pair{1 1} #PlusOne #Leaf #Leaf} #Leaf} #True}

@@ -1,0 +1,12 @@
+// Creates an OrdTree from a list of key-value pairs.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - xs: List of key-value pairs.
+// = The resulting OrdTree.
+OrdTree/from-list : ∀(K: *) ∀(V: *) (Ord K) -> (List (Pair K V)) -> (OrdTree K V)
+| K V ord xs = (List/foldr (Pair K V) (OrdTree K V) (OrdTree/insert K V ord) (OrdTree/empty K V) xs)
+
+#test: (OrdTree/from-list U64 U64 U64/Ord #Nil) == (OrdTree/empty U64 U64)
+#test: (OrdTree/from-list U64 U64 U64/Ord #Cons{#Pair{1 10} #Nil}) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}
+#test: (OrdTree/from-list U64 U64 U64/Ord #Cons{#Pair{2 20} #Cons{#Pair{1 10} #Nil}}) == #Node{#Pair{1 10} #PlusOne #Leaf #Node{#Pair{2 20} #Zero #Leaf #Leaf}}

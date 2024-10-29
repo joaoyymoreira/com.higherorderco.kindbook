@@ -5,6 +5,6 @@
 F64/gte : F64 -> F64 -> Bool
 = λa λb (U64/to-bool (>= a b))
 
-#test: (F64/gt 5.0 3.0) == #True
-#test: (F64/gt 3.0 5.0) == #False
-#test: (F64/gt 5.0 5.0) == #True
+#test: (F64/gte 5.0 3.0) == #True
+#test: (F64/gte 3.0 5.0) == #False
+#test: (F64/gte 5.0 5.0) == #True

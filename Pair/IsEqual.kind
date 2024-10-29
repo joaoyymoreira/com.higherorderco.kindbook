@@ -1,0 +1,15 @@
+// IsEqual instance for Pair
+// - A: First type.
+// - B: Second type.
+// - eqA: IsEqual instance for A.
+// - eqB: IsEqual instance for B.
+// = IsEqual instance for (Pair A B).
+Pair/IsEqual : ∀(A: *) ∀(B: *) ∀(eqA: (IsEqual A)) ∀(eqB: (IsEqual B)) (IsEqual (Pair A B))
+| A B eqA eqB = #IsEqual{
+  eq: (Pair/eq A B eqA eqB) 
+}
+
+#test: (IsEqual/eq (Pair Nat Bool) (Pair/IsEqual Nat Bool Nat/IsEqual Bool/IsEqual) #Pair{#3 #True} #Pair{#3 #True}) == #True
+#test: (IsEqual/eq (Pair Nat Bool) (Pair/IsEqual Nat Bool Nat/IsEqual Bool/IsEqual) #Pair{#3 #True} #Pair{#2 #True}) == #False
+#test: (IsEqual/eq (Pair Nat Bool) (Pair/IsEqual Nat Bool Nat/IsEqual Bool/IsEqual) #Pair{#3 #True} #Pair{#3 #False}) == #False
+#test: (IsEqual/eq (Pair Nat Bool) (Pair/IsEqual Nat Bool Nat/IsEqual Bool/IsEqual) #Pair{#0 #False} #Pair{#0 #False}) == #True

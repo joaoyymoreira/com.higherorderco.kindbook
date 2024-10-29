@@ -1,0 +1,12 @@
+// Computes the height of an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - tree: The AVL tree.
+// = The height of the tree.
+OrdTree/height : ∀(K: *) ∀(V: *) (OrdTree K V) -> Nat
+| K V #Leaf = #Zero
+| K V #Node{key-value balance left right} = #Succ{(Nat/max (OrdTree/height K V left) (OrdTree/height K V right))}
+
+#test: (OrdTree/height U64 U64 (OrdTree/empty U64 U64)) == #0
+#test: (OrdTree/height U64 U64 (OrdTree/singleton U64 U64 #Pair{1 1})) == #1
+#test: (OrdTree/height U64 U64 #Node{key-value: #Pair{2 2} balance: #Zero left: (OrdTree/singleton U64 U64 #Pair{1 1}) right: (OrdTree/singleton U64 U64 #Pair{3 3})}) == #2

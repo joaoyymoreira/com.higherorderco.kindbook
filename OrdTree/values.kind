@@ -4,15 +4,12 @@
 // - tree: The AVL tree to extract values from.
 // = A list containing all values from the tree in inorder traversal.
 OrdTree/values : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List V)
-| K V #Leaf = #Nil
-| K V #Node{key-value balance left right} =
+| K V #Leaf                                      = #Nil
+| K V #Node{#Pair{key value} balance left right} =
   let left_values  = (OrdTree/values K V left)
   let right_values = (OrdTree/values K V right)
-  let node_value   = (Pair/get-snd K V key-value)
-  (List/append V left_values #Cons{node_value right_values})
+  (List/append V left_values #Cons{value right_values})
 
 #test: (OrdTree/values U64 U64 #Leaf) == []
 #test: (OrdTree/values U64 U64 #Node{#Pair{1 10} #Zero #Leaf #Leaf}) == [10]
-#test: (OrdTree/values U64 U64 #Node{#Pair{2 20} #Zero 
-                                    (#Node{#Pair{1 10} #Zero #Leaf #Leaf})
-                                    (#Node{#Pair{3 30} #Zero #Leaf #Leaf})}) == [10 20 30]
+#test: (OrdTree/values U64 U64 #Node{#Pair{2 20} #Zero (#Node{#Pair{1 10} #Zero #Leaf #Leaf}) #Node{#Pair{3 30} #Zero #Leaf #Leaf}}) == [10 20 30]

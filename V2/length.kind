@@ -4,4 +4,4 @@
 V2/length : V2 -> F64
 | #V2{x y} = (F64/sqrt (F64/add (F64/mul x x) (F64/mul y y)))
 
-#test: (V2/length #V2{x: 3 y: 4}) == 5
+#test: (V2/length #V2{x: 3.0 y: 4.0}) == 5.0

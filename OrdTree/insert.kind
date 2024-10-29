@@ -1,0 +1,45 @@
+// Inserts a key-value pair into an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - kv: Key-value pair to insert.
+// - tree: The AVL tree.
+// = The updated AVL tree.
+OrdTree/insert : ∀(K: *) ∀(V: *) (Ord K) -> (Pair K V) -> (OrdTree K V) -> (OrdTree K V)
+| K V ord kv tree = (Pair/get-fst (OrdTree K V) Bool (OrdTree/insert/go K V ord kv tree))
+
+// Performs insertion and returns new tree with height change info.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - kv: Key-value pair to insert.
+// - tree: The AVL tree.
+// = Pair of updated tree and height increase flag.
+OrdTree/insert/go : ∀(K: *) ∀(V: *) (Ord K) -> (Pair K V) -> (OrdTree K V) -> (Pair (OrdTree K V) Bool)
+| K V ord kv #Leaf = #Pair{#Node{kv #Zero #Leaf #Leaf} #True}
+| K V ord #Pair{v-key v-val} #Node{#Pair{curr-key curr-val} balance left right} with (Ord/compare K ord v-key curr-key)
+. | #EQ = #Pair{#Node{#Pair{v-key v-val} balance left right} #False}
+. | #LT =
+    let #Pair{other is-higher} = (OrdTree/insert/go K V ord  #Pair{v-key v-val} left)
+    match (is-higher) {
+      #True: match balance {
+        #PlusOne : #Pair{#Node{#Pair{curr-key curr-val} #Zero other right} #False} 
+        #Zero    : #Pair{#Node{#Pair{curr-key curr-val} #MinusOne other right} #True}
+        #MinusOne: (OrdTree/Balance/rotate-right K V #Node{#Pair{curr-key curr-val} #MinusOne other right})
+      }
+      #False: #Pair{#Node{#Pair{curr-key curr-val} balance other right} #False} 
+    }
+. | #GT =
+    let #Pair{other is-higher} = (OrdTree/insert/go K V ord  #Pair{v-key v-val} right)
+    match is-higher {
+      #True: match balance {
+        #PlusOne : (OrdTree/Balance/rotate-left K V #Node{#Pair{curr-key curr-val} #PlusOne left other})
+        #Zero    : #Pair{#Node{#Pair{curr-key curr-val} #PlusOne left other} #True}
+        #MinusOne: #Pair{#Node{#Pair{curr-key curr-val} #Zero left other} #False}
+      }
+      #False: #Pair{#Node{#Pair{curr-key curr-val} balance left other} #False} 
+    }
+
+#test: (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} #Leaf) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}
+#test: (OrdTree/insert U64 U64 U64/Ord #Pair{1 11} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} #Leaf)) == #Node{#Pair{1 11} #Zero #Leaf #Leaf}
+#test: (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} #Leaf)) == #Node{#Pair{1 10} #PlusOne #Leaf #Node{#Pair{2 20} #Zero #Leaf #Leaf}}

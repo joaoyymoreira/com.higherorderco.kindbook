@@ -1,10 +1,9 @@
-// Bend/Fun/Adt/Adt
-
-data Bend/Fun/Adt/Adt {
+// An ADT definition.
+data Bend/Fun/Adt {
   #Adt {
-    nam : String
-    var : (List String)
-    ctr : (List String)
-    src : Bend/Source/Source
+    nam : String        // Name of the ADT
+    var : (List String) // Name of type variables
+    ctr : (List String) // Name of constructors
+    src : Bend/Source   // Source location of the ADT
   }
 }

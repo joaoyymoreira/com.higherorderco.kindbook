@@ -1,0 +1,6 @@
+// Converts a list of key-value pairs to a BinMap.
+// - xs: A list of key-value pairs.
+// = A BinMap containing all the key-value pairs from the input list.
+BinMap/from-list : ∀(A: *) (List (Pair Bits A)) -> (BinMap A)
+| A #Nil                  = (BinMap/empty A)
+| A #Cons{#Pair{k v} map} = (BinMap/set A (BinMap/from-list A map) k v)

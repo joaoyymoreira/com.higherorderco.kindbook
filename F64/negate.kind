@@ -1,0 +1,5 @@
+// Negates a float.
+// - x: The float to negate.
+// = The negated value of x.
+F64/negate : F64 -> F64
+| a = (- 0.0 a)

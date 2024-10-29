@@ -1,0 +1,5 @@
+// Negates a V2 vector.
+// - v: The V2 vector to negate.
+// = A new V2 vector with negated coordinates.
+V2/negate : V2 -> V2
+| #V2{x y} = #V2{(F64/negate x) (F64/negate y)}

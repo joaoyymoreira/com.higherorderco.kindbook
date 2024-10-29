@@ -1,9 +1,0 @@
-// Calculates the modulo (remainder) of two F64 values.
-// - a: The dividend.
-// - b: The divisor.
-// = The remainder of the division as an F64 value.
-F64/mod : F64 -> F64 -> F64
-= λa λb (% a b)
-
-#test: (F64/mod 7.5 2.0) == 1.5
-#test: (F64/mod -7.5 2.0) == 0.5

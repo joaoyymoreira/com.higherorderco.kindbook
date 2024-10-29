@@ -1,0 +1,20 @@
+// Converts a pair to a string representation.
+// - A: First type.
+// - B: Second type.
+// - show_a: Show instance for A.
+// - show_b: Show instance for B.
+// - pair: The pair to convert.
+// = String representation of the pair.
+Pair/to-string : ∀(A: *) ∀(B: *) ∀(show_a: (Show A)) ∀(show_b: (Show B)) (Pair A B) -> String
+| A B #Show{to_string_a} #Show{to_string_b} #Pair{fst snd} =
+  (String/append "("
+  (String/append (to_string_a fst)
+  (String/append ", "
+  (String/append (to_string_b snd)
+  ")"))))
+
+#test: (Pair/to-string U64 U64 U64/Show U64/Show #Pair{1 2}) == "(1, 2)"
+#test: (Pair/to-string Bool Nat Bool/Show Nat/Show #Pair{#True #3}) == "(True, 3)"
+#test: (Pair/to-string U64 Bool U64/Show Bool/Show #Pair{42 #False}) == "(42, False)"
+#test: (Pair/to-string Bool Bool Bool/Show Bool/Show #Pair{#True #True}) == "(True, True)"
+#test: (Pair/to-string Bool Bool Bool/Show Bool/Show #Pair{#True #False}) == "(True, False)"

@@ -3,24 +3,26 @@
 // - parser: Parser to be repeatedly applied.
 // = Parser that returns a list of all successfully parsed elements.
 Parser/parse-many : ∀(A: *) (Parser A) -> (Parser (List A))
-| A parser state = (Parser/parse-many/go A parser state [])
+| A parser state = 
+  let #Pair{state length} = (Parser/length-got state) 
+  (Parser/parse-many/go A parser state length [])
 
 // Accumulates parsed results.
 // - A: Input type.
 // - parser: Parser to be repeatedly applied.
 // - state: The parser state.
+// - length: 
 // - acc: Accumulator list of already parsed elements.
 // = Parser that returns the final list of all parsed elements.
-Parser/parse-many/go : ∀(A: *) (Parser A) -> Parser/State -> (List A) -> (Result (Parser/Reply (List A)) Parser/Error)
-| A parser #State{#Nil index} acc = #Done{#Reply{#State{#Nil index} (List/reverse A acc)}}
-| A parser state              acc = 
+Parser/parse-many/go : ∀(A: *) (Parser A) -> Parser/State -> Nat ->  (List A) -> (Result (Parser/Reply (List A)) Parser/Error)
+| A parser #State{#Nil index}  length      acc = #Done{#Reply{#State{#Nil index} (List/reverse A acc)}}
+| A parser state               #Zero       acc = #Done{#Reply{state (List/reverse A acc)}}
+| A parser state               #Succ{pred} acc = 
   match (parser state) {
     #Done{reply}: 
       match reply {
         #Reply{new_state value}: 
-          let #State{input index} = new_state
-          let next_str            = (String/tail input)
-          (Parser/parse-many/go A parser #State{next_str index} #Cons{value acc})
+          (Parser/parse-many/go A parser new_state pred #Cons{value acc})
       }
     #Fail{_}: #Done{#Reply{state (List/reverse A acc)}}
   }
@@ -28,3 +30,4 @@ Parser/parse-many/go : ∀(A: *) (Parser A) -> Parser/State -> (List A) -> (Resu
 #test: (Parser/run String (Parser/parse-many Char (Parser/pure Char 'x')) "abc") == #Some{"xxx"} 
 #test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "") == #Some{[]}
 #test: (Parser/run String (Parser/parse-many Char Parser/parse-char) "abc") == #Some{"abc"}
+#test: (Parser/run (List String) (Parser/parse-many String Parser/parse-chars) "abc") == #Some{""}
