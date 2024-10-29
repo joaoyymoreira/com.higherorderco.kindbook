@@ -1,0 +1,13 @@
+// Rotates a 2D vector by an angle.
+// - point: The vector to rotate.
+// - angle: The angle in radians.
+// = The rotated vector.
+V2/rotate : V2 -> F64 -> V2
+| #V2{x y} angle =
+  let cos_theta = (F64/cos angle)
+  let sin_theta = (F64/sin angle)
+  let new_x = (F64/sub (F64/mul x cos_theta) (F64/mul y sin_theta))
+  let new_y = (F64/add (F64/mul x sin_theta) (F64/mul y cos_theta))
+  #V2{new_x new_y}
+
+#test: (V2/rotate #V2{1.0 0.0} 0.0) == #V2{1.0 0.0}
