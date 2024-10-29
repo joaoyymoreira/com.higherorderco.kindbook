@@ -1,6 +1,6 @@
-// Bend/Fun/Pattern/map_children
+// Bend/Fun/Pattern/map-children
 
-Bend/Fun/Pattern/map_children (f: Bend/Fun/Pattern/Pattern -> Bend/Fun/Pattern/Pattern) (pat: Bend/Fun/Pattern/Pattern) : Bend/Fun/Pattern/Pattern
+Bend/Fun/Pattern/map-children (f: Bend/Fun/Pattern -> Bend/Fun/Pattern) (pat: Bend/Fun/Pattern) : Bend/Fun/Pattern
 | f (#Var x)    = #Var x
 | f (#Chn x)    = #Chn x
 | f (#Fan k ps) = #Fan k (List/map f ps)

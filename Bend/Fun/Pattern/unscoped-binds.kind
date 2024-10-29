@@ -1,5 +1,5 @@
 // Bend/Fun/Pattern/unscoped_binds
 
-Bend/Fun/Pattern/unscoped_binds (pat: Bend/Fun/Pattern/Pattern) : (List String)
+Bend/Fun/Pattern/unscoped_binds (pat: Bend/Fun/Pattern) : (List String)
 | #Chn nam = [nam]
 | pat      = (List/concat_map Bend/Fun/Pattern/unscoped_binds (Bend/Fun/Pattern/children pat))

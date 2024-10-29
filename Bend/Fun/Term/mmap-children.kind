@@ -1,6 +1,6 @@
-// Bend/Fun/Term/mmap_children
+// Bend/Fun/Term/mmap-children
 
-Bend/Fun/Term/mmap_children <M: Type -> Type> (m: Monad M) (f: (List String) -> Bend/Fun/Term/Term -> M Bend/Fun/Term/Term) (term: Bend/Fun/Term/Term) : (M Bend/Fun/Term/Term)
+Bend/Fun/Term/mmap-children <M: Type -> Type> (m: Monad M) (f: (List String) -> Bend/Fun/Term/Term -> M Bend/Fun/Term/Term) (term: Bend/Fun/Term/Term) : (M Bend/Fun/Term/Term)
 | m f (#Var x)     = (Monad.pure m (#Var x))
 | m f (#Link x)    = (Monad.pure m (#Link x))
 | m f (#Num n)     = (Monad.pure m (#Num n))

@@ -1,7 +1,7 @@
-// Bend/Fun/Term/map_children_with
+// Bend/Fun/Term/map-children_with
 
-Bend/Fun/Term/map_children_with <S: Type> (f: (List String) -> Bend/Fun/Term/Term -> S -> (Pair Bend/Fun/Term/Term S)) (t: Bend/Fun/Term/Term) (s: S) : (Pair Bend/Fun/Term/Term S)
-  ((Bend/Fun/Term/mmap_children (Monad.state S) f t) s)
+Bend/Fun/Term/map-children_with <S: Type> (f: (List String) -> Bend/Fun/Term/Term -> S -> (Pair Bend/Fun/Term/Term S)) (t: Bend/Fun/Term/Term) (s: S) : (Pair Bend/Fun/Term/Term S)
+  ((Bend/Fun/Term/mmap-children (Monad.state S) f t) s)
 
 // Assuming State monad is defined elsewhere
 // If not, you might need to define it:

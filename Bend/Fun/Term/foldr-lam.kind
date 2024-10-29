@@ -4,4 +4,4 @@ Bend/Fun/Term/foldr_lam (bod: Bend/Fun/Term/Term) (bnd: (List (Maybe String))) :
   (List/foldr Bend/Fun/Term/foldr_lam/lam bod bnd)
 
 Bend/Fun/Term/foldr_lam/lam (bnd: (Maybe String)) (bod: Bend/Fun/Term/Term) : Bend/Fun/Term/Term
-  (Bend/Fun/Term/Term.#Lam (Bend/Fun/Pattern/Pattern.#Var bnd) bod)
+  (Bend/Fun/Term/Term.#Lam (Bend/Fun/Pattern.#Var bnd) bod)

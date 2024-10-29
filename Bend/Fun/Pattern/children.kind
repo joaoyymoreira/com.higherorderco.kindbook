@@ -1,6 +1,6 @@
 // Bend/Fun/Pattern/children
 
-Bend/Fun/Pattern/children (pat: Bend/Fun/Pattern/Pattern) : (List Bend/Fun/Pattern/Pattern)
+Bend/Fun/Pattern/children (pat: Bend/Fun/Pattern) : (List Bend/Fun/Pattern)
 | #Var _      = []
 | #Chn _      = []
 | #Fan _ pats = pats

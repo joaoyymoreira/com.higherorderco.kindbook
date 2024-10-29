@@ -28,7 +28,7 @@ desugar-term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64))
     #Done{0}
   }
 
-  let name = (String/append (FnDef/name def) (String/append NEW_FN_SEP (U64/show fresh)))
+  let name = (String/concat [(FnDef/name def) NEW_FN_SEP (U64/show fresh)])
   let fresh = (+ fresh 1)
 
   // Gather the free variables

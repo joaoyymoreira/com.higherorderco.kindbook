@@ -13,9 +13,9 @@ Bend/Fun/Term/map_child_binds (f: (Maybe String) -> (List Bend/Fun/Term/Term) ->
 | f (#Ref nam)         = #Ref nam
 | f (#Def def nxt)     = #Def def nxt
 | f #Era               = #Era
-| f (#Lam pat bod)     = #Lam (Bend/Fun/Pattern/map_binds (x => f x [bod]) pat) bod
-| f (#Let pat val nxt) = #Let (Bend/Fun/Pattern/map_binds (x => f x [nxt]) pat) val nxt
-| f (#Ask pat val nxt) = #Ask (Bend/Fun/Pattern/map_binds (x => f x [nxt]) pat) val nxt
+| f (#Lam pat bod)     = #Lam (Bend/Fun/Pattern/map-binds (x => f x [bod]) pat) bod
+| f (#Let pat val nxt) = #Let (Bend/Fun/Pattern/map-binds (x => f x [nxt]) pat) val nxt
+| f (#Ask pat val nxt) = #Ask (Bend/Fun/Pattern/map-binds (x => f x [nxt]) pat) val nxt
 | f (#Use nam val nxt) = #Use (f nam [nxt]) val nxt
 | f (#Open typ var bnd bod) = #Open typ var (List/map (x => f x [bod]) bnd) bod
 | f (#Mat bnd arg with_bnd with_arg arms) =
