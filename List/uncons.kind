@@ -1,0 +1,11 @@
+// Safely deconstructs a list into its head and tail.
+// - A: Input type.
+// - xs: Input list.
+// = Some pair of head and tail if non-empty, None if empty.
+List/uncons : ∀(A: *) (List A) -> (Maybe (Pair A (List A)))
+| A #Nil             = #None
+| A #Cons{head tail} = #Some{#Pair{head tail}}
+
+#test: (List/uncons U64 []) == #None
+#test: (List/uncons U64 [1]) == #Some{#Pair{1 []}}
+#test: (List/uncons U64 [1 2 3]) == #Some{#Pair{1 [2 3]}}

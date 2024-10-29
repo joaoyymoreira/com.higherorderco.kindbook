@@ -1,0 +1,14 @@
+// Returns all final segments of a list, longest first.
+// - A: Element type.
+// - xs: Input list.
+// = List of lists, containing all final segments of xs.
+List/tails : ∀(A: *) (List A) -> (List (List A))
+| A xs = #Cons{xs (List/tails/go A xs)}
+
+List/tails/go : ∀(A: *) (List A) -> (List (List A))
+| A #Nil             = #Nil
+| A #Cons{head tail} = #Cons{tail (List/tails/go A tail)}
+
+#test: (List/tails U64 []) == [[]]
+#test: (List/tails U64 [1]) == [[1] []]
+#test: (List/tails U64 [1 2 3]) == [[1 2 3] [2 3] [3] []]
