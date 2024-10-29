@@ -1,0 +1,6 @@
+// Provides an instance of the Show trait for BinTree.
+BinTree/Show : ∀(A: *) ∀(show: (Show A)) (Show (BinTree A))
+= λA λshow
+  #Show{
+    to-string: λtree (BinTree/to-string A show tree)
+  }

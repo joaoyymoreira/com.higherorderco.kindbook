@@ -1,0 +1,16 @@
+// Converts a binary tree to its string representation.
+// - A: Element type.
+// - show: Show instance for A.
+// - tree: The binary tree to convert.
+// = String representation of the tree.
+BinTree/to-string : ∀(A: *) ∀(show: (Show A)) (BinTree A) -> String
+| A show #Leaf              = "_"
+| A show #Node{val lft rgt} =
+  let val_str = (Show/to-string A show val)
+  let lft_str = (BinTree/to-string A show lft)
+  let rgt_str = (BinTree/to-string A show rgt)
+  (String/concat ["{" val_str ", " lft_str ", " rgt_str "}"])
+
+#test: (BinTree/to-string U64 U64/Show (BinTree/leaf U64)) == "_"
+#test: (BinTree/to-string U64 U64/Show (BinTree/node U64 1 (BinTree/leaf U64) (BinTree/leaf U64))) == "{1, _, _}"
+#test: (BinTree/to-string U64 U64/Show (BinTree/node U64 2 (BinTree/node U64 1 (BinTree/leaf U64) (BinTree/leaf U64)) (BinTree/leaf U64))) == "{2, {1, _, _}, _}"
