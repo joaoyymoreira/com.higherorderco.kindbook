@@ -32,7 +32,7 @@ process-edge : V2 -> Bool -> (Pair V2 V2) -> Bool
 // - point: Point to check.
 // - vertices: List of polygon vertices.
 // = True if point is inside polygon, False otherwise.
-point-in-polygon : V2 -> (List V2) -> Bool
+UG/Shape/point-in-polygon : V2 -> (List V2) -> Bool
 | point #Nil = #False
 | point #Cons{v vs} =
   (point-in-polygon/go point #False (List/append V2 (#Cons{v vs}) #Cons{v #Nil}))

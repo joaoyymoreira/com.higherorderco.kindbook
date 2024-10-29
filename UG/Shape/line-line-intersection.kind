@@ -1,0 +1,39 @@
+// Checks if two line segments intersect.
+// - s1: Start point of first line.
+// - e1: End point of first line.
+// - s2: Start point of second line.
+// - e2: End point of second line.
+// = True if lines intersect, False otherwise.
+UG/Shape/line-line-intersection : V2 -> V2 -> V2 -> V2 -> Bool
+| #V2{x1 y1} #V2{x2 y2} #V2{x3 y3} #V2{x4 y4} =
+  let dx1 = (F64/sub x2 x1)
+  let dy1 = (F64/sub y2 y1)
+  let dx2 = (F64/sub x4 x3)
+  let dy2 = (F64/sub y4 y3)
+  let det = (F64/sub (F64/mul dx1 dy2) (F64/mul dx2 dy1))
+  
+  if (F64/eq det 0.0) {
+    #False
+  } else {
+    let dx3 = (F64/sub x3 x1)
+    let dy3 = (F64/sub y3 y1)
+    
+    let lambda = (F64/div 
+      (F64/add 
+        (F64/mul dy2 dx3)
+        (F64/mul (F64/sub x3 x4) dy3))
+      det)
+      
+    let gamma = (F64/div
+      (F64/add
+        (F64/mul dy1 dx3)
+        (F64/mul (F64/sub x1 x2) dy3))
+      det)
+    
+    let valid_lambda = (Bool/and (F64/gte lambda 0.0) (F64/lte lambda 1.0))
+    let valid_gamma = (Bool/and (F64/gte gamma 0.0) (F64/lte gamma 1.0))
+    (Bool/and valid_lambda valid_gamma)
+  }
+
+#test: (UG/Shape/line-line-intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 0.0 1.0) (V2/new 1.0 0.0)) == #True
+#test: (UG/Shape/line-line-intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 2.0 2.0) (V2/new 3.0 3.0)) == #False

@@ -1,0 +1,17 @@
+// Moves a Shape by a given vector.
+// - shape: The Shape to be moved.
+// - v: The vector to move the Shape by.
+// = A new Shape moved by the given vector.
+UG/Shape/move : UG/Shape -> V2 -> UG/Shape
+| #Circle{center radius} v = 
+  #Circle{
+    center: (V2/add center v)
+    radius: radius
+  }
+| #Polygon{center vertices} v = 
+  #Polygon{
+    center: (V2/add center v)
+    vertices: vertices
+  }
+
+#test: (UG/Shape/move #Circle{center: #V2{x: 0.0 y: 0.0} radius: 5.0} #V2{x: 1.0 y: 2.0}) == #Circle{center: #V2{x: 1.0 y: 2.0} radius: 5.0}
