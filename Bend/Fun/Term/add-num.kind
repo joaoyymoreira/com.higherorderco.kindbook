@@ -1,5 +1,8 @@
-// Bend/Fun/Term/add_num
-
-Bend/Fun/Term/add_num (term: Bend/Fun/Term) (n: Nat) : Bend/Fun/Term
-| term 0 = term
-| term n = (Bend/Fun/Term.#Oper Bend/Fun/Op/Op.#Add term (Bend/Fun/Term.#Num (Bend/Fun/Num/Num.#U24 n)))
+// Adds a number to a term.
+// - term: The original term.
+// - n   : The number to add.
+// = The resulting term after addition.
+Bend/Fun/Term/add-num : Bend/Fun/Term -> U64 -> Bend/Fun/Term 
+| term n with (U64/eq n 0)
+. | #True  = term
+. | #False = #Opr{#Add term #Num{#U24{n}}}

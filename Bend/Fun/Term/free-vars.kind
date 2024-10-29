@@ -1,22 +1,19 @@
-// Bend/Fun/Term/free_vars
+use Bend/Fun/Term as Term
 
-Bend/Fun/Term/free_vars (term: Bend/Fun/Term) : (List String)
-  (List/dedup (Bend/Fun/Term/free_vars/go term (BinMap/empty)))
+Term/free-vars : Term -> (List String)
+| term = (List/dedup (go term (BinMap/empty _)))
 
-Bend/Fun/Term/free_vars/go (term: Bend/Fun/Term) (scope: (BinMap Unit)) : (List String)
-| (#Var nam) scope =
-  let key = (String/hash nam)
-  if (BinMap/contains scope key) {
-    []
-  } else {
-    [nam]
-  }
+go : Term -> (BinMap Unit) -> (List String)
+| #Var{nam} scope with (BinMap/contains _ scope (String/hash nam))
+. | #True  = []
+. | #False = [nam]
 | term scope =
-  let cs = (Bend/Fun/Term/children term)
-  let add_scope = (λbnd λscope
-    let bnd_map = (List/map (λb Pair.new (String/hash b) Unit.new) bnd)
-    (BinMap/union (BinMap/from-list bnd_map) scope))
-  (List/concat (List/map (λpair
-    let bnd   = (Pair.fst pair)
-    let child = (Pair.snd pair)
-    (Bend/Fun/Term/free_vars/go child (add_scope bnd scope))) cs))
+  let cs = (Term/children term)
+  (List/concat _ (List/map _ _
+    {λ{#Pair{bnd child}: (go child (add-scope bnd scope))} : (Pair _ _) -> (List String)}
+    cs))
+
+add-scope : (List (Maybe String)) -> (BinMap Unit) -> (BinMap Unit)
+| bnd scope =
+  let bnd_map = (List/map _ _ λb #Pair{(String/hash b) #Unit} bnd)
+  (BinMap/union (BinMap/from-list bnd_map) scope)

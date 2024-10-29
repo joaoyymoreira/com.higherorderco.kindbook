@@ -1,9 +1,10 @@
 // Bend/Fun/Term/has_unscoped_diff
 
-Bend/Fun/Term/has_unscoped_diff : Bend/Fun/Term -> Bool
-  let #Pair{decls uses}  = (Bend/Fun/Term/unscoped_vars term)
+Bend/Fun/Term/has-unscoped-diff : Bend/Fun/Term -> Bool
+| term =
+  let #Pair{decls uses}  = (Bend/Fun/Term/unscoped-vars term)
   let decls = (List/map (λx Pair.new (String/hash x) x) decls)
   let uses  = (List/map (λx Pair.new (String/hash x) x) uses)
   let diff1 = (BinMap/to-list (BinMap/difference (BinMap/from-list uses) (BinMap/from-list decls)))
   let diff2 = (BinMap/to-list (BinMap/difference (BinMap/from-list decls) (BinMap/from-list uses)))
-  (Bool/or (Bool/not (List/is_nil diff1)) (Bool/not (List/is_nil diff2)))
+  (Bool/or (Bool/not (List/is-nil diff1)) (Bool/not (List/is-nil diff2)))

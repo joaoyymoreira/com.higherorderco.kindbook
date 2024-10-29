@@ -1,7 +1,7 @@
-// Bend/Fun/Term/foldr_lam
+use Bend/Fun/Term as Term
 
-Bend/Fun/Term/foldr_lam (bod: Bend/Fun/Term) (bnd: (List (Maybe String))) : Bend/Fun/Term
-  (List/foldr Bend/Fun/Term/foldr_lam/lam bod bnd)
+Term/foldr-lam : Term -> (List (Maybe String)) -> Term
+| bod bnd = (List/foldr (Maybe String) Term lam bod bnd)
 
-Bend/Fun/Term/foldr_lam/lam (bnd: (Maybe String)) (bod: Bend/Fun/Term) : Bend/Fun/Term
-  (Bend/Fun/Term.#Lam (Bend/Fun/Pattern.#Var bnd) bod)
+lam : (Maybe String) -> Term -> Term
+| a b = #Lam{#Var{a} b}

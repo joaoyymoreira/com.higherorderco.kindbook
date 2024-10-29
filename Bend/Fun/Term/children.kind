@@ -1,6 +1,12 @@
-// Bend/Fun/Term/children
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Term as Term
 
-Bend/Fun/Term/children : Bend/Fun/Term -> (List (Pair (List String) Bend/Fun/Term))
+Child : * = (Pair (List String) Term)
+
+// Returns a list of pairs, each containing a list of bound names and the corresponding child term.
+// - term: The term to get children and bindings from.
+// = A list of pairs, each containing bound names and a child ter.
+Term/children : Term -> (List (Pair (List String) Term))
 | #Var{_} = []
 | #Lnk{_} = []
 | #Num{_} = []
@@ -8,40 +14,48 @@ Bend/Fun/Term/children : Bend/Fun/Term -> (List (Pair (List String) Bend/Fun/Ter
 | #Ref{_} = []
 | #Era    = []
 | #Def{#FnDef{nam _ _ _ _} nxt} = [#Pair{[nam] nxt}]
-| #Opn{_ _ bnd bod} = [#Pair{(List/concat-maybes _ bnd) bod}]
+| #Opn{_ _ bnd bod} = [#Pair{(List/concat-maybes String bnd) bod}]
 | #Wth{_ bod}       = [#Pair{[] bod}]
 | #App{fun arg}     = [#Pair{[] fun} #Pair{[] arg}]
 | #Opr{_ fst snd}   = [#Pair{[] fst} #Pair{[] snd}]
-| #Fan{_ els}       = (List/map _ _ (λx #Pair{[] x}) els)
-| #Lst{els}         = (List/map _ _ (λx #Pair{[] x}) els)
+| #Fan{_ els}       = (List/map Term Child (λx #Pair{[] x}) els)
+| #Lst{els}         = (List/map Term Child (λx #Pair{[] x}) els)
 | #Lam{pat bod}     = [#Pair{(Bend/Fun/Pattern/binds pat) bod}]
 | #Let{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
 | #Ask{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
-| #Use{nam val nxt} = [#Pair{[] val} #Pair{(Maybe/to-list _ nam) nxt}]
+| #Use{nam val nxt} = [#Pair{[] val} #Pair{[nam] nxt}]
+
 | #Mat{bnd arg with_bnd with_arg arms} =
-  (List/concat _ [
+  (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ λ{#MatchRule{_ bndr bod}: #Pair{(List/concat-maybes _ (List/concat _ [bnd with_bnd bndr])) bod}} arms)
+    (List/map _ _ (rule-children bnd with_bnd) arms)
   ])
+
 | #Swt{bnd arg with_bnd with_arg pred arms} =
-  let #Pair{a_num a_pred} = (List/unsnoc _ arms)
-  (List/concat _ [
+  let #Pair{a_num a_pred} = (List/unsnoc Term arms)
+  (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ λx (List/concat-maybes _ (List/concat _ [bnd with_bnd])) a_num)
-    (List/map _ _ λx (List/concat-maybes _ (List/concat _ [bnd with_bnd pred])) (Maybe/to-list _ a_pred))
+    (List/map _ _ λx #Pair{(List/concat-maybes _ (List/concat _ [[bnd] with_bnd])) x} a_num)
+    (List/map _ _ λx #Pair{(List/concat-maybes _ (List/concat _ [[bnd] with_bnd [pred]])) x} (Maybe/to-list _ a_pred))
   ])
+
 | #Fld{bnd arg with_bnd with_arg arms} =
-  (List/concat _ [
+  (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ λ{#MatchRule{_ bndr bod}: #Pair{(List/concat-maybes _ (List/concat _ [bndr with_bnd bnd])) bod}} arms)
+    (List/map _ _ (rule-children bnd with_bnd) arms)
   ])
+
 | #Bnd{bnd arg cond step base} =
-  (List/concat _ [
+  (List/concat Child [
     (List/map _ _ (λx #Pair{[] x}) arg)
     [#Pair{(List/concat-maybes _ bnd) cond}
      #Pair{(List/concat-maybes _ bnd) step}
      #Pair{(List/concat-maybes _ bnd) base}]
   ])
+
+rule-children : (Maybe String) -> (List (Maybe String)) -> MatchRule -> (Pair (List String) Term)
+| bnd with_bnd #MatchRule{nam bndr bod} =
+  #Pair{(List/concat-maybes String (List/concat _ [[bnd] with_bnd bndr])) bod}

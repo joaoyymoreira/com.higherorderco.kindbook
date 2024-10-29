@@ -1,7 +1,7 @@
-// Bend/Fun/Term/foldl_app
+use Bend/Fun/Term as Term
 
-Bend/Fun/Term/foldl_app (fun: Bend/Fun/Term) (arg: (List Bend/Fun/Term)) : Bend/Fun/Term
-  (List/foldl Bend/Fun/Term/foldl_app/app fun arg)
+Term/foldl-app : Term -> (List Term) -> Term
+| fun arg = (List/foldl Term Term app fun arg)
 
-Bend/Fun/Term/foldl_app/app (acc: Bend/Fun/Term) (x: Bend/Fun/Term) : Bend/Fun/Term
-  (Bend/Fun/Term.#App acc x)
+app : Term -> Term -> Term
+| a b = #App{a b}
