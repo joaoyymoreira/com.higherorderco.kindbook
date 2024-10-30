@@ -1,0 +1,21 @@
+// A spatial data structure that recursively subdivides a 2D space into quadrants.
+// - A: Type of values stored in the tree.
+data QuadTree (A: *) {
+  // An empty node with a bounding rectangle.
+  #Empty {
+    bounds: QuadTree/Rectangle
+  }
+  // A leaf node containing a list of objects.
+  #Leaf {
+    bounds: QuadTree/Rectangle
+    objects: (List (QuadTree/Object A))
+  }
+  // An internal node with four children representing quadrants.
+  #Node {
+    bounds: QuadTree/Rectangle
+    nw: (QuadTree A)  // Northwest quadrant
+    ne: (QuadTree A)  // Northeast quadrant
+    sw: (QuadTree A)  // Southwest quadrant
+    se: (QuadTree A)  // Southeast quadrant
+  }
+}
