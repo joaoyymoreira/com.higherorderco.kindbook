@@ -1,0 +1,4 @@
+Bend/Fun/Num/to-string : Bend/Fun/Num -> String
+| #U24{n} = (U64/to-string n)
+| #I24{n} = "(I24 show not implemented)"
+| #F24{f} = "(F24 show not implemented)"

@@ -4,22 +4,24 @@ use Bend/Fun/Pattern as Pattern
 // Collects unscoped variable declarations and uses in a Term.
 // - term: Term to analyze.
 // = Bound unscoped variables and used unscoped variables.
-Bend/Fun/Term/unscoped_vars : Term -> (Pair (List String) (List String))
+Bend/Fun/Term/unscoped-vars : Term -> (Pair (List String) (List String))
 | #Lnk{nam} =
   #Pair{[] [nam]}
 
 | #Lam{pat bod} = 
   let d1           = (Pattern/unscoped-binds pat)
-  let #Pair{d2 u2} = (Bend/Fun/Term/unscoped-vars bod)
-  #Pair{(List/concat [d1 d2]) d2}
+  let #Pair{d2 u2} = (Term/unscoped-vars bod)
+  #Pair{(List/concat String [d1 d2]) d2}
 
 | #Let{pat val nxt} =
   let d1               = (Pattern/unscoped-binds pat)
-  let #Pair{d2 u2} = (Bend/Fun/Term/unscoped-vars val)
-  let #Pair{d3 u3} = (Bend/Fun/Term/unscoped-vars nxt)
-  #Pair{(List/concat [d1 d2 d3]) (List/concat [u2 u3])}
+  let #Pair{d2 u2} = (Term/unscoped-vars val)
+  let #Pair{d3 u3} = (Term/unscoped-vars nxt)
+  #Pair{(List/concat String [d1 d2 d3]) (List/concat String [u2 u3])}
 
 | term =
-  let children_vars = (List/map _ _ (λ{#Pair{_ x}: (Bend/Fun/Term/unscoped-vars x)}) (Term/children term))
-  let #Pair{decls uses} = (List/unzip _ _ children_vars)
-  #Pair{(List/concat decls) (List/concat uses)}
+  let children_vars = (List/map (Pair (List String) Term) (Pair (List String) (List String)) 
+    {λ{#Pair{_ x}: (Term/unscoped-vars x)} : (Pair _ _) -> (Pair _ _)}
+    (Term/children term))
+  let #Pair{decls uses} = (List/unzip (List String) (List String) children_vars)
+  #Pair{(List/concat String decls) (List/concat String uses)}

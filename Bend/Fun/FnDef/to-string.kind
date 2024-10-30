@@ -1,0 +1,21 @@
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+
+// Converts a FnDef to a String representation
+FnDef/to-string : FnDef -> String
+| #FnDef{nam typ chk rul src} = 
+  let chk = if chk { "" } else { "unchecked " } :: String
+  let typ  = (Bend/Fun/Type/to-string typ)
+  let rul = (String/join "\n" (List/map _ _ (show-rule nam) rul))
+  (String/concat [chk nam " : " typ "\n" rul])
+
+show-rule : String -> Rule -> String
+| nam #Rule{pats body} =
+  let pat = if (List/is-nil _ pats) {
+    ""
+  } else {
+    (String/concat [" " (String/join " " (List/map _ _ Pat/to-string pats))])
+  } :: String
+  (String/concat ["(" nam pat ") = " (Term/to-string body)])
