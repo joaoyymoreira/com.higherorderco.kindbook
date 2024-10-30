@@ -1,0 +1,34 @@
+// Checks if an object intersects with the range.
+// - A: Value type.
+// - range: Query range.
+// - obj: Object to check.
+// = True if object intersects range, False otherwise.
+QuadTree/query/go : ∀(A: *) QuadTree/Rectangle -> (QuadTree/Object A) -> Bool
+| A range obj = (QuadTree/Rectangle/intersects (QuadTree/Object/bounds A obj) range)
+
+// Queries the QuadTree for objects within a given range.
+// - A: Value type.
+// - tree: QuadTree to query.
+// - range: Query range.
+// = List of objects within the range.
+QuadTree/query : ∀(A: *) (QuadTree A) -> QuadTree/Rectangle -> (List (QuadTree/Object A))
+| A #Empty{bounds}        range = #Nil
+| A #Leaf{bounds objects} range =
+  if (QuadTree/Rectangle/intersects bounds range) {
+    (List/filter (QuadTree/Object A) (QuadTree/query/go A range) objects)
+  } else {
+    #Nil
+  }
+| A #Node{bounds nw ne sw se} range =
+  if (QuadTree/Rectangle/intersects bounds range) {
+    (List/concat (QuadTree/Object A) [
+      (QuadTree/query A nw range)
+      (QuadTree/query A ne range)
+      (QuadTree/query A sw range)
+      (QuadTree/query A se range)
+    ])
+  } else {
+    #Nil
+  }
+
+#test: (List/length (QuadTree/Object U64) (QuadTree/query U64 #Empty{#Rectangle{0.0 0.0 10.0 10.0}} #Rectangle{2.0 2.0 4.0 4.0})) == #0

@@ -1,0 +1,10 @@
+// Calculates the sum of a list of nats.
+// - xs: Input list of nats.
+// = Sum of all numbers in the list.
+List/sum : (List Nat) -> Nat
+= (List/foldr Nat Nat Nat/add #Zero)
+
+#test: (List/sum []) == #0
+#test: (List/sum [#1 #2 #3]) == #6
+#test: (List/sum [#0 #0 #0]) == #0
+#test: (List/sum [#5]) == #5

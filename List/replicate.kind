@@ -1,0 +1,13 @@
+// Replicates a value n times to create a list.
+// - A: Element type.
+// - n: Replication count.
+// - x: Value to replicate.
+// = List with n repetitions of x.
+List/replicate : ∀(A: *) Nat -> A -> (List A)
+| A #Zero    x = #Nil
+| A #Succ{n} x = #Cons{x (List/replicate A n x)}
+
+#test: (List/replicate Nat #0 #3) == #Nil
+#test: (List/replicate Nat #3 #7) == #Cons{#7 #Cons{#7 #Cons{#7 #Nil}}}
+#test: (List/replicate Bool #2 #True) == #Cons{#True #Cons{#True #Nil}}
+#test: (List/length Nat (List/replicate Nat #5 #0)) == #5

@@ -1,0 +1,19 @@
+// Finds the minimum element in a list using the Ord instance.
+// - A: Element type.
+// - ord: Ord instance for A.
+// - xs: Input list.
+// = Minimum element if non-empty, None if empty.
+List/minimum : ∀(A: *) (Ord A) -> (List A) -> (Maybe A)
+| A ord #Nil             = #None
+| A ord #Cons{head tail} = 
+  use min = λacc λy 
+    match (Ord/compare A ord y acc) {
+      #LT: y
+      _  : acc
+    }
+  #Some{(List/foldl A A min head tail)}
+
+#test: (List/minimum U64 U64/Ord []) == #None
+#test: (List/minimum U64 U64/Ord [3]) == #Some{3}
+#test: (List/minimum U64 U64/Ord [5 2 8 1 9]) == #Some{1}
+#test: (List/minimum U64 U64/Ord [10 10 10]) == #Some{10}

@@ -1,12 +1,13 @@
-// Separates a list into the initial elements and the last element.
-// - A: The type of elements in the list.
-// - xs: The input list.
-// = If the list is not empty: A pair containing:
-//   - The list of all elements except the last.
-//   - The last element wrapped in Maybe.
-//   If the list is empty: A pair of an empty list and None.
+// Separates a list into initial elements and last element.
+// - A: Input type.
+// - xs: Input list.
+// = Pair of initial elements and last element (Maybe).
 List/unsnoc : ∀(A: *) (List A) -> (Pair (List A) (Maybe A))
 | A #Nil                = #Pair{#Nil #None}
 | A #Cons{x #Nil}       = #Pair{#Nil #Some{x}}
 | A #Cons{x xs} with (List/unsnoc A xs)
 . | #Pair{init last}    = #Pair{#Cons{x init} last}
+
+#test: (List/unsnoc U64 []) == #Pair{[] #None}
+#test: (List/unsnoc U64 [1]) == #Pair{[] #Some{1}}
+#test: (List/unsnoc U64 [1 2 3]) == #Pair{[1 2] #Some{3}}

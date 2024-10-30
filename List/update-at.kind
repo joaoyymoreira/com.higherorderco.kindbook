@@ -1,0 +1,16 @@
+// Updates an element at a specific index in a list.
+// - A: Element type.
+// - xs: Input list.
+// - n: Index to update.
+// - f: Function to apply.
+// = Updated list or original if n is out of bounds.
+List/update-at : ∀(A: *) (List A) -> Nat -> (A -> A) -> (List A)
+| A #Nil             n f = #Nil
+| A #Cons{head tail} #Zero    f = #Cons{(f head) tail}
+| A #Cons{head tail} #Succ{n} f = #Cons{head (List/update-at A tail n f)}
+
+#test: (List/update-at U64 [] #0 (λx (+ x 1))) == []
+#test: (List/update-at U64 [1 2 3] #0 (λx (+ x 1))) == [2 2 3]
+#test: (List/update-at U64 [1 2 3] #1 (λx (+ x 1))) == [1 3 3]
+#test: (List/update-at U64 [1 2 3] #2 (λx (+ x 1))) == [1 2 4]
+#test: (List/update-at U64 [1 2 3] #3 (λx (+ x 1))) == [1 2 3]

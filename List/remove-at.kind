@@ -1,0 +1,15 @@
+// Removes the element at the specified index from the list.
+// - A: Element type.
+// - xs: Input list.
+// - n: Index to remove.
+// = New list with element at index n removed, or original list if n is out of bounds.
+List/remove-at : ∀(A: *) (List A) -> Nat -> (List A)
+| A #Nil             n        = #Nil
+| A #Cons{head tail} #Zero    = tail
+| A #Cons{head tail} #Succ{n} = #Cons{head (List/remove-at A tail n)}
+
+#test: (List/remove-at U64 [1 2 3] #0) == [2 3]
+#test: (List/remove-at U64 [1 2 3] #1) == [1 3]
+#test: (List/remove-at U64 [1 2 3] #2) == [1 2]
+#test: (List/remove-at U64 [1 2 3] #3) == [1 2 3]
+#test: (List/remove-at U64 [] #0) == []

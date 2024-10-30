@@ -3,8 +3,8 @@
 // - n: The divisor.
 // = The quotient of the division.
 Nat/div : Nat -> Nat -> Nat
-| m #Zero    = #Zero  // Division by zero returns zero.
-| m #Succ{n} = (Nat/div/go n m n #Zero)
+| m #Zero    = #0  // Division by zero returns zero.
+| m #Succ{n} = (Nat/div/go n m n #0)
 
 // Helper function 'go' for Euclidean division.
 //
@@ -28,11 +28,11 @@ Nat/div/go : Nat -> Nat -> Nat -> Nat -> Nat
 | m #Succ{n} #Zero    k = (Nat/div/go m n m (#Succ{k}))
 | m #Succ{n} #Succ{j} k = (Nat/div/go m n j k)
 
-#test: (Nat/div #Zero #1) == #Zero
+#test: (Nat/div #0 #1) == #0
 #test: (Nat/div #5 #1) == #5
 #test: (Nat/div #5 #2) == #2
+#test: (Nat/div #5 #0) == #0
 #test: (Nat/div #10 #3) == #3
 #test: (Nat/div #15 #5) == #3
-#test: (Nat/div (#100) (#10)) == #10
-#test: (Nat/div #5 #Zero) == #Zero
+#test: (Nat/div #100 #10) == #10
 #test: (Nat/add (Nat/mul (Nat/div #15 #4) #4) (Nat/mod #15 #4)) == #15

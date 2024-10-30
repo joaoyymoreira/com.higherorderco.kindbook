@@ -1,0 +1,14 @@
+// Splits a list at the first occurrence of an element.
+// - A: Input type.
+// - eq: Equality function.
+// - x: Element to split at.
+// - xs: Input list.
+// = Pair of lists: before and after split (excluding split element).
+List/split-at-element : ∀(A: *) (A -> A -> Bool) -> A -> (List A) -> (Pair (List A) (List A))
+| A eq x xs = (List/split-first A (eq x) xs)
+
+#test: (List/split-at-element U64 U64/eq 3 [1 2 3 4 5]) == #Pair{[1 2] [4 5]}
+#test: (List/split-at-element U64 U64/eq 1 [1 2 3 4 5]) == #Pair{[] [2 3 4 5]}
+#test: (List/split-at-element U64 U64/eq 5 [1 2 3 4 5]) == #Pair{[1 2 3 4] []}
+#test: (List/split-at-element U64 U64/eq 6 [1 2 3 4 5]) == #Pair{[1 2 3 4 5] []}
+#test: (List/split-at-element U64 U64/eq 0 []) == #Pair{[] []}

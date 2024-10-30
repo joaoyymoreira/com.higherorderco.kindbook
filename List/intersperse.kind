@@ -1,0 +1,14 @@
+// Intersperses a value between all other values of a list.
+// - A: Element type.
+// - x: Value to intersperse.
+// - xs: Input list.
+// = New list with x inserted between all elements of xs.
+List/intersperse : ∀(A: *) A -> (List A) -> (List A)
+| A x #Nil                    = #Nil
+| A x #Cons{y #Nil}           = #Cons{y #Nil}
+| A x #Cons{y #Cons{z tail}}  = #Cons{y #Cons{x (List/intersperse A x #Cons{z tail})}}
+
+#test: (List/intersperse U64 0 #Nil) == #Nil
+#test: (List/intersperse U64 0 [1]) == [1]
+#test: (List/intersperse U64 0 [1 2 3]) == [1 0 2 0 3]
+#test: (List/intersperse String "," ["a" "b" "c"]) == ["a" "," "b" "," "c"]

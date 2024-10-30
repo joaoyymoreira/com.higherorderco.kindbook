@@ -1,0 +1,14 @@
+// Subdivides a rectangle into four equal quadrants.
+// - r: The rectangle to subdivide.
+// = A pair of pairs containing the four quadrants (NE,NW),(SW,SE).
+QuadTree/Rectangle/subdivide : QuadTree/Rectangle -> (Pair (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle))
+| #Rectangle{min-x min-y max-x max-y} =
+  let mid-x = (F64/div (F64/add min-x max-x) 2.0)
+  let mid-y = (F64/div (F64/add min-y max-y) 2.0)
+  #Pair{
+    fst: #Pair{fst: #Rectangle{mid-x mid-y max-x max-y} snd: #Rectangle{min-x mid-y mid-x max-y}}
+    snd: #Pair{fst: #Rectangle{min-x min-y mid-x mid-y} snd: #Rectangle{mid-x min-y max-x mid-y}}
+  }
+
+#test: (QuadTree/Rectangle/subdivide #Rectangle{0.0 0.0 4.0 4.0}) == #Pair{fst: #Pair{fst: #Rectangle{2.0 2.0 4.0 4.0} snd: #Rectangle{0.0 2.0 2.0 4.0}} snd: #Pair{fst: #Rectangle{0.0 0.0 2.0 2.0} snd: #Rectangle{2.0 0.0 4.0 2.0}}}
+#test: (QuadTree/Rectangle/subdivide #Rectangle{-2.0 -2.0 2.0 2.0}) == #Pair{fst: #Pair{fst: #Rectangle{0.0 0.0 2.0 2.0} snd: #Rectangle{-2.0 0.0 0.0 2.0}} snd: #Pair{fst: #Rectangle{-2.0 -2.0 0.0 0.0} snd: #Rectangle{0.0 -2.0 2.0 0.0}}}

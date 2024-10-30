@@ -1,0 +1,9 @@
+// Represents different collision behaviors.
+data Collidable {
+  // Cannot intersect with other bodies
+  #Hard
+  // Can intersect and takes effects from collision
+  #TakesEffects
+  // Can intersect and cannot take effects from collision
+  #Untouchable
+}

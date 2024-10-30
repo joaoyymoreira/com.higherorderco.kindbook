@@ -1,0 +1,18 @@
+// Splits a list into chunks, separated by elements that satisfy a predicate.
+// Each chunk starts with an element that satisfies the predicate, except for the first chunk.
+// - A: Element type.
+// - pred: Predicate function.
+// - xs: Input list.
+// = List of list chunks.
+List/split-chunks : ∀(A: *) (A -> Bool) -> (List A) -> (List (List A))
+| A pred #Nil                         = []
+| A pred #Cons{head tail} with #Pair{(List/split-chunks A pred tail) (pred head)} :: (Pair (List (List A)) Bool)
+. | #Pair{#Nil                #False} = #Cons{#Cons{head []} []}
+. | #Pair{#Nil                #True}  = #Cons{[] #Cons{#Cons{head []} []}}
+. | #Pair{#Cons{chunk chunks} #False} = #Cons{#Cons{head chunk} chunks}
+. | #Pair{#Cons{chunk chunks} #True}  = #Cons{[] #Cons{#Cons{head chunk} chunks}}
+
+#test: (List/split-chunks U64 (λx (U64/to-bool (== x 0))) [1 2 0 3 4 0 5]) == [[1 2] [0 3 4] [0 5]]
+#test: (List/split-chunks U64 (λx (U64/to-bool (== x 0))) []) == []
+#test: (List/split-chunks U64 (λx (U64/to-bool (== x 0))) [0 1 2 0 3]) == [[] [0 1 2] [0 3]]
+#test: (List/split-chunks U64 (λx (U64/to-bool (== x 0))) [1 2 3]) == [[1 2 3]]

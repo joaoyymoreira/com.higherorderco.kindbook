@@ -1,0 +1,12 @@
+// Splits a list into two parts at the specified index.
+// - A: Input type.
+// - n: Split index.
+// - xs: Input list.
+// = Pair of lists: first n elements and the rest.
+List/split-at : ∀(A: *) Nat -> (List A) -> (Pair (List A) (List A))
+| A n xs = #Pair{(List/take A n xs) (List/drop A n xs)}
+
+#test: (List/split-at U64 #0 [1 2 3]) == #Pair{[] [1 2 3]}
+#test: (List/split-at U64 #2 [1 2 3]) == #Pair{[1 2] [3]}
+#test: (List/split-at U64 #5 [1 2 3]) == #Pair{[1 2 3] []}
+#test: (List/split-at U64 #3 []) == #Pair{[] []}

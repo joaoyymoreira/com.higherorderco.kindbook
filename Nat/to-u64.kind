@@ -1,0 +1,10 @@
+// Converts a nat to a U64.
+// - n: The nat to convert.
+// = The U64 representation of the input nat.
+Nat/to-u64 : Nat -> U64
+| n = (U64/from-nat n)
+
+#test: (Nat/to-u64 #0) == 0
+#test: (Nat/to-u64 #1) == 1
+#test: (Nat/to-u64 #5) == 5
+#test: (Nat/to-u64 #10) == 10

@@ -1,0 +1,25 @@
+// Removes duplicates from a list.
+// - A: Element type.
+// - ord: Ord instance for A.
+// - xs: Input list.
+// = New list with duplicates removed.
+List/dedup : ∀(A: *) (Ord A) -> (List A) -> (List A)
+| A ord xs = (List/dedup/go A ord xs (OrdSet/empty A))
+
+// Helper function for List/dedup.
+// - A: Element type.
+// - ord: Ord instance for A.
+// - xs: Input list.
+// - set: Accumulator set.
+// = New list with duplicates removed.
+List/dedup/go : ∀(A: *) (Ord A) -> (List A) -> (OrdSet A) -> (List A)
+| A ord #Nil             set = #Nil
+| A ord #Cons{head tail} set with (OrdSet/contains A ord head set) 
+. | #True  = (List/dedup/go A ord tail set)
+. | #False = #Cons{head (List/dedup/go A ord tail (OrdSet/insert A ord head set))}
+
+
+#test: (List/dedup U64 U64/Ord [1 2 3 2 1]) == [1 2 3]
+#test: (List/dedup U64 U64/Ord []) == []
+#test: (List/dedup U64 U64/Ord [1 1 1 1]) == [1]
+#test: (List/dedup U64 U64/Ord [1 2 3 4 5]) == [1 2 3 4 5]
