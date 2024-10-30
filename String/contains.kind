@@ -1,0 +1,19 @@
+// Checks if one string contains another string.
+// - str: String to search in.
+// - substr: Substring to search for.
+// = True if str contains substr, False otherwise.
+String/contains : String -> String -> Bool
+| str #Nil    = #True
+| #Nil substr = #False
+| str substr with (String/starts-with str substr)
+. | #True  = #True
+. | #False = (String/contains (String/tail str) substr)
+
+#test: (String/contains "hello" "")      == #True
+#test: (String/contains "hello" "h")     == #True
+#test: (String/contains "hello" "he")    == #True
+#test: (String/contains "hello" "llo")   == #True
+#test: (String/contains "hello" "hello") == #True
+#test: (String/contains "hello" "world") == #False
+#test: (String/contains "" "")           == #True
+#test: (String/contains "" "a")          == #False
