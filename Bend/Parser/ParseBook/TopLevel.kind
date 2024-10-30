@@ -1,0 +1,5 @@
+// Represents top-level definitions in a parsed book.
+data Bend/Parser/ParseBook/TopLevel {
+  #FunDef  { def: Bend/Fun/FnDef }
+  #TypeDef { typ: (Pair Bend/Fun/Adt (List Bend/Fun/Adt/Ctr)) }
+}
