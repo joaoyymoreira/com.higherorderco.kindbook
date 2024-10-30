@@ -1,5 +1,5 @@
 Bend/Fun/Pattern/to-string : Bend/Fun/Pattern -> String
-| #Var{nam}     = (Bend/Fun/show-bnd nam)
+| #Var{nam}     = (Bend/Fun/bnd-to-string nam)
 | #Chn{nam}     = (String/append "$" nam)
 | #Fan #Tup els = (String/concat ["(" (String/join ", " (List/map _ _ Bend/Fun/Pattern/to-string els)) ")"])
 | #Fan #Dup els = (String/concat ["{" (String/join " " (List/map _ _ Bend/Fun/Pattern/to-string els)) "}"])

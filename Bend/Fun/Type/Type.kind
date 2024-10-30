@@ -1,15 +1,17 @@
+use Bend/Fun/Type as Type
+
 // Types of terms and functions in Bend.
 data Bend/Fun/Type {
   #Any
   #Hol
   #Var{ nam: String }
-  #Arr{ dom: Bend/Fun/Type cod: Bend/Fun/Type }
-  #Ctr{ nam: String  arg: (List Bend/Fun/Type) }
-  #Tup{ els: (List Bend/Fun/Type) }
+  #Arr{ dom: Type   cod: Type }
+  #Ctr{ nam: String arg: (List Type) }
+  #Tup{ els: (List Type) }
   #U24
   #I24
   #F24
   #Non
-  #Num{ typ: Bend/Fun/Type }
-  #Ind{ typ: Bend/Fun/Type }
+  #Num{ typ: Type }
+  #Int{ typ: Type }
 }

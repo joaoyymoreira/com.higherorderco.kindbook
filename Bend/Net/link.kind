@@ -1,6 +1,6 @@
 Bend/Net/link : Bend/Net -> Bend/Net/Port -> Bend/Net/Port -> (Maybe Bend/Net)
 | net a b = do Maybe {
-  ask a = (Bend/Net/set_port net a b)
-  ask b = (Bend/Net/set_port net b a)
+  ask net = (Bend/Net/set-port net a b)
+  ask net = (Bend/Net/set-port net b a)
   #Some{net}
 }

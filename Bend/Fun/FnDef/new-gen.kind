@@ -1,6 +1,8 @@
-// Bend/Fun/FnDef/new_gen
-
-Bend/Fun/FnDef/new_gen (name: String) (rules: (List Bend/Fun/Rule/Rule)) (source: Bend/Source/Source) (check: Bool) : Bend/Fun/FnDef/FnDef
-  let kind = (Bool/if (Bend/Source/is_builtin source) Bend/Source/SourceKind.#Builtin Bend/Source/SourceKind.#Generated)
-  let source = (Bend/Source/Source.new (Bend/Source/Source.file source) (Bend/Source/Source.span source) kind)
-  (Bend/Fun/FnDef/FnDef.#FnDef name Bend/Fun/Type/Type.#Hole check rules source)
+// Creates a new function definition with generated source.
+Bend/Fun/FnDef/new-gen : String -> (List Bend/Fun/Rule) -> Bend/Source -> Bool -> Bend/Fun/FnDef
+| nam rul #Source{file span kind} chk =
+  let kind = match kind {
+    #Builtin: #Builtin
+    #_{_}   : #Generated
+  } :: Bend/Source/Kind
+  #FnDef{nam #Hol chk rul #Source{file span kind}}

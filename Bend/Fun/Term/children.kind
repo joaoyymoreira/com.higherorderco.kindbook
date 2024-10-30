@@ -23,7 +23,7 @@ Term/children : Term -> (List (Pair (List String) Term))
 | #Lam{pat bod}     = [#Pair{(Bend/Fun/Pattern/binds pat) bod}]
 | #Let{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
 | #Ask{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
-| #Use{nam val nxt} = [#Pair{[] val} #Pair{[nam] nxt}]
+| #Use{nam val nxt} = [#Pair{[] val} #Pair{(Maybe/to-list _ nam) nxt}]
 
 | #Mat{bnd arg with_bnd with_arg arms} =
   (List/concat Child [

@@ -1,5 +1,5 @@
 Bend/Net/new : String -> Bend/Net
-| name =
-  let rot = #Node {#Port{0 2} #Port{0 1} #Port{0 0} #Rot} 
-  let map = (BinMap/set _ (BinMap/empty _) (Nat/to-bits 0) rot)
-  #Net{map 1 name}
+| nam =
+  let rot = #Node {#Port{0 2} #Port{0 1} #Port{0 0} #Rot} :: Bend/Net/Node
+  let map = (BinMap/set _ (BinMap/empty _) (U64/to-bits 0) rot)
+  #Net{nam map 1}

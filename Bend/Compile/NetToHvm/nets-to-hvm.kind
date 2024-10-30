@@ -13,9 +13,8 @@ Bend/Compile/NetToHvm/nets-to-hvm : (List Bend/Net) -> (Bend Bend/Hvm/Book)
 
 go : (List Bend/Net) -> (Bend (List (Pair Bits Bend/Hvm/Net)))
 | #Nil = #Done{#Nil}
-| #Cons{#Net{nam nod len} nets} = do Bend {
-  let net  = #Net{nam nod len} :: Bend/Net
+| #Cons{net@#Net{nam nod len} nets} = do Bend {
   ask net  = (Bend/Compile/NetToHvm/net-to-hvm net)
   ask nets = (go nets)
-  #Done{#Cons{#Pair{(String/hash name) net} nets}}
+  #Done{#Cons{#Pair{(String/hash nam) net} nets}}
 }
