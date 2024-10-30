@@ -10,20 +10,20 @@ use Bend/Fun/Term as Term
 data Bend/Fun/Term {
   #Var{ nam: String }
   #Lnk{ nam: String }
-  #Lam{ pat: Pat     bod: Term}
-  #Let{ pat: Pat     val: Term nxt: Term }
-  #Wth{ typ: String  bod: Term}
-  #Ask{ pat: Pat     val: Term nxt: Term }
-  #Use{ nam: String  val: Term nxt: Term }
-  #App{ fun: Term    arg: Term }
-  #Fan{ fan: FanKind els: (List Term) }
+  #Lam{ pat: Pat            bod: Term}
+  #Let{ pat: Pat            val: Term nxt: Term }
+  #Wth{ typ: String         bod: Term}
+  #Ask{ pat: Pat            val: Term nxt: Term }
+  #Use{ nam: (Maybe String) val: Term nxt: Term }
+  #App{ fun: Term           arg: Term }
+  #Fan{ fan: FanKind        els: (List Term) }
   #Num{ val: Num }
   #Str{ val: String }
   #Lst{ els: (List Term) }
   #Opr{ opr: Op fst: Term snd: Term }
-  #Mat{ bnd: (Maybe String) arg: Term with-bnd: (List (Maybe String)) with-arg: (List Term) arms: (List MatchRule) }
-  #Swt{ bnd: (Maybe String) arg: Term with-bnd: (List (Maybe String)) with-arg: (List Term) pred: (Maybe String) arms: (List Term) }
-  #Fld{ bnd: (Maybe String) arg: Term with-bnd: (List (Maybe String)) with-arg: (List Term) arms: (List MatchRule) }
+  #Mat{ bnd: (Maybe String) arg: Term with_bnd: (List (Maybe String)) with_arg: (List Term) arms: (List MatchRule) }
+  #Swt{ bnd: (Maybe String) arg: Term with_bnd: (List (Maybe String)) with_arg: (List Term) pred: (Maybe String) arms: (List Term) }
+  #Fld{ bnd: (Maybe String) arg: Term with_bnd: (List (Maybe String)) with_arg: (List Term) arms: (List MatchRule) }
   #Bnd{ bnd: (List (Maybe String)) arg: (List Term) cond: Term step: Term base: Term }
   #Opn{ typ: String var: (Maybe String) bnd: (List (Maybe String)) bod: Term }
   #Ref{ nam: String }

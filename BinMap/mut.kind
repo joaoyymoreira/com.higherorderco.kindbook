@@ -1,0 +1,16 @@
+// Applies a function to a single element in the BinMap.
+// - A: Value type.
+// - m: BinMap to modify.
+// - k: Bits key of the element to modify.
+// - f: Function to apply to the element.
+// = New BinMap with the function applied to the specified element.
+BinMap/mut : ∀(A: *) (BinMap A) -> Bits -> (A -> A) -> (BinMap A)
+| A #Node{val l r} #E     f = #Node{(Maybe/map A A f val) l r}
+| A #Node{val l r} #O{k}  f = #Node{val (BinMap/mut A l k f) r}
+| A #Node{val l r} #I{k}  f = #Node{val l (BinMap/mut A r k f)}
+| A #Leaf           k     f = #Leaf
+
+#test: (BinMap/mut U64 (BinMap/set U64 #Leaf #E 1) #E (λx (+ x 1))) == (BinMap/set U64 #Leaf #E 2)
+#test: (BinMap/mut U64 (BinMap/set U64 #Leaf #O{#E} 1) #O{#E} (λx (+ x 1))) == (BinMap/set U64 #Leaf #O{#E} 2)
+#test: (BinMap/mut U64 (BinMap/set U64 #Leaf #I{#E} 1) #I{#E} (λx (+ x 1))) == (BinMap/set U64 #Leaf #I{#E} 2)
+#test: (BinMap/mut U64 #Leaf #E (λx (+ x 1))) == #Leaf

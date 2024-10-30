@@ -1,0 +1,8 @@
+// Represents a parsed book containing function definitions, ADTs, and constructors.
+data Bend/Parser/ParseBook {
+  #ParseBook {
+    fun_defs : (BinMap Bend/Fun/FnDef)
+    adts     : (BinMap Bend/Fun/Adt)
+    ctrs     : (BinMap Bend/Fun/Adt/Ctr)
+  }
+}

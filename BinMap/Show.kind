@@ -1,0 +1,12 @@
+// Provides an instance of the Show trait for BinMap.
+// - A: Value type.
+// - show: Show instance for A.
+// = Show instance for BinMap A.
+BinMap/Show : ∀(A: *) ∀(show: (Show A)) (Show (BinMap A))
+| A show = #Show{
+  to-string: λmap (BinMap/to-string A show map)
+}
+
+#test: (Show/to-string (BinMap U64) (BinMap/Show U64 U64/Show) #Leaf) == "_"
+#test: (Show/to-string (BinMap U64) (BinMap/Show U64 U64/Show) (#Node{#None #Leaf #Leaf})) == "data[_ _]"
+#test: (Show/to-string (BinMap U64) (BinMap/Show U64 U64/Show) (#Node{#Some{42} #Leaf #Leaf})) == "#42[_ _]"

@@ -1,0 +1,19 @@
+// Applies a monadic function to each value in the BinMap.
+// - M: Monad type constructor.
+// - m: Monad instance for M.
+// - A: Input type.
+// - B: Output type.
+// - f: Function to apply.
+// - bm: BinMap to map over.
+// = New BinMap with the function applied to all values.
+BinMap/mmap
+: ∀(M: ∀(A: *) *)
+  ∀(m: (Monad M))
+  ∀(A: *)
+  ∀(B: *)
+  ∀(f: A -> (M B))
+  (BinMap A) -> (M (BinMap B))
+| M m A B f bm = (BinTree/mmap M m (Maybe A) (Maybe B) (Maybe/mmap M m A B f) bm)
+
+#test: (BinMap/mmap Maybe Maybe/Monad U64 Bool (λx (Maybe/pure Bool (Bool/not (U64/to-bool x)))) (BinMap/empty U64)) == (Maybe/pure (BinMap Bool) (BinMap/empty Bool))
+#test: (BinMap/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 (+ x 1))) (BinMap/insert U64 #Pair{#O{#E} 42} (BinMap/empty U64))) == (Maybe/pure (BinMap U64) (BinMap/insert U64 #Pair{#O{#E} 43} (BinMap/empty U64)))

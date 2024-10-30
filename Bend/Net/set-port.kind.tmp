@@ -1,9 +1,9 @@
 // Sets the value of a port in a net
 Bend/Net/set-port : Bend/Net -> Bend/Net/Port -> Bend/Net/Port -> (Maybe Bend/Net)
-| #Net{nod len nam} #Port{a_n a_s} b = do Maybe {
-  let key = (Nat/to-bits a_n)
+| #Net{nam nod len} #Port{a_n a_s} b = do Maybe {
+  let key = (U64/to-bits a_n)
   ask a   = (BinMap/get _ nod key)
   ask a   = (Bend/Net/Node/set a a_s b)
   let nod = (BinMap/set _ nod key a)
-  #Some{#Net{nod len nam}}
+  #Some{#Net{nam nod len}}
 }

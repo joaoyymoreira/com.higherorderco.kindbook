@@ -1,5 +1,0 @@
-// Bend/Fun/show_bnd
-
-Bend/Fun/show_bnd (name: (Maybe String)) : String
-| #None     = "*"
-| #Some nam = nam

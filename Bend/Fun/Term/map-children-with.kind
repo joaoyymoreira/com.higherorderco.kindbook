@@ -1,18 +1,29 @@
-// Bend/Fun/Term/map-children_with
+use Bend/Fun/Term as Term
 
-Bend/Fun/Term/map-children_with <S: Type> (f: (List String) -> Bend/Fun/Term -> S -> (Pair Bend/Fun/Term S)) (t: Bend/Fun/Term) (s: S) : (Pair Bend/Fun/Term S)
-  ((Bend/Fun/Term/mmap-children (Monad.state S) f t) s)
+Term/map-children-with :
+  ∀(S: *) ((List String) -> Term -> S -> (Pair Term S)) -> Term -> (S -> (Pair Term S))
+| S f t = λs
+  let r = (Term/mmap-children
+            {λA S -> (Pair A S) : * -> *}
+            (monad S)
+            f
+            t) :: S -> (Pair Term S)
+  (r s)
 
-// Assuming State monad is defined elsewhere
-// If not, you might need to define it:
 
-// Monad/state <S: Type> : (Monad (λx S -> (Pair x S)))
-//   (Monad.new
-//     (λx λs Pair.new x s)
-//     (λma λf λs
-//       let pair = (ma s)
-//       let a    = (Pair.fst pair)
-//       let s    = (Pair.snd pair)
-//       (f a s)
-//     )
-//   )
+State : ∀(S: *) * -> *
+| S = λA S -> (Pair A S)
+
+monad: ∀(S: *) (Monad (State S))
+| S = #Monad {
+  pure: (pure S)
+  bind: (bind S)
+}
+
+pure : ∀(S: *) ∀(A: *) A -> (State S A)
+| S A x s = #Pair{x s}
+
+bind : ∀(S: *) ∀(A: *) ∀(B: *) (State S A) -> (A -> (State S B)) -> (State S B)
+| S A B m f s =
+  let #Pair{a s} = (m s)
+  (f a s)

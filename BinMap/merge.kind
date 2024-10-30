@@ -1,0 +1,12 @@
+// Merges two BinMaps, favoring the second when both have a value.
+// - A: Value type.
+// - m1: 1st BinMap.
+// - m2: 2nd BinMap.
+// = New BinMap with combined values.
+BinMap/merge : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
+| A m1 m2 = (BinTree/merge (Maybe A) (Maybe A) (Maybe A) (λx x) (λx x) (λx λy y) m1 m2)
+
+#test: (BinMap/merge U64 (BinMap/empty U64) (BinMap/empty U64)) == (BinMap/empty U64)
+#test: (BinMap/merge U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)) (BinMap/empty U64)) == (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64))
+#test: (BinMap/merge U64 (BinMap/empty U64) (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/empty U64))) == (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/empty U64))
+#test: (BinMap/merge U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)) (BinMap/insert U64 #Pair{#O{#E} 3} (BinMap/empty U64))) == (BinMap/insert U64 #Pair{#O{#E} 3} (BinMap/empty U64))

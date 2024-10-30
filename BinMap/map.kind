@@ -1,0 +1,12 @@
+// Applies a function to each value in the BinMap.
+// - A: Input type.
+// - B: Output type.
+// - f: Function to apply to each value.
+// - bm: Input BinMap.
+// = New BinMap with function applied to all values.
+BinMap/map : ∀(A: *) ∀(B: *) (A -> B) -> (BinMap A) -> (BinMap B)
+| A B f bm = (BinTree/map (Maybe A) (Maybe B) (Maybe/map A B f) bm)
+
+#test: (BinMap/map U64 U64 (λx (+ x 1)) (BinMap/empty U64)) == (BinMap/empty U64)
+#test: (BinMap/map U64 U64 (λx (* x 2)) (BinMap/insert U64 #Pair{#E 3} (BinMap/empty U64))) == (BinMap/insert U64 #Pair{#E 6} (BinMap/empty U64))
+#test: (BinMap/to-list U64 (BinMap/map U64 U64 (λx (+ x 10)) (BinMap/insert U64 #Pair{#O{#E} 5} (BinMap/insert U64 #Pair{#E 3} (BinMap/empty U64))))) == [#Pair{#E 13} #Pair{#O{#E} 15}]

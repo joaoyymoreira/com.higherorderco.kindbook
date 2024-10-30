@@ -1,5 +1,5 @@
 // Represents different collision behaviors.
-data Collidable {
+data UG/Collision/Collidable {
   // Cannot intersect with other bodies
   #Hard
   // Can intersect and takes effects from collision

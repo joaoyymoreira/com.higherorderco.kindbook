@@ -7,7 +7,7 @@
 // - yz: Proof that y is equal to z.
 // = Proof that x is equal to z.
 Equal/trans : ∀(A: *) ∀(x: A) ∀(y: A) ∀(z: A) (Equal A x y) -> (Equal A y z) -> (Equal A x z)
-| A x y z #Refl #Refl = ?a
+| A x y z #Refl #Refl = #Refl
 
 #test: (Equal/trans Nat #0 #0 #0 #Refl #Refl) == #Refl
 #test: (Equal/trans Bool #True #True #True #Refl #Refl) == #Refl

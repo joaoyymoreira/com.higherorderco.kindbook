@@ -1,4 +1,0 @@
-// Creates an empty OrdMap.
-// = An empty OrdMap.
-OrdMap/empty : ∀(K: *) ∀(V: *) (OrdMap K V)
-| K V = (OrdTree/empty K V)

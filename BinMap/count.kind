@@ -1,0 +1,13 @@
+// Counts the number of elements in the BinMap.
+// - A: Value type.
+// - m: The BinMap to count elements in.
+// = The number of elements (non-None values) in the BinMap.
+BinMap/count : ∀(A: *) (BinMap A) -> Nat
+| A #Leaf                    = #Zero
+| A #Node{#None     left right} = (Nat/add (BinMap/count A left) (BinMap/count A right))
+| A #Node{#Some{_}  left right} = #Succ{(Nat/add (BinMap/count A left) (BinMap/count A right))}
+
+#test: (BinMap/count U64 (BinMap/empty U64)) == #0
+#test: (BinMap/count U64 #Node{#Some{1} #Leaf #Leaf}) == #1
+#test: (BinMap/count U64 #Node{#None #Node{#Some{2} #Leaf #Leaf} #Leaf}) == #1
+#test: (BinMap/count U64 #Node{#Some{1} #Node{#Some{2} #Leaf #Leaf} #Node{#Some{3} #Leaf #Leaf}}) == #3

@@ -1,8 +1,8 @@
-// Bend/Fun/Book/new
-
-Bend/Fun/Book/new : Bend/Fun/Book/Book
-  #Book{
-    defs: (BinMap/new)
-    adts: (BinMap/new)
-    ctrs: (BinMap/new)
+//Creates a new empty Book.
+//= An empty Book with no function definitions.
+Bend/Fun/Book/new : Bend/Fun/Book
+= #Book{
+    defs: (BinMap/empty _)
+    adts: (BinMap/empty _)
+    ctrs: (BinMap/empty _)
   }

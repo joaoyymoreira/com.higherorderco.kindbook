@@ -1,2 +1,2 @@
 Bend : * -> *
-= λT (Result T String)
+| A = (Result A String)

@@ -1,0 +1,13 @@
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Term as Term
+
+// Converts a MatchRule to a String representation.
+// - term_to_string: Function to convert a Term to a String.
+// - rule: The MatchRule to convert.
+// = The String representation of the MatchRule.
+MatchRule/to-string : MatchRule -> String
+| #MatchRule{nam bnd bod} =
+  let bnd = (String/join " " (List/map _ _ Bend/Fun/bnd-to-string bnd))
+  let bnd = if (String/is-empty bnd) { "" } else { (String/append " " bnd) } :: String
+  let nam = (Maybe/run _ "*" nam)
+  (String/concat [nam bnd ": " (Term/to-string bod)])

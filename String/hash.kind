@@ -16,22 +16,10 @@ fxhash-step : U64 -> U64 -> U64
   let hash = (* hash seed)
   hash
 
-
-// Test empty string
 #test : (String/hash "") == (U64/to-bits 0)
-
-// Test single character strings
 #test : (Bits/eq (String/hash "a") (String/hash "")) == #False
 #test : (Bits/eq (String/hash "a") (String/hash "z")) == #False
-
-// Test short strings
 #test : (Bits/eq (String/hash "hello") (String/hash "world")) == #False
-
-// Test case sensitivity
 #test : (Bits/eq (String/hash "Hello") (String/hash "hello")) == #False
-
-// Test different strings with same length
 #test : (Bits/eq (String/hash "test1") (String/hash "test2")) == #False
-
-// Test strings with repeated characters
 #test : (Bits/eq (String/hash "aaaa") (String/hash "aaa") ) == #False

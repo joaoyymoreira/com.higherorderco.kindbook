@@ -1,0 +1,6 @@
+// Monoid instance for String
+String/Monoid : (Monoid String)
+= #New{
+  id: ""
+  op: String/append
+}
