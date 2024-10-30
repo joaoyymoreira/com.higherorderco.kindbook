@@ -1,3 +1,21 @@
+main : (IO Unit)
+= do IO {
+  ask (IO/print "hello")
+  ask (IO/print "world!")
+  ask x = (IO/swap 10 123)
+  ask y = (IO/swap 10 420)
+  ask z = (IO/swap 10 777)
+  ask (IO/print (String/join "" ["x: " (U64/to-string x)]))
+  ask (IO/print (String/join "" ["y: " (U64/to-string y)]))
+  ask (IO/print (String/join "" ["z: " (U64/to-string z)]))
+  ret #Unit
+}
+
+
+
+
+
+
 //Main : ∀(str: String) Char
 //= λstr match str {
   //#Cons{h t}: h
@@ -7,10 +25,10 @@
 
 
 
-main : ∀(b: Bool) U64
-= λb
-  let x = match b { #True: 0 #False: 1 } :: U64
-  x
+//main : ∀(b: Bool) U64
+//= λb
+  //let x = match b { #True: 0 #False: 1 } :: U64
+  //x
 
 
 

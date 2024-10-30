@@ -1,0 +1,2 @@
+IO/prompt : String -> (IO String)
+= ?IO_PROMPT

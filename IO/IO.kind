@@ -1,11 +1,2 @@
-// Represents IO operations.
-// - A: The type of the result.
-data IO (A: *) {
-  #Print{
-    text: String
-    then: Unit -> (IO A)
-  } : (IO A)
-  #Return{
-    value: A
-  } : (IO A)
-}
+IO : * -> *
+= ?IO

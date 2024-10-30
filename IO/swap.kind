@@ -1,0 +1,2 @@
+IO/swap : ∀(key: U64) ∀(val: U64) (IO U64)
+= ?IO_SWAP

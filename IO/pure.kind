@@ -1,0 +1,2 @@
+IO/pure : ∀(A: *) A -> (IO A)
+= ?IO_PURE

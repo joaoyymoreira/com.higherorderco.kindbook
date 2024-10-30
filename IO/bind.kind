@@ -1,0 +1,2 @@
+IO/bind : ∀(A: *) ∀(B: *) (IO A) -> (A -> (IO B)) -> (IO B)
+= ?IO_BIND

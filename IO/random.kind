@@ -1,0 +1,2 @@
+IO/random : (IO U64)
+= ?IO_RANDOM
