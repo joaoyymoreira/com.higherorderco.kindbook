@@ -4,7 +4,7 @@
 U64/to-bool : U64 -> Bool
 = λ{
   0: #False
-  _{p}: #True
+  1+p: #True
 }
 
 #test: (U64/to-bool 0) == #False
