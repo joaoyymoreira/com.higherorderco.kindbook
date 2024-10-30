@@ -3,7 +3,7 @@ data UG/SIPD/Player {
   #Player {
     id : U64
     name : String
-    keys : (OrdMap String (Pair Bool V2))
+    keys : (OrdTree String (Pair Bool V2))
     target : V2 
     s : UG/SIPD/State
   }
