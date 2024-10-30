@@ -1,0 +1,6 @@
+// Gets the bounds of a QuadTree/Object.
+// - A: Value type.
+// - obj: The input object.
+// = The bounding rectangle of the object.
+QuadTree/Object/bounds : ∀(A: *) (QuadTree/Object A) -> QuadTree/Rectangle
+| A #Object{bounds value} = bounds
