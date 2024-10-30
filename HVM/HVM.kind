@@ -77,19 +77,16 @@ data HVM/RNet {
 }
 
 HVM : * -> *
-| A = ∀(net: HVM/RNet) (Pair HVM/RNet A)
+| A = (State HVM/RNet A)
 
 // HVM Monad
 // ---------
 
 HVM/pure : ∀(A: *) A -> (HVM A)
-| A a net = #Pair{ net a }
+= (State/pure HVM/RNet)
 
 HVM/bind : ∀(A: *) ∀(B: *) (HVM A) -> (A -> (HVM B)) -> (HVM B)
-| A B ma fn net = (HVM/bind/go A B (ma net) fn)
-
-HVM/bind/go : ∀(A: *) ∀(B: *) (Pair HVM/RNet A) -> (A -> (HVM B)) -> (Pair HVM/RNet B)
-| A B #Pair{net a} fn = (fn a net)
+= (State/bind HVM/RNet)
 
 HVM/Monad : (Monad HVM)
 = #Monad{

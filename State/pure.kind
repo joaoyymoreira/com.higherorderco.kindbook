@@ -1,0 +1,7 @@
+// Wraps a value in a State.
+// - S: State type.
+// - A: Input type.
+// - x: Value to wrap.
+// = A State containing x.
+State/pure : ∀(S: *) ∀(A: *) A -> (State S A)
+| S A x = λst #Pair{st x}

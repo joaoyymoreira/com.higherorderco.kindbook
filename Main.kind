@@ -1,15 +1,45 @@
-main : (IO Unit)
-= do IO {
-  ask (IO/print "hello")
-  ask (IO/print "world!")
-  ask x = (IO/swap 10 123)
-  ask y = (IO/swap 10 420)
-  ask z = (IO/swap 10 777)
-  ask (IO/print (String/join "" ["x: " (U64/to-string x)]))
-  ask (IO/print (String/join "" ["y: " (U64/to-string y)]))
-  ask (IO/print (String/join "" ["z: " (U64/to-string z)]))
-  ret #Unit
-}
+StateU64 : * -> * = (State U64)
+StateU64/bind : ∀(A: *) ∀(B: *) (StateU64 A) -> (A -> (StateU64 B)) -> (StateU64 B) = (State/bind U64)
+StateU64/pure : ∀(A: *) A -> (StateU64 A) = (State/pure U64)
+StateU64/swap : U64 -> (State U64 U64) = (State/swap U64)
+
+main : (Pair U64 U64)
+= (do StateU64 {
+  ask x = (StateU64/swap 1)
+  ask y = (StateU64/swap 2)
+  ask z = (StateU64/swap 3)
+  ret (+ x (+ y z))
+} 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//main : (IO Unit)
+//= do IO {
+  //ask (IO/print "hello")
+  //ask (IO/print "world!")
+  //ask x = (IO/swap 42 1)
+  //ask y = (IO/swap 42 2)
+  //ask z = (IO/swap 42 3)
+  //ask (IO/print (String/join "" ["x: " (U64/to-string x)]))
+  //ask (IO/print (String/join "" ["y: " (U64/to-string y)]))
+  //ask (IO/print (String/join "" ["z: " (U64/to-string z)]))
+  //ret #Unit
+//}
 
 
 

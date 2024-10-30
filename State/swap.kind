@@ -1,0 +1,6 @@
+// Swaps the current state with a new value.
+// - S: State type.
+// - s: New state value.
+// = A State computation that returns the old state and sets the new state.
+State/swap : ∀(S: *) S -> (State S S)
+| S s = λst #Pair{s st}

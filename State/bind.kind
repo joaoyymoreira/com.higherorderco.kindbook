@@ -1,0 +1,11 @@
+// Binds two stateful computations.
+// - S: State type.
+// - A: Input type.
+// - B: Output type.
+// - m: First stateful computation.
+// - f: Function to create second stateful computation.
+// = Combined stateful computation.
+State/bind : ∀(S: *) ∀(A: *) ∀(B: *) (State S A) -> (A -> (State S B)) -> (State S B)
+| S A B m f = λs match (m s) {
+  #Pair{s a}: (f a s)
+}

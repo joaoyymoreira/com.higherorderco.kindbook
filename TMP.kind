@@ -1,6 +1,0 @@
-// Identity function.
-// - A: The type of the input and output.
-// - x: The input value.
-// = The same value that was input.
-TMP : ∀(A: *) A -> A
-| A x = x

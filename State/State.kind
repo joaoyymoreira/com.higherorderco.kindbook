@@ -1,0 +1,2 @@
+State : * -> * -> *
+| S A = ∀(st: S) (Pair S A)

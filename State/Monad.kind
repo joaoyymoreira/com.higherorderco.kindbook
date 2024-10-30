@@ -1,0 +1,8 @@
+// Monad instance for State.
+// - S: State type.
+// = The State monad instance.
+State/Monad : ∀(S: *) (Monad (State S))
+| S = #Monad{
+  pure: (State/pure S)
+  bind: (State/bind S)
+}
