@@ -1,5 +1,0 @@
-// Ordered map (dictionary) data structure.
-// - K: Key type.
-// - V: Value type.
-OrdMap : * -> * -> *
-| K V = (OrdTree K V)
