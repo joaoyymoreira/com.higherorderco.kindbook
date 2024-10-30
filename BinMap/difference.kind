@@ -1,19 +1,15 @@
-// Computes the difference between two BinMaps.
-// - A: Value type.
-// - m1: BinMap to remove keys from.
-// - m2: BinMap containing keys to be removed.
-// = New BinMap with key-value pairs from m1 not in m2.
+// Removes all key-value pairs from the first BinMap that have keys present in the second BinMap.
+// - A: The type of values in the BinMaps.
+// - m1: The BinMap to remove keys from.
+// - m2: The BinMap containing keys to be removed.
+// = A new BinMap containing key-value pairs from m1 whose keys are not present in m2.
 BinMap/difference : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
-| A #Leaf        m2 = #Leaf
-| A #Node{x l r} m2 with (BinMap/get A m2 #E)
-. | #None = 
-  let new_l = (BinMap/difference A l (BinMap/invert A m2))
-  let new_r = (BinMap/difference A r (BinMap/invert A m2))
-  #Node{x new_l new_r}
-. | _     = 
-  let new_l = (BinMap/difference A l (BinMap/invert A m2))
-  let new_r = (BinMap/difference A r (BinMap/invert A m2))
-  #Node{#None new_l new_r}
+| A m1 m2 = 
+  (List/foldr (Pair Bits A) _
+    (λ{#Pair{k v}: λacc (BinMap/del A acc k)})
+    m1
+    (BinMap/to-list A m2)
+  )
 
 #test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/empty U64) (BinMap/empty U64))) == #True
 #test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} (BinMap/empty U64)) (BinMap/empty U64))) == #False
