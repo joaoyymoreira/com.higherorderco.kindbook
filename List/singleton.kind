@@ -1,0 +1,11 @@
+// Creates a list with a single element.
+// - A: Input type.
+// - x: Element to be placed in the list.
+// = New list containing only the given element.
+List/singleton : ∀(A: *) A -> (List A)
+| A x = #Cons{head: x tail: #Nil}
+
+#test: (List/singleton U64 1) == #Cons{head: 1 tail: #Nil}
+#test: (List/length U64 (List/singleton U64 42)) == #1
+#test: (List/head U64 (List/singleton U64 7)) == #Some{7}
+#test: (List/tail U64 (List/singleton U64 5)) == #Nil

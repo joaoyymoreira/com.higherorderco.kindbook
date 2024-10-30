@@ -1,0 +1,10 @@
+// Calculates the product of a list of natural numbers.
+// - xs: Input list of nats.
+// = Product of all numbers in the list.
+List/product : (List Nat) -> Nat
+= (List/foldr Nat Nat Nat/mul #1)
+
+#test: (List/product []) == #1
+#test: (List/product [#3]) == #3
+#test: (List/product [#2 #3 #4]) == #24
+#test: (List/product [#0 #1 #2 #3]) == #0

@@ -1,0 +1,15 @@
+// Quicksort algorithm for sorting lists of natural numbers.
+// - xs: Input list to be sorted.
+// = New list with all elements from xs in ascending order.
+List/quicksort : (List Nat) -> (List Nat)
+| #Nil             = #Nil
+| #Cons{head tail} =
+  let min = (List/filter Nat (λx (Nat/lte x head)) tail)
+  let max = (List/filter Nat (λx (Nat/gt x head)) tail)
+  (List/append Nat (List/quicksort min) #Cons{head (List/quicksort max)})
+
+#test: (List/quicksort []) == []
+#test: (List/quicksort [#3]) == [#3]
+#test: (List/quicksort [#3 #1 #4 #1 #5 #9 #2 #6 #5 #3]) == [#1 #1 #2 #3 #3 #4 #5 #5 #6 #9]
+#test: (List/quicksort [#5 #4 #3 #2 #1]) == [#1 #2 #3 #4 #5]
+#test: (List/quicksort [#1 #2 #3 #4 #5]) == [#1 #2 #3 #4 #5]

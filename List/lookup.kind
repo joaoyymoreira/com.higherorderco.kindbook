@@ -1,0 +1,18 @@
+// Retrieves the element at the specified index in the list.
+// - A: Element type.
+// - xs: Input list.
+// - i: Index to retrieve.
+// = Element at index i if i < length xs, otherwise None.
+List/lookup : ∀(A: *) (List A) -> Nat -> (Maybe A)
+| A #Nil             i = #None
+| A #Cons{head tail} i =
+  match i {
+    #Zero: #Some{head}
+    #Succ{pred}: (List/lookup A tail pred)
+  }
+
+#test: (List/lookup U64 [1 2 3] #0) == #Some{1}
+#test: (List/lookup U64 [1 2 3] #1) == #Some{2}
+#test: (List/lookup U64 [1 2 3] #2) == #Some{3}
+#test: (List/lookup U64 [1 2 3] #3) == #None
+#test: (List/lookup U64 [] #0) == #None

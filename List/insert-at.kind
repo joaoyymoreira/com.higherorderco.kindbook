@@ -1,0 +1,17 @@
+// Inserts an element at a specific index in a list.
+// - A: Element type.
+// - xs: Input list.
+// - n: Insert index.
+// - v: Element to insert.
+// = New list with element inserted.
+List/insert-at : ∀(A: *) (List A) -> Nat -> A -> (List A)
+| A xs            #Zero    v = #Cons{v xs}
+| A #Nil          #Succ{n} v = #Cons{v #Nil}
+| A #Cons{x tail} #Succ{n} v = #Cons{x (List/insert-at A tail n v)}
+
+#test: (List/insert-at U64 [1 2 3] #0 0) == [0 1 2 3]
+#test: (List/insert-at U64 [1 2 3] #1 0) == [1 0 2 3]
+#test: (List/insert-at U64 [1 2 3] #3 0) == [1 2 3 0]
+#test: (List/insert-at U64 [1 2 3] #4 0) == [1 2 3 0]
+#test: (List/insert-at U64 [] #0 0) == [0]
+#test: (List/insert-at U64 [] #1 0) == [0]
