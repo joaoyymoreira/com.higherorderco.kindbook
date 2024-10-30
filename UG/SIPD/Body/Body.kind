@@ -1,0 +1,9 @@
+
+data UG/SIPD/Body {
+  #Body {
+    id : U64
+    hitbox : UG/Shape
+    tick : UG/SIPD/State -> UG/SIPD/State
+    collidable : UG/Collision/Collidable
+  }
+}
