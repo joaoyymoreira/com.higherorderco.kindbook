@@ -1,0 +1,20 @@
+// Performs bitwise XOR operation on two nats.
+// - a: The 1st nat.
+// - b: The 2nd nat.
+// = A new nat representing the bitwise XOR of the inputs.
+Nat/xor : Nat -> Nat -> Nat
+| #Zero b = b
+| a #Zero = a
+| a b with (#Pair{(Nat/div-mod a #2) (Nat/div-mod b #2)} :: (Pair (Pair Nat Nat) (Pair Nat Nat)))
+. | #Pair{#Pair{a-div #Zero} #Pair{b-div #Zero}}               = (Nat/mul #2 (Nat/xor a-div b-div))
+. | #Pair{#Pair{a-div #Succ{#Zero}} #Pair{b-div #Succ{#Zero}}} = (Nat/mul #2 (Nat/xor a-div b-div))
+. | #Pair{#Pair{a-div a-mod} #Pair{b-div b-mod}}               = #Succ{(Nat/mul #2 (Nat/xor a-div b-div))}
+
+#test: (Nat/xor #0 #0) == #0
+#test: (Nat/xor #0 #1) == #1
+#test: (Nat/xor #1 #0) == #1
+#test: (Nat/xor #1 #1) == #0
+#test: (Nat/xor #3 #5) == #6
+#test: (Nat/xor #15 #7) == #8
+#test: (Nat/xor #255 #0) == #255
+#test: (Nat/xor #10000 #255) == #10223

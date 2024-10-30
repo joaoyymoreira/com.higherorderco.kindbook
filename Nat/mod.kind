@@ -19,6 +19,7 @@ Nat/mod/go : Nat -> Nat -> Nat -> Nat -> Nat
 
 #test: (Nat/mod #0 #5) == #0
 #test: (Nat/mod #5 #1) == #0
+#test: (Nat/mod #5 #0) == #0
 #test: (Nat/mod #7 #3) == #1
 #test: (Nat/mod #10 #4) == #2
 #test: (Nat/mod #15 #5) == #0
