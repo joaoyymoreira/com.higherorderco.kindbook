@@ -1,0 +1,9 @@
+// An object with a bounding rectangle and associated value.
+// - A: Value type.
+data QuadTree/Object (A: *) {
+  #Object {
+    bounds: QuadTree/Rectangle
+    value: A
+  }
+}
+

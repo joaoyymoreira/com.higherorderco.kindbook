@@ -1,0 +1,22 @@
+// Checks if two rectangles intersect.
+// - r1: The first rectangle.
+// - r2: The second rectangle.
+// = True if the rectangles intersect, False otherwise.
+QuadTree/Rectangle/intersects : QuadTree/Rectangle -> QuadTree/Rectangle -> Bool
+| #Rectangle{x11 y11 x12 y12} #Rectangle{x21 y21 x22 y22} =
+  let no_intersect = (Bool/or
+    (Bool/or
+      (F64/lt x12 x21)
+      (F64/gt x11 x22))
+    (Bool/or
+      (F64/lt y12 y21)
+      (F64/gt y11 y22)))
+  (Bool/not no_intersect)
+
+#test: (QuadTree/Rectangle/intersects
+  #Rectangle{0.0 0.0 2.0 2.0}
+  #Rectangle{1.0 1.0 3.0 3.0}) == #True
+
+#test: (QuadTree/Rectangle/intersects
+  #Rectangle{0.0 0.0 1.0 1.0}
+  #Rectangle{2.0 2.0 3.0 3.0}) == #False
