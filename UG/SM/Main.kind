@@ -36,20 +36,24 @@ simulate-game : Nat -> (UG/SM/Mach GameState GameAction)
   let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: #0})
   mach
 
-//main : GameState
-//= (Pair/get-fst GameState (UG/SM/Mach GameState GameAction) (simulate-game #1))
-
-//#test: (example == #GameState{counter: #42})
 
 main : (UG/SM/Mach GameState GameAction)
 = (simulate-game #1)
 
 mach : (UG/SM/Mach GameState GameAction)
-= #Mach{#60 #100 #0 #None (BinMap/new (List GameAction)) GameAction/eq}
+= #Mach{ticks-per-second: #60 genesis-tick: #0 cached-tick: #0 state-logs: #None action-logs: #Node{#None #Node{#Some{[#Increment]} #Leaf #Leaf} #Leaf} action-eq: GameAction/eq}
+
 
 #test: ((simulate-game #1) == mach)
 
-
+//  #Mach {
+//    ticks-per-second: Nat
+//    genesis-tick: UG/SM/Tick
+//    cached-tick: UG/SM/Tick
+//    state-logs: (UG/SM/StateLogs S)
+//    action-logs: (UG/SM/ActionLogs A)
+//    action-eq: A -> A -> Bool
+//  }
 
 
 
