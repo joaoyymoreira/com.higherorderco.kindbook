@@ -1,0 +1,10 @@
+// Sub two U64s.
+// - a: The first U64.
+// - b: The second U64.
+// = The sum of a and b.
+U64/sub : U64 -> U64 -> U64
+| a b = (- a b)
+
+#test: (U64/sub 5 3) == 2
+#test: (U64/sub 11 7) == 4
+
