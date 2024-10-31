@@ -1,15 +1,54 @@
-StateU64 : * -> * = (State U64)
-StateU64/bind : ∀(A: *) ∀(B: *) (StateU64 A) -> (A -> (StateU64 B)) -> (StateU64 B) = (State/bind U64)
-StateU64/pure : ∀(A: *) A -> (StateU64 A) = (State/pure U64)
-StateU64/swap : U64 -> (State U64 U64) = (State/swap U64)
+main : Nat
+= let map = #Node{#Some{47244640257} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{4294967302} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{60129542145} #Leaf{} #Leaf{}}} #Node{#Some{34359738370} #Leaf{} #Node{#Some{103079215110} #Leaf{} #Leaf{}}}} #Node{#Some{17179869189} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{90194313222} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{111669149697} #Leaf{} #Leaf{}}}}} #Node{#Some{8589934597} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{60129542150} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{77309411334} #Leaf{} #Leaf{}}} #Node{#Some{34359738369} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{25769803778} #Node{#None{} #Leaf{} #Node{#Some{85899345921} #Leaf{} #Leaf{}}} #Node{#Some{60129542146} #Leaf{} #Leaf{}}}}} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{51539607557} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{73014444034} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{4} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{94489280517} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313218} #Leaf{} #Leaf{}}} #Node{#Some{47244640257} #Leaf{} #Leaf{}}}} #Node{#Some{12884901894} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{68719476741} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{47244640258} #Leaf{} #Node{#Some{115964116994} #Leaf{} #Leaf{}}}} #Node{#Some{25769803777} #Node{#None{} #Leaf{} #Node{#Some{98784247810} #Leaf{} #Leaf{}}} #Node{#Some{98784247809} #Leaf{} #Leaf{}}}}}} :: (BinMap U64)
+  //(BinMap/invert _ map)
+  let lst = (BinMap/to-list _ map)
+  (List/length _ lst)
 
-main : (Pair U64 U64)
-= (do StateU64 {
-  ask x = (StateU64/swap 1)
-  ask y = (StateU64/swap 2)
-  ask z = (StateU64/swap 3)
-  ret (+ x (+ y z))
-} 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+//foo : U64 -> U64
+//= λ{
+  //0: 0
+  //1: 10
+  //2: 20
+  //3: 30
+  //4+k: k
+//}
+
+//main : U64 = (foo 50)
+
+
+
+
+
+
+
+
+
+
+//StateU64 : * -> * = (State U64)
+//StateU64/bind : ∀(A: *) ∀(B: *) (StateU64 A) -> (A -> (StateU64 B)) -> (StateU64 B) = (State/bind U64)
+//StateU64/pure : ∀(A: *) A -> (StateU64 A) = (State/pure U64)
+//StateU64/swap : U64 -> (State U64 U64) = (State/swap U64)
+
+//main : (StateU64 U64)
+//= do StateU64 {
+  //ask x = (StateU64/swap 1)
+  //ask y = (StateU64/swap 2)
+  //ask z = (StateU64/swap 3)
+  //ret (+ x (+ y z))
+//}
 
 
 
@@ -100,11 +139,39 @@ main : (Pair U64 U64)
 //| #Pair{#A v} = v
 //| #Pair{#B v} = v
 
-//Foo : ∀(x: (Pair T T)) U64
+//Foo : ∀(x: (Pair T U64)) U64
+//= λ{
+  //#Pair: λ{
+    //#A: λb b
+    //#B: λb b
+  //}
+//}
+
+
+//Foo : ∀(x: (Pair T U64)) U64
+//= λ{
+  //#Pair: λa λb (match a {
+    //#A: λb b
+    //#B: λb b
+  //} b)
+//}
+
+
+
+//Foo : ∀(x: (Pair T U64)) U64
+//= λ{
+  //#Pair: λa λb ((λ{
+    //#A: b
+    //#B: b
+  //} :: T -> U64) a)
+//}
+
+
+//Foo : ∀(x: (Pair T U64)) U64
 //= λx match x {
   //#Pair{k v}: match k {
-    //#A: 5
-    //#B: 6
+    //#A: v
+    //#B: v
   //}
 //}
 

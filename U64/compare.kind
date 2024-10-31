@@ -6,12 +6,10 @@ U64/compare : U64 -> U64 -> Cmp
 = λa λb
   if (U64/to-bool (U64/eql a b)) {
     #EQ
+  } else if (U64/to-bool (< a b)) {
+    #LT
   } else {
-    if (U64/to-bool (< a b)) {
-      #LT
-    } else {
-      #GT
-    }
+    #GT
   }
 
 #test: (U64/compare 5 3) == #GT
