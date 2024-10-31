@@ -7,7 +7,7 @@
 // = Updated Mach with the new tick and state.
 UG/SM/update-mach : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> S -> (UG/SM/Mach S A)
 | S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} t s
-= let new-cached-tick = (Nat/max cached-tick t)
+= let new-cached-tick = (U64/max cached-tick t)
   let new-state-logs  = (UG/SM/StateLogs/push S s state-logs t)
   #Mach{
     ticks-per-second
@@ -18,4 +18,4 @@ UG/SM/update-mach : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> S -> (
     action-eq
   }
 
-#test: (UG/SM/Mach/cached-tick U64 U64 (UG/SM/update-mach U64 U64 (UG/SM/new-mach U64 U64 #10 U64/eq) #5 3)) == #5
+#test: (UG/SM/Mach/cached-tick U64 U64 (UG/SM/update-mach U64 U64 (UG/SM/new-mach U64 U64 10 U64/eq) 5 3)) == 5
