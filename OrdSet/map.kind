@@ -2,12 +2,12 @@
 // - V: Input type.
 // - A: Output type.
 // - ord: Ord instance for A.
-// - f: Mapping function.
 // - set: Input set.
+// - f: Mapping function.
 // = Resulting set.
-OrdSet/map : ∀(V: *) ∀(A: *) (Ord A) -> (V -> A) -> (OrdSet V) -> (OrdSet A)
-| V A ord f set = (OrdTree/map-keys V Unit A ord f set)
+OrdSet/map : ∀(V: *) ∀(A: *) ∀(ord: (Ord A)) (OrdSet V) -> (V -> A) -> (OrdSet A)
+| V A ord set f = (OrdTree/map-keys V Unit A ord set f)
 
-#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (λx (+ x 1)) (OrdSet/from-list U64 U64/Ord [1 2 3]))) == [2 3 4]
-#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (λx (* x 2)) (OrdSet/from-list U64 U64/Ord [1 2 3]))) == [2 4 6]
-#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (λx x) (OrdSet/empty U64))) == []
+#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (+ x 1)))) == [2 3 4]
+#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (* x 2)))) == [2 4 6]
+#test: (OrdSet/to-list U64 (OrdSet/map U64 U64 U64/Ord (OrdSet/empty U64) (λx x))) == []

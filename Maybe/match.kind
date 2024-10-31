@@ -1,14 +1,14 @@
 // Elimination principle for Maybe.
 // - A: The type of the value inside Maybe.
 // - P: A type family indexed by Maybe A.
+// - m: The Maybe value to match against.
 // - none: The case for None.
 // - some: The case for Some.
-// - m: The Maybe value to match against.
 // = A value of type (P m), determined by the structure of m.
-Maybe/match : ∀(A: *) ∀(P: (Maybe A) -> *) (P #None) -> (∀(x: A) (P (#Some{x}))) -> ∀(m: (Maybe A)) (P m)
-| A P none some #None        = none
-| A P none some #Some{value} = (some value)
+Maybe/match : ∀(A: *) ∀(P: (Maybe A) -> *) ∀(m: (Maybe A)) (P #None) -> (∀(x: A) (P (#Some{x}))) -> (P m)
+| A P #None        none some = none
+| A P #Some{value} none some = (some value)
 
-#test: (Maybe/match U64 (λx Bool) #True (λy #False) #None) == #True
-#test: (Maybe/match U64 (λx Bool) #False (λy #True) (#Some{42})) == #True
-#test: (Maybe/match U64 (λx (Maybe U64)) #None (λy (#Some{(+ y 1)})) (#Some{41})) == (#Some{42})
+#test: (Maybe/match U64 (λx Bool) #None #True (λy #False)) == #True
+#test: (Maybe/match U64 (λx Bool) (#Some{42}) #False (λy #True) ) == #True
+#test: (Maybe/match U64 (λx (Maybe U64)) (#Some{41}) #None (λy (#Some{(+ y 1)})) ) == (#Some{42})

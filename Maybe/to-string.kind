@@ -3,7 +3,7 @@
 // - show: Show instance for A.
 // - m: Maybe value to convert.
 // = String representation of the Maybe value.
-Maybe/to-string : ∀(A: *) (Show A) -> (Maybe A) -> String
+Maybe/to-string : ∀(A: *) ∀(show :(Show A)) (Maybe A) -> String
 | A show #None        = "None"
 | A show #Some{value} = (String/append "Some(" (String/append (Show/to-string A show value) ")"))
 

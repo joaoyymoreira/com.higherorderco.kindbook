@@ -4,7 +4,7 @@
 // - xs: Input list of pairs to unzip.
 // = Pair of lists containing first and second elements of pairs.
 List/unzip : ∀(A: *) ∀(B: *) (List (Pair A B)) -> (Pair (List A) (List B))
-| A B xs = (List/unzip-with (Pair A B) A B (λx x) xs)
+| A B xs = (List/unzip-with (Pair A B) A B xs (λx x))
 
 #test: (List/unzip U64 U64 #Nil) == #Pair{#Nil #Nil}
 #test: (List/unzip U64 U64 [#Pair{1 2} #Pair{3 4}]) == #Pair{[1 3] [2 4]}

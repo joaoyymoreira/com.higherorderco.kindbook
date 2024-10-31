@@ -1,35 +1,24 @@
 // FIXME: this file isn't working
 
 // Splits a Bits value into chunks of a specified length.
-// - 1st: The length of each chunk.
-// - 2nd: The Bits value to be split.
+// - bits: The length of each chunk.
+// - n: The Bits value to be split.
 // = A List of Bits, where each element is a chunk of the specified length.
-Bits/split-chunks
-: ∀(d: Nat)
-  ∀(bits: Bits)
-  (List Bits)
-= λ{
-  #Zero: λbits []
-  #Succ: λpred λ{
-    #E: []
-    #O: λtail
-      let #Pair{collected rest} = (Bits/split-at #Succ{pred} #O{tail})
-      match rest {
-          #E: #Cons{collected []}
-          #O: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #O{rest.tail})}
-          #I: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #I{rest.tail})}
-      }
-    #I: λtail
-      let #Pair{collected rest} = (Bits/split-at #Succ{pred} #I{tail})
-      match rest {
-          #E: #Cons{collected []}
-          #O: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #O{rest.tail})}
-          #I: λrest.tail #Cons{collected (Bits/split-chunks #Succ{pred} #I{rest.tail})}
-      }
-  }
-}
+Bits/split-chunks : Bits -> Nat -> (List Bits)
+| bits     #Zero = []
+| #E       n     = []
+| #O{tail} n with (Bits/split-at #O{tail} n)
+. | #Pair{collected rest} with rest
+. . | #E            = #Cons{collected []}
+. . | #O{rest.tail} = #Cons{collected (Bits/split-chunks #O{rest.tail} n)}
+. . | #I{rest.tail} = #Cons{collected (Bits/split-chunks #I{rest.tail} n)}
+| #I{tail} n with (Bits/split-at #I{tail} n) 
+. | #Pair{collected rest} with rest
+. . | #E            = #Cons{collected []}
+. . | #O{rest.tail} = #Cons{collected (Bits/split-chunks #O{rest.tail} n)}
+. . | #I{rest.tail} = #Cons{collected (Bits/split-chunks #I{rest.tail} n)}
 
-#test: (Bits/split-chunks #3 #E) == []
-#test: (Bits/split-chunks #2 (Nat/to-bits #45)) == (#Cons{#I{#O{#E}} #Cons{#I{#I{#E}} #Cons{#O{#I{#E}} []}}})
-#test: (Bits/split-chunks #3 (Nat/to-bits #123)) == (#Cons{#I{#I{#O{#E}}} #Cons{#I{#I{#I{#E}}} #Cons{#I{#O{#E}} []}}})
-#test: (Bits/split-chunks #8 (Nat/to-bits #15)) == (#Cons{#I{#I{#I{#I{#O{#O{#O{#E}}}}}}} []})
+#test: (Bits/split-chunks #E #3) == []
+#test: (Bits/split-chunks (Nat/to-bits #45) #2) == (#Cons{#I{#O{#E}} #Cons{#I{#I{#E}} #Cons{#O{#I{#E}} []}}})
+#test: (Bits/split-chunks (Nat/to-bits #123) #3) == (#Cons{#I{#I{#O{#E}}} #Cons{#I{#I{#I{#E}}} #Cons{#I{#O{#E}} []}}})
+#test: (Bits/split-chunks (Nat/to-bits #15) #8) == (#Cons{#I{#I{#I{#I{#O{#O{#O{#E}}}}}}} []})

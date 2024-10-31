@@ -8,7 +8,7 @@ List/inits : ∀(A: *) (List A) -> (List (List A))
 // Generates the tail of the inits list
 List/inits/go : ∀(A: *) (List A) -> (List (List A))
 | A #Nil             = #Nil
-| A #Cons{head tail} = #Cons{#Cons{head #Nil} (List/map (List A) (List A) (λy #Cons{head y}) (List/inits/go A tail)) }
+| A #Cons{head tail} = #Cons{#Cons{head #Nil} (List/map (List A) (List A) (List/inits/go A tail) (λy #Cons{head y}))}
 
 #test: (List/inits U64 []) == [[]]
 #test: (List/inits U64 [1]) == [[] [1]]

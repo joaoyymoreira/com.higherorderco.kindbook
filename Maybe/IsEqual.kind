@@ -1,7 +1,7 @@
 // Equality instance for Maybe.
 // - A: Input type.
 // - e: Equality instance for A.
-Maybe/IsEqual : ∀(A: *) (IsEqual A) -> (IsEqual (Maybe A))
+Maybe/IsEqual : ∀(A: *) ∀(e: (IsEqual A)) (IsEqual (Maybe A))
 | A e = #IsEqual{
   eq: (Maybe/eq A e) 
 }

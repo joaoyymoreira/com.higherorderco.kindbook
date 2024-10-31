@@ -2,10 +2,10 @@
 // - n: The number of characters to drop.
 // - s: The input string.
 // = A new string with the first n characters removed, or an empty string if n is greater than or equal to the string length.
-String/drop : Nat -> String -> String
-| n s = (List/drop Char n s)
+String/drop : String -> Nat -> String
+| s n = (List/drop Char s n)
 
-#test: (String/drop #0 "Hello") == "Hello"
-#test: (String/drop #3 "Hello") == "lo"
-#test: (String/drop #5 "Hello") == ""
-#test: (String/drop #10 "Hello") == ""
+#test: (String/drop "Hello" #0) == "Hello"
+#test: (String/drop "Hello" #3) == "lo"
+#test: (String/drop "Hello" #5) == ""
+#test: (String/drop "Hello" #10) == ""

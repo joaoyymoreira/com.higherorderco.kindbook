@@ -1,13 +1,13 @@
 // Applies a function n times to an initial argument.
 // - A: The type of the argument and result.
 // - n: The number of times to apply the function.
-// - f: The function to apply.
 // - x: The initial argument.
+// - f: The function to apply.
 // = The result of applying function to argument, n times.
-Nat/apply : ∀(A: *) Nat -> (A -> A) -> A -> A
-| A #Zero    f x = x
-| A #Succ{n} f x = (f (Nat/apply A n f x))
+Nat/apply : ∀(A: *) Nat -> A -> (A -> A) -> A
+| A #Zero    x f = x
+| A #Succ{n} x f = (f (Nat/apply A n x f))
 
-#test: (Nat/apply Nat #Zero (Function/id Nat) #5) == #5
-#test: (Nat/apply Nat #3 (λx #Succ{x}) #Zero) == #3
-#test: (Nat/apply Nat #2 (λx (Nat/add x #1)) #3) == #5
+#test: (Nat/apply Nat #3 #0 (λx #Succ{x})) == #3
+#test: (Nat/apply Nat #0 #5 (Function/id Nat)) == #5
+#test: (Nat/apply Nat #2 #3 (λx (Nat/add x #1))) == #5

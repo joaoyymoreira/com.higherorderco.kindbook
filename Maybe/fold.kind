@@ -1,13 +1,13 @@
 // Folds over a Maybe value.
 // - A: The type of the value inside Maybe.
 // - B: The type of the result.
+// - m: The Maybe value to fold over.
 // - d: The value to return if the Maybe is None.
 // - f: The function to apply to the value if the Maybe is Some.
-// - m: The Maybe value to fold over.
 // = Either the default value (if None) or the result of applying f to the value (if Some).
-Maybe/fold : ∀(A: *) ∀(B: *) B -> (A -> B) -> (Maybe A) -> B
-| A B d f #None        = d
-| A B d f #Some{value} = (f value)
+Maybe/fold : ∀(A: *) ∀(B: *) (Maybe A) -> B -> (A -> B) -> B
+| A B #None        d f = d
+| A B #Some{value} d f = (f value)
 
-#test: (Maybe/fold U64 U64 0 (λx (+ x 1)) #None) == 0
-#test: (Maybe/fold U64 U64 0 (λx (+ x 1)) #Some{5}) == 6
+#test: (Maybe/fold U64 U64 #None 0 (λx (+ x 1))) == 0
+#test: (Maybe/fold U64 U64 #Some{5} 0 (λx (+ x 1))) == 6

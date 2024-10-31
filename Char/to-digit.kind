@@ -1,9 +1,9 @@
 // Converts a character to its numeric value in the given base.
-// - base: The base (2 for binary, 8 for octal, 10 for decimal, 16 for hexadecimal).
 // - code: The character to convert.
+// - base: The base (2 for binary, 8 for octal, 10 for decimal, 16 for hexadecimal).
 // = Some n if valid digit in the given base, None otherwise.
-Char/to-digit : Nat -> Char -> (Maybe Nat)
-| base code =
+Char/to-digit : Char -> Nat -> (Maybe Nat)
+| code base =
   let is_base_2  = (Nat/eq base #2)
   let is_base_8  = (Nat/eq base #8)
   let is_base_10 = (Nat/eq base #10)
@@ -23,15 +23,15 @@ Char/to-digit : Nat -> Char -> (Maybe Nat)
   } else if is_hex {
     (Char/hex-to-nat code)
   } else {
-    (Maybe/none Nat)
+    #None
   }
 
-#test: (Char/to-digit #2  '0') == (Maybe/some Nat #0)
-#test: (Char/to-digit #2  '1') == (Maybe/some Nat #1)
-#test: (Char/to-digit #2  '2') == (Maybe/none Nat)
-#test: (Char/to-digit #8  '7') == (Maybe/some Nat #7)
-#test: (Char/to-digit #8  '8') == (Maybe/none Nat)
-#test: (Char/to-digit #10 '9') == (Maybe/some Nat #9)
-#test: (Char/to-digit #10 'a') == (Maybe/none Nat)
-#test: (Char/to-digit #16 'f') == (Maybe/some Nat #15)
-#test: (Char/to-digit #16 'g') == (Maybe/none Nat)
+#test: (Char/to-digit '0' #2) == #Some{#0}
+#test: (Char/to-digit '1' #2) == #Some{#1}
+#test: (Char/to-digit '2' #2) == #None
+#test: (Char/to-digit '7' #8) == #Some{#7}
+#test: (Char/to-digit '8' #8) == #None
+#test: (Char/to-digit '9' #10) == #Some{#9}
+#test: (Char/to-digit 'a' #10) == #None
+#test: (Char/to-digit 'f' #16) == #Some{#15}
+#test: (Char/to-digit 'g' #16) == #None

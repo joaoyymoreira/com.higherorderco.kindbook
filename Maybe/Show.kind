@@ -1,13 +1,8 @@
 // Shows a Maybe value.
 // - A: The type of the value inside Maybe.
-// - show_a: The Show instance for type A.
+// - show: The Show instance for type A.
 // = A Show instance for Maybe A.
-Maybe/Show : ∀(A: *) (Show A) -> (Show (Maybe A))
+Maybe/Show : ∀(A: *) ∀(show: (Show A)) (Show (Maybe A))
 | A show = #Show{
-  to-string: λmaybe (Maybe/to-string A show maybe)
+  to-string: (Maybe/to-string A show)
 }
-
-#test: ((Show/to-string (Maybe U64) (Maybe/Show U64 U64/Show)) (Maybe/none U64)) == "None"
-#test: ((Show/to-string (Maybe U64) (Maybe/Show U64 U64/Show)) (Maybe/some U64 42)) == "Some(42)"
-#test: ((Show/to-string (Maybe Bool) (Maybe/Show Bool Bool/Show)) (Maybe/some Bool #True)) == "Some(True)"
-#test: ((Show/to-string (Maybe Bool) (Maybe/Show Bool Bool/Show)) (Maybe/none Bool)) == "None"

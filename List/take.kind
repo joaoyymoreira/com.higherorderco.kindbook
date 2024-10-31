@@ -1,13 +1,13 @@
 // Takes the first n elements from a list.
 // - A: Element type.
-// - n: Number of elements to take.
 // - xs: Input list.
+// - n: Number of elements to take.
 // = List with first n elements of xs, or all of xs if n > length xs.
-List/take : ∀(A: *) Nat -> (List A) -> (List A)
-| A #Zero    xs            = #Nil
-| A #Succ{n} #Nil          = #Nil
-| A #Succ{n} #Cons{x tail} = #Cons{x (List/take A n tail)}
+List/take : ∀(A: *) (List A) -> Nat -> (List A)
+| A xs               #Zero    = #Nil
+| A #Nil             n        = #Nil
+| A #Cons{head tail} #Succ{n} = #Cons{head (List/take A tail n)}
 
-#test: (List/take U64 #0 [1 2 3]) == []
-#test: (List/take U64 #2 [1 2 3]) == [1 2]
-#test: (List/take U64 #5 [1 2 3]) == [1 2 3]
+#test: (List/take U64 [1 2 3] #0) == []
+#test: (List/take U64 [1 2 3] #2) == [1 2]
+#test: (List/take U64 [1 2 3] #5) == [1 2 3]

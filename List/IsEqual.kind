@@ -1,5 +1,5 @@
 // IsEqual instance for List
-List/IsEqual : ∀(A: *) (IsEqual A) -> (IsEqual (List A))
+List/IsEqual : ∀(A: *) ∀(e: (IsEqual A)) (IsEqual (List A))
 | A e = #IsEqual{
   eq: (List/eq A e)
 }

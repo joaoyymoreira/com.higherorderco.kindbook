@@ -1,5 +1,5 @@
 // Checks if two lists are equal.
-List/eq : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
+List/eq : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> (List A) -> Bool
 | A e #Nil        #Nil        = #True
 | A e #Nil        #Cons{y ys} = #False
 | A e #Cons{x xs} #Nil        = #False

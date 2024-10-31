@@ -1,16 +1,13 @@
 // Filters a list based on a predicate.
 // - A: Element type.
-// - fn: Predicate function.
 // - xs: Input list.
+// - fn: Predicate function.
 // = New list with elements satisfying the predicate.
-List/filter : ∀(A: *) (A -> Bool) -> (List A) -> (List A)
-| A fn #Nil             = #Nil
-| A fn #Cons{head tail} =
-  if (fn head) {
-    #Cons{head (List/filter A fn tail)}
-  } else {
-    (List/filter A fn tail)
-  }
+List/filter : ∀(A: *) (List A) -> (A -> Bool) -> (List A)
+| A #Nil             fn = #Nil
+| A #Cons{head tail} fn with (fn head) 
+. | #True  = #Cons{head (List/filter A tail fn)}
+. | #False = (List/filter A tail fn)
 
-#test: (List/filter U64 (λx (U64/to-bool (== x 2))) [1 2 3 2 1]) == [2 2]
-#test: (List/filter U64 (λx (U64/to-bool (> x 2))) [1 2 3 4 5]) == [3 4 5]
+#test: (List/filter U64 [1 2 3 4 5] (λx (U64/to-bool (> x 2)))) == [3 4 5]
+#test: (List/filter U64 [1 2 3 2 1] (λx (U64/to-bool (== x 2)))) == [2 2]

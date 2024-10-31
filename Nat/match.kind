@@ -1,17 +1,17 @@
 // Applies a function to a natural number based on its structure.
 // This function allows pattern matching on natural numbers.
 // - P: A type-level function that determines the return type for each case.
+// - n: The natural number to match on.
 // - z: The value to return in the zero case.
 // - s: The function to apply in the successor case.
-// - n: The natural number to match on.
 // = The result of matching on the input natural number.
-Nat/match : ∀(P: Nat -> *) (P #Zero) -> (∀(x: Nat) (P #Succ{x})) -> ∀(n: Nat) (P n)
-| P z s #Zero    = z
-| P z s #Succ{n} = (s n)
+Nat/match : ∀(P: Nat -> *) ∀(n: Nat) (P #Zero) -> (∀(x: Nat) (P #Succ{x})) -> (P n)
+| P #Zero    z s = z
+| P #Succ{n} z s = (s n)
 
 // A simple function that returns a boolean description of a natural number
 Nat/describe : Nat -> Bool
-= (Nat/match (λx Bool) #False (λpred #True))
+| n = (Nat/match (λx Bool) n #False (λpred #True))
 
 #test: (Nat/describe #Zero) == #False
 #test: (Nat/describe #1) == #True

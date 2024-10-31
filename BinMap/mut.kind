@@ -5,7 +5,7 @@
 // - f: Function to apply to the element.
 // = New BinMap with the function applied to the specified element.
 BinMap/mut : ∀(A: *) (BinMap A) -> Bits -> (A -> A) -> (BinMap A)
-| A #Node{val l r} #E     f = #Node{(Maybe/map A A f val) l r}
+| A #Node{val l r} #E     f = #Node{(Maybe/map A A val f) l r}
 | A #Node{val l r} #O{k}  f = #Node{val (BinMap/mut A l k f) r}
 | A #Node{val l r} #I{k}  f = #Node{val l (BinMap/mut A r k f)}
 | A #Leaf           k     f = #Leaf

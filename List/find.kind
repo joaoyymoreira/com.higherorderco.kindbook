@@ -1,16 +1,13 @@
 // Finds the first element satisfying a predicate.
 // - A: Element type.
-// - fn: Predicate function.
 // - xs: Input list.
+// - fn: Predicate function.
 // = Some x if found, None otherwise.
-List/find : ∀(A: *) (A -> Bool) -> (List A) -> (Maybe A)
-| A fn #Nil             = #None
-| A fn #Cons{head tail} =
-  if (fn head) {
-    #Some{head}
-  } else {
-    (List/find A fn tail)
-  }
+List/find : ∀(A: *) (List A ) -> (A -> Bool) -> (Maybe A)
+| A #Nil fn = #None
+| A #Cons{head tail} fn with (fn head) 
+. | #True  = #Some{head}
+. | #False = (List/find A tail fn)
 
-#test: (List/find U64 (λx (U64/to-bool (== x 2))) [1 2 3]) == #Some{2}
-#test: (List/find U64 (λx (U64/to-bool (== x 4))) [1 2 3]) == #None
+#test: (List/find U64 [1 2 3] (λx (U64/to-bool (== x 2)))) == #Some{2}
+#test: (List/find U64 [1 2 3] (λx (U64/to-bool (== x 4)))) == #None

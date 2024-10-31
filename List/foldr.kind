@@ -1,13 +1,13 @@
 // Right-folds a list.
 // - A: Input type.
 // - B: Result type.
-// - f: Combining function.
-// - z: Initial value.
 // - xs: Input list.
+// - z: Initial value.
+// - f: Combining function.
 // = Folded result.
-List/foldr : ∀(A: *) ∀(B: *) (A -> B -> B) -> B -> (List A) -> B
-| A B f z #Nil             = z
-| A B f z #Cons{head tail} = (f head (List/foldr A B f z tail))
+List/foldr : ∀(A: *) ∀(B: *) (List A) -> B -> (A -> B -> B) -> B
+| A B #Nil             z f = z
+| A B #Cons{head tail} z f = (f head (List/foldr A B tail z f))
 
-#test: (List/foldr U64 U64 (λx λacc (+ x acc)) 0 [1 2 3]) == 6
-#test: (List/foldr U64 (List U64) (λx λacc #Cons{x acc}) #Nil [1 2 3]) == [1 2 3]
+#test: (List/foldr U64 U64 [1 2 3] 0 (λx λacc (+ x acc))) == 6
+#test: (List/foldr U64 (List U64) [1 2 3] [] (λx λacc #Cons{x acc})) == [1 2 3]

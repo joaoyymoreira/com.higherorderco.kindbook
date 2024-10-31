@@ -2,13 +2,13 @@
 // - A: First input type.
 // - B: Second input type.
 // - C: Output type.
-// - f: Combining function.
 // - xs: First input list.
 // - ys: Second input list.
+// - f: Combining function.
 // = Combined list.
-List/zip-with : ∀(A: *) ∀(B: *) ∀(C: *) (A -> B -> C) -> (List A) -> (List B) -> (List C)
-| A B C f #Nil        ys          = #Nil
-| A B C f #Cons{x xs} #Nil        = #Nil
-| A B C f #Cons{x xs} #Cons{y ys} = #Cons{(f x y) (List/zip-with A B C f xs ys)}
+List/zip-with : ∀(A: *) ∀(B: *) ∀(C: *) (List A) -> (List B) -> (A -> B -> C) -> (List C)
+| A B C #Nil        ys          f = #Nil
+| A B C #Cons{x xs} #Nil        f = #Nil
+| A B C #Cons{x xs} #Cons{y ys} f = #Cons{(f x y) (List/zip-with A B C xs ys f)}
 
-#test: (List/zip-with U64 U64 U64 U64/add [1 2 3] [4 5 6]) == [5 7 9]
+#test: (List/zip-with U64 U64 U64 [1 2 3] [4 5 6] U64/add) == [5 7 9]

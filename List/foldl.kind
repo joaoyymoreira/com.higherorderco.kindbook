@@ -1,13 +1,13 @@
 // Left-folds a list.
 // - A: Accumulator type.
 // - B: Element type.
-// - f: Combining function.
-// - z: Initial value.
 // - xs: Input list.
+// - z: Initial value.
+// - f: Combining function.
 // = Folded result.
-List/foldl : ∀(A: *) ∀(B: *) (A -> B -> A) -> A -> (List B) -> A
-| A B f z #Nil             = z
-| A B f z #Cons{head tail} = (List/foldl A B f (f z head) tail)
+List/foldl : ∀(A: *) ∀(B: *) (List B) -> A -> (A -> B -> A) -> A
+| A B #Nil             z f = z
+| A B #Cons{head tail} z f = (List/foldl A B tail (f z head) f)
 
-#test: (List/foldl U64 U64 (λacc λx (+ acc x)) 0 [1 2 3]) == 6
-#test: (List/foldl (List U64) U64 (λacc λx #Cons{x acc}) [] [1 2 3]) == [3 2 1]
+#test: (List/foldl U64 U64 [1 2 3] 0 (λacc λx (+ acc x))) == 6
+#test: (List/foldl (List U64) U64 [1 2 3] [] (λacc λx #Cons{x acc})) == [3 2 1]

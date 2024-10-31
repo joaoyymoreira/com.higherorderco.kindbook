@@ -4,7 +4,7 @@
 // - key: Element to insert.
 // - set: The set to insert into.
 // = The updated set.
-OrdSet/insert : ∀(K: *) (Ord K) -> K -> (OrdSet K) -> (OrdSet K)
+OrdSet/insert : ∀(K: *)  ∀(ord: (Ord K)) K -> (OrdSet K) -> (OrdSet K)
 | K ord key set = (OrdTree/insert K Unit ord #Pair{key #Unit} set)
 
 #test: (OrdSet/insert U64 U64/Ord 5 #Leaf) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}

@@ -5,7 +5,7 @@
 // - key: Key to delete.
 // - tree: The AVL tree.
 // = The updated AVL tree.
-OrdTree/delete : ∀(K: *) ∀(V: *) (Ord K) -> K -> (OrdTree K V) -> (OrdTree K V)
+OrdTree/delete : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K V) -> (OrdTree K V)
 | K V ord key tree = (Pair/get-fst (OrdTree K V) Bool (OrdTree/Delete/delete-go K V ord key tree))
 
 

@@ -4,8 +4,8 @@
 // - ord: Ord instance for V.
 // - tree: The tree to invert.
 // = The inverted tree.
-OrdTree/invert : ∀(K: *) ∀(V: *) (Ord V) -> (OrdTree K V) -> (OrdTree V K)
-| K V ord tree = (OrdTree/fold K V (OrdTree V K) (OrdTree/invert/go V K ord) (OrdTree/empty V K) tree)
+OrdTree/invert : ∀(K: *) ∀(V: *) ∀(ord: (Ord V)) (OrdTree K V) -> (OrdTree V K)
+| K V ord tree = (OrdTree/fold K V (OrdTree V K) tree (OrdTree/empty V K) (OrdTree/invert/go V K ord))
 
 // Helper function for OrdTree/invert.
 // - V: New key type (old value type).
@@ -14,7 +14,7 @@ OrdTree/invert : ∀(K: *) ∀(V: *) (Ord V) -> (OrdTree K V) -> (OrdTree V K)
 // - kv: Key-value pair to insert.
 // - acc: Accumulator tree.
 // = Updated accumulator tree.
-OrdTree/invert/go : ∀(V: *) ∀(K: *) (Ord V) -> (Pair K V) -> (OrdTree V K) -> (OrdTree V K)
+OrdTree/invert/go : ∀(V: *) ∀(K: *) ∀(ord: (Ord V)) (Pair K V) -> (OrdTree V K) -> (OrdTree V K)
 | V K ord #Pair{k v} acc = (OrdTree/insert V K ord #Pair{v k} acc)
 
 #test: (OrdTree/invert U64 U64 U64/Ord (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)

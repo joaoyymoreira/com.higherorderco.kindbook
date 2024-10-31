@@ -1,9 +1,9 @@
 // Checks if a list contains a specific element.
 // - A: Element type.
 // - e: Equality function for A.
-// - x: Element to search for.
 // - xs: List to search in.
+// - x: Element to search for.
 // = True if found, False otherwise.
-List/contains : ∀(A: *) (IsEqual A) -> A -> (List A) -> Bool
-| A e x #Nil             = #False
-| A e x #Cons{head tail} = (Bool/or (IsEqual/eq A e x head) (List/contains A e x tail))
+List/contains : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> A -> Bool
+| A e #Nil             x = #False
+| A e #Cons{head tail} x = (Bool/or (IsEqual/eq A e x head) (List/contains A e tail x))

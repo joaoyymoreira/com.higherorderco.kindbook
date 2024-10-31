@@ -1,16 +1,16 @@
 // Applies a function to the value inside a Maybe, if it exists.
 // - A: The type of the input value.
 // - B: The type of the output value.
-// - f: The function to apply to the value if it exists.
 // - m: The input Maybe value.
+// - f: The function to apply to the value if it exists.
 // = A new Maybe value with the function applied to the inner value, if it exists.
-Maybe/map : ∀(A: *) ∀(B: *) (A -> B) -> (Maybe A) -> (Maybe B)
-| A B f #None        = #None
-| A B f #Some{value} = #Some{(f value)}
+Maybe/map : ∀(A: *) ∀(B: *) (Maybe A) -> (A -> B) -> (Maybe B)
+| A B #None        f = #None
+| A B #Some{value} f = #Some{(f value)}
 
-#test: (Maybe/map Nat Nat (Nat/add #1) #None) == #None
-#test: (Maybe/map Nat Nat (Nat/add #1) (#Some{#5})) == #Some{#6}
-#test: (Maybe/map Bool Nat (λx (Bool/if _ x #1 #0)) (#Some{#True})) == #Some{#1}
-#test: (Maybe/map Bool Nat (λx (Bool/if _ x #1 #0)) (#Some{#False})) == #Some{#0}
-#test: (Maybe/map Nat Bool (Nat/is-zero) (#Some{#0})) == #Some{#True}
-#test: (Maybe/map Nat Bool (Nat/is-zero) (#Some{#1})) == #Some{#False}
+#test: (Maybe/map Nat Nat #None (Nat/add #1)) == #None
+#test: (Maybe/map Nat Nat (#Some{#5}) (Nat/add #1)) == #Some{#6}
+#test: (Maybe/map Bool Nat (#Some{#True}) (λx (Bool/if _ x #1 #0))) == #Some{#1}
+#test: (Maybe/map Bool Nat (#Some{#False}) (λx (Bool/if _ x #1 #0))) == #Some{#0}
+#test: (Maybe/map Nat Bool (#Some{#0}) (Nat/is-zero)) == #Some{#True}
+#test: (Maybe/map Nat Bool (#Some{#1}) (Nat/is-zero)) == #Some{#False}

@@ -4,10 +4,10 @@
 // - prefix: Potential prefix list.
 // - xs: List to check against.
 // = True if xs starts with prefix, False otherwise.
-List/starts-with : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
+List/starts-with : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> (List A) -> Bool
 | A e prefix xs =
   let #Pair{prefix_list prefix_length} = (List/length-got A prefix)
-  let xs_prefix = (List/take A prefix_length xs)
+  let xs_prefix = (List/take A xs prefix_length)
   let xs_length = (List/length A xs_prefix)
   (Bool/and
     (List/eq A e xs_prefix prefix_list)

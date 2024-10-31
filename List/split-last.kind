@@ -1,19 +1,19 @@
 // Splits a list at the last element that satisfies the given predicate.
 // - A: Input type.
-// - pred: Predicate function.
 // - xs: Input list.
+// - pred: Predicate function.
 // = Pair of lists: part before split and part after (excluding split element).
-List/split-last : ∀(A: *) (A -> Bool) -> (List A) -> (Pair (List A) (List A))
-| A pred xs  with (List/unsnoc (List A) (List/split-chunks A pred xs))
+List/split-last : ∀(A: *) (List A) -> (A -> Bool) -> (Pair (List A) (List A))
+| A xs pred with (List/unsnoc (List A) (List/split-chunks A xs pred))
 . | #Pair{#Nil #None}       = #Pair{[] []}
 . | #Pair{init #None}       = #Pair{(List/concat A init) []}
 . | #Pair{#Nil #Some{last}} = #Pair{last []}
-. | #Pair{init #Some{last}} = #Pair{(List/concat A init) (List/drop A #1 last)}
+. | #Pair{init #Some{last}} = #Pair{(List/concat A init) (List/tail A last)}
 
 
 
-#test: (List/split-last U64 (λx (U64/to-bool (== x 3))) []) == #Pair{[] []}
-#test: (List/split-last U64 (λx (U64/to-bool (== x 3))) [3]) == #Pair{[] []}
-#test: (List/split-last U64 (λx (U64/to-bool (== x 3))) [1 2 4 5]) == #Pair{[1 2 4 5] []}
-#test: (List/split-last U64 (λx (U64/to-bool (== x 3))) [1 2 3 4 5]) == #Pair{[1 2] [4 5]}
-#test: (List/split-last U64 (λx (U64/to-bool (== x 3))) [3 1 2 3 4 5]) == #Pair{[3 1 2] [4 5]}
+#test: (List/split-last U64 [] (λx (U64/to-bool (== x 3)))) == #Pair{[] []}
+#test: (List/split-last U64 [3] (λx (U64/to-bool (== x 3)))) == #Pair{[] []}
+#test: (List/split-last U64 [1 2 4 5] (λx (U64/to-bool (== x 3)))) == #Pair{[1 2 4 5] []}
+#test: (List/split-last U64 [1 2 3 4 5] (λx (U64/to-bool (== x 3)))) == #Pair{[1 2] [4 5]}
+#test: (List/split-last U64 [3 1 2 3 4 5] (λx (U64/to-bool (== x 3)))) == #Pair{[3 1 2] [4 5]}

@@ -1,16 +1,16 @@
 // Applies a function to a specific element in a list.
 // - A: Element type.
+// - xs: Input list.
 // - n: Index of element to modify (0-based).
 // - fn: Function to apply.
-// - xs: Input list.
 // = New list with function applied to nth element.
-List/set : ∀(A: *) Nat -> (A -> A) -> (List A) -> (List A)
-| A #Zero    fn #Cons{head tail} = #Cons{(fn head) tail}
-| A #Succ{n} fn #Cons{head tail} = #Cons{head (List/set A n fn tail)}
-| A n        fn #Nil             = #Nil
+List/set : ∀(A: *) (List A) -> Nat -> (A -> A) -> (List A)
+| A #Cons{head tail} #Zero    fn = #Cons{(fn head) tail}
+| A #Cons{head tail} #Succ{n} fn = #Cons{head (List/set A tail n fn)}
+| A #Nil             n        fn = #Nil
 
-#test: (List/set U64 #0 (U64/add 1) [1 2 3]) == [2 2 3]
-#test: (List/set U64 #1 (U64/add 1) [1 2 3]) == [1 3 3]
-#test: (List/set U64 #2 (U64/add 1) [1 2 3]) == [1 2 4]
-#test: (List/set U64 #3 (U64/add 1) [1 2 3]) == [1 2 3]
-#test: (List/set U64 #0 (U64/add 1) []) == []
+#test: (List/set U64 [] #0 (U64/add 1)) == []
+#test: (List/set U64 [1 2 3] #0 (U64/add 1)) == [2 2 3]
+#test: (List/set U64 [1 2 3] #1 (U64/add 1)) == [1 3 3]
+#test: (List/set U64 [1 2 3] #2 (U64/add 1)) == [1 2 4]
+#test: (List/set U64 [1 2 3] #3 (U64/add 1)) == [1 2 3]

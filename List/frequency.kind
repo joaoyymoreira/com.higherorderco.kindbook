@@ -3,8 +3,8 @@
 // - ord: Ord instance for A.
 // - xs: Input list.
 // = OrdTree mapping elements to their frequencies.
-List/frequency : ∀(A: *) (Ord A) -> (List A) -> (OrdTree A Nat)
-| A ord xs = (List/foldr A (OrdTree A Nat) (count-element A ord) (OrdTree/empty A Nat) xs)
+List/frequency : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdTree A Nat)
+| A ord xs = (List/foldr A (OrdTree A Nat) xs #Leaf (count-element A ord))
 
 // Counts an element in the frequency tree.
 // - A: Element type.
@@ -12,7 +12,7 @@ List/frequency : ∀(A: *) (Ord A) -> (List A) -> (OrdTree A Nat)
 // - x: Element to count.
 // - tree: Current frequency tree.
 // = Updated frequency tree.
-count-element : ∀(A: *) (Ord A) -> A -> (OrdTree A Nat) -> (OrdTree A Nat)
+count-element : ∀(A: *) ∀(ord: (Ord A)) A -> (OrdTree A Nat) -> (OrdTree A Nat)
 | A ord x tree with (OrdTree/get-pair A Nat ord x tree)
 . | #Some{#Pair{k v}} = (OrdTree/insert A Nat ord #Pair{k #Succ{v}} tree)
 . | #None             = (OrdTree/insert A Nat ord #Pair{x #1} tree)

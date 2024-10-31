@@ -3,23 +3,23 @@
 // - m: Monad instance for M.
 // - A: Input type.
 // - B: Output type.
-// - f: Monadic function to apply.
 // - ma: Input Maybe value.
+// - f: Monadic function to apply.
 // = Monadic Maybe value after applying f.
 Maybe/mmap
 : ∀(M: ∀(A: *) *)
   ∀(m: (Monad M))
   ∀(A: *)
   ∀(B: *)
-  (A -> (M B))
-  -> (Maybe A)
+  (Maybe A)
+  -> (A -> (M B))
   -> (M (Maybe B))
-| M #Monad{pure bind} A B f #None        = (pure (Maybe B) #None)
-| M #Monad{pure bind} A B f #Some{value} = 
+| M #Monad{pure bind} A B #None        f = (pure (Maybe B) #None)
+| M #Monad{pure bind} A B #Some{value} f = 
   (bind B (Maybe B) (f value) λx
   (pure (Maybe B) (#Some{x})))
 
-#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 x)) #None) == #Some{#None}
-#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 (+ x 1))) (#Some{3})) == #Some{#Some{4}}
-#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (λx #None) (#Some{3})) == #None
-#test: (Maybe/mmap Maybe Maybe/Monad U64 Bool (λx (Maybe/pure Bool (U64/to-bool (== x 0)))) (#Some{0})) == #Some{#Some{#True}}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (#Some{3}) (λx #None)) == #None
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 #None (λx (Maybe/pure U64 x))) == #Some{#None}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (#Some{3}) (λx (Maybe/pure U64 (+ x 1)))) == #Some{#Some{4}}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 Bool (#Some{0}) (λx (Maybe/pure Bool (U64/to-bool (== x 0))))) == #Some{#Some{#True}}

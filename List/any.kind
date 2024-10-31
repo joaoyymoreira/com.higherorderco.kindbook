@@ -1,11 +1,11 @@
 // Checks if any element satisfies a condition.
 // - A: Element type.
-// - cond: Condition function.
 // - x: Input list.
+// - cond: Condition function.
 // = True if any element satisfies, False otherwise.
-List/any : ∀(A: *) (A -> Bool) -> (List A) -> Bool
-| A cond #Nil             = #False
-| A cond #Cons{head tail} = (Bool/or (cond head) (List/any A cond tail))
+List/any : ∀(A: *)  (List A) -> (A -> Bool) -> Bool
+| A #Nil             cond = #False
+| A #Cons{head tail} cond = (Bool/or (cond head) (List/any A tail cond))
 
-#test: (List/any U64 (λx (U64/to-bool (== x 3))) [1 2 3 4]) == #True
-#test: (List/any U64 (λx (U64/to-bool (== x 5))) [1 2 3 4]) == #False
+#test: (List/any U64 [1 2 3 4] (λx (U64/to-bool (== x 3)))) == #True
+#test: (List/any U64 [1 2 3 4] (λx (U64/to-bool (== x 5)))) == #False

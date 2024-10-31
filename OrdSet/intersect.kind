@@ -4,7 +4,7 @@
 // - s1: First OrdSet.
 // - s2: Second OrdSet.
 // = New OrdSet with elements present in both sets.
-OrdSet/intersect : ∀(K: *) (Ord K) -> (OrdSet K) -> (OrdSet K) -> (OrdSet K)
+OrdSet/intersect : ∀(K: *)  ∀(ord: (Ord K)) (OrdSet K) -> (OrdSet K) -> (OrdSet K)
 | K ord s1 s2 = (OrdTree/intersect K Unit ord s1 s2)
 
 #test: (OrdSet/intersect U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/empty U64)) == (OrdSet/empty U64)

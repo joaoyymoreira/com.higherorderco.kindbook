@@ -3,14 +3,14 @@
 // - show: Show instance for A.
 // - xs: Input list.
 // = String representation of the list.
-List/to-string : ∀(A: *) (Show A) -> (List A) -> String
+List/to-string : ∀(A: *) ∀(show: (Show A)) (List A) -> String
 | A show #Nil             = "[]"
 | A show #Cons{head tail} =
   let head_str = (Show/to-string A show head)
   let tail_str = (List/to-string-rest A show tail)
   (String/append "[" (String/append head_str tail_str))
 
-List/to-string-rest : ∀(A: *) (Show A) -> (List A) -> String
+List/to-string-rest : ∀(A: *) ∀(show: (Show A)) (List A) -> String
 | A show #Nil             = "]"
 | A show #Cons{head tail} =
   let head_str = (Show/to-string A show head)

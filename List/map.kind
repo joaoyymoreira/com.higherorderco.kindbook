@@ -1,9 +1,9 @@
 // Applies a function to each element of a list.
 // - A: The type of elements in the input list.
 // - B: The type of elements in the output list.
-// - fn: The function to be applied.
 // - xs: The elements to apply fn to.
+// - fn: The function to be applied.
 // = A new list with fn applied to all elements.
-List/map : ∀(A: *) ∀(B: *) (A -> B) -> (List A) -> (List B)
-| A B fn #Nil             = #Nil
-| A B fn #Cons{head tail} = #Cons{(fn head) (List/map A B fn tail)}
+List/map : ∀(A: *) ∀(B: *) (List A) -> (A -> B) -> (List B)
+| A B #Nil             fn = #Nil
+| A B #Cons{head tail} fn = #Cons{(fn head) (List/map A B tail fn)}

@@ -8,7 +8,7 @@
 BinMap/union : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
 | A m1 m2 = 
   (List/foldr (Pair Bits A) (BinMap A)
-    {λ{#Pair{k v}: λacc (BinMap/set A acc k v)} : (Pair Bits A) -> (BinMap A) -> (BinMap A)}
-    m2 
     (BinMap/to-list A m1)
+    m2 
+    {λ{#Pair{k v}: λacc (BinMap/set A acc k v)} : (Pair Bits A) -> (BinMap A) -> (BinMap A)}
   )

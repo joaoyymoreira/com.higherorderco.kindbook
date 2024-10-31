@@ -5,7 +5,7 @@
 String/starts-with : String -> String -> Bool
 | str prefix =
   let #Pair{prefix_list prefix_length} = (List/length-got U64 prefix)
-  let str_prefix = (List/take U64 prefix_length str)
+  let str_prefix = (List/take U64 str prefix_length)
   let str_length = (List/length U64 str_prefix)
   (Bool/and
     (String/eq str_prefix prefix_list)

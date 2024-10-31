@@ -1,5 +1,5 @@
 // Instance of Show for Pair
-Pair/Show : ∀(A: *) ∀(B: *) (Show A) -> (Show B) -> (Show (Pair A B))
+Pair/Show : ∀(A: *) ∀(B: *) ∀(show_a: (Show A)) ∀(show_b: (Show B)) (Show (Pair A B))
 | A B show_a show_b = #Show{
   to-string: (Pair/to-string A B show_a show_b)
 }

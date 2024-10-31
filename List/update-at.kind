@@ -5,7 +5,7 @@
 // - f: Function to apply.
 // = Updated list or original if n is out of bounds.
 List/update-at : ∀(A: *) (List A) -> Nat -> (A -> A) -> (List A)
-| A #Nil             n f = #Nil
+| A #Nil             n        f = #Nil
 | A #Cons{head tail} #Zero    f = #Cons{(f head) tail}
 | A #Cons{head tail} #Succ{n} f = #Cons{head (List/update-at A tail n f)}
 

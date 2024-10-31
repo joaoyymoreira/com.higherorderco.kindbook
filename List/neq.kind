@@ -4,7 +4,7 @@
 // - xs: First list.
 // - ys: Second list.
 // = True if not equal, False otherwise.
-List/neq : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> Bool
+List/neq : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> (List A) -> Bool
 | A e #Nil        #Nil        = #False
 | A e #Nil        #Cons{y ys} = #True
 | A e #Cons{x xs} #Nil        = #True

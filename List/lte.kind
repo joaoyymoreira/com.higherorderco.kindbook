@@ -4,7 +4,7 @@
 // - xs: First list.
 // - ys: Second list.
 // = True if xs <= ys, False otherwise.
-List/lte : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Bool
+List/lte : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (List A) -> Bool
 | A O #Nil        #Nil        = #True
 | A O #Nil        #Cons{y ys} = #True
 | A O #Cons{x xs} #Nil        = #False

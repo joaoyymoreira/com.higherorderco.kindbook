@@ -1,17 +1,17 @@
 // Drops elements from a list while a predicate holds.
 // - A: Element type.
-// - fn: Predicate function.
 // - xs: Input list.
+// - fn: Predicate function.
 // = Remaining list after dropping satisfying prefix.
-List/drop-while : ∀(A: *) (A -> Bool) -> (List A) -> (List A)
-| A fn #Nil             = #Nil
-| A fn #Cons{head tail} =
+List/drop-while : ∀(A: *) (List A) -> (A -> Bool) -> (List A)
+| A #Nil             fn = #Nil
+| A #Cons{head tail} fn =
   if (fn head) {
-    (List/drop-while A fn tail)
+    (List/drop-while A tail fn)
   } else {
     #Cons{head tail}
   }
 
-#test: (List/drop-while U64 (λx (U64/to-bool (< x 3))) [1 2 3 4 5]) == [3 4 5]
-#test: (List/drop-while U64 (λx (U64/to-bool (< x 10))) [1 2 3 4 5]) == []
-#test: (List/drop-while U64 (λx (U64/to-bool (> x 10))) [1 2 3 4 5]) == [1 2 3 4 5]
+#test: (List/drop-while U64 [1 2 3 4 5] (λx (U64/to-bool (< x 3)))) == [3 4 5]
+#test: (List/drop-while U64 [1 2 3 4 5] (λx (U64/to-bool (< x 10)))) == []
+#test: (List/drop-while U64 [1 2 3 4 5] (λx (U64/to-bool (> x 10)))) == [1 2 3 4 5]

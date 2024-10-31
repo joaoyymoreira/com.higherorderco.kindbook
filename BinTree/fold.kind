@@ -1,17 +1,17 @@
 // Performs a fold operation on a binary tree.
 // - A: The type of elements in the tree.
 // - B: The type of the result.
-// - n: Function to apply to each node.
-// - l: Value to use for leaf nodes.
 // - t: The tree to fold over.
+// - l: Value to use for leaf nodes.
+// - n: Function to apply to each node.
 // = The result of folding the tree.
-BinTree/fold : ∀(A: *) ∀(B: *) (A -> B -> B -> B) -> B -> (BinTree A) -> B
-| A B n l #Leaf              = l
-| A B n l #Node{val lft rgt} = (n val (BinTree/fold A B n l lft) (BinTree/fold A B n l rgt))
+BinTree/fold : ∀(A: *) ∀(B: *) (BinTree A) -> B -> (A -> B -> B -> B) -> B
+| A B #Leaf              l n = l
+| A B #Node{val lft rgt} l n = (n val (BinTree/fold A B lft l n) (BinTree/fold A B rgt l n))
 
-#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Leaf) == #0
-#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}}) == #6
-#test: (BinTree/fold Bool Bool (λx λl λr (Bool/or x (Bool/or l r))) #False #Node{#True #Node{#False #Leaf #Leaf} #Node{#False #Leaf #Leaf}}) == #True
-#test: (BinTree/fold Nat Nat (λx λl λr (Nat/add x (Nat/add l r))) #0 #Node{#1 #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}} #Node{#5 #Leaf #Leaf}}) == #15
-#test: (BinTree/fold Nat Nat (λx λl λr (Nat/mul x (Nat/mul l r))) #1 #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}}) == #24
-#test: (BinTree/fold Nat Nat (λx λl λr (Nat/max x (Nat/max l r))) #0 #Node{#5 #Node{#3 #Node{#7 #Leaf #Leaf} #Leaf} #Node{#2 #Leaf #Node{#6 #Leaf #Leaf}}}) == #7
+#test: (BinTree/fold Nat Nat #Leaf #0 (λx λl λr (Nat/add x (Nat/add l r)))) == #0
+#test: (BinTree/fold Nat Nat #Node{#1 #Node{#2 #Leaf #Leaf} #Node{#3 #Leaf #Leaf}} #0 (λx λl λr (Nat/add x (Nat/add l r)))) == #6
+#test: (BinTree/fold Nat Nat #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}} #1 (λx λl λr (Nat/mul x (Nat/mul l r)))) == #24
+#test: (BinTree/fold Bool Bool #Node{#True #Node{#False #Leaf #Leaf} #Node{#False #Leaf #Leaf}} #False (λx λl λr (Bool/or x (Bool/or l r)))) == #True
+#test: (BinTree/fold Nat Nat #Node{#1 #Node{#2 #Node{#3 #Leaf #Leaf} #Node{#4 #Leaf #Leaf}} #Node{#5 #Leaf #Leaf}} #0 (λx λl λr (Nat/add x (Nat/add l r)))) == #15
+#test: (BinTree/fold Nat Nat #Node{#5 #Node{#3 #Node{#7 #Leaf #Leaf} #Leaf} #Node{#2 #Leaf #Node{#6 #Leaf #Leaf}}} #0 (λx λl λr (Nat/max x (Nat/max l r)))) == #7

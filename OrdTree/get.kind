@@ -1,19 +1,19 @@
-// Retrieves a value from an AVL tree.
+// Retrieves a value from an OrdTree tree.
 // - K: Key type.
 // - V: Value type.
 // - ord: Ord instance for K.
+// - tree: The Ordtree tree.
 // - key: Key to search for.
-// - tree: The AVL tree.
 // = Maybe containing the value if found.
-OrdTree/get : ∀(K: *) ∀(V: *) (Ord K) -> K -> (OrdTree K V) -> (Maybe V)
-| K V ord key #Leaf = #None
-| K V ord key #Node{#Pair{curr-key curr-val} _ left right} =
+OrdTree/get : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe V)
+| K V ord #Leaf                                        key = #None
+| K V ord #Node{#Pair{curr-key curr-val} _ left right} key =
   (Cmp/match (Maybe V)
-    (OrdTree/get K V ord key left)
+    (OrdTree/get K V ord left key)
     (#Some{curr-val})
-    (OrdTree/get K V ord key right)
-    (Ord/compare K ord key curr-key))
+    (OrdTree/get K V ord right key)
+    (Ord/compare K ord curr-key key))
 
-#test: (OrdTree/get U64 String U64/Ord 1 (OrdTree/empty U64 String)) == #None
-#test: (OrdTree/get U64 String U64/Ord 1 (OrdTree/singleton U64 String #Pair{1 "one"})) == #Some{"one"}
-#test: (OrdTree/get U64 String U64/Ord 2 (OrdTree/singleton U64 String #Pair{1 "one"})) == #None
+#test: (OrdTree/get U64 String U64/Ord (OrdTree/empty U64 String) 1 ) == #None
+#test: (OrdTree/get U64 String U64/Ord (OrdTree/singleton U64 String #Pair{1 "one"}) 1) == #Some{"one"}
+#test: (OrdTree/get U64 String U64/Ord (OrdTree/singleton U64 String #Pair{1 "one"}) 2) == #None

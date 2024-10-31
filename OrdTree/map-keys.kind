@@ -3,16 +3,16 @@
 // - V: Value type.
 // - A: New key type.
 // - ord: Ord instance for A.
-// - f: Function to map keys.
 // - tree: Input OrdTree.
+// - f: Function to map keys.
 // = OrdTree with mapped keys.
-OrdTree/map-keys : ∀(K: *) ∀(V: *) ∀(A: *) (Ord A) -> (K -> A) -> (OrdTree K V) -> (OrdTree A V)
-| K V A ord f tree =
+OrdTree/map-keys : ∀(K: *) ∀(V: *) ∀(A: *) ∀(ord: (Ord A)) (OrdTree K V) -> (K -> A) -> (OrdTree A V)
+| K V A ord tree f =
   (OrdTree/fold K V (OrdTree A V)
-    (λkv λacc (OrdTree/insert A V ord #Pair{(f (Pair/get-fst K V kv)) (Pair/get-snd K V kv)} acc))
+    tree
     (OrdTree/empty A V)
-    tree)
+    (λkv λacc (OrdTree/insert A V ord #Pair{(f (Pair/get-fst K V kv)) (Pair/get-snd K V kv)} acc)))
 
-#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (Function/id U64) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == [#Pair{1 10}]
-#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (λx (+ x 1)) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == [#Pair{2 10}]
-#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (λx (* x 2)) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))))) == [#Pair{2 10} #Pair{4 20}]
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (Function/id U64))) == [#Pair{1 10}]
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (λx (+ x 1)))) == [#Pair{2 10}]
+#test: (OrdTree/to-list U64 U64 (OrdTree/map-keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))) (λx (* x 2)))) == [#Pair{2 10} #Pair{4 20}]

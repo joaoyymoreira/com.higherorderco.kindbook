@@ -3,11 +3,11 @@
 // - xs: Input list.
 // = List of (index, element) pairs.
 List/enumerate : ∀(A: *) (List A) -> (List (Pair Nat A))
-= λA λxs (List/enumerate/go A #Zero xs)
+= λA λxs (List/enumerate/go A xs #Zero)
 
 // Recursive helper for enumerate.
-List/enumerate/go : ∀(A: *) Nat -> (List A) -> (List (Pair Nat A))
-| A n #Nil        = #Nil
-| A n #Cons{x xs} = #Cons{#Pair{n x} (List/enumerate/go A (#Succ{n}) xs)}
+List/enumerate/go : ∀(A: *)(List A) -> Nat -> (List (Pair Nat A))
+| A #Nil             n = #Nil
+| A #Cons{head tail} n = #Cons{#Pair{n head} (List/enumerate/go A tail (#Succ{n}))}
 
 #test: (List/enumerate (List U64) ["0" "1"]) == [#Pair{#0 "0"} #Pair{#1 "1"}]

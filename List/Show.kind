@@ -1,5 +1,5 @@
 // Instance of Show for List
-List/Show : ∀(A: *) ∀(s: (Show A)) (Show (List A))
+List/Show : ∀(A: *) ∀(show: (Show A)) (Show (List A))
 | A show = #Show{
-  to-string: λxs (List/to-string A show xs)
+  to-string: (List/to-string A show)
 }
