@@ -1,0 +1,8 @@
+use Bend/Net/Node as Node
+use Bend/Net/Port as Port
+
+Node/set : Node -> U64 -> Port -> (Maybe Node)
+| #Node{main aux1 aux2 kind} 0 port = #Some{#Node{port aux1 aux2 kind}}
+| #Node{main aux1 aux2 kind} 1 port = #Some{#Node{main port aux2 kind}}
+| #Node{main aux1 aux2 kind} 2 port = #Some{#Node{main aux1 port kind}}
+| #Node{main aux1 aux2 kind} _    _ = #None

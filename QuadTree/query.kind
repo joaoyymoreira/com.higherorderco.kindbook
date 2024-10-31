@@ -15,7 +15,7 @@ QuadTree/query : ∀(A: *) (QuadTree A) -> QuadTree/Rectangle -> (List (QuadTree
 | A #Empty{bounds}        range = #Nil
 | A #Leaf{bounds objects} range =
   if (QuadTree/Rectangle/intersects bounds range) {
-    (List/filter (QuadTree/Object A) (QuadTree/query/go A range) objects)
+    (List/filter (QuadTree/Object A) objects (QuadTree/query/go A range))
   } else {
     #Nil
   }

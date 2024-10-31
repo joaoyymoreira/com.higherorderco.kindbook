@@ -4,9 +4,9 @@
 Parser/advance-many : Nat -> (Parser (Maybe String))
 | count state =
   let #State{chars index} = state
-  let consumed            = (List/take Char count chars)
+  let consumed            = (List/take _ chars count)
   let new-index           = (Nat/add index count)
-  let new-input           = (String/drop count chars)
+  let new-input           = (String/drop chars count)
   #Done{#Reply{#State{new-input new-index} #Some{consumed}}}
 
 #test: (Parser/advance-many #3 #State{"abcdef" #0}) == (#Done{#Reply{#State{"def" #3} #Some{"abc"}}})

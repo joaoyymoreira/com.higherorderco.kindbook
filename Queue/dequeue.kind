@@ -12,7 +12,7 @@ Queue/dequeue
 			let revb = (List/reverse A back)
 			use none = #None
 			use some = λhead λtail #Some{#Pair{head #Queue{tail #Nil}}}
-			(List/match A (λx (Maybe (Pair A (Queue A)))) none some revb)
+			(List/match A (λx (Maybe (Pair A (Queue A)))) revb none some)
 		#Cons: λhead λtail λback #Some{#Pair{head #Queue{tail back}}}
 	} 
 }
