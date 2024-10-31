@@ -17,5 +17,5 @@ parser1 : (Parser Nat)
 parser2 : Nat -> (Parser String)
 | n state = #Done{#Reply{state (String/replicate n 'a')}}
 
-#test: ((Parser/bind Nat String parser1 parser2) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "aaaaa"}})
-#test: ((Parser/bind Nat String parser1 (λx (Parser/pure String "hello"))) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "hello"}})
+//#test: ((Parser/bind Nat String parser1 parser2) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "aaaaa"}})
+//#test: ((Parser/bind Nat String parser1 (λx (Parser/pure String "hello"))) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "hello"}})

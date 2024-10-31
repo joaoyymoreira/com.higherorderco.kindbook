@@ -4,10 +4,10 @@
 Parser/take-while : (Char -> Bool) -> (Parser String)
 | pred state = 
   let #State{inp idx} = state
-  let consumed        = (List/take-while Char pred inp)
+  let consumed        = (List/take-while Char inp pred)
   let #Pair{cs count} = (String/length-got consumed)
   let new-idx         = (Nat/add idx count)
-  let new-inp         = (String/drop count inp)
+  let new-inp         = (String/drop inp count)
   #Done{#Reply{#State{new-inp new-idx} cs}}
 
 #test: (Parser/take-while Char/is-alpha (#State{"abcDEF123" #0})) == #Done{#Reply{#State{"123" #6} "abcDEF"}}

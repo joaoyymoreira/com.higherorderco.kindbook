@@ -2,9 +2,9 @@
 // - c: Char to replicate.
 // - n: Number of repetitions.
 // = String with n repetitions of c.
-String/replicate : Char -> Nat -> String
-| c #Zero    = ""
-| c #Succ{n} = (String/append (String/from-char c) (String/replicate c n))
+String/replicate : Nat -> Char -> String
+| #Zero    c = ""
+| #Succ{n} c = (String/append (String/from-char c) (String/replicate n c))
 
-#test: (String/replicate 'a' #0) == ""
-#test: (String/replicate 'a' #3) == "aaa"
+#test: (String/replicate #0 'a') == ""
+#test: (String/replicate #3 'a') == "aaa"

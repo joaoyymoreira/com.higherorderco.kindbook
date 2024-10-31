@@ -14,5 +14,5 @@ Parser/map : ∀(A: *) ∀(B: *) (Parser A) -> (A -> B) -> (Parser B)
     #Fail{e}: #Fail{e}
   }
 
-#test: (Parser/run U64 (Parser/map U64 U64 (λx (+ 1 x)) (Parser/pure U64 3)) "") == #Some{4}
-#test: (Parser/run U64 (Parser/map U64 U64 (λx (+ 1 x)) (Parser/fail U64 "error")) "") == #None
+#test: (Parser/run U64 (Parser/map U64 U64 (Parser/pure U64 3) (λx (+ 1 x))) "") == #Some{4}
+#test: (Parser/run U64 (Parser/map U64 U64 (Parser/fail U64 "error") (λx (+ 1 x))) "") == #None

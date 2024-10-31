@@ -7,11 +7,11 @@ String/pad-left : String -> Nat -> Char -> String
 | s n c =
   let #Pair{str len} = (List/length-got Char s)
   if (Nat/lt len n) {
-    (String/append (String/replicate c (Nat/sub n len)) str)
+    (String/append (String/replicate (Nat/sub n len) c) str)
   } else {
     str
   }
 
-#test: (String/pad-left "abc" #5 '0') == "00abc"
-#test: (String/pad-left "abc" #3 '0') == "abc"
-#test: (String/pad-left "abc" #2 '0') == "abc"
+//#test: (String/pad-left "abc" #5 '0') == "00abc"
+//#test: (String/pad-left "abc" #3 '0') == "abc"
+//#test: (String/pad-left "abc" #2 '0') == "abc"

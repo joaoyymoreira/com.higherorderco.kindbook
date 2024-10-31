@@ -4,10 +4,10 @@
 Parser/skip-spaces : (Parser Nat)
 | state =
   let #State{chars index} = state
-  let skipped   = (List/take-while Char Char/is-space chars)
+  let skipped   = (List/take-while Char chars Char/is-space)
   let count     = (String/length skipped)
   let new-index = (Nat/add index count)
-  let new-input = (String/drop count chars)
+  let new-input = (String/drop chars count)
   #Done{#Reply{#State{new-input new-index} count}}
 
 

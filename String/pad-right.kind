@@ -7,7 +7,7 @@ String/pad-right : String -> Nat -> Char -> String
 | s n c =
   let #Pair{str len} = (List/length-got Char s)
   if (Nat/lt len n) {
-    (String/append str (String/replicate c (Nat/sub n len)))
+    (String/append str (String/replicate (Nat/sub n len) c))
   } else {
     str
   }
