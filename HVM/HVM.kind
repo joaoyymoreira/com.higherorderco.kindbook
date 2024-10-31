@@ -220,6 +220,9 @@ HVM/RTerm/get-loc : HVM/RTerm -> HVM/RLoc
 HVM/at : U64 -> U64 -> U64
 | n x = (+ n x)
 
+HVM/get-itrs : (HVM U64)
+| #RNet{buff node #RRange{ini end}} = #Pair{#RNet{buff node #RRange{ini end}} (/ end 2)}
+
 // RBuff
 // -----
 
@@ -813,7 +816,7 @@ HVM/interact/go
   HVM/RTag -> HVM/RLab -> HVM/RLoc ->
   (HVM Unit)
 | #APP app_lab app_loc #LAM lam_lab lam_loc = do HVM {
-  //log "APP-LAM"
+  log "APP-LAM"
   ask arg = (HVM/take (HVM/at 1 app_loc))
   ask ret = (HVM/take (HVM/at 2 app_loc))
   ask var = (HVM/take (HVM/at 1 lam_loc))
@@ -823,7 +826,7 @@ HVM/interact/go
   ret #Unit
 }
 | #APP app_lab app_loc #SUP sup_lab sup_loc = do HVM {
-  //log "APP-SUP"
+  log "APP-SUP"
   ask arg = (HVM/take (HVM/at 1 app_loc))
   ask ret = (HVM/take (HVM/at 2 app_loc))
   ask tm1 = (HVM/take (HVM/at 1 sup_loc))
@@ -847,7 +850,7 @@ HVM/interact/go
   ret #Unit
 }
 | #APP app_lab app_loc #NUL nul_lab nul_loc = do HVM {
-  //log "APP-NUL"
+  log "APP-NUL"
   ask arg = (HVM/take (HVM/at 1 app_loc))
   ask ret = (HVM/take (HVM/at 2 app_loc))
   ask (HVM/link (#RTerm{ #ERA 0 0 }) arg)
@@ -855,7 +858,7 @@ HVM/interact/go
   ret #Unit
 }
 | #DUP dup_lab dup_loc #SUP sup_lab sup_loc = do HVM {
-  //log "DUP-SUP"
+  log "DUP-SUP"
   ask dp1 = (HVM/take (HVM/at 1 dup_loc))
   ask dp2 = (HVM/take (HVM/at 2 dup_loc))
   ask tm1 = (HVM/take (HVM/at 1 sup_loc))
@@ -865,7 +868,7 @@ HVM/interact/go
   ret #Unit
 }
 | #DUP dup_lab dup_loc #LAM lam_lab lam_loc = do HVM {
-  //log "DUP-LAM"
+  log "DUP-LAM"
   ask dp1 = (HVM/take (HVM/at 1 dup_loc))
   ask dp2 = (HVM/take (HVM/at 2 dup_loc))
   ask var = (HVM/take (HVM/at 1 lam_loc))
@@ -889,7 +892,7 @@ HVM/interact/go
   ret #Unit
 }
 | #DUP dup_lab dup_loc #NUL nul_lab nul_loc = do HVM {
-  //log "DUP-NUL"
+  log "DUP-NUL"
   ask dp1 = (HVM/take (HVM/at 1 dup_loc))
   ask dp2 = (HVM/take (HVM/at 2 dup_loc))
   ask (HVM/link dp1 (#RTerm{ #NUL 0 0 }))
@@ -897,7 +900,7 @@ HVM/interact/go
   ret #Unit
 }
 | #ERA era_lab era_loc #LAM lam_lab lam_loc = do HVM {
-  //log "ERA-LAM"
+  log "ERA-LAM"
   ask var = (HVM/take (HVM/at 1 lam_loc))
   ask bod = (HVM/take (HVM/at 2 lam_loc))
   ask (HVM/link var (#RTerm{ #NUL 0 0 }))
@@ -905,7 +908,7 @@ HVM/interact/go
   ret #Unit
 }
 | #ERA era_lab era_loc #SUP sup_lab sup_loc = do HVM {
-  //log "ERA-SUP"
+  log "ERA-SUP"
   ask tm1 = (HVM/take (HVM/at 1 sup_loc))
   ask tm2 = (HVM/take (HVM/at 2 sup_loc))
   ask (HVM/link (#RTerm{ #ERA 0 0 }) tm1)
@@ -913,7 +916,7 @@ HVM/interact/go
   ret #Unit
 }
 | #ERA era_lab era_loc #NUL nul_lab nul_loc = do HVM {
-  //log "ERA-NUL"
+  log "ERA-NUL"
   ret #Unit
 }
 | at ak al bt bk bl = do HVM {
@@ -957,46 +960,100 @@ main
 : String/View
 = (HVM/run _ do HVM {
 
-  // Net Source
-  //use src = "e & ((d d) e) ~ ({(b c) (a b)} (a c))"
-  //use src = "y & ((((* (u u)) ((v (* v)) w)) w) ((x (* x)) y)) ~ (q (s t)) & (r (s t)) ~ ({(g h) {(f g) {(e f) {(d e) {(c d) {(b c) (a b)}}}}}} (a h)) & (q r) ~ ({(o p) {(n o) {(m n) {(l m) {(k l) {(j k) (i j)}}}}}} (i p))"
-  // 67 interactions
-  use src = "
-    o
-    & ((((* (k k)) ((l (* l)) m)) m) ((n (* n)) o)) ~ (g (i j))
-    & (h (i j)) ~ ({(b c) (a b)} (a c))
-    & (g h) ~ ({(e f) (d e)} (d f))
+  // not^(2^4)(true) - 264 ITRS
+  use f4 = "q
+    & ((p (* p)) q) ~ (m o)
+    & {(e f) (d e)} ~ (((* (a a)) ((b (* b)) c)) c)
+    & {(h i) (g h)} ~ (d f)
+    & {(k l) (j k)} ~ (g i)
+    & {(n o) (m n)} ~ (j l)
   "
-  // 2367 interactions (takes ~2 mins)
-  //use src = "
-    //ib
-    //& ((((* (eb eb)) ((fb (* fb)) gb)) gb) ((hb (* hb)) ib)) ~ (ab (cb db))
-    //& (bb (cb db)) ~ ({(l m) {(k l) {(j k) {(i j) {(h i) {(g h) {(f g) {(e f) {(d e) {(c d) {(b c) (a b)}}}}}}}}}}} (a m))
-    //& (ab bb) ~ ({(y z) {(x y) {(w x) {(v w) {(u v) {(t u) {(s t) {(r s) {(q r) {(p q) {(o p) (n o)}}}}}}}}}}} (n z))
-  //"
 
-  //let net = (HVM/do-parse-net src)
-  //log (#View{(HVM/Net/to-string net)} :: String/View)
+  // not^(2^8)(true) - 4120 ITRS
+  use f8 = "cb
+    & ((bb (* bb)) cb) ~ (y ab)
+    & {(e f) (d e)} ~ (((* (a a)) ((b (* b)) c)) c)
+    & {(h i) (g h)} ~ (d f)
+    & {(k l) (j k)} ~ (g i)
+    & {(n o) (m n)} ~ (j l)
+    & {(q r) (p q)} ~ (m o)
+    & {(t u) (s t)} ~ (p r)
+    & {(w x) (v w)} ~ (s u)
+    & {(z ab) (y z)} ~ (v x)
+  "
+
+  // not^(2^12)(true) - 65576 ITRS
+  use fC = "ob
+    & ((nb (* nb)) ob) ~ (kb mb)
+    & {(e f) (d e)} ~ (((* (a a)) ((b (* b)) c)) c)
+    & {(h i) (g h)} ~ (d f)
+    & {(k l) (j k)} ~ (g i)
+    & {(n o) (m n)} ~ (j l)
+    & {(q r) (p q)} ~ (m o)
+    & {(t u) (s t)} ~ (p r)
+    & {(w x) (v w)} ~ (s u)
+    & {(z ab) (y z)} ~ (v x)
+    & {(cb db) (bb cb)} ~ (y ab)
+    & {(fb gb) (eb fb)} ~ (bb db)
+    & {(ib jb) (hb ib)} ~ (eb gb)
+    & {(lb mb) (kb lb)} ~ (hb jb)
+  "
+
+  // not^(2^14)(true) - 262192 ITRS
+  use fC = "ub
+    & ((tb (* tb)) ub) ~ (qb sb)
+    & {(e f) (d e)} ~ (((* (a a)) ((b (* b)) c)) c)
+    & {(h i) (g h)} ~ (d f)
+    & {(k l) (j k)} ~ (g i)
+    & {(n o) (m n)} ~ (j l)
+    & {(q r) (p q)} ~ (m o)
+    & {(t u) (s t)} ~ (p r)
+    & {(w x) (v w)} ~ (s u)
+    & {(z ab) (y z)} ~ (v x)
+    & {(cb db) (bb cb)} ~ (y ab)
+    & {(fb gb) (eb fb)} ~ (bb db)
+    & {(ib jb) (hb ib)} ~ (eb gb)
+    & {(lb mb) (kb lb)} ~ (hb jb)
+    & {(ob pb) (nb ob)} ~ (kb mb)
+    & {(rb sb) (qb rb)} ~ (nb pb)"
+
+  // not^(2^16)(true) - 1048632 ITRS
+  use fG = "ac
+    & ((zb (* zb)) ac) ~ (wb yb)
+    & {(e f) (d e)} ~ (((* (a a)) ((b (* b)) c)) c)
+    & {(h i) (g h)} ~ (d f)
+    & {(k l) (j k)} ~ (g i)
+    & {(n o) (m n)} ~ (j l)
+    & {(q r) (p q)} ~ (m o)
+    & {(t u) (s t)} ~ (p r)
+    & {(w x) (v w)} ~ (s u)
+    & {(z ab) (y z)} ~ (v x)
+    & {(cb db) (bb cb)} ~ (y ab)
+    & {(fb gb) (eb fb)} ~ (bb db)
+    & {(ib jb) (hb ib)} ~ (eb gb)
+    & {(lb mb) (kb lb)} ~ (hb jb)
+    & {(ob pb) (nb ob)} ~ (kb mb)
+    & {(rb sb) (qb rb)} ~ (nb pb)
+    & {(ub vb) (tb ub)} ~ (qb sb)
+    & {(xb yb) (wb xb)} ~ (tb vb)
+  "
 
   // Boots Net
-  ask (HVM/boot (HVM/do-parse-net src))
+  ask (HVM/boot (HVM/do-parse-net f8))
 
-  // Evaluation
-  //ask HVM/eval-one
-  //ask HVM/eval-one
-  //ask HVM/eval-one
-  //ask HVM/eval-one
-  //ask HVM/eval-one
+  // Normalizes
   ask HVM/eval-strict
 
-  // Gets resulting net
+  // Results
   ask net  = HVM/get-net
   ask rnet = HVM/get-rnet
+  ask itrs = HVM/get-itrs
 
-  // Logs Net and Memory
+  // Logs
+  log "[ITRS]"
+  log (U64/to-string itrs)
   log "[NET]"
   log (HVM/Net/to-string net)
-  log ""
   log "[RNET]"
   log (HVM/RNet/to-string rnet)
 

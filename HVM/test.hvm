@@ -1,7 +1,18 @@
-@main =
-    o
-    & ((((* (k k)) ((l (* l)) m)) m) ((n (* n)) o)) ~ (g (i j))
-    & (h (i j)) ~ ({(b c) (a b)} (a c))
-    & (g h) ~ ({(e f) (d e)} (d f))
+@main = ub
+  & (qb sb) ~ ((tb (* tb)) ub)
+  & (((* (a a)) ((b (* b)) c)) c) ~ {(e f) (d e)}
+  & (d f) ~ {(h i) (g h)}
+  & (g i) ~ {(k l) (j k)}
+  & (j l) ~ {(n o) (m n)}
+  & (m o) ~ {(q r) (p q)}
+  & (p r) ~ {(t u) (s t)}
+  & (s u) ~ {(w x) (v w)}
+  & (v x) ~ {(z ab) (y z)}
+  & (y ab) ~ {(cb db) (bb cb)}
+  & (bb db) ~ {(fb gb) (eb fb)}
+  & (eb gb) ~ {(ib jb) (hb ib)}
+  & (hb jb) ~ {(lb mb) (kb lb)}
+  & (kb mb) ~ {(ob pb) (nb ob)}
+  & (nb pb) ~ {(rb sb) (qb rb)}
 
 
