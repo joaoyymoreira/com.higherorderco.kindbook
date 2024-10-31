@@ -5,7 +5,7 @@
 // - ys: Second input list.
 // = List of all possible pairs from xs and ys.
 List/cartesian-product : ∀(A: *) ∀(B: *) (List A) -> (List B) -> (List (Pair A B))
-| A B xs ys = (List/cartesian-product-with A B (Pair A B) (λf λs #Pair{f s}) xs ys)
+| A B xs ys = (List/cartesian-product-with A B (Pair A B) xs ys (λf λs #Pair{f s}))
 
 #test: (List/cartesian-product U64 U64 [] []) == []
 #test: (List/cartesian-product U64 U64 [1] []) == []

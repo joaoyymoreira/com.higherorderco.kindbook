@@ -1,12 +1,12 @@
 // Maps elements to lists and concatenates results.
 // - A: Input type.
 // - B: Output type.
-// - f: Function mapping elements to lists.
 // - xs: Input list.
+// - f: Function mapping elements to lists.
 // = Concatenated list of all f results.
-List/concat-map : ∀(A: *) ∀(B: *) (A -> (List B)) -> (List A) -> (List B)
-| A B f xs = (List/concat B (List/map A (List B) f xs))
+List/concat-map : ∀(A: *) ∀(B: *) (List A) -> (A -> (List B)) -> (List B)
+| A B xs f = (List/concat B (List/map A (List B) xs f))
 
-#test: (List/concat-map Nat Nat (λx [x x]) [#1 #2 #3]) == [#1 #1 #2 #2 #3 #3]
-#test: (List/concat-map Nat Nat (λx []) [#1 #2 #3]) == []
-#test: (List/concat-map Nat Nat (Function/const _ _ [#0]) [#1 #2 #3]) == [#0 #0 #0]
+#test: (List/concat-map Nat Nat [#1 #2 #3] (λx [])) == []
+#test: (List/concat-map Nat Nat [#1 #2 #3] (λx [x x])) == [#1 #1 #2 #2 #3 #3]
+#test: (List/concat-map Nat Nat [#1 #2 #3] (Function/const _ _ [#0])) == [#0 #0 #0]

@@ -2,8 +2,8 @@
 data UG/SM/StateLogs/StateNode (S: *) {
   #StateNode {
     tick  : UG/SM/Tick
-    keep  : Nat
-    life  : Nat
+    keep  : U64
+    life  : U64
     state : S
     older : (Maybe (UG/SM/StateLogs/StateNode S))
   } 

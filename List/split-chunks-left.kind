@@ -1,17 +1,17 @@
 // Splits a list into chunks based on a predicate.
 // - A: Element type.
-// - pred: Predicate function.
 // - xs: Input list.
+// - pred: Predicate function.
 // = List of chunks.
-List/split-chunks-left : ∀(A: *) (A -> Bool) -> (List A) -> (List (List A))
-| A pred #Nil = []
-| A pred #Cons{x xs} with (pred x) 
-. | #True = #Cons{#Cons{x []} (List/split-chunks-left A pred xs)}
-. | #False with (List/split-chunks-left A pred xs) 
+List/split-chunks-left : ∀(A: *) (List A) -> (A -> Bool) -> (List (List A))
+| A #Nil pred = []
+| A #Cons{x xs} pred with (pred x) 
+. | #True = #Cons{#Cons{x []} (List/split-chunks-left A xs pred)}
+. | #False with (List/split-chunks-left A xs pred) 
 . . | #Nil          = #Cons{#Cons{x []} []}
 . . | #Cons{ys yss} = #Cons{#Cons{x ys} yss}
 
-#test: (List/split-chunks-left U64 (λx (U64/to-bool (== x 0))) [1 2 0 3 4 0 5]) == [[1 2 0] [3 4 0] [5]]
-#test: (List/split-chunks-left U64 (λx (U64/to-bool (== x 0))) []) == []
-#test: (List/split-chunks-left U64 (λx (U64/to-bool (== x 0))) [0 1 2 0 3]) == [[0] [1 2 0] [3]]
-#test: (List/split-chunks-left U64 (λx (U64/to-bool (== x 0))) [1 2 3]) == [[1 2 3]]
+#test: (List/split-chunks-left U64 [1 2 0 3 4 0 5] (λx (U64/to-bool (== x 0)))) == [[1 2 0] [3 4 0] [5]]
+#test: (List/split-chunks-left U64 [] (λx (U64/to-bool (== x 0)))) == []
+#test: (List/split-chunks-left U64 [0 1 2 0 3] (λx (U64/to-bool (== x 0)))) == [[0] [1 2 0] [3]]
+#test: (List/split-chunks-left U64 [1 2 3] (λx (U64/to-bool (== x 0)))) == [[1 2 3]]

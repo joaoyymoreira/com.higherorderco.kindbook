@@ -4,8 +4,8 @@
 // - fn: Function to apply to the parsed value.
 // - p: Parser to run.
 // = New parser that applies fn to the result of p if it succeeds.
-Parser/map : ∀(A: *) ∀(B: *) (A -> B) -> (Parser A) -> (Parser B)
-| A B fn p state = 
+Parser/map : ∀(A: *) ∀(B: *) (Parser A) -> (A -> B) -> (Parser B)
+| A B p fn state = 
   match (p state) {
     #Done{reply}: 
       match reply {

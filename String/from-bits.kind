@@ -3,8 +3,8 @@
 // = String representation of the input Bits.
 String/from-bits : Bits -> String
 | bits = 
-  let chunks = (Bits/split-chunks #21 bits)
-  (List/map Bits Char Bits/to-char chunks)
+  let chunks = (Bits/split-chunks bits #21)
+  (List/map Bits Char chunks Bits/to-char)
 
 #test: (String/from-bits #E) == ""
 #test: (String/from-bits (Nat/to-bits #65)) == "A"

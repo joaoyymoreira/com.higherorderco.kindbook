@@ -5,23 +5,30 @@
 // - t: Current tick.
 // = Updated state logs with new state.
 UG/SM/StateLogs/push : ∀(S: *) S -> (UG/SM/StateLogs S) -> UG/SM/Tick -> (UG/SM/StateLogs S)
-| S new_state #None           t = #Some{#StateNode{t #0 #0 new_state #None}}
+| S new_state #None           t = #Some{#StateNode{t 0 0 new_state #None}}
 | S new_state #Some{node}     t = 
   let keep = (UG/SM/StateLogs/StateNode/keep S node)
   (UG/SM/StateLogs/push/go S new_state node t keep)
 
 // Handles different cases based on 'keep' value.
-UG/SM/StateLogs/push/go : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> UG/SM/Tick -> Nat -> (UG/SM/StateLogs S)
-| S new_state node t #Zero     = #Some{(UG/SM/StateLogs/StateNode/set-keep S #1 node)}
-| S new_state node t #Succ{_}  = 
-  let life = (UG/SM/StateLogs/StateNode/life S node)
-  (UG/SM/StateLogs/push/go/life S new_state node t life)
+UG/SM/StateLogs/push/go : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> UG/SM/Tick -> U64 -> (UG/SM/StateLogs S)
+= λS λnew_state λnode λt λkeep
+  switch keep {
+    0: #Some{(UG/SM/StateLogs/StateNode/set-keep S 1 node)}
+    1+keep:
+      let life = (UG/SM/StateLogs/StateNode/life S node)
+      (UG/SM/StateLogs/push/go/life S new_state node t life)
+  }
 
 // Handles different cases based on 'life' value.
-UG/SM/StateLogs/push/go/life : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> UG/SM/Tick -> Nat -> (UG/SM/StateLogs S)
-| S new_state node t #Zero     = 
-  let updated_node = (UG/SM/StateLogs/StateNode/set-keep S #0 node)
-  #Some{#StateNode{t #0 (UG/SM/StateLogs/StateNode/life S node) new_state #Some{updated_node}}}
-| S new_state node t #Succ{new_life} = 
-  let updated_node = (UG/SM/StateLogs/StateNode/set-keep S #0 (UG/SM/StateLogs/StateNode/set-life S new_life node))
-  #Some{#StateNode{t #0 #0 new_state #Some{updated_node}}}
+UG/SM/StateLogs/push/go/life : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> UG/SM/Tick -> U64 -> (UG/SM/StateLogs S)
+= λS λnew_state λnode λt λkeep
+  switch keep {
+    0:
+      let updated_node = (UG/SM/StateLogs/StateNode/set-keep S 0 node)
+       #Some{#StateNode{t 0 (UG/SM/StateLogs/StateNode/life S node) new_state #Some{updated_node}}} 
+    1+new_life:
+      let updated_node = (UG/SM/StateLogs/StateNode/set-keep S 0 (UG/SM/StateLogs/StateNode/set-life S new_life node))
+      #Some{#StateNode{t 0 0 new_state #Some{updated_node}}}
+  }
+

@@ -1,18 +1,18 @@
 // Swaps an element at a given index with a new value.
 // - A: Element type.
-// - n: Index to swap.
-// - y: New value.
 // - xs: Input list.
+// - y: New value.
+// - n: Index to swap.
 // = Pair of new list and old value (if found).
-List/swap : ∀(A: *) Nat -> A -> (List A) -> (Pair (List A) (Maybe A))
-| A #Zero    y #Cons{x xs} = #Pair{#Cons{y xs} #Some{x}}
-| A #Succ{n} y #Cons{x xs} =
-  let #Pair{list maybe} = (List/swap A n y xs)
+List/swap : ∀(A: *) (List A) -> A -> Nat -> (Pair (List A) (Maybe A))
+| A #Nil        y n        = #Pair{#Nil #None}
+| A #Cons{x xs} y #Zero    = #Pair{#Cons{y xs} #Some{x}}
+| A #Cons{x xs} y #Succ{n} =
+  let #Pair{list maybe} = (List/swap A xs y n)
   #Pair{#Cons{x list} maybe}
-| A n        y #Nil        = #Pair{#Nil #None}
 
-#test: (List/swap U64 #0 42 [1 2 3]) == #Pair{[42 2 3] #Some{1}}
-#test: (List/swap U64 #1 42 [1 2 3]) == #Pair{[1 42 3] #Some{2}}
-#test: (List/swap U64 #2 42 [1 2 3]) == #Pair{[1 2 42] #Some{3}}
-#test: (List/swap U64 #3 42 [1 2 3]) == #Pair{[1 2 3] #None}
-#test: (List/swap U64 #0 42 []) == #Pair{[] #None}
+#test: (List/swap U64 [1 2 3] 42 #0) == #Pair{[42 2 3] #Some{1}}
+#test: (List/swap U64 [1 2 3] 42 #1) == #Pair{[1 42 3] #Some{2}}
+#test: (List/swap U64 [1 2 3] 42 #2) == #Pair{[1 2 42] #Some{3}}
+#test: (List/swap U64 [1 2 3] 42 #3) == #Pair{[1 2 3] #None}
+#test: (List/swap U64 [] 42 #0) == #Pair{[] #None}

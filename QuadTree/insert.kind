@@ -50,10 +50,10 @@ QuadTree/insert : ∀(A: *) (QuadTree A) -> (QuadTree/Object A) -> (QuadTree A)
     let swRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
     let seRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
 
-    let neTree = (List/foldr (QuadTree/Object A) (QuadTree A) (λobj λtree (QuadTree/distribute A obj tree neRect)) #Empty{neRect} #Cons{#Object{bounds value} objs})
-    let nwTree = (List/foldr (QuadTree/Object A) (QuadTree A) (λobj λtree (QuadTree/distribute A obj tree nwRect)) #Empty{nwRect} #Cons{#Object{bounds value} objs})
-    let swTree = (List/foldr (QuadTree/Object A) (QuadTree A) (λobj λtree (QuadTree/distribute A obj tree swRect)) #Empty{swRect} #Cons{#Object{bounds value} objs})
-    let seTree = (List/foldr (QuadTree/Object A) (QuadTree A) (λobj λtree (QuadTree/distribute A obj tree seRect)) #Empty{seRect} #Cons{#Object{bounds value} objs})
+    let neTree = (List/foldr (QuadTree/Object A) (QuadTree A) #Cons{#Object{bounds value} objs} #Empty{neRect} (λobj λtree (QuadTree/distribute A obj tree neRect)))
+    let nwTree = (List/foldr (QuadTree/Object A) (QuadTree A) #Cons{#Object{bounds value} objs} #Empty{nwRect} (λobj λtree (QuadTree/distribute A obj tree nwRect)))
+    let swTree = (List/foldr (QuadTree/Object A) (QuadTree A) #Cons{#Object{bounds value} objs} #Empty{swRect} (λobj λtree (QuadTree/distribute A obj tree swRect)))
+    let seTree = (List/foldr (QuadTree/Object A) (QuadTree A) #Cons{#Object{bounds value} objs} #Empty{seRect} (λobj λtree (QuadTree/distribute A obj tree seRect)))
     #Node{boundary neTree nwTree swTree seTree}
   }
 .| #False = #Leaf{boundary objs}

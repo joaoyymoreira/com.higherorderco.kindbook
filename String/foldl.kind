@@ -1,8 +1,8 @@
 // Left-folds a string.
 // - A: Accumulator type.
-// - f: Combining function.
-// - z: Initial value.
 // - s: Input string.
+// - z: Initial value.
+// - f: Combining function.
 // = Folded result.
-String/foldl : ∀(A: *) (A -> Char -> A) -> A -> String -> A
-| A f z s = (List/foldl A Char f z s)
+String/foldl : ∀(A: *) String -> A -> (A -> Char -> A) -> A
+| A s z f = (List/foldl A Char s z f)

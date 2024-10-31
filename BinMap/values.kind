@@ -3,16 +3,16 @@
 // - m: Input BinMap.
 // = List of values stored in the BinMap.
 BinMap/values : ∀(A: *) (BinMap A) -> (List A)
-| A m = (List/map (Pair Bits A) A (Pair/get-snd Bits A) (BinMap/to-list A m))
+| A m = (List/map (Pair Bits A) A (BinMap/to-list A m) (Pair/get-snd Bits A))
 
 #test:
-  let map = (BinMap/empty U64)
+  let map = (BinTree/leaf U64)
   (BinMap/values U64 map) == []
 
 #test: 
-  let map = (BinMap/empty U64)
+  let map = (BinTree/leaf U64) 
   let map = (BinMap/set U64 map #O{#O{#E}} 0)
-  let map = (BinMap/set U64 map #I{#O{#E}} 1)
-  let map = (BinMap/set U64 map #O{#I{#E}} 2)
+  let map = (BinMap/set U64 map #O{#I{#E}} 1)
+  let map = (BinMap/set U64 map #I{#O{#E}} 2)
   let map = (BinMap/set U64 map #I{#I{#E}} 3)
   (BinMap/values U64 map) == [0 1 2 3]

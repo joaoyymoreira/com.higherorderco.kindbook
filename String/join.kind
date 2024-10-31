@@ -4,7 +4,7 @@
 // - xs: List of strings to join.
 // = Single string with all inputs concatenated, separated by sep.
 String/join : String -> (List String) -> String
-| sep xs = (List/fold String xs String "" (String/join/go sep))
+| sep xs = (List/fold String String xs "" (String/join/go sep))
 
 String/join/go : String -> String -> String -> String
 | sep s #Nil        = s

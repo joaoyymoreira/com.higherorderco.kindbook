@@ -11,12 +11,13 @@ List/mmap
   ∀(m: (Monad M))
   ∀(A: *)
   ∀(B: *)
-  ∀(f: A -> (M B))
-  (List A) -> (M (List B))
-| M #Monad{pure bind} A B f #Nil = (pure (List B) #Nil)
-| M #Monad{pure bind} A B f #Cons{head tail} =
+  (List A) 
+  -> (A -> (M B))
+  -> (M (List B))
+| M #Monad{pure bind} A B #Nil             f = (pure (List B) #Nil)
+| M #Monad{pure bind} A B #Cons{head tail} f =
   (bind B (List B) (f head) λy
-  (bind (List B) (List B) (List/mmap M #Monad{pure bind} A B f tail) λys
+  (bind (List B) (List B) (List/mmap M #Monad{pure bind} A B tail f) λys
   (pure (List B) (#Cons{y ys}))))
 
 //#test: (List/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/Monad/pure U64 x)) [1 2 3]) == #Some{[1 2 3]}

@@ -1,12 +1,12 @@
 // Splits a list into two parts at the specified index.
 // - A: Input type.
-// - n: Split index.
 // - xs: Input list.
+// - n: Split index.
 // = Pair of lists: first n elements and the rest.
-List/split-at : ∀(A: *) Nat -> (List A) -> (Pair (List A) (List A))
-| A n xs = #Pair{(List/take A n xs) (List/drop A n xs)}
+List/split-at : ∀(A: *) (List A) -> Nat -> (Pair (List A) (List A))
+| A xs n = #Pair{(List/take A xs n) (List/drop A xs n)}
 
-#test: (List/split-at U64 #0 [1 2 3]) == #Pair{[] [1 2 3]}
-#test: (List/split-at U64 #2 [1 2 3]) == #Pair{[1 2] [3]}
-#test: (List/split-at U64 #5 [1 2 3]) == #Pair{[1 2 3] []}
-#test: (List/split-at U64 #3 []) == #Pair{[] []}
+#test: (List/split-at U64 [1 2 3] #0) == #Pair{[] [1 2 3]}
+#test: (List/split-at U64 [1 2 3] #2) == #Pair{[1 2] [3]}
+#test: (List/split-at U64 [1 2 3] #5) == #Pair{[1 2 3] []}
+#test: (List/split-at U64 [] #3) == #Pair{[] []}

@@ -1,11 +1,11 @@
 // Maps a function to both elements of a pair.
 // - A: The input type.
 // - B: The output type.
-// - f: The function to apply to both elements.
 // - p: The input pair.
+// - f: The function to apply to both elements.
 // = A new pair with the function applied to both elements.
-Pair/map : ∀(A: *) ∀(B: *) (A -> B) -> (Pair A A) -> (Pair B B)
-| A B f #Pair{fst snd} = #Pair{(f fst) (f snd)}
+Pair/map : ∀(A: *) ∀(B: *) (Pair A A) -> (A -> B) -> (Pair B B)
+| A B #Pair{fst snd} f = #Pair{(f fst) (f snd)}
 
-#test: (Pair/map U64 U64 (λx (+ x 1)) #Pair{1 2}) == #Pair{2 3}
-#test: (Pair/map Bool Bool Bool/not #Pair{#True #False}) == #Pair{#False #True}
+#test: (Pair/map U64 U64 #Pair{1 2} (λx (+ x 1))) == #Pair{2 3}
+#test: (Pair/map Bool Bool #Pair{#True #False} Bool/not) == #Pair{#False #True}

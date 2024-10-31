@@ -4,8 +4,8 @@
 // - xs: First list.
 // - ys: Second list.
 // = New list with elements from xs not in ys.
-List/difference : ∀(A: *) (IsEqual A) -> (List A) -> (List A) -> (List A)
-| A e xs ys = (List/filter A (λx (Bool/not (List/contains A e x ys))) xs)
+List/difference : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> (List A) -> (List A)
+| A e xs ys = (List/filter A xs (λx (Bool/not (List/contains A e ys x))))
 
 #test: (List/difference U64 (U64/IsEqual) [1 2 3] [2 3 4]) == [1]
 #test: (List/difference U64 (U64/IsEqual) [1 2 3] [4 5 6]) == [1 2 3]

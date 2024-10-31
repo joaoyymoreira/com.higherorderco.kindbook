@@ -2,7 +2,7 @@
 // - xs: Input list of nats.
 // = Product of all numbers in the list.
 List/product : (List Nat) -> Nat
-= (List/foldr Nat Nat Nat/mul #1)
+| xs = (List/foldr Nat Nat xs #1 Nat/mul)
 
 #test: (List/product []) == #1
 #test: (List/product [#3]) == #3

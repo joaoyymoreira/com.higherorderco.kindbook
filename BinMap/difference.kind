@@ -6,12 +6,12 @@
 BinMap/difference : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
 | A m1 m2 = 
   (List/foldr (Pair Bits A) _
-    (λ{#Pair{k v}: λacc (BinMap/del A acc k)})
-    m1
     (BinMap/to-list A m2)
+    m1
+    (λ{#Pair{k v}: λacc (BinMap/del A acc k)})
   )
 
-#test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/empty U64) (BinMap/empty U64))) == #True
-#test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} (BinMap/empty U64)) (BinMap/empty U64))) == #False
-#test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} (BinMap/empty U64)) (BinMap/insert U64 #Pair{#E 1} (BinMap/empty U64)))) == #True
-#test: (BinMap/get U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} (BinMap/empty U64)) (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/empty U64))) #E) == #Some{1}
+#test: (BinMap/is-empty U64 (BinMap/difference U64 #Leaf #Leaf)) == #True
+#test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) #Leaf)) == #False
+#test: (BinMap/is-empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) (BinMap/insert U64 #Pair{#E 1} #Leaf))) == #True
+#test: (BinMap/get U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) (BinMap/insert U64 #Pair{#I{#E} 2} #Leaf)) #E) == #Some{1}

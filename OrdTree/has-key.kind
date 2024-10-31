@@ -5,7 +5,7 @@
 // - key: Key to search.
 // - tree: The AVL tree.
 // = True if key exists, False otherwise.
-OrdTree/has-key : ∀(K: *) ∀(V: *) (Ord K) -> K -> (OrdTree K V) -> Bool
+OrdTree/has-key : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K V) -> Bool
 | K V ord key #Leaf = #False
 | K V ord key #Node{#Pair{curr-key curr-val} balance left right} =
   match (Ord/compare K ord key curr-key) {

@@ -7,7 +7,7 @@ Bits/pad-length : Bits -> Bits -> (Pair Bits Bits)
   let #Pair{bits_a len_a} = (Bits/length-got a)
   let #Pair{bits_b len_b} = (Bits/length-got b)
   let trg_len             = (Nat/max len_a len_b)
-  #Pair{(Bits/pad-zeros trg_len bits_a) (Bits/pad-zeros trg_len bits_b)}
+  #Pair{(Bits/pad-zeros bits_a trg_len) (Bits/pad-zeros bits_b trg_len)}
 
 #test: (Bits/pad-length #E #E) == #Pair{#E #E}
 #test: (Bits/pad-length #O{#E} #I{#E}) == #Pair{#O{#E} #I{#E}}

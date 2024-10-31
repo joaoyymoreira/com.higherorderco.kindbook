@@ -2,7 +2,7 @@
 // - S: State type.
 // - node: The StateNode.
 // = The 'keep' value.
-UG/SM/StateLogs/StateNode/keep : ∀(S: *) (UG/SM/StateLogs/StateNode S) -> Nat
+UG/SM/StateLogs/StateNode/keep : ∀(S: *) (UG/SM/StateLogs/StateNode S) -> U64
 | S #StateNode{tick keep life state older} = keep
 
-#test: (UG/SM/StateLogs/StateNode/keep Bool #StateNode{tick: #0 keep: #5 life: #10 state: #True older: #None}) == #5
+#test: (UG/SM/StateLogs/StateNode/keep Bool #StateNode{tick: 0 keep: 5 life: 10 state: #True older: #None}) == 5

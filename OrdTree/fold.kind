@@ -6,12 +6,12 @@
 // - z: The initial value (for the empty tree case).
 // - tree: The AVL tree to fold over.
 // = The result of folding the tree.
-OrdTree/fold : ∀(K: *) ∀(V: *) ∀(A: *) ((Pair K V) -> A -> A) -> A -> (OrdTree K V) -> A
-| K V A f z #Leaf                               = z
-| K V A f z #Node{key-value balance left right} =
-  let left-result = (OrdTree/fold K V A f z left)
+OrdTree/fold : ∀(K: *) ∀(V: *) ∀(A: *) (OrdTree K V) -> A -> ((Pair K V) -> A -> A) -> A
+| K V A #Leaf                               z f = z
+| K V A #Node{key-value balance left right} z f =
+  let left-result = (OrdTree/fold K V A left z f)
   let curr-result = (f key-value left-result)
-  (OrdTree/fold K V A f curr-result right)
+  (OrdTree/fold K V A right curr-result f)
 
-#test: (OrdTree/fold U64 String U64 (λp λacc (+ acc 1)) 0 (OrdTree/empty U64 String)) == 0
-#test: (OrdTree/fold U64 String (List (Pair U64 String)) (λp λacc #Cons{p acc}) #Nil (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String))) == [#Pair{1 "one"}]
+#test: (OrdTree/fold U64 String U64 (OrdTree/empty U64 String) 0 (λp λacc (+ acc 1))) == 0
+#test: (OrdTree/fold U64 String (List (Pair U64 String)) (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String)) [] (λp λacc #Cons{p acc})) == [#Pair{1 "one"}]

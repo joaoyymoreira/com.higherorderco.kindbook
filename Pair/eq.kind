@@ -6,7 +6,7 @@
 // - p1: First pair.
 // - p2: Second pair.
 // = True if pairs are equal, False otherwise.
-Pair/eq : ∀(A: *) ∀(B: *) (IsEqual A) -> (IsEqual B) -> (Pair A B) -> (Pair A B) -> Bool
+Pair/eq : ∀(A: *) ∀(B: *) ∀(ea: (IsEqual A)) ∀(eb: (IsEqual B)) (Pair A B) -> (Pair A B) -> Bool
 | A B ea eb #Pair{fst1 snd1} #Pair{fst2 snd2} =
   (Bool/and (IsEqual/eq A ea fst1 fst2) (IsEqual/eq B eb snd1 snd2))
 

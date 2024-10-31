@@ -3,7 +3,7 @@
 // - xs: Input list of Maybe values.
 // = New list containing all Some values.
 List/concat-maybes : ∀(A: *) (List (Maybe A)) -> (List A)
-| A xs = (List/foldr (Maybe A) (List A) (List/concat-maybes/go A) #Nil xs)
+| A xs = (List/foldr (Maybe A) (List A) xs #Nil (List/concat-maybes/go A))
 
 // Helper function for concat-maybes
 List/concat-maybes/go : ∀(A: *) (Maybe A) -> (List A) -> (List A)

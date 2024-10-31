@@ -2,11 +2,11 @@
 // - x: Input value.
 // = Square root of x.
 F64/sqrt : F64 -> F64
-| x = 
+| x =
   if (F64/is-zero x) {
     x
   } else {
-    (F64/sqrt/go x (F64/div x 2.0) 10)
+    (F64/sqrt-go x (F64/div x 2.0) 10)
   }
 
 // Newton-Raphson iteration for square root.
@@ -14,16 +14,16 @@ F64/sqrt : F64 -> F64
 // - guess: Current guess.
 // - iter: Remaining iterations.
 // = Improved square root approximation.
-F64/sqrt/go : F64 -> F64 -> U64 -> F64
+F64/sqrt-go : F64 -> F64 -> U64 -> F64
 | x guess iter =
   switch iter {
     0: guess
-    _{pred}:
+    1+p:
       let next = (F64/div (F64/add guess (F64/div x guess)) 2.0)
       if (F64/eq guess next) {
         next
       } else {
-        (F64/sqrt/go x next pred)
+        (F64/sqrt-go x next p)
       }
   }
 

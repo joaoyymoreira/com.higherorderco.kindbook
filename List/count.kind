@@ -1,17 +1,17 @@
 // Counts occurrences of an element in a list.
 // - A: Element type.
 // - e: Equality function for A.
-// - x: Element to count.
 // - xs: Input list.
+// - x: Element to count.
 // = Number of occurrences.
-List/count : ∀(A: *) (IsEqual A) -> A -> (List A) -> Nat
-| A e x #Nil             = #Zero
-| A e x #Cons{head tail} =
+List/count : ∀(A: *) ∀(e: (IsEqual A)) (List A) -> A -> Nat
+| A e #Nil             x = #Zero
+| A e #Cons{head tail} x =
   let count_head = (Bool/if Nat (IsEqual/eq A e x head) #1 #Zero)
-  let count_tail = (List/count A e x tail)
+  let count_tail = (List/count A e tail x)
   (Nat/add count_head count_tail)
 
-#test: (List/count Nat Nat/IsEqual #2 [#1 #2 #3 #2 #4 #2]) == #3
-#test: (List/count Nat Nat/IsEqual #5 [#1 #2 #3 #2 #4 #2]) == #0
-#test: (List/count Nat Nat/IsEqual #1 [#1]) == #1
-#test: (List/count Nat Nat/IsEqual #1 []) == #0
+#test: (List/count Nat Nat/IsEqual [#1 #2 #3 #2 #4 #2] #2) == #3
+#test: (List/count Nat Nat/IsEqual [#1 #2 #3 #2 #4 #2] #5) == #0
+#test: (List/count Nat Nat/IsEqual [#1] #1) == #1
+#test: (List/count Nat Nat/IsEqual [] #1) == #0

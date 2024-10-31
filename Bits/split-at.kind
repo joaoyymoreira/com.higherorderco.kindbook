@@ -1,16 +1,20 @@
 // Splits a Bits value at a specified position.
-// - m: The position at which to split the Bits.
 // - bits: The Bits value to be split.
+// - m: The position at which to split the Bits.
 // = A Pair of Bits where the first element contains the bits before the split point,
 //   and the second element contains the bits after the split point.
-Bits/split-at : Nat -> Bits -> (Pair Bits Bits)
-| #Zero       bits     = #Pair{#E bits}
-| #Succ{pred} #E       = #Pair{(Bits/pad-zeros pred #E) #E}
-| #Succ{pred} #O{tail} = let #Pair{k rest} = (Bits/split-at pred tail) #Pair{#O{k} rest}
-| #Succ{pred} #I{tail} = let #Pair{k rest} = (Bits/split-at pred tail) #Pair{#I{k} rest}
+Bits/split-at : Bits -> Nat -> (Pair Bits Bits)
+| bits     #Zero       = #Pair{#E bits}
+| #E       #Succ{pred} = #Pair{(Bits/pad-zeros #E pred) #E}
+| #O{tail} #Succ{pred} = 
+  let #Pair{k rest} = (Bits/split-at tail pred) 
+  #Pair{#O{k} rest}
+| #I{tail} #Succ{pred} = 
+  let #Pair{k rest} = (Bits/split-at tail pred) 
+  #Pair{#I{k} rest}
 
-#test: (Bits/split-at #0 (#O{#I{#E}})) == #Pair{#E (#O{#I{#E}})}
-#test: (Bits/split-at #1 (#O{#I{#E}})) == (#Pair{(#O{#E}) (#I{#E})})
-#test: (Bits/split-at #3 (#I{#O{#E}})) == (#Pair{(#I{#O{#E}}) #E})
-#test: (Bits/split-at #1 #E) == (#Pair{#E #E})
-#test: (Bits/split-at #2 (#I{#O{#E}})) == (#Pair{(#I{#O{#E}}) #E})
+#test: (Bits/split-at (#O{#I{#E}}) #0) == #Pair{#E (#O{#I{#E}})}
+#test: (Bits/split-at (#O{#I{#E}}) #1) == (#Pair{(#O{#E}) (#I{#E})})
+#test: (Bits/split-at (#I{#O{#E}}) #3) == (#Pair{(#I{#O{#E}}) #E})
+#test: (Bits/split-at #E #1) == (#Pair{#E #E})
+#test: (Bits/split-at (#I{#O{#E}}) #2) == (#Pair{(#I{#O{#E}}) #E})

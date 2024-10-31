@@ -1,8 +1,9 @@
 // Converts a digit character to its U64 value.
 // - c: The digit character.
+// - base: The base (2 for binary, 8 for octal, 10 for decimal, 16 for hexadecimal).
 // = The U64 value of the digit, or 10 if not a digit.
-Char/to-digit-u64 : U64 -> Char -> (Maybe U64)
-| base code =
+Char/to-digit-u64 : Char -> U64 -> (Maybe U64)
+| code base =
   let is_base_2  = (U64/eq base 2)
   let is_base_8  = (U64/eq base 8)
   let is_base_10 = (U64/eq base 10)
@@ -25,12 +26,12 @@ Char/to-digit-u64 : U64 -> Char -> (Maybe U64)
     #None
   }
 
-#test: (Char/to-digit-u64 2  '0') == #Some{0}
-#test: (Char/to-digit-u64 2  '1') == #Some{1}
-#test: (Char/to-digit-u64 2  '2') == #None
-#test: (Char/to-digit-u64 8  '7') == #Some{7}
-#test: (Char/to-digit-u64 8  '8') == #None
-#test: (Char/to-digit-u64 10 '9') == #Some{9}
-#test: (Char/to-digit-u64 10 'a') == #None
-#test: (Char/to-digit-u64 16 'f') == #Some{15}
-#test: (Char/to-digit-u64 16 'g') == #None
+#test: (Char/to-digit-u64 '0' 2) == #Some{0}
+#test: (Char/to-digit-u64 '1' 2) == #Some{1}
+#test: (Char/to-digit-u64 '2' 2) == #None
+#test: (Char/to-digit-u64 '7' 8) == #Some{7}
+#test: (Char/to-digit-u64 '8' 8) == #None
+#test: (Char/to-digit-u64 '9' 10) == #Some{9}
+#test: (Char/to-digit-u64 'a' 10) == #None
+#test: (Char/to-digit-u64 'f' 16) == #Some{15}
+#test: (Char/to-digit-u64 'g' 16) == #None

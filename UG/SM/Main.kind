@@ -1,17 +1,17 @@
 // A simple game state with a counter
 data GameState {
-  #GameState { counter: Nat }
+  #GameState { counter: U64 }
 }
 
 gm : GameState
-= #GameState {#3}
+= #GameState {3}
 
 // Actions for our simple game
 data GameAction {
   #Increment
 }
 
-GameState/counter : GameState -> Nat
+GameState/counter : GameState -> U64
 | #GameState {counter} = counter
 
 // Equality function for GameAction
@@ -21,35 +21,39 @@ GameAction/eq : GameAction -> GameAction -> Bool
 // Our simple game definition
 simple-game : (UG/SM/Game GameState GameAction)
 = #Game{
-  init: #GameState{counter: #0}
+  init: #GameState{counter: 0}
   when: λaction λstate
     match action {
-      #Increment: #GameState{counter: (Nat/add (GameState/counter state) #1)}
+      #Increment: #GameState{counter: (U64/add (GameState/counter state) 1)}
     }
   tick: λstate state
 }
 
 // Simulates the game for a given number of ticks
-simulate-game : Nat -> (UG/SM/Mach GameState GameAction)
+simulate-game : U64 -> (UG/SM/Mach GameState GameAction)
 | ticks =
-  let mach = (UG/SM/new-mach GameState GameAction #60 GameAction/eq)
-  let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: #0})
+  let mach = (UG/SM/new-mach GameState GameAction 60 GameAction/eq)
+  let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: 0})
   mach
 
-//main : GameState
-//= (Pair/get-fst GameState (UG/SM/Mach GameState GameAction) (simulate-game #1))
-
-//#test: (example == #GameState{counter: #42})
-
-main : (UG/SM/Mach GameState GameAction)
-= (simulate-game #1)
 
 mach : (UG/SM/Mach GameState GameAction)
-= #Mach{#60 #100 #0 #None (BinMap/new (List GameAction)) GameAction/eq}
+= (simulate-game 1)
 
-#test: ((simulate-game #1) == mach)
+main : (UG/SM/Mach GameState GameAction)
+= #Mach{ticks-per-second: 60 genesis-tick: 0 cached-tick: 0 state-logs: #None action-logs: #Node{#Some{[#Increment{}]} #Leaf{} #Leaf{}} action-eq: GameAction/eq}
 
 
+#test: ((simulate-game 1) == mach)
+
+//  #Mach {
+//    ticks-per-second: U64
+//    genesis-tick: UG/SM/Tick
+//    cached-tick: UG/SM/Tick
+//    state-logs: (UG/SM/StateLogs S)
+//    action-logs: (UG/SM/ActionLogs A)
+//    action-eq: A -> A -> Bool
+//  }
 
 
 

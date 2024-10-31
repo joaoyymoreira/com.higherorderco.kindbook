@@ -3,7 +3,7 @@
 // - ord: Ord instance for A.
 // - xs: Input list.
 // = Minimum element if non-empty, None if empty.
-List/minimum : ∀(A: *) (Ord A) -> (List A) -> (Maybe A)
+List/minimum : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (Maybe A)
 | A ord #Nil             = #None
 | A ord #Cons{head tail} = 
   use min = λacc λy 
@@ -11,7 +11,7 @@ List/minimum : ∀(A: *) (Ord A) -> (List A) -> (Maybe A)
       #LT: y
       _  : acc
     }
-  #Some{(List/foldl A A min head tail)}
+  #Some{(List/foldl A A tail head min)}
 
 #test: (List/minimum U64 U64/Ord []) == #None
 #test: (List/minimum U64 U64/Ord [3]) == #Some{3}

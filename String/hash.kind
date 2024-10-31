@@ -2,7 +2,7 @@
 // - 1st: The input string to be hashed.
 // = A Bits value representing the computed hash of the input string.
 String/hash : String -> Bits
-| str = (U64/to-bits (List/foldr _ _ fxhash-step 0 str))
+| str = (U64/to-bits (List/foldr _ _ str 0 fxhash-step))
 
 // Performs a single step of the FxHash64 algorithm.
 // - char: The character to be incorporated into the hash.

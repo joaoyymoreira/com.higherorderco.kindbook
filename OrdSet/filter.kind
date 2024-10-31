@@ -1,20 +1,20 @@
 // Filters an OrdSet based on a predicate.
 // - K: Element type.
 // - ord: Ord instance for K.
-// - pred: Predicate function.
 // - set: Input OrdSet.
+// - pred: Predicate function.
 // = Filtered OrdSet.
-OrdSet/filter : ∀(K: *) (Ord K) -> (K -> Bool) -> (OrdSet K) -> (OrdSet K)
-| K ord pred set =
+OrdSet/filter : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> (K -> Bool) -> (OrdSet K)
+| K ord set pred =
   use f = λkv λacc
     if (pred kv) {
       (OrdSet/insert K ord kv acc)
     } else {
       acc
     }
-  (OrdSet/fold K (OrdSet K) f (OrdSet/empty K) set)
+  (OrdSet/fold K (OrdSet K) set (OrdSet/empty K) f)
 
-#test: (OrdSet/filter U64 U64/Ord (λx (U64/to-bool (== x 2))) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/from-list U64 U64/Ord [2])
-#test: (OrdSet/filter U64 U64/Ord (λx (U64/to-bool (> x 1))) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/from-list U64 U64/Ord [3 2])
-#test: (OrdSet/filter U64 U64/Ord (λx (U64/to-bool (== x 0))) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/empty U64)
-#test: (OrdSet/filter U64 U64/Ord (λx #True) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/from-list U64 U64/Ord [1 2 3])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (== x 2)))) == (OrdSet/from-list U64 U64/Ord [2])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (> x 1)))) == (OrdSet/from-list U64 U64/Ord [3 2])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (== x 0)))) == (OrdSet/empty U64)
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx #True)) == (OrdSet/from-list U64 U64/Ord [1 2 3])

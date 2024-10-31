@@ -6,4 +6,4 @@
 UG/SM/StateLogs/StateNode/set-state : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> (UG/SM/StateLogs/StateNode S)
 | S state #StateNode{tick keep life state_ older} = #StateNode{tick keep life state older}
 
-#test: (UG/SM/StateLogs/StateNode/state Bool (UG/SM/StateLogs/StateNode/set-state Bool #False #StateNode{tick: #0 keep: #5 life: #10 state: #True older: #None})) == #False
+#test: (UG/SM/StateLogs/StateNode/state Bool (UG/SM/StateLogs/StateNode/set-state Bool #False #StateNode{tick: 0 keep: 5 life: 10 state: #True older: #None})) == #False

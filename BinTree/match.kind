@@ -1,19 +1,19 @@
 // Pattern matcher for binary trees.
 // - A: The type of elements in the tree.
 // - P: The motive (type family) for the elimination.
+// - tree: The tree to match against.
 // - leaf: The result for the leaf case.
 // - node: The function to apply for the node case.
-// - tree: The tree to match against.
 // = The result of the match, whose type depends on the input tree.
 BinTree/match
 : ∀(A: *)
   ∀(P: (BinTree A) -> *)
+  ∀(tree: (BinTree A))
   ∀(leaf: (P #Leaf))
   ∀(node: ∀(x: A) ∀(l: (BinTree A)) ∀(r: (BinTree A)) (P (#Node{x l r})))
-  ∀(tree: (BinTree A))
   (P tree)
-| A P leaf node #Leaf              = leaf
-| A P leaf node #Node{val lft rgt} = (node val lft rgt)
+| A P #Leaf              leaf node = leaf
+| A P #Node{val lft rgt} leaf node = (node val lft rgt)
 
-#test: (BinTree/match Nat (λx Bool) #True (λv λl λr #False) #Leaf) == #True
-#test: (BinTree/match Nat (λx Bool) #True (λv λl λr #False) (#Node{#1 #Leaf #Leaf})) == #False
+#test: (BinTree/match Nat (λx Bool) #Leaf #True (λv λl λr #False)) == #True
+#test: (BinTree/match Nat (λx Bool) (#Node{#1 #Leaf #Leaf}) #True (λv λl λr #False)) == #False

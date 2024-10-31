@@ -9,7 +9,7 @@ Parser/consume : String -> (Parser Unit)
         state: 
           let length = (String/length target)
           #State{
-            input: (String/drop length input)
+            input: (String/drop input length)
             index: (Nat/add index length)
           }
         value: #Unit

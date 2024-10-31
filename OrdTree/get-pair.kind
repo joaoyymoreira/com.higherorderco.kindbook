@@ -5,7 +5,7 @@
 // - key: Key to search for.
 // - tree: The AVL tree.
 // = Maybe containing the key-value pair if found.
-OrdTree/get-pair : ∀(K: *) ∀(V: *) (Ord K) -> K -> (OrdTree K V) -> (Maybe (Pair K V))
+OrdTree/get-pair : ∀(K: *) ∀(V: *)  ∀(ord: (Ord K)) K -> (OrdTree K V) -> (Maybe (Pair K V))
 | K V ord key #Leaf = #None
 | K V ord key #Node{kv balance left right} with (Ord/compare K ord key (Pair/get-fst K V kv))
 . | #LT = (OrdTree/get-pair K V ord key left)

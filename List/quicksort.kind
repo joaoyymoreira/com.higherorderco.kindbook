@@ -4,8 +4,8 @@
 List/quicksort : (List Nat) -> (List Nat)
 | #Nil             = #Nil
 | #Cons{head tail} =
-  let min = (List/filter Nat (λx (Nat/lte x head)) tail)
-  let max = (List/filter Nat (λx (Nat/gt x head)) tail)
+  let min = (List/filter Nat tail (λx (Nat/lte x head)))
+  let max = (List/filter Nat tail (λx (Nat/gt x head)))
   (List/append Nat (List/quicksort min) #Cons{head (List/quicksort max)})
 
 #test: (List/quicksort []) == []

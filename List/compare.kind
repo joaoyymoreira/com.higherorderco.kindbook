@@ -4,7 +4,7 @@
 // - xs: The first list.
 // - ys: The second list.
 // = LT if xs < ys, EQ if xs = ys, GT if xs > ys.
-List/compare : ∀(A: *) (Ord A) -> (List A) -> (List A) -> Cmp
+List/compare : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (List A) -> Cmp
 | A ord #Nil        #Nil        = #EQ
 | A ord #Nil        #Cons{y ys} = #LT
 | A ord #Cons{x xs} #Nil        = #GT

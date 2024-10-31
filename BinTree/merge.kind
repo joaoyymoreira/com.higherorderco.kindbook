@@ -2,33 +2,33 @@
 // - A: Type of elements in the first tree.
 // - B: Type of elements in the second tree.
 // - C: Type of elements in the resulting tree.
+// - a: The first input tree.
+// - b: The second input tree.
 // - f: Function for when only the first tree has a value.
 // - g: Function for when only the second tree has a value.
 // - h: Function to combine values when both trees have a value.
-// - a: The first input tree.
-// - b: The second input tree.
 // = A new tree with combined values based on input trees.
 BinTree/merge
 : ∀(A: *)
   ∀(B: *)
   ∀(C: *)
+  ∀(a: (BinTree A))
+  ∀(b: (BinTree B))
   ∀(f: A -> C)
   ∀(g: B -> C)
   ∀(h: A -> B -> C)
-  ∀(a: (BinTree A))
-  ∀(b: (BinTree B))
   (BinTree C)
-| A B C f g h #Leaf #Leaf =
+| A B C #Leaf #Leaf f g h =
   #Leaf
-| A B C f g h #Leaf #Node{bx bl br} =
-  let cl = (BinTree/merge A B C f g h #Leaf bl)
-  let cr = (BinTree/merge A B C f g h #Leaf br)
+| A B C #Leaf #Node{bx bl br} f g h =
+  let cl = (BinTree/merge A B C #Leaf bl f g h)
+  let cr = (BinTree/merge A B C #Leaf br f g h)
   #Node{(g bx) cl cr}
-| A B C f g h #Node{ax al ar} #Leaf =
-  let cl = (BinTree/merge A B C f g h al #Leaf)
-  let cr = (BinTree/merge A B C f g h ar #Leaf)
+| A B C #Node{ax al ar} #Leaf f g h =
+  let cl = (BinTree/merge A B C al #Leaf f g h)
+  let cr = (BinTree/merge A B C ar #Leaf f g h)
   #Node{(f ax) cl cr}
-| A B C f g h #Node{ax al ar} #Node{bx bl br} =
-  let cl = (BinTree/merge A B C f g h al bl)
-  let cr = (BinTree/merge A B C f g h ar br)
+| A B C #Node{ax al ar} #Node{bx bl br} f g h =
+  let cl = (BinTree/merge A B C al bl f g h)
+  let cr = (BinTree/merge A B C ar br f g h)
   #Node{(h ax bx) cl cr}

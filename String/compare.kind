@@ -2,7 +2,7 @@
 // - a: First string.
 // - b: Second string.
 // = LT if a < b, EQ if a = b, GT if a > b.
-String/compare : (String) -> (String) -> Cmp
+String/compare : String -> String -> Cmp
 | #Nil         #Nil         = #EQ
 | #Nil         #Cons{b0 bs} = #LT
 | #Cons{a0 as} #Nil         = #GT

@@ -1,9 +1,9 @@
 // Generates a list by iterating a function over an initial value.
 // - A: Element type.
-// - f: Function to apply repeatedly.
 // - x: Initial value.
 // - n: Number of iterations.
+// - f: Function to apply repeatedly.
 // = List of results from applying f repeatedly, n times.
-List/iterate : ∀(A: *) (A -> A) -> A -> Nat -> (List A)
-| A f x #Zero    = #Nil
-| A f x #Succ{n} = #Cons{x (List/iterate A f (f x) n)}
+List/iterate : ∀(A: *) A -> Nat -> (A -> A) -> (List A)
+| A x #Zero    f = #Nil
+| A x #Succ{n} f = #Cons{x (List/iterate A (f x) n f)}

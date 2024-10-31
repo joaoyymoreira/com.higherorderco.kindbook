@@ -3,7 +3,7 @@
 // - ord: Ord instance for A.
 // - xs: Input list.
 // = New list with duplicates removed.
-List/dedup : ∀(A: *) (Ord A) -> (List A) -> (List A)
+List/dedup : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (List A)
 | A ord xs = (List/dedup/go A ord xs (OrdSet/empty A))
 
 // Helper function for List/dedup.
@@ -12,7 +12,7 @@ List/dedup : ∀(A: *) (Ord A) -> (List A) -> (List A)
 // - xs: Input list.
 // - set: Accumulator set.
 // = New list with duplicates removed.
-List/dedup/go : ∀(A: *) (Ord A) -> (List A) -> (OrdSet A) -> (List A)
+List/dedup/go : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdSet A) -> (List A)
 | A ord #Nil             set = #Nil
 | A ord #Cons{head tail} set with (OrdSet/contains A ord head set) 
 . | #True  = (List/dedup/go A ord tail set)

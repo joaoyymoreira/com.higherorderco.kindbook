@@ -3,23 +3,24 @@
 // - m: Monad instance for M.
 // - A: Input type.
 // - B: Output type.
-// - f: Function to apply.
 // - t: Input tree.
+// - f: Function to apply.
 // = Monadic tree of results.
 BinTree/mmap
 : ∀(M: ∀(A: *) *)
   ∀(m: (Monad M))
   ∀(A: *)
   ∀(B: *)
-  ∀(f: A -> (M B))
-  (BinTree A) -> (M (BinTree B))
-| M #Monad{pure bind} A B f #Leaf = (pure (BinTree B) #Leaf)
-| M #Monad{pure bind} A B f #Node{val lft rgt} =
+  (BinTree A) 
+  -> (A -> (M B))
+  -> (M (BinTree B))
+| M #Monad{pure bind} A B #Leaf              f = (pure (BinTree B) #Leaf)
+| M #Monad{pure bind} A B #Node{val lft rgt} f =
   (bind B (BinTree B) (f val) λx
-  (bind (BinTree B) (BinTree B) (BinTree/mmap M #Monad{pure bind} A B f lft) λl
-  (bind (BinTree B) (BinTree B) (BinTree/mmap M #Monad{pure bind} A B f rgt) λr
+  (bind (BinTree B) (BinTree B) (BinTree/mmap M #Monad{pure bind} A B lft f) λl
+  (bind (BinTree B) (BinTree B) (BinTree/mmap M #Monad{pure bind} A B rgt f) λr
   (pure (BinTree B) (#Node{x l r})))))
 
-#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 x)) #Leaf) == #Some{#Leaf}
-#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 (λx (Maybe/pure U64 x)) #Node{1 #Leaf #Leaf}) == #Some{#Node{1 #Leaf #Leaf}}
-#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 (λx #None) #Node{1 #Leaf #Leaf}) == #None
+#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 #Leaf (λx (Maybe/pure U64 x))) == #Some{#Leaf}
+#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 #Node{1 #Leaf #Leaf} (λx #None)) == #None
+#test: (BinTree/mmap Maybe Maybe/Monad U64 U64 #Node{1 #Leaf #Leaf} (λx (Maybe/pure U64 x))) == #Some{#Node{1 #Leaf #Leaf}}

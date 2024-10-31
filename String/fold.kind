@@ -1,8 +1,8 @@
 // Folds a string.
 // - B: Result type.
-// - c: Combining function.
-// - n: Initial value.
 // - s: Input string.
+// - n: Initial value.
+// - c: Combining function.
 // = Folded result.
-String/fold : ∀(B: *) (Char -> B -> B) -> B -> String -> B
-| B c n s = (List/fold Char s B n c)
+String/fold : ∀(B: *) String -> B -> (Char -> B -> B) -> B
+| B s n c = (List/fold Char B s n c)

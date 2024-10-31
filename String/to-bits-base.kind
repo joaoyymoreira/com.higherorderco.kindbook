@@ -1,16 +1,16 @@
 // Converts a string to Bits in the given base.
-// - base: Base for conversion.
 // - str: String to convert.
+// - base: Base for conversion.
 // = Maybe Bits with converted number if successful, None otherwise.
-String/to-bits-base : U64 -> String -> (Maybe Bits)
-| base str = 
-  (Maybe/map U64 Bits U64/to-bits (String/to-u64-base base str))
+String/to-bits-base : String -> U64 -> (Maybe Bits)
+| str base = 
+  (Maybe/map U64 Bits (String/to-u64-base str base)  U64/to-bits )
 
-#test: (String/to-bits-base 10 "123") == #Some{#I{#I{#O{#I{#I{#I{#I{#E{}}}}}}}}}
-#test: (String/to-bits-base 16 "FF") == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}
-#test: (String/to-bits-base 2 "1010") == #Some{#O{#I{#O{#I{#E}}}}}
-#test: (String/to-bits-base 2 "0000") == #Some{#E}
-#test: (String/to-bits-base 2 "0001") == #Some{#I{#E}}
-#test: (String/to-bits-base 8 "777") == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}}
-#test: (String/to-bits-base 10 "") == #None
-#test: (String/to-bits-base 16 "GG") == #None
+#test: (String/to-bits-base "" 10) == #None
+#test: (String/to-bits-base "GG" 16) == #None
+#test: (String/to-bits-base "FF" 16) == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}
+#test: (String/to-bits-base "777" 8) == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}}
+#test: (String/to-bits-base "0000" 2) == #Some{#E}
+#test: (String/to-bits-base "0001" 2) == #Some{#I{#E}}
+#test: (String/to-bits-base "1010" 2) == #Some{#O{#I{#O{#I{#E}}}}}
+#test: (String/to-bits-base "123" 10) == #Some{#I{#I{#O{#I{#I{#I{#I{#E{}}}}}}}}}

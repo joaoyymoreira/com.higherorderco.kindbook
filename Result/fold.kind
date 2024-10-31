@@ -6,9 +6,9 @@
 // - fail: Function applied if Fail.
 // - ra: Result to fold over.
 // = Folded result.
-Result/fold : ∀(A: *) ∀(B: *) ∀(E: *) (A -> B) -> (E -> B) -> (Result A E) -> B
-| A B E done fail #Done{value} = (done value)
-| A B E done fail #Fail{error} = (fail error)
+Result/fold : ∀(A: *) ∀(B: *) ∀(E: *) (Result A E) -> (A -> B) -> (E -> B) -> B
+| A B E #Done{value} done fail = (done value)
+| A B E #Fail{error} done fail = (fail error)
 
 #test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Done{5})) == 6
 #test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Fail{10})) == 9
