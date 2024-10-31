@@ -1,0 +1,8 @@
+// Retrieves a function definition from a Book by its name.
+// - book: The Book to search in.
+// - name: The name of the function to retrieve.
+// = Some fnDef if a function with the given name is found in the Book,
+//   None if no such function exists.
+Bend/Fun/Book/get-def : Bend/Fun/Book -> String -> (Bend Bend/Fun/FnDef)
+| #Book{defs _ _} name =
+  (Maybe/to-result _ _ (BinMap/get _ defs (String/hash name)) "Def not found")

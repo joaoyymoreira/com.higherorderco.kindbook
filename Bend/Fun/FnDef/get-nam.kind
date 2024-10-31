@@ -1,0 +1,2 @@
+Bend/Fun/FnDef/get-nam : Bend/Fun/FnDef -> String
+| #FnDef{nam _ _ _ _} = nam
