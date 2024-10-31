@@ -3,7 +3,7 @@
 // - A: Action type.
 data UG/SM/Mach (S: *) (A: *) {
   #Mach {
-    ticks-per-second: Nat
+    ticks-per-second: U64
     genesis-tick: UG/SM/Tick
     cached-tick: UG/SM/Tick
     state-logs: (UG/SM/StateLogs S)

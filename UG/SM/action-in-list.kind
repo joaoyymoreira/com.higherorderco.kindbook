@@ -14,5 +14,5 @@ UG/SM/action-in-list : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> A -> (List A) -> 
     (UG/SM/action-in-list S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq} a tail)
   }
 
-#test: (UG/SM/action-in-list Nat Nat #Mach{#0 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #0 #Nil) == #False
-#test: (UG/SM/action-in-list Nat Nat #Mach{#0 #0 #0 #None (BinMap/new (List Nat)) Nat/eq} #0 [#0]) == #True
+#test: (UG/SM/action-in-list Nat Nat #Mach{0 0 0 #None (BinMap/new (List Nat)) Nat/eq} #0 #Nil) == #False
+#test: (UG/SM/action-in-list Nat Nat #Mach{0 0 0 #None (BinMap/new (List Nat)) Nat/eq} #0 [#0]) == #True
