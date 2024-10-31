@@ -1,10 +1,10 @@
 // Pads a string with a character to the right until the given length is reached.
 // - s: Input string to pad.
-// - c: Character to use for padding.
 // - n: Desired length of the resulting string.
+// - c: Character to use for padding.
 // = New string padded to length n with character c on the right side.
-String/pad-right : String -> Char -> Nat -> String
-| s c n =
+String/pad-right : String -> Nat -> Char -> String
+| s n c =
   let #Pair{str len} = (List/length-got Char s)
   if (Nat/lt len n) {
     (String/append str (String/replicate c (Nat/sub n len)))
@@ -12,7 +12,6 @@ String/pad-right : String -> Char -> Nat -> String
     str
   }
 
-#test: (String/pad-right "" 'x' #3) == "xxx"
-#test: (String/pad-right "abc" ' ' #5) == "abc  "
-#test: (String/pad-right "123" 'y' #5) == "123yy"
-#test: (String/pad-right "hello" 'z' #2) == "hello"
+#test: (String/pad-right "abc" #5 'x') == "abcxx"
+#test: (String/pad-right "abc" #3 'x') == "abc"
+#test: (String/pad-right "abc" #2 'x') == "abc"

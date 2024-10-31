@@ -6,6 +6,6 @@
 // - nil: Initial value.
 // - cons: Combining function.
 // = The final result.
-List/fold : ∀(A: *) ∀(P: *) (List A) -> P -> (A -> P -> P) -> P
-| A P #Nil             nil cons = nil
-| A P #Cons{head tail} nil cons = (cons head (List/fold A P tail nil cons))
+List/fold : ∀(A: *) (List A) -> ∀(P: *) P -> (A -> P -> P) -> P
+| A #Nil             P nil cons = nil
+| A #Cons{head tail} P nil cons = (cons head (List/fold A tail P nil cons))

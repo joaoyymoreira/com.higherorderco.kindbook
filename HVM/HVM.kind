@@ -461,12 +461,12 @@ HVM/dump-rbag : (HVM HVM/RBag)
   ask end = HVM/get-rbag-end
   ask bag = (HVM/dump (+ HVM/RBAG ini) (+ HVM/RBAG end))
   use bag = (List/chunks-of _ #2 bag)
-  use bag = (List/map (List (Pair U64 HVM/RTerm)) (Pair U64 HVM/RRedex) (λirs
+  use bag = (List/map _ _ bag (λirs
     use #Pair{ir0 ir1} = (Pair/from-list (Pair U64 HVM/RTerm) #Pair{0 #RTerm{#AIR 0 0}} irs)
     use #Pair{i0 r0}   = ir0
     use #Pair{i1 r1}   = ir1
     #Pair{i0 #RRedex{r0 r1}}
-  ) bag)
+  ))
   ret bag
 }
 
@@ -653,10 +653,10 @@ HVM/RTag/to-string : HVM/RTag -> String
 | #DUP = "DUP"
 
 HVM/RLab/to-string : U64 -> String
-| loc = (String/pad-left #6 '0' (U64/to-hex-string loc))
+| loc = (String/pad-left (U64/to-hex-string loc) #6 '0')
 
 HVM/RLoc/to-string : U64 -> String
-| loc = (String/pad-left #9 '0' (U64/to-hex-string loc))
+| loc = (String/pad-left (U64/to-hex-string loc) #9 '0')
 
 HVM/RTerm/to-string : HVM/RTerm -> String 
 | #RTerm{tag lab loc} =
@@ -665,14 +665,13 @@ HVM/RTerm/to-string : HVM/RTerm -> String
   let loc = (HVM/RLoc/to-string loc)
   (String/join "" [tag ":" lab ":" loc])
 
-
 HVM/RRedex/to-string : HVM/RRedex -> String
 | #RRedex{neg pos} = (String/join "" [(HVM/RTerm/to-string neg) " ~ " (HVM/RTerm/to-string pos)])
 
 HVM/RBag/to-string : HVM/RBag -> String
 | bag = (List/fold _ bag _ "" (λkv λtxt
   let #Pair{k v} = kv
-  let addr       = (String/pad-left #9 '0' (U64/to-hex-string k))
+  let addr       = (String/pad-left (U64/to-hex-string k) #9 '0')
   let dex        = (HVM/RRedex/to-string v)
   (String/join "" [addr " → " dex "\n" txt])
 ))
@@ -680,7 +679,7 @@ HVM/RBag/to-string : HVM/RBag -> String
 HVM/RNod/to-string : HVM/RNod -> String
 | nod = (List/fold _ nod _ "" (λkv λtxt
   let #Pair{k v} = kv
-  let addr       = (String/pad-left #9 '0' (U64/to-hex-string k))
+  let addr       = (String/pad-left (U64/to-hex-string k) #9 '0')
   let term       = (HVM/RTerm/to-string v)
   (String/join "" [addr " → " term "\n" txt])
 ))
@@ -783,7 +782,7 @@ HVM/parse-net : (Parser HVM/Net)
 }
 
 HVM/do-parse-net : String -> HVM/Net
-= λcode (Maybe/run _ HVM/Net/new (Parser/run _ HVM/parse-net code))
+= λcode (Maybe/run _ (Parser/run _ HVM/parse-net code) HVM/Net/new)
 
 // Linking
 // -------
