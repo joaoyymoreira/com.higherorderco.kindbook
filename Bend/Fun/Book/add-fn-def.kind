@@ -1,0 +1,10 @@
+// Adds a new function definition to the Book.
+// If a function with the same name already exists, it will be replaced.
+// - book: The Book to add the function definition to.
+// - fn-def: The function definition to add.
+// = A new Book with the added function definition.
+Bend/Fun/Book/add-fn-def : Bend/Fun/Book -> Bend/Fun/FnDef -> Bend/Fun/Book
+| #Book{defs ctrs adts} def@#FnDef{nam _ _ _ _} =
+  let key  = (String/hash nam)
+  let defs = (BinMap/set _ defs key def)
+  #Book{defs ctrs adts}

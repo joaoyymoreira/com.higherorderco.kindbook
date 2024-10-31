@@ -1,6 +1,0 @@
-// Bend/Fun/Book/get_ctr
-
-Bend/Fun/Book/get_ctr (book: Bend/Fun/Book/Book) (name: String) : (Result Bend/Fun/Adt/Ctr String)
-  let #Book{defs adts ctrs} = book
-  let key = (String/hash name)
-  (Maybe/to_result (BinMap/get ctrs key) "Ctr not found")

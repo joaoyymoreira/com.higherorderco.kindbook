@@ -1,8 +1,0 @@
-// Bend/Fun/Book/get_adt_ctrs
-
-Bend/Fun/Book/get_adt_ctrs (book: Bend/Fun/Book/Book) (name: String) : (Result (List Bend/Fun/Adt/Ctr) String)
-  do Result {
-    ask adt = (Bend/Fun/Book/get_adt book name)
-    let ctr_names = (Bend/Fun/Adt/Adt.ctr adt)
-    (List/mmap (Bend/Fun/Book/get_ctr book) ctr_names)
-  }
