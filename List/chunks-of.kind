@@ -1,0 +1,24 @@
+// Splits a list into chunks of N elements.
+// - A: Element type.
+// - n: Chunk size.
+// - xs: Input list.
+// = List of list chunks.
+List/chunks-of : ∀(A: *) Nat -> (List A) -> (List (List A))
+| A n xs = (List/chunks-of/go A n n xs #Nil)
+
+// Helper function for List/chunks-of.
+// - A: Element type.
+// - n: Original chunk size.
+// - m: Remaining elements to take.
+// - xs: Remaining input list.
+// - chunk: Current chunk being built.
+// = List of list chunks.
+List/chunks-of/go : ∀(A: *) Nat -> Nat -> (List A) -> (List A) -> (List (List A))
+| A n #Zero    xs          chunk = #Cons{(List/reverse A chunk) (List/chunks-of A n xs)}
+| A n m        #Nil        chunk = if (Nat/eq m n) { #Nil } else { #Cons{(List/reverse A chunk) #Nil} }
+| A n #Succ{m} #Cons{x xs} chunk = (List/chunks-of/go A n m xs #Cons{x chunk})
+
+#test: (List/chunks-of U64 #3 [1 2 3 4 5 6 7 8 9]) == [[1 2 3] [4 5 6] [7 8 9]]
+#test: (List/chunks-of U64 #2 [1 2 3 4 5]) == [[1 2] [3 4] [5]]
+#test: (List/chunks-of U64 #4 [1 2 3]) == [[1 2 3]]
+#test: (List/chunks-of U64 #3 #Nil) == #Nil
