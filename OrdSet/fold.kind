@@ -1,13 +1,14 @@
 // Performs a fold operation over an OrdSet.
 // - K: Element type.
-// - A: Result type.
 // - set: OrdSet to fold over.
-// - z: Initial value.
-// - f: Combining function.
+// - P: The type of the result.
+// - leaf: Initial value.
+// - node: Combining function.
 // = Result of folding the set.
-OrdSet/fold : ∀(K: *) ∀(A: *) (OrdSet K) -> A -> (K -> A -> A) -> A
-| K A set z f = (OrdTree/fold K Unit A set z (λpair λacc (f (Pair/get-fst K Unit pair) acc)))
+OrdSet/fold : ∀(K: *) (OrdSet K) -> ∀(P: *) P -> (K -> P -> P) -> P
+| K set P leaf node = (OrdTree/fold K Unit set P leaf (λpair λacc (node (Pair/get-fst K Unit pair) acc)))
 
-#test: (OrdSet/fold U64 U64 (OrdSet/from-list U64 U64/Ord [1 2 3]) 0 (λx λacc (+ x acc))) == 6
-#test: (OrdSet/fold U64 U64 (OrdSet/empty U64) 0 (λx λacc (+ x acc))) == 0
-#test: (OrdSet/fold U64 (List U64) (OrdSet/from-list U64 U64/Ord [3 1 4 1 5]) [] (λx λacc #Cons{x acc})) == [5 4 3 1]
+#test: (OrdSet/fold U64 #Leaf U64 0 (λx λacc (+ x acc))) == 0
+#test: (OrdSet/fold U64 (OrdSet/from-list U64 U64/Ord [1 2 3]) U64 0 (λx λacc (+ x acc))) == 6
+#test: (OrdSet/fold U64 (OrdSet/from-list U64 U64/Ord [3 1 4 1 5]) (List U64) [] (λx λacc #Cons{x acc})) == [5 4 3 1]
+

@@ -1,0 +1,7 @@
+// Represents mouse click events.
+// - LeftButton: Left mouse button click.
+// - RightButton: Right mouse button click.
+data UG/SIPD/Event/Click {
+  #LeftButton
+  #RightButton
+}

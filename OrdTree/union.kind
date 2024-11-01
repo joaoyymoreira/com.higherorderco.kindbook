@@ -5,8 +5,8 @@
 // - t1: First OrdTree tree.
 // - t2: Second OrdTree tree.
 // = The union of t1 and t2.
-OrdTree/union : ∀(K: *) ∀(V: *) (Ord K) -> (OrdTree K V) -> (OrdTree K V) -> (OrdTree K V)
-| K V ord t1 t2 = (OrdTree/fold K V (OrdTree K V) t1 t2 (OrdTree/insert K V ord))
+OrdTree/union : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (OrdTree K V) -> (OrdTree K V)
+| K V ord t1 t2 = (OrdTree/fold K V t1 (OrdTree K V) t2 (OrdTree/insert K V ord))
 
 #test: (OrdTree/union U64 U64 U64/Ord (OrdTree/empty U64 U64) (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
 #test: (OrdTree/union U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (OrdTree/empty U64 U64)) == (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))

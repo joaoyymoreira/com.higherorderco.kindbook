@@ -1,0 +1,13 @@
+// Checks if two Click events are equal.
+// - c1: First Click event.
+// - c2: Second Click event.
+// = True if equal, False otherwise.
+UG/SIPD/Event/Click/eq : UG/SIPD/Event/Click -> UG/SIPD/Event/Click -> Bool
+| #LeftButton  #LeftButton  = #True
+| #RightButton #RightButton = #True
+| c1           c2           = #False
+
+#test: (UG/SIPD/Event/Click/eq #LeftButton #LeftButton) == #True
+#test: (UG/SIPD/Event/Click/eq #RightButton #RightButton) == #True
+#test: (UG/SIPD/Event/Click/eq #LeftButton #RightButton) == #False
+#test: (UG/SIPD/Event/Click/eq #RightButton #LeftButton) == #False

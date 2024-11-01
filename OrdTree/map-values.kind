@@ -8,8 +8,8 @@
 // = Updated tree with mapped values.
 OrdTree/map-values : ∀(K: *) ∀(V: *) ∀(B: *) ∀(ord: (Ord K)) (OrdTree K V) -> (V -> B) -> (OrdTree K B)
 | K V B ord tree f =
-  (OrdTree/fold K V (OrdTree K B)
-    tree
+  (OrdTree/fold K V tree
+    (OrdTree K B)
     (OrdTree/empty K B)
     (λkv λacc (OrdTree/insert K B ord #Pair{(Pair/get-fst K V kv) (f (Pair/get-snd K V kv))} acc)))
 

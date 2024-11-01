@@ -1,0 +1,69 @@
+// Represents various input events in the game.
+data UG/SIPD/Event {
+  // Keyboard event.
+  // - time: Event timestamp.
+  // - pid: Player ID (serialized as U48).
+  // - key: Key identifier.
+  // - pressed: Whether key was pressed (true) or released (false).
+  #KeyEvent {
+    time: U64
+    pid: U64
+    key: String
+    pressed: Bool
+  }
+
+  // Mouse click event.
+  // - time: Event timestamp.
+  // - pid: Player ID.
+  // - click: Type of click (left/right button).
+  // - x: X coordinate.
+  // - y: Y coordinate.
+  #MouseClick {
+    time: U64
+    pid: U64
+    click: UG/SIPD/Event/Click
+    x: F64
+    y: F64
+  }
+
+  // Combined keyboard and mouse event.
+  // - time: Event timestamp.
+  // - pid: Player ID.
+  // - key: Key identifier.
+  // - pressed: Key state.
+  // - x: X coordinate.
+  // - y: Y coordinate.
+  #KeyMouse {
+    time: U64
+    pid: U64
+    key: String
+    pressed: Bool
+    x: F64
+    y: F64
+  }
+
+  // Mouse movement event.
+  // - time: Event timestamp.
+  // - pid: Player ID.
+  // - x: X coordinate.
+  // - y: Y coordinate.
+  #MouseMove {
+    time: U64
+    pid: U64
+    x: F64
+    y: F64
+  }
+
+  // Game action event.
+  // - action: The game action performed.
+  #ActionEvent {
+    action: UG/SIPD/Action
+  }
+}
+
+// Event type constants
+KEYEVENT   : U64 = 0
+MOUSECLICK : U64 = 1
+KEYMOUSE   : U64 = 2
+MOUSEMOVE  : U64 = 3
+

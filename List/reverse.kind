@@ -3,7 +3,7 @@
 // - xs: Input list.
 // = Reversed list.
 List/reverse : ∀(A: *) (List A) -> (List A)
-| A xs = (List/foldl (List A) A xs #Nil (λxs λx #Cons{x xs}))
+| A xs = (List/foldl A xs (List A) #Nil (λxs λx #Cons{x xs}))
 
 #test: (List/reverse U64 [1 2 3 4]) == [4 3 2 1]
 #test: (List/reverse U64 []) == []

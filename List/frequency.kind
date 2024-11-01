@@ -4,7 +4,7 @@
 // - xs: Input list.
 // = OrdTree mapping elements to their frequencies.
 List/frequency : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdTree A Nat)
-| A ord xs = (List/foldr A (OrdTree A Nat) xs #Leaf (count-element A ord))
+| A ord xs = (List/foldr A xs (OrdTree A Nat) #Leaf (count-element A ord))
 
 // Counts an element in the frequency tree.
 // - A: Element type.

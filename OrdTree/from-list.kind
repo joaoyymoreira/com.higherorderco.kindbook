@@ -5,7 +5,7 @@
 // - xs: List of key-value pairs.
 // = The resulting OrdTree.
 OrdTree/from-list : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (List (Pair K V)) -> (OrdTree K V)
-| K V ord xs = (List/foldr (Pair K V) (OrdTree K V) xs (OrdTree/empty K V) (OrdTree/insert K V ord))
+| K V ord xs = (List/foldr (Pair K V) xs (OrdTree K V) (OrdTree/empty K V) (OrdTree/insert K V ord))
 
 #test: (OrdTree/from-list U64 U64 U64/Ord #Nil) == (OrdTree/empty U64 U64)
 #test: (OrdTree/from-list U64 U64 U64/Ord #Cons{#Pair{1 10} #Nil}) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}

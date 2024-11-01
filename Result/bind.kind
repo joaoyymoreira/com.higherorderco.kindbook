@@ -20,4 +20,4 @@ Result/bind :  ∀(A: *) ∀(B: *) ∀(E: *) (Result A E) -> (A -> (Result B E))
 #test: (Result/bind U64 _ _ #Done{3} (λx (Result/bind U64 _ _ #Fail{8} (λy #Done{(* y 2)})))) == #Fail{8}
 
 // Chain binds where both results are successful.
-#test: (Result/bind U64 _ String #Done{3} (λx (Result/bind U64 _ _ #Done{5} (λy #Done{(* y 2)})))) == #Done{15}
+#test: (Result/bind U64 _ String #Done{3} (λx (Result/bind U64 _ _ #Done{5} (λy #Done{(* y x)})))) == #Done{15}

@@ -11,5 +11,5 @@ List/bind
   ∀(fn: ∀(a: A) (List B))
   (List B)
 = λA λB λxs λfn
-  (List/foldr A (List B) xs (#Nil) (λhead λtail (List/append B (fn head) tail)))
+  (List/foldr A xs (List B) (#Nil) (λhead λtail (List/append B (fn head) tail)))
 

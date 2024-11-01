@@ -1,8 +1,8 @@
 // Right-folds a string.
-// - A: Result type.
-// - s: Input string.
-// - n: Initial value.
-// - c: Combining function.
+// - str: Input string.
+// - P: Result type.
+// - nil: Initial value.
+// - cons: Combining function.
 // = Folded result.
-String/foldr : ∀(A: *) String -> A -> (Char -> A -> A) -> A
-| A s n c = (List/foldr Char A s n c)
+String/foldr : String -> ∀(P: *) P -> (Char -> P -> P) -> P
+| str P nil cons = (List/foldr Char str P nil cons)

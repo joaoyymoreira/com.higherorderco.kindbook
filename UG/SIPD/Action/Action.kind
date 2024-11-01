@@ -1,0 +1,16 @@
+// Represents player actions in the game or meta-game.
+// Similar to Event, but specific to game actions rather than computer interaction.
+data UG/SIPD/Action {
+  // Sets a player's nickname.
+  // - time: The timestamp of the action.
+  // - pid: The player ID.
+  // - nick: The new nickname.
+  #SetNick {
+    time: U64
+    pid: U64
+    nick: String
+  }
+}
+
+// Action type constant for setting nickname
+SETNICK : U64 = 101

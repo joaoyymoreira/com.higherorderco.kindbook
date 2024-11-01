@@ -1,0 +1,46 @@
+// Checks if two Event values are equal.
+// - e1: First Event.
+// - e2: Second Event.
+// = True if equal, False otherwise.
+UG/SIPD/Event/eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
+| #KeyEvent{t1 p1 key1 pressed1} #KeyEvent{t2 p2 key2 pressed2} =
+  let time_eq = (U64/eq t1 t2)
+  let pid_eq = (U64/eq p1 p2)
+  let key_eq = (String/eq key1 key2)
+  let pressed_eq = (Bool/eq pressed1 pressed2)
+  (Bool/and time_eq (Bool/and pid_eq (Bool/and key_eq pressed_eq)))
+
+| #MouseClick{t1 p1 click1 x1 y1} #MouseClick{t2 p2 click2 x2 y2} =
+  let time_eq = (U64/eq t1 t2)
+  let pid_eq = (U64/eq p1 p2)
+  let click_eq = (UG/SIPD/Event/Click/eq click1 click2)
+  let x_eq = (F64/eq x1 x2)
+  let y_eq = (F64/eq y1 y2)
+  (Bool/and time_eq (Bool/and pid_eq (Bool/and click_eq (Bool/and x_eq y_eq))))
+
+| #KeyMouse{t1 p1 key1 pressed1 x1 y1} #KeyMouse{t2 p2 key2 pressed2 x2 y2} =
+  let time_eq = (U64/eq t1 t2)
+  let pid_eq = (U64/eq p1 p2)
+  let key_eq = (String/eq key1 key2)
+  let pressed_eq = (Bool/eq pressed1 pressed2)
+  let x_eq = (F64/eq x1 x2)
+  let y_eq = (F64/eq y1 y2)
+  (Bool/and time_eq (Bool/and pid_eq (Bool/and key_eq (Bool/and pressed_eq (Bool/and x_eq y_eq)))))
+
+| #MouseMove{t1 p1 x1 y1} #MouseMove{t2 p2 x2 y2} =
+  let time_eq = (U64/eq t1 t2)
+  let pid_eq = (U64/eq p1 p2)
+  let x_eq = (F64/eq x1 x2)
+  let y_eq = (F64/eq y1 y2)
+  (Bool/and time_eq (Bool/and pid_eq (Bool/and x_eq y_eq)))
+
+| #ActionEvent{action1} #ActionEvent{action2} =
+  (UG/SIPD/Action/eq action1 action2)
+
+| e1 e2 = #False
+
+#test: (UG/SIPD/Event/eq (#KeyEvent{1 1 "a" #True}) (#KeyEvent{1 1 "a" #True})) == #True
+#test: (UG/SIPD/Event/eq (#KeyEvent{1 1 "a" #True}) (#KeyEvent{2 1 "a" #True})) == #False
+#test: (UG/SIPD/Event/eq (#MouseClick{1 1 #LeftButton 0.0 0.0}) (#MouseClick{1 1 #LeftButton 0.0 0.0})) == #True
+#test: (UG/SIPD/Event/eq (#MouseMove{1 1 0.0 0.0}) (#MouseMove{1 1 0.0 0.0})) == #True
+#test: (UG/SIPD/Event/eq (#ActionEvent{#SetNick{1 1 "alice"}}) (#ActionEvent{#SetNick{1 1 "alice"}})) == #True

@@ -11,7 +11,7 @@ List/minimum : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (Maybe A)
       #LT: y
       _  : acc
     }
-  #Some{(List/foldl A A tail head min)}
+  #Some{(List/foldl A tail A head min)}
 
 #test: (List/minimum U64 U64/Ord []) == #None
 #test: (List/minimum U64 U64/Ord [3]) == #Some{3}

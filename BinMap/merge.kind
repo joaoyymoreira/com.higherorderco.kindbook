@@ -4,7 +4,7 @@
 // - m2: 2nd BinMap.
 // = New BinMap with combined values.
 BinMap/merge : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
-| A m1 m2 = (BinTree/merge (Maybe A) (Maybe A) (Maybe A) (λx x) (λx x) (λx λy y) m1 m2)
+| A m1 m2 = (BinTree/merge (Maybe A) (Maybe A) (Maybe A) m1 m2 (λx x) (λx x) (λx λy y))
 
 #test: (BinMap/merge U64 (BinMap/empty U64) (BinMap/empty U64)) == (BinMap/empty U64)
 #test: (BinMap/merge U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)) (BinMap/empty U64)) == (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64))

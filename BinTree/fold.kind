@@ -1,10 +1,10 @@
 // Performs a fold operation on a binary tree.
 // - A: The type of elements in the tree.
-// - B: The type of the result.
-// - t: The tree to fold over.
-// - l: Value to use for leaf nodes.
-// - n: Function to apply to each node.
+// - tree: The tree to fold over.
+// - P: The type of the result.
+// - leaf: Value to use for leaf nodes.
+// - node: Function to apply to each node.
 // = The result of folding the tree.
 BinTree/fold : ∀(A: *) (BinTree A) -> ∀(P: *) P -> (A -> P -> P -> P) -> P
-| A #Leaf              P l n = l
-| A #Node{val lft rgt} P l n = (n val (BinTree/fold A lft P l n) (BinTree/fold A rgt P l n))
+| A #Leaf              P leaf node = leaf
+| A #Node{val lft rgt} P leaf node = (node val (BinTree/fold A lft P leaf node) (BinTree/fold A rgt P leaf node))

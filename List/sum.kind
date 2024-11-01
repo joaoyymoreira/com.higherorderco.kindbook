@@ -2,7 +2,7 @@
 // - xs: Input list of nats.
 // = Sum of all numbers in the list.
 List/sum : (List Nat) -> Nat
-| xs = (List/foldr Nat Nat xs #Zero Nat/add)
+| xs = (List/foldr Nat xs Nat #0 Nat/add)
 
 #test: (List/sum []) == #0
 #test: (List/sum [#1 #2 #3]) == #6

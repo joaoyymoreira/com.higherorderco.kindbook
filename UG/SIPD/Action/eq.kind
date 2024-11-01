@@ -1,0 +1,15 @@
+// Checks if two Action values are equal.
+// - a1: The first Action.
+// - a2: The second Action.
+// = True if the actions are equal, False otherwise.
+UG/SIPD/Action/eq : (UG/SIPD/Action) -> (UG/SIPD/Action) -> Bool
+| #SetNick{t1 p1 s1} #SetNick{t2 p2 s2} = 
+  let time_eq = (U64/eq t1 t2)
+  let pid_eq  = (U64/eq p1 p2)
+  let nick_eq = (String/eq s1 s2)
+  (Bool/and time_eq (Bool/and pid_eq nick_eq))
+
+#test: (UG/SIPD/Action/eq (#SetNick{1 1 "alice"}) (#SetNick{1 1 "alice"})) == #True
+#test: (UG/SIPD/Action/eq (#SetNick{1 1 "alice"}) (#SetNick{1 1 "bob"})) == #False
+#test: (UG/SIPD/Action/eq (#SetNick{1 1 "alice"}) (#SetNick{1 2 "alice"})) == #False
+#test: (UG/SIPD/Action/eq (#SetNick{1 1 "alice"}) (#SetNick{2 1 "alice"})) == #False
