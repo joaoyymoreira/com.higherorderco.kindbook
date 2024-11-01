@@ -1,3 +1,23 @@
+main : (List U64)
+= [1 (log "A" 2) 3]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //main : Nat
 //= let map = #Node{#Some{47244640257} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{4294967302} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{60129542145} #Leaf{} #Leaf{}}} #Node{#Some{34359738370} #Leaf{} #Node{#Some{103079215110} #Leaf{} #Leaf{}}}} #Node{#Some{17179869189} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{90194313222} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{111669149697} #Leaf{} #Leaf{}}}}} #Node{#Some{8589934597} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{60129542150} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{77309411334} #Leaf{} #Leaf{}}} #Node{#Some{34359738369} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{25769803778} #Node{#None{} #Leaf{} #Node{#Some{85899345921} #Leaf{} #Leaf{}}} #Node{#Some{60129542146} #Leaf{} #Leaf{}}}}} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{51539607557} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{73014444034} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{4} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{94489280517} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313218} #Leaf{} #Leaf{}}} #Node{#Some{47244640257} #Leaf{} #Leaf{}}}} #Node{#Some{12884901894} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{68719476741} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{47244640258} #Leaf{} #Node{#Some{115964116994} #Leaf{} #Leaf{}}}} #Node{#Some{25769803777} #Node{#None{} #Leaf{} #Node{#Some{98784247810} #Leaf{} #Leaf{}}} #Node{#Some{98784247809} #Leaf{} #Leaf{}}}}}} :: (BinMap U64)
   ////(BinMap/invert _ map)
@@ -7,11 +27,11 @@
 
 
 
-main : (Map U64) & U64 & U64
-= let map = { 1:10 2:20 | 0 }
-  put x0  = map[1] := 100
-  get x1  = map[2]
-  (map, x0, x1)
+//main : (Map U64) & U64 & U64
+//= let map = { 1:10 2:20 | 0 }
+  //put x0  = map[1] := 100
+  //get x1  = map[2]
+  //(map, x0, x1)
 
 
 
