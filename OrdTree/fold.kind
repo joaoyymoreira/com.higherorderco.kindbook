@@ -1,17 +1,17 @@
 // Performs a fold operation over an AVL tree.
 // - K: The type of keys in the tree.
 // - V: The type of values in the tree.
-// - A: The type of the accumulator and result.
-// - f: The combining function.
-// - z: The initial value (for the empty tree case).
 // - tree: The AVL tree to fold over.
+// - P: The type of the result.
+// - leaf: The initial value (for the empty tree case).
+// - node: The combining function.
 // = The result of folding the tree.
-OrdTree/fold : ∀(K: *) ∀(V: *) ∀(A: *) (OrdTree K V) -> A -> ((Pair K V) -> A -> A) -> A
-| K V A #Leaf                               z f = z
-| K V A #Node{key-value balance left right} z f =
-  let left-result = (OrdTree/fold K V A left z f)
-  let curr-result = (f key-value left-result)
-  (OrdTree/fold K V A right curr-result f)
+OrdTree/fold : ∀(K: *) ∀(V: *) (OrdTree K V) -> ∀(P: *) P -> ((Pair K V) -> P -> P) -> P
+| K V #Leaf                               P leaf node = leaf
+| K V #Node{key-value balance left right} P leaf node =
+  let left-result = (OrdTree/fold K V left P leaf node)
+  let curr-result = (node key-value left-result)
+  (OrdTree/fold K V right P curr-result node)
 
-#test: (OrdTree/fold U64 String U64 (OrdTree/empty U64 String) 0 (λp λacc (+ acc 1))) == 0
-#test: (OrdTree/fold U64 String (List (Pair U64 String)) (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String)) [] (λp λacc #Cons{p acc})) == [#Pair{1 "one"}]
+#test: (OrdTree/fold U64 String #Leaf U64 0 (λp λacc (+ acc 1))) == 0
+#test: (OrdTree/fold U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} #Leaf) (List (Pair U64 String)) [] (λp λacc #Cons{p acc})) == [#Pair{1 "one"}]

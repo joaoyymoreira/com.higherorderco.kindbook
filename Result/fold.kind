@@ -1,20 +1,20 @@
 // Folds over a Result value.
 // - A: Success type.
-// - B: Folded result type.
 // - E: Error type.
+// - ra: Result to fold over.
+// - P: Folded result type.
 // - done: Function applied if Done.
 // - fail: Function applied if Fail.
-// - ra: Result to fold over.
 // = Folded result.
-Result/fold : ∀(A: *) ∀(B: *) ∀(E: *) (Result A E) -> (A -> B) -> (E -> B) -> B
-| A B E #Done{value} done fail = (done value)
-| A B E #Fail{error} done fail = (fail error)
+Result/fold : ∀(A: *) ∀(E: *) (Result A E) -> ∀(P: *) (A -> P) -> (E -> P) -> P
+| A E #Done{value} P done fail = (done value)
+| A E #Fail{error} P done fail = (fail error)
 
-#test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Done{5})) == 6
-#test: (Result/fold U64 U64 U64 (λx (+ x 1)) (λe (- e 1)) (#Fail{10})) == 9
-#test: (Result/fold U64 U64 U64 (λx (* x 2)) (λe (* e 3)) (#Done{4})) == 8
-#test: (Result/fold U64 U64 U64 (λx (* x 2)) (λe (* e 3)) (#Fail{6})) == 18
-#test: (Result/fold U64 U64 U64 (λx x) (λe (+ e 2)) (#Done{100})) == 100
-#test: (Result/fold U64 U64 U64 (λx (* x 10)) (λe e) (#Fail{42})) == 42
-#test: (Result/fold U64 U64 U64 (λx (+ x 5)) (λe (* e 5)) (#Done{7})) == 12
-#test: (Result/fold U64 U64 U64 (λx (* x 5)) (λe (+ e 5)) (#Fail{3})) == 8
+#test: (Result/fold U64 U64 #Done{100} U64 (λx x) (λe (+ e 2))) == 100
+#test: (Result/fold U64 U64 #Fail{42} U64 (λx (* x 10)) (λe e)) == 42
+#test: (Result/fold U64 U64 #Done{4} U64 (λx (* x 2)) (λe (* e 3))) == 8
+#test: (Result/fold U64 U64 #Fail{6} U64 (λx (* x 2)) (λe (* e 3))) == 18
+#test: (Result/fold U64 U64 #Done{5} U64 (λx (+ x 1)) (λe (- e 1))) == 6
+#test: (Result/fold U64 U64 #Fail{3} U64 (λx (* x 5)) (λe (+ e 5))) == 8
+#test: (Result/fold U64 U64 #Done{7} U64 (λx (+ x 5)) (λe (* e 5))) == 12
+#test: (Result/fold U64 U64 #Fail{10} U64 (λx (+ x 1)) (λe (- e 1))) == 9

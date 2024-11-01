@@ -2,19 +2,18 @@
 // - M: Monad to operate in.
 // - m: Monad instance for M.
 // - A: Input type.
+// - xs: Input list.
 // - B: Accumulator type.
-// - x: Input list.
-// - z: Initial value.
-// - f: Combining function.
+// - nil: Initial value.
+// - cons: Combining function.
 // = Monadic result of folding the list.
 List/mfoldl
 : ∀(M: ∀(A: *) *)
   ∀(m: (Monad M))
   ∀(A: *)
-  ∀(B: *)
   (List A)
-  -> B
+  -> ∀(B: *) B
   -> (B -> A -> (M B))
   -> (M B)
-| M #Monad{pure bind} A B #Nil             z f = (pure B z)
-| M #Monad{pure bind} A B #Cons{head tail} z f = (bind B B (f z head) λz1 (List/mfoldl M #Monad{pure bind} A B tail z1 f))
+| M #Monad{pure bind} A #Nil             B nil cons = (pure B nil)
+| M #Monad{pure bind} A #Cons{head tail} B nil cons = (bind B B (cons nil head) λacc (List/mfoldl M #Monad{pure bind} A tail B acc cons))

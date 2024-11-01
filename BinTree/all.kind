@@ -5,8 +5,8 @@
 // = True if all elements satisfy the condition, False otherwise.
 BinTree/all : ∀(A: *) (BinTree A) -> (A -> Bool) -> Bool
 | A tree cond =
-  (BinTree/fold A Bool
-    tree
+  (BinTree/fold A tree
+    Bool
     #True
     λval λlft λrgt (Bool/and (cond val) (Bool/and lft rgt)))
 

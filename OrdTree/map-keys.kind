@@ -8,8 +8,8 @@
 // = OrdTree with mapped keys.
 OrdTree/map-keys : ∀(K: *) ∀(V: *) ∀(A: *) ∀(ord: (Ord A)) (OrdTree K V) -> (K -> A) -> (OrdTree A V)
 | K V A ord tree f =
-  (OrdTree/fold K V (OrdTree A V)
-    tree
+  (OrdTree/fold K V tree
+    (OrdTree A V)
     (OrdTree/empty A V)
     (λkv λacc (OrdTree/insert A V ord #Pair{(f (Pair/get-fst K V kv)) (Pair/get-snd K V kv)} acc)))
 

@@ -6,11 +6,11 @@ BinMap/values : ∀(A: *) (BinMap A) -> (List A)
 | A m = (List/map (Pair Bits A) A (BinMap/to-list A m) (Pair/get-snd Bits A))
 
 #test:
-  let map = (BinTree/leaf U64)
+  let map = (BinMap/empty U64)
   (BinMap/values U64 map) == []
 
 #test: 
-  let map = (BinTree/leaf U64) 
+  let map = (BinMap/empty U64) 
   let map = (BinMap/set U64 map #O{#O{#E}} 0)
   let map = (BinMap/set U64 map #O{#I{#E}} 1)
   let map = (BinMap/set U64 map #I{#O{#E}} 2)

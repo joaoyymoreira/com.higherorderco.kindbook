@@ -3,7 +3,7 @@
 // - xss: Input list of lists.
 // = Single list with all elements.
 List/concat : ∀(A: *) (List (List A)) -> (List A)
-| A xss = (List/foldr (List A) (List A) xss #Nil (List/append A))
+| A xss = (List/foldr (List A) xss (List A) #Nil (List/append A))
 
 #test: (List/concat U64 [[1 2] [3 4] [5 6]]) == [1 2 3 4 5 6]
 #test: (List/concat U64 [[1] [] [2 3] []]) == [1 2 3]

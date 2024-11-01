@@ -15,8 +15,8 @@ String/to-u64-base/go : String -> U64 -> U64 -> (Maybe U64)
 | #Nil         base acc = #Some{acc}
 | #Cons{hd tl} base acc =
   let digit = (Char/to-digit-u64 hd base)
-  (Maybe/fold U64 (Maybe U64) 
-    digit
+  (Maybe/fold U64 digit
+    (Maybe U64) 
     #None
     (λvalue (String/to-u64-base/go tl base (+ (* acc base) value))))
 

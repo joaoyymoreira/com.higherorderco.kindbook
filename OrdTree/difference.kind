@@ -6,7 +6,7 @@
 // - t2: Second AVL tree.
 // = The difference of t1 and t2.
 OrdTree/difference : ∀(K: *) ∀(V: *)  ∀(ord: (Ord K)) (OrdTree K V) -> (OrdTree K V) -> (OrdTree K V)
-| K V ord t1 t2 = (OrdTree/fold K V (OrdTree K V) t1 (OrdTree/empty K V) (OrdTree/difference/go K V ord t2))
+| K V ord t1 t2 = (OrdTree/fold K V t1 (OrdTree K V) (OrdTree/empty K V) (OrdTree/difference/go K V ord t2))
 
 // Helper function for difference operation.
 // - K: Key type.

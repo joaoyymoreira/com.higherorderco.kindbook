@@ -5,8 +5,8 @@
 // = A new BinMap containing key-value pairs from m1 whose keys are not present in m2.
 BinMap/difference : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
 | A m1 m2 = 
-  (List/foldr (Pair Bits A) _
-    (BinMap/to-list A m2)
+  (List/foldr (Pair Bits A) (BinMap/to-list A m2)
+    (BinMap A)
     m1
     (λ{#Pair{k v}: λacc (BinMap/del A acc k)})
   )

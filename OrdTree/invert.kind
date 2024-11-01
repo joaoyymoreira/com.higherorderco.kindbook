@@ -5,7 +5,7 @@
 // - tree: The tree to invert.
 // = The inverted tree.
 OrdTree/invert : ∀(K: *) ∀(V: *) ∀(ord: (Ord V)) (OrdTree K V) -> (OrdTree V K)
-| K V ord tree = (OrdTree/fold K V (OrdTree V K) tree (OrdTree/empty V K) (OrdTree/invert/go V K ord))
+| K V ord tree = (OrdTree/fold K V tree (OrdTree V K) (OrdTree/empty V K) (OrdTree/invert/go V K ord))
 
 // Helper function for OrdTree/invert.
 // - V: New key type (old value type).
