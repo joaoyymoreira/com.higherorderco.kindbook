@@ -1,7 +1,7 @@
-//./../HVM_old.kind//
+// ./../HVM_old.kind//
 
-// NOTE: the code above is HVM's old code. The code below is HVM's new code.
-// We're refactoring the old HVM to use HVM/Map, and U64 instead of Bits.
+// NOTE: we're refactoring HVM to replace RTerm by a U64.
+// Your goal is to help us with this refactor.
 
 // Higher-order Virtual Machine
 // ============================
@@ -25,15 +25,15 @@ data HVM/Term ~ (pol: HVM/Pol) {
   #Dup{ dp1: (HVM/Term #Neg) dp2: (HVM/Term #Neg) } : (HVM/Term #Neg)
 }
 
-data HVM/Redex {
-  #Redex{
+data HVM/Dex {
+  #Dex{
     neg: (HVM/Term #Neg)
     pos: (HVM/Term #Pos)
   }
 }
 
 HVM/Bag : *
-= (List HVM/Redex)
+= (List HVM/Dex)
 
 data HVM/Net {
   #Net{
@@ -45,44 +45,15 @@ data HVM/Net {
 // Runtime Types
 // -------------
 
-data HVM/RTag {
-  #AIR
-  #VAR
-  #SUB
-  #NUL
-  #ERA
-  #LAM
-  #APP
-  #SUP
-  #DUP
-}
-
-HVM/RLab : *
+HVM/RTag : *
 = U64
 
-HVM/RLoc : *
-= U64
-
-data HVM/RTerm {
-  #RTerm{
-    tag: HVM/RTag
-    lab: HVM/RLab
-    loc: HVM/RLoc
-  }
-}
-
-data HVM/RRedex {
-  #RRedex{
-    neg: HVM/RTerm
-    pos: HVM/RTerm
-  }
-}
-
-HVM/RBag : *
-= (List (Pair U64 HVM/RRedex))
-
-HVM/RNod : *
-= (List (Pair U64 HVM/RTerm))
+HVM/RLab  : * = U64
+HVM/RLoc  : * = U64
+HVM/RTerm : * = U64
+HVM/RDex  : * = (Pair HVM/RTerm HVM/RTerm)
+HVM/RBag  : * = (List (Pair U64 HVM/RDex))
+HVM/RNod  : * = (List (Pair U64 HVM/RTerm))
 
 data HVM/RNet {
   #RNet{
@@ -92,18 +63,11 @@ data HVM/RNet {
   }
 }
 
-data HVM/RRange {
-  #RRange{
-    ini: U64
-    end: U64
-  }
-}
-
 data HVM/RHeap {
   #RHeap{
     buff: (Map U64)
-    rnod: HVM/RRange
-    rbag: HVM/RRange
+    rnod: (Pair U64 U64)
+    rbag: (Pair U64 U64)
   }
 }
 
@@ -113,8 +77,19 @@ HVM : * -> *
 // Constants
 // ---------
 
-HVM/RBAG : U64
-= 0x1_0000_0000
+HVM/AIR : HVM/RTag = 0x00
+HVM/VAR : HVM/RTag = 0x01
+HVM/SUB : HVM/RTag = 0x02
+HVM/NUL : HVM/RTag = 0x03
+HVM/ERA : HVM/RTag = 0x04
+HVM/LAM : HVM/RTag = 0x05
+HVM/APP : HVM/RTag = 0x06
+HVM/SUP : HVM/RTag = 0x07
+HVM/DUP : HVM/RTag = 0x08
+
+HVM/VOID : HVM/RTerm = 0x00000000_000000_00
+
+HVM/RBAG : U64 = 0x1_0000_0000
 
 // HVM Monad
 // ---------
@@ -144,8 +119,8 @@ HVM/Net/new : HVM/Net
 HVM/RHeap/new : HVM/RHeap
 = #RHeap{
   buff: {|0}
-  rnod: #RRange{ 0 1 }
-  rbag: #RRange{ 0 0 }
+  rnod: #Pair{ 0 1 }
+  rbag: #Pair{ 0 0 }
 }
 
 // Term
@@ -162,115 +137,80 @@ HVM/Term/is-var : ∀(pol: HVM/Pol) (HVM/Term pol) -> Bool
 // RTerm
 // -----
 
-HVM/RTag/decode : U64 -> HVM/RTag
-= λ{
-  0x00: #AIR
-  0x01: #VAR
-  0x02: #SUB
-  0x03: #NUL
-  0x04: #ERA
-  0x05: #LAM
-  0x06: #APP
-  0x07: #SUP
-  0x08: #DUP
-  0x08+k: log "ERR-A" #ERA
+
+// TODO: implement HVM/RTerm/new
+HVM/RTerm/new : HVM/RTag -> HVM/RLab -> HVM/RLoc -> HVM/RTerm
+| tag lab loc = 
+  let tag_enc = tag
+  let lab_enc = (<< lab 8)
+  let loc_enc = (<< loc 32)
+  (| tag_enc (| lab_enc loc_enc))
+
+HVM/RTerm/get-tag : ∀(x: U64) HVM/RTag
+| x = (& x 0xFF)
+
+HVM/RTerm/get-lab : ∀(x: U64) HVM/RLab
+| x = (& (>> x 8) 0xFF_FFFF)
+
+HVM/RTerm/get-loc : ∀(x: U64) HVM/RLoc
+| x = (& (>> x 32) 0xFFFF_FFFF)
+
+HVM/RTag/eq : HVM/RTag -> HVM/RTag -> Bool
+| x y = (U64/to-bool (== x y))
+
+HVM/RTag/pol : HVM/RTag -> (Maybe HVM/Pol)
+| x = when HVM/RTag/eq x {
+  HVM/VAR: #Some{#Pos}
+  HVM/SUB: #Some{#Neg}
+  HVM/NUL: #Some{#Pos}
+  HVM/ERA: #Some{#Neg}
+  HVM/LAM: #Some{#Pos}
+  HVM/APP: #Some{#Neg}
+  HVM/SUP: #Some{#Pos}
+  HVM/DUP: #Some{#Neg}
+} else {
+  #None
 }
 
-HVM/RTag/encode : HVM/RTag -> U64
-| #AIR = 0x00
-| #VAR = 0x01
-| #SUB = 0x02
-| #NUL = 0x03
-| #ERA = 0x04
-| #LAM = 0x05
-| #APP = 0x06
-| #SUP = 0x07
-| #DUP = 0x08
-
-HVM/RTerm/decode : ∀(x: U64) HVM/RTerm
-| x =
-  let tag = (HVM/RTag/decode (& x 0xFF))
-  let lab = (& (>> x 8) 0xFF_FFFF)
-  let val = (& (>> x 32) 0xFFFF_FFFF)
-  #RTerm{ tag lab val }
-
-HVM/RTerm/encode : HVM/RTerm -> U64
-| #RTerm{tag lab loc} =
-  let tag = (HVM/RTag/encode tag)
-  let lab = (<< lab 8)
-  let loc = (<< loc 32)
-  (+ tag (+ lab loc))
-
-HVM/RTag/is-air : HVM/RTag -> Bool
-| #AIR = #True
-| else = #False
-
-HVM/RTag/is-sub : HVM/RTag -> Bool
-| #SUB = #True
-| else = #False
-
-HVM/RTag/is-var : HVM/RTag -> Bool
-| #VAR = #True
-| else = #False
-
-HVM/RTerm/get-tag : HVM/RTerm -> HVM/RTag
-| #RTerm{tag lab loc} = tag
-
-HVM/RTerm/get-lab : HVM/RTerm -> HVM/RLab
-| #RTerm{tag lab loc} = lab
-
-HVM/RTerm/get-loc : HVM/RTerm -> HVM/RLoc
-| #RTerm{tag lab loc} = loc
-
-HVM/at : U64 -> U64 -> U64
+HVM/port : U64 -> U64 -> U64
 | n x = (+ n x)
 
 HVM/get-rheap : (HVM HVM/RHeap)
 = λrheap #Pair{ rheap rheap }
 
 HVM/get-rbag-ini : (HVM U64)
-| #RHeap{buff rnod #RRange{ini end}} = #Pair{#RHeap{buff rnod #RRange{ini end}} ini}
+| #RHeap{buff rnod #Pair{ini end}} = #Pair{#RHeap{buff rnod #Pair{ini end}} ini}
 
 HVM/get-rbag-end : (HVM U64)
-| #RHeap{buff rnod #RRange{ini end}} = #Pair{#RHeap{buff rnod #RRange{ini end}} end}
+| #RHeap{buff rnod #Pair{ini end}} = #Pair{#RHeap{buff rnod #Pair{ini end}} end}
 
 HVM/get-rnod-ini : (HVM U64)
-| #RHeap{buff #RRange{ini end} rbag} = #Pair{#RHeap{buff #RRange{ini end} rbag} ini}
+| #RHeap{buff #Pair{ini end} rbag} = #Pair{#RHeap{buff #Pair{ini end} rbag} ini}
 
 HVM/get-rnod-end : (HVM U64)
-| #RHeap{buff #RRange{ini end} rbag} = #Pair{#RHeap{buff #RRange{ini end} rbag} end}
-
-HVM/get-rrot : (HVM HVM/RTerm)
-= (HVM/get 0)
+| #RHeap{buff #Pair{ini end} rbag} = #Pair{#RHeap{buff #Pair{ini end} rbag} end}
 
 HVM/get-itrs : (HVM U64)
 = do HVM {
   ask end = HVM/get-rbag-end
   ret (/ end 2)
 }
-// RBuff
-// -----
 
-//HVM/RBuff/swap : HVM/RBuff -> U64 -> U64 -> (Pair HVM/RBuff U64)
-//| map key val =
-  //put got = map[key] := val
-  //(map , got)
+//HVM/get-rrot : (HVM HVM/RTerm)
+//= (HVM/get 0)
 
 // HVM Memory
 // ----------
 
 HVM/swap : HVM/RLoc -> HVM/RTerm -> (HVM HVM/RTerm)
 | loc term #RHeap{buff rnod rbag} =
-  let enc = (HVM/RTerm/encode term)
-  put got = buff[loc] := enc
-  let dec = (HVM/RTerm/decode got)
-  #Pair{#RHeap{buff rnod rbag} dec}
+  put got = buff[loc] := term
+  #Pair{#RHeap{buff rnod rbag} got}
 
 HVM/get : U64 -> (HVM HVM/RTerm)
 | loc #RHeap{buff rnod rbag} =
   get got = buff[loc]
-  let dec = (HVM/RTerm/decode got)
-  #Pair{#RHeap{buff rnod rbag} dec}
+  #Pair{#RHeap{buff rnod rbag} got}
 
 HVM/set : U64 -> HVM/RTerm -> (HVM Unit)
 | loc term = do HVM {
@@ -280,18 +220,22 @@ HVM/set : U64 -> HVM/RTerm -> (HVM Unit)
 
 HVM/del : U64 -> (HVM Unit)
 | loc = do HVM {
-  ask (HVM/swap loc #RTerm{#AIR 0 0})
+  ask (HVM/swap loc HVM/VOID)
   ret #Unit
 }
 
-HVM/take : U64 -> (HVM HVM/RTerm)
+HVM/take_pos : U64 -> (HVM HVM/RTerm)
 | loc = do HVM {
-  ask term = (HVM/swap loc #RTerm{#AIR 0 0})
-  let subs = (HVM/RTag/is-sub (HVM/RTerm/get-tag term))
-  if subs do HVM {
-    ask (HVM/swap loc term)
+  (HVM/swap loc HVM/VOID)
+}
+
+HVM/take_neg : U64 -> (HVM HVM/RTerm)
+| loc = do HVM {
+  ask term = (HVM/swap loc (HVM/RTerm/new HVM/SUB 0 0))
+  if (HVM/RTag/eq HVM/SUB (HVM/RTerm/get-tag term)) do HVM {
     ret term
   } else do HVM {
+    ask (HVM/swap loc HVM/VOID)
     ret term
   }
 }
@@ -299,7 +243,7 @@ HVM/take : U64 -> (HVM HVM/RTerm)
 HVM/init : U64 -> HVM/RTerm -> (HVM Unit)
 | loc term = do HVM {
   ask old = (HVM/swap loc term)
-  let air = (HVM/RTag/is-air (HVM/RTerm/get-tag old))
+  let air = (HVM/RTag/eq HVM/AIR (HVM/RTerm/get-tag old))
   if air do HVM {
     ret #Unit
   } else do HVM {
@@ -312,30 +256,30 @@ HVM/init : U64 -> HVM/RTerm -> (HVM Unit)
 // ----------
 
 HVM/alloc-rnod : U64 -> (HVM U64)
-| arity #RHeap{buff #RRange{rnod_ini rnod_end} rbag} =
-  #Pair{#RHeap{buff #RRange{rnod_ini (+ rnod_end arity)} rbag} rnod_end}
+| arity #RHeap{buff #Pair{rnod_ini rnod_end} rbag} =
+  #Pair{#RHeap{buff #Pair{rnod_ini (+ rnod_end arity)} rbag} rnod_end}
 
 HVM/alloc-redex : (HVM U64)
-| #RHeap{buff rnod #RRange{rbag_ini rbag_end}} =
-  #Pair{#RHeap{buff rnod #RRange{rbag_ini (+ rbag_end 2)}} (+ HVM/RBAG rbag_end)}
+| #RHeap{buff rnod #Pair{rbag_ini rbag_end}} =
+  #Pair{#RHeap{buff rnod #Pair{rbag_ini (+ rbag_end 2)}} (+ HVM/RBAG rbag_end)}
 
 HVM/next-redex : (HVM (Maybe U64))
-| #RHeap{buff rnod #RRange{rbag_ini rbag_end}} =
+| #RHeap{buff rnod #Pair{rbag_ini rbag_end}} =
   if (U64/to-bool (< rbag_ini rbag_end)) {
-    #Pair{#RHeap{buff rnod #RRange{(+ rbag_ini 2) rbag_end}} #Some{(+ HVM/RBAG rbag_ini)}}
+    #Pair{#RHeap{buff rnod #Pair{(+ rbag_ini 2) rbag_end}} #Some{(+ HVM/RBAG rbag_ini)}}
   } else {
-    #Pair{#RHeap{buff rnod #RRange{rbag_ini rbag_end}} #None}
+    #Pair{#RHeap{buff rnod #Pair{rbag_ini rbag_end}} #None}
   }
 
-HVM/push-redex : HVM/RRedex -> (HVM Unit)
-| #RRedex{neg pos} = do HVM {
+HVM/push-redex : HVM/RDex -> (HVM Unit)
+| #Pair{neg pos} = do HVM {
   ask loc = HVM/alloc-redex
   ask (HVM/set (+ loc 0) neg)
   ask (HVM/set (+ loc 1) pos)
   ret #Unit
 }
 
-HVM/pop-redex : (HVM (Maybe HVM/RRedex))
+HVM/pop-redex : (HVM (Maybe HVM/RDex))
 = do HVM {
   ask loc = HVM/next-redex
   match loc {
@@ -345,9 +289,9 @@ HVM/pop-redex : (HVM (Maybe HVM/RRedex))
     #Some{loc}: do HVM {
       ask neg = (HVM/get (+ loc 0))
       ask pos = (HVM/get (+ loc 1))
-      ask (HVM/set (+ loc 0) #RTerm{ #AIR 0 0 })
-      ask (HVM/set (+ loc 1) #RTerm{ #AIR 0 0 })
-      ret #Some{#RRedex{ neg pos }}
+      ask (HVM/set (+ loc 0) HVM/VOID)
+      ask (HVM/set (+ loc 1) HVM/VOID)
+      ret #Some{#Pair{ neg pos }}
     }
   }
 }
@@ -361,69 +305,69 @@ HVM/VarMap : * = (Map (Maybe U64))
 HVM/inject-term : ∀(p: HVM/Pol) (HVM/Term p) -> (Maybe U64) -> HVM/VarMap -> (HVM (Pair HVM/VarMap HVM/RTerm))
 | p #Lam{var bod} host vars = do HVM {
   ask lam             = (HVM/alloc-rnod 3)
-  ask #Pair{vars var} = (HVM/inject-term #Neg var #Some{(HVM/at 1 lam)} vars)
-  ask #Pair{vars bod} = (HVM/inject-term #Pos bod #Some{(HVM/at 2 lam)} vars)
-  ask (HVM/init (HVM/at 1 lam) var)
-  ask (HVM/init (HVM/at 2 lam) bod)
-  ret #Pair{ vars #RTerm{ #LAM 0 lam } }
+  ask #Pair{vars var} = (HVM/inject-term #Neg var #Some{(HVM/port 1 lam)} vars)
+  ask #Pair{vars bod} = (HVM/inject-term #Pos bod #Some{(HVM/port 2 lam)} vars)
+  ask (HVM/init (HVM/port 1 lam) var)
+  ask (HVM/init (HVM/port 2 lam) bod)
+  ret #Pair{ vars (HVM/RTerm/new HVM/LAM 0 lam) }
 }
 | p #App{arg ret} host vars = do HVM {
   ask app             = (HVM/alloc-rnod 3)
-  ask #Pair{vars arg} = (HVM/inject-term #Pos arg #Some{(HVM/at 1 app)} vars)
-  ask #Pair{vars ret} = (HVM/inject-term #Neg ret #Some{(HVM/at 2 app)} vars)
-  ask (HVM/init (HVM/at 1 app) arg)
-  ask (HVM/init (HVM/at 2 app) ret)
-  ret #Pair{ vars #RTerm{ #APP 0 app } }
+  ask #Pair{vars arg} = (HVM/inject-term #Pos arg #Some{(HVM/port 1 app)} vars)
+  ask #Pair{vars ret} = (HVM/inject-term #Neg ret #Some{(HVM/port 2 app)} vars)
+  ask (HVM/init (HVM/port 1 app) arg)
+  ask (HVM/init (HVM/port 2 app) ret)
+  ret #Pair{ vars (HVM/RTerm/new HVM/APP 0 app) }
 }
 | p #Sup{tm1 tm2} host vars = do HVM {
   ask sup             = (HVM/alloc-rnod 3)
-  ask #Pair{vars tm1} = (HVM/inject-term #Pos tm1 #Some{(HVM/at 1 sup)} vars)
-  ask #Pair{vars tm2} = (HVM/inject-term #Pos tm2 #Some{(HVM/at 2 sup)} vars)
-  ask (HVM/init (HVM/at 1 sup) tm1)
-  ask (HVM/init (HVM/at 2 sup) tm2)
-  ret #Pair{ vars #RTerm{ #SUP 0 sup } }
+  ask #Pair{vars tm1} = (HVM/inject-term #Pos tm1 #Some{(HVM/port 1 sup)} vars)
+  ask #Pair{vars tm2} = (HVM/inject-term #Pos tm2 #Some{(HVM/port 2 sup)} vars)
+  ask (HVM/init (HVM/port 1 sup) tm1)
+  ask (HVM/init (HVM/port 2 sup) tm2)
+  ret #Pair{ vars (HVM/RTerm/new HVM/SUP 0 sup) }
 }
 | p #Dup{dp1 dp2} host vars = do HVM {
   ask dup             = (HVM/alloc-rnod 3)
-  ask #Pair{vars dp1} = (HVM/inject-term #Neg dp1 #Some{(HVM/at 1 dup)} vars)
-  ask #Pair{vars dp2} = (HVM/inject-term #Neg dp2 #Some{(HVM/at 2 dup)} vars)
-  ask (HVM/init (HVM/at 1 dup) dp1)
-  ask (HVM/init (HVM/at 2 dup) dp2)
-  ret #Pair{ vars #RTerm{ #DUP 0 dup } }
+  ask #Pair{vars dp1} = (HVM/inject-term #Neg dp1 #Some{(HVM/port 1 dup)} vars)
+  ask #Pair{vars dp2} = (HVM/inject-term #Neg dp2 #Some{(HVM/port 2 dup)} vars)
+  ask (HVM/init (HVM/port 1 dup) dp1)
+  ask (HVM/init (HVM/port 2 dup) dp2)
+  ret #Pair{ vars (HVM/RTerm/new HVM/DUP 0 dup) }
 }
 | p #Var{uid} #None vars = do HVM {
-  ret log "ERR-B" #Pair{ vars #RTerm{ #NUL 0 0 } }
+  ret log "ERR-B" #Pair{ vars HVM/VOID }
 }
 | p #Var{uid} #Some{host} vars = 
   put got = vars[uid] := #Some{host}
   match got {
-    #None: do HVM { ret #Pair{ vars #RTerm{ #NUL 0 0 } } }
-    #Some{neg_host}: do HVM { ret #Pair{ vars #RTerm{ #VAR 0 neg_host } } }
+    #None: do HVM { ret #Pair{ vars (HVM/RTerm/new HVM/NUL 0 0) } }
+    #Some{neg_host}: do HVM { ret #Pair{ vars (HVM/RTerm/new HVM/VAR 0 neg_host) } }
   }
 | p #Sub{uid} #None vars = do HVM {
-  ret log "ERR-C" #Pair{ vars #RTerm{ #NUL 0 0 } }
+  ret log "ERR-C" #Pair{ vars HVM/VOID }
 }
 | p #Sub{uid} #Some{host} vars = 
   put got = vars[uid] := #Some{host}
   match got {
-    #None: do HVM { ret #Pair{ vars #RTerm{ #SUB 0 host } } }
+    #None: do HVM { ret #Pair{ vars (HVM/RTerm/new HVM/SUB 0 host) } }
     #Some{pos_host}: do HVM {
-      ask (HVM/set pos_host (#RTerm{ #VAR 0 host }))
-      ret #Pair{ vars #RTerm{ #SUB 0 host } }
+      ask (HVM/set pos_host ((HVM/RTerm/new HVM/VAR 0 host)))
+      ret #Pair{ vars (HVM/RTerm/new HVM/SUB 0 host) }
     }
   }
 | p #Nul host vars = do HVM {
-  ret #Pair{ vars #RTerm{ #NUL 0 0 } }
+  ret #Pair{ vars (HVM/RTerm/new HVM/NUL 0 0) }
 }
 | p #Era host vars = do HVM {
-  ret #Pair{ vars #RTerm{ #ERA 0 0 } }
+  ret #Pair{ vars (HVM/RTerm/new HVM/ERA 0 0) }
 }
 
-HVM/inject-redex : HVM/Redex -> HVM/VarMap -> (HVM HVM/VarMap)
-| #Redex{neg pos} vars = do HVM {
+HVM/inject-redex : HVM/Dex -> HVM/VarMap -> (HVM HVM/VarMap)
+| #Dex{neg pos} vars = do HVM {
   ask #Pair{vars neg} = (HVM/inject-term #Neg neg #None vars)
   ask #Pair{vars pos} = (HVM/inject-term #Pos pos #None vars)
-  ask (HVM/push-redex #RRedex{neg pos})
+  ask (HVM/push-redex #Pair{neg pos})
   ret vars
 }
 
@@ -462,10 +406,10 @@ HVM/dump-rbag : (HVM HVM/RBag)
   ask bag = (HVM/dump (+ HVM/RBAG ini) (+ HVM/RBAG end))
   use bag = (List/chunks-of _ #2 bag)
   use bag = (List/map _ _ bag (λirs
-    use #Pair{ir0 ir1} = (Pair/from-list (Pair U64 HVM/RTerm) #Pair{0 #RTerm{#AIR 0 0}} irs)
+    use #Pair{ir0 ir1} = (Pair/from-list (Pair U64 HVM/RTerm) #Pair{0 HVM/VOID} irs)
     use #Pair{i0 r0}   = ir0
     use #Pair{i1 r1}   = ir1
-    #Pair{i0 #RRedex{r0 r1}}
+    #Pair{i0 #Pair{r0 r1}}
   ))
   ret bag
 }
@@ -479,7 +423,7 @@ HVM/dump-rnod : (HVM HVM/RNod)
 
 HVM/dump-rnet : (HVM HVM/RNet)
 = do HVM {
-  ask rot = HVM/get-rrot
+  ask rot = (HVM/get 0)
   ask bag = HVM/dump-rbag
   ask nod = HVM/dump-rnod
   ret #RNet{ rot bag nod }
@@ -490,88 +434,108 @@ HVM/dump-rnet : (HVM HVM/RNet)
 // Reads from runtime memory to core terms.
 
 HVM/recover-var : U64 -> HVM/RTerm -> (HVM (HVM/Term #Pos))
-| var #RTerm{#AIR tag loc} = do HVM { ret log "ERR-D" #Nul }
-| var #RTerm{#ERA tag loc} = do HVM { ret log "ERR-E" #Nul }
-| var #RTerm{#APP tag loc} = do HVM { ret log "ERR-F" #Nul }
-| var #RTerm{#DUP tag loc} = do HVM { ret log "ERR-G" #Nul }
-| var #RTerm{#VAR tag loc} = (HVM/recover-term #Pos (#RTerm{ #VAR tag loc }))
-| var #RTerm{#NUL tag loc} = (HVM/recover-term #Pos (#RTerm{ #NUL tag loc }))
-| var #RTerm{#LAM tag loc} = (HVM/recover-term #Pos (#RTerm{ #LAM tag loc }))
-| var #RTerm{#SUP tag loc} = (HVM/recover-term #Pos (#RTerm{ #SUP tag loc }))
-| var #RTerm{#SUB tag loc} = if (U64/eq var loc) do HVM {
-  ret #Var{loc}
+| var term = when HVM/RTag/eq (HVM/RTerm/get-tag term) {
+  HVM/AIR: do HVM { ret log "ERR-D" #Nul }
+  HVM/ERA: do HVM { ret log "ERR-E" #Nul }
+  HVM/APP: do HVM { ret log "ERR-F" #Nul }
+  HVM/DUP: do HVM { ret log "ERR-G" #Nul }
+  HVM/VAR: (HVM/recover-term #Pos term)
+  HVM/NUL: (HVM/recover-term #Pos term)
+  HVM/LAM: (HVM/recover-term #Pos term)
+  HVM/SUP: (HVM/recover-term #Pos term)
+  HVM/SUB: if (U64/eq var (HVM/RTerm/get-loc term)) do HVM {
+    ret #Var{(HVM/RTerm/get-loc term)}
+  } else {
+    (HVM/recover-term #Pos (HVM/RTerm/new HVM/SUB 0 (HVM/RTerm/get-loc term)))
+  }
 } else {
-  (HVM/recover-term #Pos #RTerm{ #SUB tag loc })
+  do HVM { ret log "ERR-X" #Nul }
 }
 
 HVM/recover-sub : U64 -> HVM/RTerm -> (HVM (HVM/Term #Neg))
-| sub #RTerm{#AIR tag loc} = do HVM { ret log "ERR-H" #Era }
-| sub #RTerm{#NUL tag loc} = do HVM { ret log "ERR-I" #Era }
-| sub #RTerm{#LAM tag loc} = do HVM { ret log "ERR-J" #Era }
-| sub #RTerm{#SUP tag loc} = do HVM { ret log "ERR-K" #Era }
-| sub #RTerm{#VAR tag loc} = (HVM/recover-term #Neg (#RTerm{ #VAR tag loc }))
-| sub #RTerm{#ERA tag loc} = (HVM/recover-term #Neg (#RTerm{ #ERA tag loc }))
-| sub #RTerm{#APP tag loc} = (HVM/recover-term #Neg (#RTerm{ #APP tag loc }))
-| sub #RTerm{#DUP tag loc} = (HVM/recover-term #Neg (#RTerm{ #DUP tag loc }))
-| sub #RTerm{#SUB tag loc} = if (U64/eq sub loc) do HVM {
-  ret #Sub{loc}
+| sub term = when HVM/RTag/eq (HVM/RTerm/get-tag term) {
+  HVM/AIR: do HVM { ret log "ERR-H" #Era }
+  HVM/NUL: do HVM { ret log "ERR-I" #Era }
+  HVM/LAM: do HVM { ret log "ERR-J" #Era }
+  HVM/SUP: do HVM { ret log "ERR-K" #Era }
+  HVM/VAR: (HVM/recover-term #Neg term)
+  HVM/ERA: (HVM/recover-term #Neg term)
+  HVM/APP: (HVM/recover-term #Neg term)
+  HVM/DUP: (HVM/recover-term #Neg term)
+  HVM/SUB: if (U64/eq sub (HVM/RTerm/get-loc term)) do HVM {
+    ret #Sub{(HVM/RTerm/get-loc term)}
+  } else {
+    (HVM/recover-term #Neg (HVM/RTerm/new HVM/SUB 0 (HVM/RTerm/get-loc term)))
+  }
 } else {
-  (HVM/recover-term #Neg (#RTerm{ #SUB tag loc }))
+  do HVM { ret log "ERR-X" #Era }
 }
 
 HVM/recover-term : ∀(p: HVM/Pol) (HVM/RTerm) -> (HVM (HVM/Term p))
-| #Pos #RTerm{#AIR tag loc} = do HVM { ret #Nul }
-| #Pos #RTerm{#NUL tag loc} = do HVM { ret #Nul }
-| #Pos #RTerm{#VAR tag loc} = do HVM {
-  ask got = (HVM/get loc)
-  (HVM/recover-var loc got)
+| #Pos term = when HVM/RTag/eq (HVM/RTerm/get-tag term) {
+  HVM/AIR: do HVM { ret #Nul }
+  HVM/NUL: do HVM { ret #Nul }
+  HVM/VAR: do HVM {
+    ask got = (HVM/get (HVM/RTerm/get-loc term))
+    (HVM/recover-var (HVM/RTerm/get-loc term) got)
+  }
+  HVM/LAM: do HVM {
+    let loc = (HVM/RTerm/get-loc term)
+    ask var = (HVM/get (HVM/port 1 loc))
+    ask bod = (HVM/get (HVM/port 2 loc))
+    ask var = (HVM/recover-term #Neg var)
+    ask bod = (HVM/recover-term #Pos bod)
+    ret #Lam{var bod}
+  }
+  HVM/SUP: do HVM {
+    let loc = (HVM/RTerm/get-loc term)
+    ask tm1 = (HVM/get (HVM/port 1 loc))
+    ask tm2 = (HVM/get (HVM/port 2 loc))
+    ask tm1 = (HVM/recover-term #Pos tm1)
+    ask tm2 = (HVM/recover-term #Pos tm2)
+    ret #Sup{tm1 tm2}
+  }
+  HVM/SUB: do HVM { ret log "ERR-L" #Nul }
+  HVM/ERA: do HVM { ret log "ERR-M" #Nul }
+  HVM/APP: do HVM { ret log "ERR-N" #Nul }
+  HVM/DUP: do HVM { ret log "ERR-O" #Nul }
+} else {
+  do HVM { ret log "ERR-X" #Nul }
 }
-| #Pos #RTerm{#LAM tag loc} = do HVM {
-  ask var = (HVM/get (HVM/at 1 loc))
-  ask bod = (HVM/get (HVM/at 2 loc))
-  ask var = (HVM/recover-term #Neg var)
-  ask bod = (HVM/recover-term #Pos bod)
-  ret #Lam{var bod}
+| #Neg term = when HVM/RTag/eq (HVM/RTerm/get-tag term) {
+  HVM/AIR: do HVM { ret #Era }
+  HVM/ERA: do HVM { ret #Era }
+  HVM/SUB: do HVM {
+    ask got = (HVM/get (HVM/RTerm/get-loc term))
+    (HVM/recover-sub (HVM/RTerm/get-loc term) got)
+  }
+  HVM/APP: do HVM {
+    let loc = (HVM/RTerm/get-loc term)
+    ask arg = (HVM/get (HVM/port 1 loc))
+    ask ret = (HVM/get (HVM/port 2 loc))
+    ask arg = (HVM/recover-term #Pos arg)
+    ask ret = (HVM/recover-term #Neg ret)
+    ret #App{arg ret}
+  }
+  HVM/DUP: do HVM {
+    let loc = (HVM/RTerm/get-loc term)
+    ask dp1 = (HVM/get (HVM/port 1 loc))
+    ask dp2 = (HVM/get (HVM/port 2 loc))
+    ask dp1 = (HVM/recover-term #Neg dp1)
+    ask dp2 = (HVM/recover-term #Neg dp2)
+    ret #Dup{dp1 dp2}
+  }
+  HVM/VAR: do HVM { ret log "ERR-P" #Era }
+  HVM/NUL: do HVM { ret log "ERR-Q" #Era }
+  HVM/LAM: do HVM { ret log "ERR-R" #Era }
+  HVM/SUP: do HVM { ret log "ERR-S" #Era }
+} else {
+  do HVM { ret log "ERR-X" #Era }
 }
-| #Pos #RTerm{#SUP tag loc} = do HVM {
-  ask tm1 = (HVM/get (HVM/at 1 loc))
-  ask tm2 = (HVM/get (HVM/at 2 loc))
-  ask tm1 = (HVM/recover-term #Pos tm1)
-  ask tm2 = (HVM/recover-term #Pos tm2)
-  ret #Sup{tm1 tm2}
-}
-| #Pos #RTerm{#SUB tag loc} = do HVM { ret log "ERR-L" #Nul }
-| #Pos #RTerm{#ERA tag loc} = do HVM { ret log "ERR-M" #Nul }
-| #Pos #RTerm{#APP tag loc} = do HVM { ret log "ERR-N" #Nul }
-| #Pos #RTerm{#DUP tag loc} = do HVM { ret log "ERR-O" #Nul }
-| #Neg #RTerm{#AIR tag loc} = do HVM { ret #Era }
-| #Neg #RTerm{#ERA tag loc} = do HVM { ret #Era }
-| #Neg #RTerm{#SUB tag loc} = do HVM {
-  ask got = (HVM/get loc)
-  (HVM/recover-sub loc got)
-}
-| #Neg #RTerm{#APP tag loc} = do HVM {
-  ask arg = (HVM/get (HVM/at 1 loc))
-  ask ret = (HVM/get (HVM/at 2 loc))
-  ask arg = (HVM/recover-term #Pos arg)
-  ask ret = (HVM/recover-term #Neg ret)
-  ret #App{arg ret}
-}
-| #Neg #RTerm{#DUP tag loc} = do HVM {
-  ask dp1 = (HVM/get (HVM/at 1 loc))
-  ask dp2 = (HVM/get (HVM/at 2 loc))
-  ask dp1 = (HVM/recover-term #Neg dp1)
-  ask dp2 = (HVM/recover-term #Neg dp2)
-  ret #Dup{dp1 dp2}
-}
-| #Neg #RTerm{#VAR tag loc} = do HVM { ret log "ERR-P" #Era }
-| #Neg #RTerm{#NUL tag loc} = do HVM { ret log "ERR-Q" #Era }
-| #Neg #RTerm{#LAM tag loc} = do HVM { ret log "ERR-R" #Era }
-| #Neg #RTerm{#SUP tag loc} = do HVM { ret log "ERR-S" #Era }
 
 HVM/recover-rot : (HVM (HVM/Term #Pos))
 = do HVM {
-  ask rot = HVM/get-rrot
+  ask rot = (HVM/get 0)
   (HVM/recover-term #Pos rot)
 }
 
@@ -580,11 +544,11 @@ HVM/recover-bag : (HVM HVM/Bag)
   ask rbag = HVM/dump-rbag
   let bag  = [] :: HVM/Bag
   ask bag  = for loc_rdx in rbag {
-    let #Pair{loc rdx}   = loc_rdx
-    let #RRedex{neg pos} = rdx
+    let #Pair{loc rdx} = loc_rdx
+    let #Pair{neg pos} = rdx
     ask neg = (HVM/recover-term #Neg neg)
     ask pos = (HVM/recover-term #Pos pos)
-    ret #Cons{ #Redex{neg pos} bag }
+    ret #Cons{ #Dex{neg pos} bag }
   }
   ret bag
 }
@@ -634,23 +598,25 @@ HVM/Term/to-string : ∀(p: HVM/Pol) (HVM/Term p) -> String
 
 HVM/Bag/to-string : HVM/Bag -> String
 | #Nil                        = ""
-| #Cons{#Redex{neg pos} rest} = (String/join "" ["\n& " (HVM/Term/to-string #Neg neg) " ~ " (HVM/Term/to-string #Pos pos) (HVM/Bag/to-string rest)])
+| #Cons{#Dex{neg pos} rest} = (String/join "" ["\n& " (HVM/Term/to-string #Neg neg) " ~ " (HVM/Term/to-string #Pos pos) (HVM/Bag/to-string rest)])
 
 HVM/Net/to-string : HVM/Net -> String
 | #Net{rot bag} = (String/join "" [(HVM/Term/to-string #Pos rot) (HVM/Bag/to-string bag)])
 
-// TODO: complete with all missing stringification fns below
-
 HVM/RTag/to-string : HVM/RTag -> String
-| #AIR = "AIR"
-| #VAR = "VAR"
-| #SUB = "SUB"
-| #NUL = "NUL"
-| #ERA = "ERA"
-| #LAM = "LAM"
-| #APP = "APP"
-| #SUP = "SUP"
-| #DUP = "DUP"
+| tag = when HVM/RTag/eq tag {
+  HVM/AIR: "AIR"
+  HVM/VAR: "VAR"
+  HVM/SUB: "SUB"
+  HVM/NUL: "NUL"
+  HVM/ERA: "ERA"
+  HVM/LAM: "LAM"
+  HVM/APP: "APP"
+  HVM/SUP: "SUP"
+  HVM/DUP: "DUP"
+} else {
+  "???"
+}
 
 HVM/RLab/to-string : U64 -> String
 | loc = (String/pad-left (U64/to-hex-string loc) #6 '0')
@@ -659,20 +625,20 @@ HVM/RLoc/to-string : U64 -> String
 | loc = (String/pad-left (U64/to-hex-string loc) #9 '0')
 
 HVM/RTerm/to-string : HVM/RTerm -> String 
-| #RTerm{tag lab loc} =
-  let tag = (HVM/RTag/to-string tag)
-  let lab = (HVM/RLab/to-string lab)
-  let loc = (HVM/RLoc/to-string loc)
+| term =
+  let tag = (HVM/RTag/to-string (HVM/RTerm/get-tag term))
+  let lab = (HVM/RLab/to-string (HVM/RTerm/get-lab term))
+  let loc = (HVM/RLoc/to-string (HVM/RTerm/get-loc term))
   (String/join "" [tag ":" lab ":" loc])
 
-HVM/RRedex/to-string : HVM/RRedex -> String
-| #RRedex{neg pos} = (String/join "" [(HVM/RTerm/to-string neg) " ~ " (HVM/RTerm/to-string pos)])
+HVM/RDex/to-string : HVM/RDex -> String
+| #Pair{neg pos} = (String/join "" [(HVM/RTerm/to-string neg) " ~ " (HVM/RTerm/to-string pos)])
 
 HVM/RBag/to-string : HVM/RBag -> String
 | bag = (List/fold _ bag _ "" (λkv λtxt
   let #Pair{k v} = kv
   let addr       = (String/pad-left (U64/to-hex-string k) #9 '0')
-  let dex        = (HVM/RRedex/to-string v)
+  let dex        = (HVM/RDex/to-string v)
   (String/join "" [addr " → " dex "\n" txt])
 ))
 
@@ -719,7 +685,8 @@ HVM/parse-term : ∀(p: HVM/Pol) (Parser (HVM/Term p))
       ask (Parser/consume "*")
       ret #Nul
     }
-    _ : do Parser {
+  } else {
+    do Parser {
       ask name = Parser/parse-name
       ret #Var { (U64/from-bits (String/to-bits name)) }
     }
@@ -747,7 +714,8 @@ HVM/parse-term : ∀(p: HVM/Pol) (Parser (HVM/Term p))
       ask (Parser/consume "*")
       ret #Era
     }
-    _ : do Parser {
+  } else {
+    do Parser {
       ask name = Parser/parse-name
       ret #Sub { (U64/from-bits (String/to-bits name)) }
     }
@@ -766,9 +734,10 @@ HVM/parse-bag : (Parser HVM/Bag)
       ask (Parser/consume "~")
       ask pos = (HVM/parse-term #Pos)
       ask rest = HVM/parse-bag
-      ret #Cons{ #Redex{neg pos} rest }
+      ret #Cons{ #Dex{neg pos} rest }
     }
-    _ : do Parser {
+  } else {
+    do Parser {
       ret #Nil
     }
   }
@@ -787,183 +756,150 @@ HVM/do-parse-net : String -> HVM/Net
 // Linking
 // -------
 
-// FIXME: not working on current flattener
-
-//HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
-//| #RTerm{#SUB l} b = do HVM { ask x = (HVM/swap l b) (HVM/link-sub l x) }
-//| a #RTerm{#VAR l} = do HVM { ask x = (HVM/swap l a) (HVM/link-var l x) }
-//| a b              = do HVM { ask (HVM/push-redex #Pair{a b}) ret #Unit }
-
-//HVM/link-sub : Bits -> (Maybe HVM/RTerm) -> (HVM Unit)
-//| l #Some{#RTerm{#SUB _}} = do HVM { ret #Unit }
-//| l #Some{a}              = do HVM { ask b = (HVM/take l) (HVM/link a b) }
-//| l #None                 = do HVM { ret #Unit }
-
-//HVM/link-var : Bits -> (Maybe HVM/RTerm) -> (HVM Unit)
-//| l #Some{#RTerm{#SUB _}} = do HVM { ret #Unit }
-//| l #Some{b}              = do HVM { ask a = (HVM/take l) (HVM/link a b) }
-//| l #None                 = do HVM { ret #Unit }
-
 HVM/link : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
-| #RTerm{at ak al} b = match (HVM/RTag/is-sub at) { 
-  #True  : do HVM { ask x = (HVM/swap al b) (HVM/link-sub al x) }
-  #False : match b {
-    #RTerm{bt bk bl}: match (HVM/RTag/is-var bt) {
-      #True: do HVM {
-        use a = #RTerm{at ak al}
-        ask x = (HVM/swap bl a)
-        (HVM/link-var bl x)
-      }
-      #False: do HVM {
-        use a = #RTerm{at ak al}
-        ask (HVM/push-redex #RRedex{a b})
-        ret #Unit
-      }
+| a b =
+  let a_tag = (HVM/RTerm/get-tag a)
+  let a_loc = (HVM/RTerm/get-loc a)
+  let b_tag = (HVM/RTerm/get-tag b)
+  let b_loc = (HVM/RTerm/get-loc b)
+  if (HVM/RTag/eq a_tag HVM/SUB) do HVM {
+    //log "X<~B" 
+    ask x = (HVM/swap a_loc b)
+    if (HVM/RTag/eq (HVM/RTerm/get-tag x) HVM/SUB) do HVM {
+      ret #Unit
+    } else do HVM {
+      ask b = (HVM/swap a_loc HVM/VOID)
+      (HVM/link x b)
     }
-  }
-}
-
-HVM/link-sub : U64 -> HVM/RTerm -> (HVM Unit)
-| l #RTerm{at ak al} = match (HVM/RTag/is-sub at) {
-  #True: do HVM {
+  } else if (HVM/RTag/eq b_tag HVM/VAR) do HVM {
+    //log "A~>X"
+    ask x = (HVM/swap b_loc a)
+    if (HVM/RTag/eq (HVM/RTerm/get-tag x) HVM/SUB) do HVM {
+      ret #Unit
+    } else do HVM {
+      ask a = (HVM/swap b_loc HVM/VOID)
+      (HVM/link a x)
+    }
+  } else do HVM {
+    //log "A~~B"
+    ask (HVM/push-redex #Pair{a b})
     ret #Unit
   }
-  #False: do HVM {
-    use a = #RTerm{at ak al}
-    ask b = (HVM/take l)
-    (HVM/link a b)
-  }
-}
-
-HVM/link-var : U64 -> HVM/RTerm -> (HVM Unit)
-| l #RTerm{bt ak bl} = match (HVM/RTag/is-sub bt) {
-  #True: do HVM {
-    ret #Unit
-  }
-  #False: do HVM {
-    use b = #RTerm{bt ak bl}
-    ask a = (HVM/take l)
-    (HVM/link a b)
-  }
-}
 
 // Interaction
 // -----------
 
 HVM/interact : HVM/RTerm -> HVM/RTerm -> (HVM Unit)
-| #RTerm{at ak al} #RTerm{bt bk bl} = (HVM/interact/go at ak al bt bk bl)
-
-HVM/interact/go
-: HVM/RTag -> HVM/RLab -> HVM/RLoc ->
-  HVM/RTag -> HVM/RLab -> HVM/RLoc ->
-  (HVM Unit)
-| #APP app_lab app_loc #LAM lam_lab lam_loc = do HVM {
-  //log "APP-LAM"
-  ask arg = (HVM/take (HVM/at 1 app_loc))
-  ask ret = (HVM/take (HVM/at 2 app_loc))
-  ask var = (HVM/take (HVM/at 1 lam_loc))
-  ask bod = (HVM/take (HVM/at 2 lam_loc))
-  ask (HVM/link var arg)
-  ask (HVM/link ret bod)
-  ret #Unit
-}
-| #APP app_lab app_loc #SUP sup_lab sup_loc = do HVM {
-  //log "APP-SUP"
-  ask arg = (HVM/take (HVM/at 1 app_loc))
-  ask ret = (HVM/take (HVM/at 2 app_loc))
-  ask tm1 = (HVM/take (HVM/at 1 sup_loc))
-  ask tm2 = (HVM/take (HVM/at 2 sup_loc))
-  ask dp1 = (HVM/alloc-rnod 3)
-  ask dp2 = (HVM/alloc-rnod 3)
-  ask cn1 = (HVM/alloc-rnod 3)
-  ask cn2 = (HVM/alloc-rnod 3)
-  ask (HVM/set (HVM/at 1 dp1) (#RTerm{ #SUB 0 (HVM/at 1 dp1) }))
-  ask (HVM/set (HVM/at 2 dp1) (#RTerm{ #SUB 0 (HVM/at 2 dp1) }))
-  ask (HVM/set (HVM/at 1 dp2) (#RTerm{ #VAR 0 (HVM/at 2 cn1) }))
-  ask (HVM/set (HVM/at 2 dp2) (#RTerm{ #VAR 0 (HVM/at 2 cn2) }))
-  ask (HVM/set (HVM/at 1 cn1) (#RTerm{ #VAR 0 (HVM/at 1 dp1) }))
-  ask (HVM/set (HVM/at 2 cn1) (#RTerm{ #SUB 0 (HVM/at 2 cn1) }))
-  ask (HVM/set (HVM/at 1 cn2) (#RTerm{ #VAR 0 (HVM/at 2 dp1) }))
-  ask (HVM/set (HVM/at 2 cn2) (#RTerm{ #SUB 0 (HVM/at 2 cn2) }))
-  ask (HVM/link (#RTerm{ #DUP 0 dp1 }) arg)
-  ask (HVM/link ret (#RTerm{ #SUP 0 dp2 }))
-  ask (HVM/link (#RTerm{ #APP 0 cn1 }) tm1)
-  ask (HVM/link (#RTerm{ #APP 0 cn2 }) tm2)
-  ret #Unit
-}
-| #APP app_lab app_loc #NUL nul_lab nul_loc = do HVM {
-  //log "APP-NUL"
-  ask arg = (HVM/take (HVM/at 1 app_loc))
-  ask ret = (HVM/take (HVM/at 2 app_loc))
-  ask (HVM/link (#RTerm{ #ERA 0 0 }) arg)
-  ask (HVM/link ret (#RTerm{ #NUL 0 0 }))
-  ret #Unit
-}
-| #DUP dup_lab dup_loc #SUP sup_lab sup_loc = do HVM {
-  //log "DUP-SUP"
-  ask dp1 = (HVM/take (HVM/at 1 dup_loc))
-  ask dp2 = (HVM/take (HVM/at 2 dup_loc))
-  ask tm1 = (HVM/take (HVM/at 1 sup_loc))
-  ask tm2 = (HVM/take (HVM/at 2 sup_loc))
-  ask (HVM/link dp1 tm1)
-  ask (HVM/link dp2 tm2)
-  ret #Unit
-}
-| #DUP dup_lab dup_loc #LAM lam_lab lam_loc = do HVM {
-  //log "DUP-LAM"
-  ask dp1 = (HVM/take (HVM/at 1 dup_loc))
-  ask dp2 = (HVM/take (HVM/at 2 dup_loc))
-  ask var = (HVM/take (HVM/at 1 lam_loc))
-  ask bod = (HVM/take (HVM/at 2 lam_loc))
-  ask co1 = (HVM/alloc-rnod 3)
-  ask co2 = (HVM/alloc-rnod 3)
-  ask du1 = (HVM/alloc-rnod 3)
-  ask du2 = (HVM/alloc-rnod 3)
-  ask (HVM/set (HVM/at 1 co1) (#RTerm{ #SUB 0 (HVM/at 1 co1) }))
-  ask (HVM/set (HVM/at 2 co1) (#RTerm{ #VAR 0 (HVM/at 1 du2) }))
-  ask (HVM/set (HVM/at 1 co2) (#RTerm{ #SUB 0 (HVM/at 1 co2) }))
-  ask (HVM/set (HVM/at 2 co2) (#RTerm{ #VAR 0 (HVM/at 2 du2) }))
-  ask (HVM/set (HVM/at 1 du1) (#RTerm{ #VAR 0 (HVM/at 1 co1) }))
-  ask (HVM/set (HVM/at 2 du1) (#RTerm{ #VAR 0 (HVM/at 1 co2) }))
-  ask (HVM/set (HVM/at 1 du2) (#RTerm{ #SUB 0 (HVM/at 1 du2) }))
-  ask (HVM/set (HVM/at 2 du2) (#RTerm{ #SUB 0 (HVM/at 2 du2) }))
-  ask (HVM/link dp1 (#RTerm{ #LAM 0 co1 }))
-  ask (HVM/link dp2 (#RTerm{ #LAM 0 co2 }))
-  ask (HVM/link var (#RTerm{ #SUP 0 du1 }))
-  ask (HVM/link (#RTerm{ #DUP 0 du2 }) bod)
-  ret #Unit
-}
-| #DUP dup_lab dup_loc #NUL nul_lab nul_loc = do HVM {
-  //log "DUP-NUL"
-  ask dp1 = (HVM/take (HVM/at 1 dup_loc))
-  ask dp2 = (HVM/take (HVM/at 2 dup_loc))
-  ask (HVM/link dp1 (#RTerm{ #NUL 0 0 }))
-  ask (HVM/link dp2 (#RTerm{ #NUL 0 0 }))
-  ret #Unit
-}
-| #ERA era_lab era_loc #LAM lam_lab lam_loc = do HVM {
-  //log "ERA-LAM"
-  ask var = (HVM/take (HVM/at 1 lam_loc))
-  ask bod = (HVM/take (HVM/at 2 lam_loc))
-  ask (HVM/link var (#RTerm{ #NUL 0 0 }))
-  ask (HVM/link (#RTerm{ #ERA 0 0 }) bod)
-  ret #Unit
-}
-| #ERA era_lab era_loc #SUP sup_lab sup_loc = do HVM {
-  //log "ERA-SUP"
-  ask tm1 = (HVM/take (HVM/at 1 sup_loc))
-  ask tm2 = (HVM/take (HVM/at 2 sup_loc))
-  ask (HVM/link (#RTerm{ #ERA 0 0 }) tm1)
-  ask (HVM/link (#RTerm{ #ERA 0 0 }) tm2)
-  ret #Unit
-}
-| #ERA era_lab era_loc #NUL nul_lab nul_loc = do HVM {
-  //log "ERA-NUL"
-  ret #Unit
-}
-| at ak al bt bk bl = do HVM {
-  ret #Unit
-}
+| a b =
+  let a_tag = (HVM/RTerm/get-tag a)
+  let a_lab = (HVM/RTerm/get-lab a)
+  let a_loc = (HVM/RTerm/get-loc a)
+  let b_tag = (HVM/RTerm/get-tag b)
+  let b_lab = (HVM/RTerm/get-lab b)
+  let b_loc = (HVM/RTerm/get-loc b)
+  when HVM/RTag/eq a_tag {
+    HVM/APP: when HVM/RTag/eq b_tag {
+      HVM/LAM: do HVM {
+        ask arg = (HVM/take_pos (HVM/port 1 a_loc))
+        ask ret = (HVM/take_neg (HVM/port 2 a_loc))
+        ask var = (HVM/take_neg (HVM/port 1 b_loc))
+        ask bod = (HVM/take_pos (HVM/port 2 b_loc))
+        ask (HVM/link var arg)
+        ask (HVM/link ret bod)
+        ret #Unit
+      }
+      HVM/SUP: do HVM {
+        ask arg = (HVM/take_pos (HVM/port 1 a_loc))
+        ask ret = (HVM/take_neg (HVM/port 2 a_loc))
+        ask tm1 = (HVM/take_pos (HVM/port 1 b_loc))
+        ask tm2 = (HVM/take_pos (HVM/port 2 b_loc))
+        ask dp1 = (HVM/alloc-rnod 3)
+        ask dp2 = (HVM/alloc-rnod 3)
+        ask cn1 = (HVM/alloc-rnod 3)
+        ask cn2 = (HVM/alloc-rnod 3)
+        ask (HVM/set (HVM/port 1 dp1) (HVM/RTerm/new HVM/SUB 0 (HVM/port 1 dp1)))
+        ask (HVM/set (HVM/port 2 dp1) (HVM/RTerm/new HVM/SUB 0 (HVM/port 2 dp1)))
+        ask (HVM/set (HVM/port 1 dp2) (HVM/RTerm/new HVM/VAR 0 (HVM/port 2 cn1)))
+        ask (HVM/set (HVM/port 2 dp2) (HVM/RTerm/new HVM/VAR 0 (HVM/port 2 cn2)))
+        ask (HVM/set (HVM/port 1 cn1) (HVM/RTerm/new HVM/VAR 0 (HVM/port 1 dp1)))
+        ask (HVM/set (HVM/port 2 cn1) (HVM/RTerm/new HVM/SUB 0 (HVM/port 2 cn1)))
+        ask (HVM/set (HVM/port 1 cn2) (HVM/RTerm/new HVM/VAR 0 (HVM/port 2 dp1)))
+        ask (HVM/set (HVM/port 2 cn2) (HVM/RTerm/new HVM/SUB 0 (HVM/port 2 cn2)))
+        ask (HVM/link (HVM/RTerm/new HVM/DUP 0 dp1) arg)
+        ask (HVM/link ret (HVM/RTerm/new HVM/SUP 0 dp2))
+        ask (HVM/link (HVM/RTerm/new HVM/APP 0 cn1) tm1)
+        ask (HVM/link (HVM/RTerm/new HVM/APP 0 cn2) tm2)
+        ret #Unit
+      }
+      HVM/NUL: do HVM {
+        ask arg = (HVM/take_pos (HVM/port 1 a_loc))
+        ask ret = (HVM/take_neg (HVM/port 2 a_loc))
+        ask (HVM/link (HVM/RTerm/new HVM/ERA 0 0) arg)
+        ask (HVM/link ret (HVM/RTerm/new HVM/NUL 0 0))
+        ret #Unit
+      }
+    } else { do HVM { ret #Unit } }
+    HVM/DUP: when HVM/RTag/eq b_tag {
+      HVM/SUP: do HVM {
+        ask dp1 = (HVM/take_neg (HVM/port 1 a_loc))
+        ask dp2 = (HVM/take_neg (HVM/port 2 a_loc))
+        ask tm1 = (HVM/take_pos (HVM/port 1 b_loc))
+        ask tm2 = (HVM/take_pos (HVM/port 2 b_loc))
+        ask (HVM/link dp1 tm1)
+        ask (HVM/link dp2 tm2)
+        ret #Unit
+      }
+      HVM/LAM: do HVM {
+        ask dp1 = (HVM/take_neg (HVM/port 1 a_loc))
+        ask dp2 = (HVM/take_neg (HVM/port 2 a_loc))
+        ask var = (HVM/take_neg (HVM/port 1 b_loc))
+        ask bod = (HVM/take_pos (HVM/port 2 b_loc))
+        ask co1 = (HVM/alloc-rnod 3)
+        ask co2 = (HVM/alloc-rnod 3)
+        ask du1 = (HVM/alloc-rnod 3)
+        ask du2 = (HVM/alloc-rnod 3)
+        ask (HVM/set (HVM/port 1 co1) (HVM/RTerm/new HVM/SUB 0 (HVM/port 1 co1)))
+        ask (HVM/set (HVM/port 2 co1) (HVM/RTerm/new HVM/VAR 0 (HVM/port 1 du2)))
+        ask (HVM/set (HVM/port 1 co2) (HVM/RTerm/new HVM/SUB 0 (HVM/port 1 co2)))
+        ask (HVM/set (HVM/port 2 co2) (HVM/RTerm/new HVM/VAR 0 (HVM/port 2 du2)))
+        ask (HVM/set (HVM/port 1 du1) (HVM/RTerm/new HVM/VAR 0 (HVM/port 1 co1)))
+        ask (HVM/set (HVM/port 2 du1) (HVM/RTerm/new HVM/VAR 0 (HVM/port 1 co2)))
+        ask (HVM/set (HVM/port 1 du2) (HVM/RTerm/new HVM/SUB 0 (HVM/port 1 du2)))
+        ask (HVM/set (HVM/port 2 du2) (HVM/RTerm/new HVM/SUB 0 (HVM/port 2 du2)))
+        ask (HVM/link dp1 (HVM/RTerm/new HVM/LAM 0 co1))
+        ask (HVM/link dp2 (HVM/RTerm/new HVM/LAM 0 co2))
+        ask (HVM/link var (HVM/RTerm/new HVM/SUP 0 du1))
+        ask (HVM/link (HVM/RTerm/new HVM/DUP 0 du2) bod)
+        ret #Unit
+      }
+      HVM/NUL: do HVM {
+        ask dp1 = (HVM/take_neg (HVM/port 1 a_loc))
+        ask dp2 = (HVM/take_neg (HVM/port 2 a_loc))
+        ask (HVM/link dp1 (HVM/RTerm/new HVM/NUL 0 0))
+        ask (HVM/link dp2 (HVM/RTerm/new HVM/NUL 0 0))
+        ret #Unit
+      }
+    } else { do HVM { ret #Unit } }
+    HVM/ERA: when HVM/RTag/eq b_tag {
+      HVM/LAM: do HVM {
+        ask var = (HVM/take_neg (HVM/port 1 b_loc))
+        ask bod = (HVM/take_pos (HVM/port 2 b_loc))
+        ask (HVM/link var (HVM/RTerm/new HVM/NUL 0 0))
+        ask (HVM/link (HVM/RTerm/new HVM/ERA 0 0) bod)
+        ret #Unit
+      }
+      HVM/SUP: do HVM {
+        ask tm1 = (HVM/take_pos (HVM/port 1 b_loc))
+        ask tm2 = (HVM/take_pos (HVM/port 2 b_loc))
+        ask (HVM/link (HVM/RTerm/new HVM/ERA 0 0) tm1)
+        ask (HVM/link (HVM/RTerm/new HVM/ERA 0 0) tm2)
+        ret #Unit
+      }
+      HVM/NUL: do HVM {
+        ret #Unit
+      }
+    } else { do HVM { ret #Unit } }
+  } else { do HVM { ret #Unit } }
 
 // Evaluation
 // ----------
@@ -973,7 +909,7 @@ HVM/eval-one : (HVM Bool)
   ask redex = HVM/pop-redex
   match redex {
     #Some{neg_pos}:
-      let #RRedex{neg pos} = neg_pos
+      let #Pair{neg pos} = neg_pos
       do HVM {
         //log #RULE{a b}
         ask (HVM/interact neg pos)
@@ -1129,3 +1065,11 @@ main
 //[NET]
 //+(-120110 +(-* +120110))
 //"ok"
+
+//JS: after native map
+//[ITRS]
+//262191
+//[NET]
+//+(-120110 +(-* +120110))
+//node HVM/HVM.js  0.87s user 0.03s system 108% cpu 0.833 total
+
