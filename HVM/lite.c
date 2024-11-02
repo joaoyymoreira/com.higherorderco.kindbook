@@ -267,10 +267,11 @@ int main() {
   // Allocate heap with 2^33 elements
   a64* buff = calloc((1ULL << 33), sizeof(a64));
 
-  // TODO: mark the initial time
+  // Measure initial time
   struct timespec start;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
+  // Allocate demo net
   RHeap heap;
   heap.buff = buff;
 
@@ -533,21 +534,17 @@ int main() {
   heap.rnod_ini = 0x0;
   heap.rnod_end = 0xCD;
 
-  // Run evaluation
+  // Run Evaluator
   eval_strict(&heap);
 
-  // Print number of reductions
+  // Print stats
   printf("Itrs  : %llu interactions\n", heap.rbag_end / 2);
-
-  // TODO: print the end time and interactions per second
   struct timespec end;
   clock_gettime(CLOCK_MONOTONIC, &end);
   double time = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
   printf("Time  : %.6f seconds\n", time);
   printf("Space : %llu nodes\n", heap.rnod_end / 2);
   printf("IPS   : %.2f million interactions/s\n", (heap.rbag_end / 2.0 / time) / 1000000.0);
-
-  // TODO: print total memory used (rbag and node buff lens)
 
   // Cleanup
   free(buff);
