@@ -1,0 +1,13 @@
+// Computes the exponentiation of U64 numbers.
+// - base: The base number.
+// - exp: The exponent.
+// = The result of base raised to the power of exp.
+U64/exp : U64 -> U64 -> U64
+| base 0 = 1
+| base exp = (* base (U64/exp base (- exp 1)))
+
+#test: (U64/exp 2 3) == 8
+#test: (U64/exp 3 2) == 9
+#test: (U64/exp 5 0) == 1
+#test: (U64/exp 10 1) == 10
+#test: (U64/exp 2 10) == 1024
