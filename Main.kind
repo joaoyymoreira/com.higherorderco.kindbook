@@ -1,5 +1,15 @@
-main : (List U64)
-= [1 (log "A" 2) 3]
+main : ∀(A: *) ∀(x: (List A)) (List A)
+= λA λx x
+
+
+
+
+
+
+
+
+//main : (List U64)
+//= [1 (log "A" 2) 3]
 
 
 
