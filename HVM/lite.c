@@ -1,4 +1,4 @@
-// HVM3 Core (single-threaded)
+// HVM3 Core: single-thread, polarized, LAM/APP & DUP/SUP only
 // Based on: https://gist.github.com/VictorTaelin/2aba162f2b04478dc53e5615f482db7b
 
 #include <stdint.h>
