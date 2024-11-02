@@ -1,0 +1,11 @@
+// Computes the factorial of a U64.
+// - n: The input number.
+// = The factorial of n.
+U64/factorial : U64 -> U64
+| 0 = 1
+| n = (* n (U64/factorial (- n 1)))
+
+#test: (U64/factorial 0) == 1
+#test: (U64/factorial 1) == 1
+#test: (U64/factorial 3) == 6
+#test: (U64/factorial 5) == 120

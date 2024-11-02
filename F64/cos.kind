@@ -1,5 +1,43 @@
-// Cosine function for floats.
-// - x: The angle in radians.
-// = The cosine of x.
+// Cosine function using Taylor series expansion.
+// - x: Angle in radians.
+// = Cosine of x.
+// This function approximates the cosine of the given angle using the Taylor series expansion.
+// With 18 iterations, we achieve a precision of approximately 14 terms.
 F64/cos : F64 -> F64
-| a = (cos a)
+| x = 
+  if (F64/is-zero x) {
+    1.0
+  } else {
+  (F64/cos-go x 1.0 18.0)
+  }
+
+// Computes cosine using Taylor series.
+// - x: Angle in radians.
+// - guess: Current guess.
+// - iter: Remaining iterations.
+// = Approximation of cos(x).
+F64/cos-go : F64 -> F64 -> F64 -> F64
+| x guess iter = 
+  if (F64/eq 0.0 iter) {
+    guess
+  } else {
+    let next = (F64/div (F64/mul (F64/exp (F64/negate 1.0) iter) (F64/exp x (F64/mul 2.0 iter))) (F64/factorial (F64/mul 2.0 iter)))
+    (F64/cos-go x (+ guess next) (F64/sub iter 1.0))
+  }
+#test: (F64/cos 0.0) == 1.0
+#test: (F64/cos 0.5235987755982988) == 0.8660254037844388
+#test: (F64/cos 0.7853981633974483) == 0.7071067811865478
+#test: (F64/cos 1.0471975511965976) == 0.5000000000000001                  
+#test: (F64/cos 1.5707963267948966) == -2.220446049250313e-16 // 0.0
+#test: (F64/cos 2.0943951023931953) == -0.5                 
+#test: (F64/cos 2.3561944901923450) == -0.7071067811865475
+#test: (F64/cos 2.6179938779914944) == -0.8660254037844388
+#test: (F64/cos 3.1415926535897930) == -1.0              
+#test: (F64/cos 3.6651914291880920) == -0.8660254037844384
+#test: (F64/cos 3.9269908169872414) == -0.7071067811865488
+#test: (F64/cos 4.1887902047863905) == -0.5000000000000018               
+#test: (F64/cos 4.7123889803846900) == 0.0                  
+#test: (F64/cos 5.2359877559829890) == 0.5                    
+#test: (F64/cos 5.4977871437821380) == 0.7071067811865497
+#test: (F64/cos 5.7595865315812870) == 0.866025403784441
+#test: (F64/cos 6.2831853071795860) == 1.000000000000007                  

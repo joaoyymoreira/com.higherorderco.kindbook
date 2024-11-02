@@ -1,0 +1,10 @@
+// Computes the factorial of a F64.
+// - n: Input F64.
+// = Factorial of n.
+F64/factorial : F64 -> F64
+| n = if (F64/lte n 1.0) { 1.0 } else { (* n (F64/factorial (- n 1.0))) }
+
+#test: (F64/factorial 0.0) == 1.0
+#test: (F64/factorial 1.0) == 1.0
+#test: (F64/factorial 5.0) == 120.0
+#test: (F64/factorial 10.0) == 3628800.0
