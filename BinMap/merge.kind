@@ -6,7 +6,7 @@
 BinMap/merge : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
 | A m1 m2 = (BinTree/merge (Maybe A) (Maybe A) (Maybe A) m1 m2 (λx x) (λx x) (λx λy y))
 
-#test: (BinMap/merge U64 (BinMap/empty U64) (BinMap/empty U64)) == (BinMap/empty U64)
-#test: (BinMap/merge U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)) (BinMap/empty U64)) == (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64))
-#test: (BinMap/merge U64 (BinMap/empty U64) (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/empty U64))) == (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/empty U64))
-#test: (BinMap/merge U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)) (BinMap/insert U64 #Pair{#O{#E} 3} (BinMap/empty U64))) == (BinMap/insert U64 #Pair{#O{#E} 3} (BinMap/empty U64))
+#test: (BinMap/merge U64 #Leaf #Leaf) == #Leaf
+#test: (BinMap/merge U64 #Leaf (BinMap/insert U64 #Leaf #Pair{#O{#E} 1})) == (BinMap/insert U64 #Leaf #Pair{#O{#E} 1})
+#test: (BinMap/merge U64 #Leaf (BinMap/insert U64 #Leaf #Pair{#I{#E} 2})) == (BinMap/insert U64 #Leaf #Pair{#I{#E} 2})
+#test: (BinMap/merge U64 (BinMap/insert U64 #Leaf #Pair{#O{#E} 1}) (BinMap/insert U64 #Leaf #Pair{#O{#E} 3})) == (BinMap/insert U64 #Leaf #Pair{#O{#E} 3})

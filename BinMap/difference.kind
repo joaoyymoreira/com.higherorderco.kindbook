@@ -12,6 +12,6 @@ BinMap/difference : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
   )
 
 #test: (BinMap/is_empty U64 (BinMap/difference U64 #Leaf #Leaf)) == #True
-#test: (BinMap/is_empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) #Leaf)) == #False
-#test: (BinMap/is_empty U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) (BinMap/insert U64 #Pair{#E 1} #Leaf))) == #True
-#test: (BinMap/get U64 (BinMap/difference U64 (BinMap/insert U64 #Pair{#E 1} #Leaf) (BinMap/insert U64 #Pair{#I{#E} 2} #Leaf)) #E) == #Some{1}
+#test: (BinMap/is_empty U64 (BinMap/difference U64 (BinMap/insert U64 #Leaf #Pair{#E 1}) #Leaf)) == #False
+#test: (BinMap/is_empty U64 (BinMap/difference U64 (BinMap/insert U64 #Leaf #Pair{#E 1}) (BinMap/insert U64 #Leaf #Pair{#E 1}))) == #True
+#test: (BinMap/get U64 (BinMap/difference U64 (BinMap/insert U64 #Leaf #Pair{#E 1}) (BinMap/insert U64 #Leaf #Pair{#I{#E} 2})) #E) == #Some{1}

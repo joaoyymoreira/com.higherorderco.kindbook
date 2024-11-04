@@ -1,13 +1,13 @@
 // Inserts a key_value pair into a BinMap.
 // - A: Value type.
-// - pair: Key_value pair to insert.
 // - m: BinMap to insert into.
+// - pair: Key_value pair to insert.
 // = New BinMap with the pair inserted.
-BinMap/insert : ∀(A: *) (Pair Bits A) -> (BinMap A) -> (BinMap A)
-| A pair m = (BinMap/set A m (Pair/get_fst Bits A pair) (Pair/get_snd Bits A pair))
+BinMap/insert : ∀(A: *) (BinMap A) -> (Pair Bits A) -> (BinMap A)
+| A m pair = (BinMap/set A m (Pair/get_fst Bits A pair) (Pair/get_snd Bits A pair))
 
-#test: (BinMap/get U64 (BinMap/insert U64 #Pair{#E 42} (BinMap/empty U64)) #E) == #Some{42}
-#test: (BinMap/get U64 (BinMap/insert U64 #Pair{#O{#E} 10} (BinMap/empty U64)) #O{#E}) == #Some{10}
-#test: (BinMap/get U64 (BinMap/insert U64 #Pair{#I{#E} 20} (BinMap/empty U64)) #I{#E}) == #Some{20}
-#test: (BinMap/contains U64 (BinMap/insert U64 #Pair{#O{#I{#E}} 30} (BinMap/empty U64)) #O{#I{#E}}) == #True
-#test: (BinMap/contains U64 (BinMap/insert U64 #Pair{#O{#I{#E}} 30} (BinMap/empty U64)) #I{#O{#E}}) == #False
+#test: (BinMap/get U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#E 42}) #E) == #Some{42}
+#test: (BinMap/get U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#E} 10}) #O{#E}) == #Some{10}
+#test: (BinMap/get U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#I{#E} 20}) #I{#E}) == #Some{20}
+#test: (BinMap/contains U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#I{#E}} 30}) #O{#I{#E}}) == #True
+#test: (BinMap/contains U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#I{#E}} 30}) #I{#O{#E}}) == #False

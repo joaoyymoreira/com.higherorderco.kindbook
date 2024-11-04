@@ -10,5 +10,5 @@ BinMap/is_empty : ∀(A: *) (BinMap A) -> Bool
 | A #Node{#Some{_} _ _} = #False
 
 #test: (BinMap/is_empty U64 (BinMap/empty U64)) == #True
-#test: (BinMap/is_empty U64 (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64))) == #False
-#test: (BinMap/is_empty U64 (BinMap/insert U64 #Pair{#I{#E} 2} (BinMap/insert U64 #Pair{#O{#E} 1} (BinMap/empty U64)))) == #False
+#test: (BinMap/is_empty U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#E} 1})) == #False
+#test: (BinMap/is_empty U64 (BinMap/insert U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#E} 1}) #Pair{#I{#E} 2})) == #False
