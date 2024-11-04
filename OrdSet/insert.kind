@@ -1,12 +1,22 @@
 // Inserts an element into the set.
 // - K: Element type.
 // - ord: Ord instance for K.
-// - key: Element to insert.
 // - set: The set to insert into.
+// - key: Element to insert.
 // = The updated set.
-OrdSet/insert : ∀(K: *)  ∀(ord: (Ord K)) K -> (OrdSet K) -> (OrdSet K)
-| K ord key set = (OrdTree/insert K Unit ord #Pair{key #Unit} set)
+OrdSet/insert : ∀(K: *)  ∀(ord: (Ord K)) (OrdSet K) -> K -> (OrdSet K)
+| K ord set key = (OrdTree/insert K Unit ord set #Pair{key #Unit})
 
-#test: (OrdSet/insert U64 U64/Ord 5 #Leaf) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}
-#test: (OrdSet/insert U64 U64/Ord 3 (OrdSet/insert U64 U64/Ord 5 #Leaf)) == #Node{#Pair{5 #Unit} #MinusOne #Node{#Pair{3 #Unit} #0 #Leaf #Leaf} #Leaf}
-#test: (OrdSet/insert U64 U64/Ord 5 (OrdSet/insert U64 U64/Ord 5 #Leaf)) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}
+#test:
+  let ordset = (OrdSet/empty U64)
+  (OrdSet/insert U64 U64/Ord ordset 5) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}
+
+#test:
+  let ordset = (OrdSet/empty U64)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 5)
+  (OrdSet/insert U64 U64/Ord ordset 3) == #Node{#Pair{5 #Unit} #MinusOne #Node{#Pair{3 #Unit} #0 #Leaf #Leaf} #Leaf}
+
+#test:
+  let ordset = (OrdSet/empty U64)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 5)
+  (OrdSet/insert U64 U64/Ord ordset 5) == #Node{#Pair{5 #Unit} #Zero #Leaf #Leaf}

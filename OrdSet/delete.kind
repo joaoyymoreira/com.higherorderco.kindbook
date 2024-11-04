@@ -4,9 +4,17 @@
 // - set: The set to delete from.
 // - key: Element to delete.
 // = The updated set.
-OrdSet/delete : ∀(K: *) ∀(ord: (Ord K)) K -> (OrdSet K) -> (OrdSet K)
-| K ord key set = (OrdTree/delete K Unit ord key set)
+OrdSet/delete : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> K -> (OrdSet K)
+| K ord set key = (OrdTree/delete K Unit ord set key)
 
-#test: (OrdSet/delete Nat Nat/Ord #3 (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #4])
-#test: (OrdSet/delete Nat Nat/Ord #5 (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])
-#test: (OrdSet/delete Nat Nat/Ord #1 (OrdSet/empty Nat)) == (OrdSet/empty Nat)
+#test:
+  let ordset = (OrdSet/empty Nat)
+  (OrdSet/delete Nat Nat/Ord ordset #1) == #Leaf
+
+#test:
+  let ordset = (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])
+  (OrdSet/delete Nat Nat/Ord ordset #3) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #4])
+
+#test:
+  let ordset = (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])
+  (OrdSet/delete Nat Nat/Ord ordset #5) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])

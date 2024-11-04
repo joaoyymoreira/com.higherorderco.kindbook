@@ -4,9 +4,19 @@
 // - set: The set to check in.
 // - key: Element to check.
 // = True if the element is in the set, False otherwise.
-OrdSet/contains : ∀(K: *) ∀(ord: (Ord K)) K -> (OrdSet K) -> Bool
-| K ord key set = (OrdTree/has_key K Unit ord key set)
+OrdSet/contains : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> K -> Bool
+| K ord set key = (OrdTree/has_key K Unit ord set key)
 
-#test: (OrdSet/contains Nat Nat/Ord #3 (OrdSet/empty Nat)) == #False
-#test: (OrdSet/contains Nat Nat/Ord #3 (OrdSet/insert Nat Nat/Ord #3 (OrdSet/empty Nat))) == #True
-#test: (OrdSet/contains Nat Nat/Ord #5 (OrdSet/insert Nat Nat/Ord #3 (OrdSet/empty Nat))) == #False
+#test:
+  let ordset = (OrdSet/empty Nat)
+  (OrdSet/contains Nat Nat/Ord ordset #3) == #False
+
+#test:
+  let ordset = (OrdSet/empty Nat)
+  let ordset = (OrdSet/insert Nat Nat/Ord ordset #3)
+  (OrdSet/contains Nat Nat/Ord ordset #3) == #True
+
+#test:
+  let ordset = (OrdSet/empty Nat)
+  let ordset = (OrdSet/insert Nat Nat/Ord ordset #3)
+  (OrdSet/contains Nat Nat/Ord ordset #5) == #False

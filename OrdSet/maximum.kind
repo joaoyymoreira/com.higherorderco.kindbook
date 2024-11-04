@@ -7,6 +7,18 @@ OrdSet/maximum : ∀(K: *) (OrdSet K) -> (Maybe K)
 . | #None       = #None
 . | #Some{pair} = #Some{(Pair/get_fst K Unit pair)}
 
-#test: (OrdSet/maximum U64 (OrdSet/empty U64)) == #None
-#test: (OrdSet/maximum U64 (OrdSet/insert U64 U64/Ord 5 (OrdSet/empty U64))) == #Some{5}
-#test: (OrdSet/maximum U64 (OrdSet/insert U64 U64/Ord 3 (OrdSet/insert U64 U64/Ord 7 (OrdSet/insert U64 U64/Ord 1 (OrdSet/empty U64))))) == #Some{7}
+#test:
+  let ordset = (OrdSet/empty U64)
+  (OrdSet/maximum U64 ordset) ==  #None
+
+#test:
+  let ordset = (OrdSet/empty U64)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 5)
+  (OrdSet/maximum U64 ordset) == #Some{5}
+
+#test:
+  let ordset = (OrdSet/empty U64)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 1)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 7)
+  let ordset = (OrdSet/insert U64 U64/Ord ordset 3)
+ (OrdSet/maximum U64 ordset) ==  #Some{7}

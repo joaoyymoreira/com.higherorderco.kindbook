@@ -1,14 +1,14 @@
 // Filters an OrdSet based on a predicate.
 // - K: Element type.
 // - ord: Ord instance for K.
-// - set: Input OrdSet.
 // - pred: Predicate function.
+// - set: Input OrdSet.
 // = Filtered OrdSet.
 OrdSet/filter : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> (K -> Bool) -> (OrdSet K)
 | K ord set pred =
   use f = λkv λacc
     if (pred kv) {
-      (OrdSet/insert K ord kv acc)
+      (OrdSet/insert K ord acc kv)
     } else {
       acc
     }
