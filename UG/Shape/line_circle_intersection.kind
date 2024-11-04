@@ -4,7 +4,7 @@
 // - center: Center of the circle.
 // - radius: Radius of the circle.
 // = True if the line segment intersects with the circle, False otherwise.
-UG/Shape/line-circle-intersection : V2 -> V2 -> V2 -> F64 -> Bool
+UG/Shape/line_circle_intersection : V2 -> V2 -> V2 -> F64 -> Bool
 | #V2{x1 y1} #V2{x2 y2} #V2{cx cy} radius = 
   let dx = (F64/sub x2 x1)
   let dy = (F64/sub y2 y1)
@@ -50,6 +50,6 @@ UG/Shape/line-circle-intersection : V2 -> V2 -> V2 -> F64 -> Bool
     (Bool/or valid1 valid2)
   }
 
-#test: (UG/Shape/line-circle-intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 0.0} 0.5) == #True
-#test: (UG/Shape/line-circle-intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 2.0} 0.5) == #False
-#test: (UG/Shape/line-circle-intersection #V2{0.0 0.0} #V2{2.0 2.0} #V2{1.0 1.0} 1.0) == #True
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 0.0} 0.5) == #True
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 2.0} 0.5) == #False
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 2.0} #V2{1.0 1.0} 1.0) == #True

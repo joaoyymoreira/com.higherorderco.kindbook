@@ -3,7 +3,7 @@
 // - v1: First vertex of line segment.
 // - v2: Second vertex of line segment.
 // = True if point is on right side, False otherwise.
-is-right-side : V2 -> V2 -> V2 -> Bool
+is_right_side : V2 -> V2 -> V2 -> Bool
 | point v1 v2 =
   if (Bool/and (F64/gt (V2/y v1) (V2/y point)) (F64/gt (V2/y v2) (V2/y point))) {
     #False
@@ -11,8 +11,8 @@ is-right-side : V2 -> V2 -> V2 -> Bool
     let dx = (F64/sub (V2/x v2) (V2/x v1))
     let dy = (F64/sub (V2/y v2) (V2/y v1))
     let t  = (F64/div (F64/sub (V2/y point) (V2/y v1)) dy)
-    let intersect-x = (F64/add (V2/x v1) (F64/mul t dx))
-    (F64/lt (V2/x point) intersect-x)
+    let intersect_x = (F64/add (V2/x v1) (F64/mul t dx))
+    (F64/lt (V2/x point) intersect_x)
   }
 
 // Processes an edge of the polygon.
@@ -20,9 +20,9 @@ is-right-side : V2 -> V2 -> V2 -> Bool
 // - inside: Current inside/outside state.
 // - edge: Edge to process (pair of vertices).
 // = Updated inside/outside state.
-process-edge : V2 -> Bool -> (Pair V2 V2) -> Bool
+process_edge : V2 -> Bool -> (Pair V2 V2) -> Bool
 | point inside #Pair{v1 v2} =
-  if (is-right-side point v1 v2) {
+  if (is_right_side point v1 v2) {
     (Bool/not inside)
   } else {
     inside
@@ -32,18 +32,18 @@ process-edge : V2 -> Bool -> (Pair V2 V2) -> Bool
 // - point: Point to check.
 // - vertices: List of polygon vertices.
 // = True if point is inside polygon, False otherwise.
-UG/Shape/point-in-polygon : V2 -> (List V2) -> Bool
+UG/Shape/point_in_polygon : V2 -> (List V2) -> Bool
 | point #Nil = #False
 | point #Cons{v vs} =
-  (point-in-polygon/go point #False (List/append V2 (#Cons{v vs}) #Cons{v #Nil}))
+  (point_in_polygon/go point #False (List/append V2 (#Cons{v vs}) #Cons{v #Nil}))
 
-// Helper function for point-in-polygon.
+// Helper function for point_in_polygon.
 // - point: Point to check.
 // - inside: Current inside/outside state.
 // - vertices: Remaining vertices to process.
 // = Final inside/outside state.
-point-in-polygon/go : V2 -> Bool -> (List V2) -> Bool
+point_in_polygon/go : V2 -> Bool -> (List V2) -> Bool
 | point inside #Nil = inside
 | point inside #Cons{v1 #Cons{v2 vs}} = 
-  (point-in-polygon/go point (process-edge point inside #Pair{v1 v2}) #Cons{v2 vs})
+  (point_in_polygon/go point (process_edge point inside #Pair{v1 v2}) #Cons{v2 vs})
 | point inside #Cons{v #Nil} = inside

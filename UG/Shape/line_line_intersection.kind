@@ -4,7 +4,7 @@
 // - s2: Start point of second line.
 // - e2: End point of second line.
 // = True if lines intersect, False otherwise.
-UG/Shape/line-line-intersection : V2 -> V2 -> V2 -> V2 -> Bool
+UG/Shape/line_line_intersection : V2 -> V2 -> V2 -> V2 -> Bool
 | #V2{x1 y1} #V2{x2 y2} #V2{x3 y3} #V2{x4 y4} =
   let dx1 = (F64/sub x2 x1)
   let dy1 = (F64/sub y2 y1)
@@ -35,5 +35,5 @@ UG/Shape/line-line-intersection : V2 -> V2 -> V2 -> V2 -> Bool
     (Bool/and valid_lambda valid_gamma)
   }
 
-#test: (UG/Shape/line-line-intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 0.0 1.0) (V2/new 1.0 0.0)) == #True
-#test: (UG/Shape/line-line-intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 2.0 2.0) (V2/new 3.0 3.0)) == #False
+#test: (UG/Shape/line_line_intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 0.0 1.0) (V2/new 1.0 0.0)) == #True
+#test: (UG/Shape/line_line_intersection (V2/new 0.0 0.0) (V2/new 1.0 1.0) (V2/new 2.0 2.0) (V2/new 3.0 3.0)) == #False
