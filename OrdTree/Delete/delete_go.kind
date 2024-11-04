@@ -5,13 +5,13 @@
 // - k: Key to delete.
 // - tree: Input OrdTree tree.
 // = Pair of new OrdTree and height decrease flag.
-OrdTree/Delete/delete_go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K V) -> (Pair (OrdTree K V) Bool)
-| K V ord k #Leaf = #Pair{#Leaf #False}
-| K V ord k #Node{curr balance left right} 
+OrdTree/Delete/delete_go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Pair (OrdTree K V) Bool)
+| K V ord #Leaf k = #Pair{#Leaf #False}
+| K V ord #Node{curr balance left right} k 
   with (Ord/compare K ord k (Pair/get_fst K V curr))
 . | #EQ with left
 . . | #Leaf = #Pair{right #True}
-. . | _     with (OrdTree/Delete/delete_maximum K V left)
+. . | _ with (OrdTree/Delete/delete_maximum K V left)
 . . . | #Pair{#None #Pair{other is_smaller}} = 
         #Pair{#Node{curr balance left right} #False}
 . . . | #Pair{#Some{got} #Pair{other is_smaller}} with is_smaller
@@ -21,7 +21,7 @@ OrdTree/Delete/delete_go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K
 . . . . . | #PlusOne  = 
           (OrdTree/Balance/rotate_left K V #Node{got #PlusOne other right})
 . . . . | #False = #Pair{#Node{got balance other right} #False}
-. | #LT with (OrdTree/Delete/delete_go K V ord k left)
+. | #LT with (OrdTree/Delete/delete_go K V ord left k)
 . . | #Pair{other is_smaller} with is_smaller
 . . . | #True with balance
 . . . . | #Zero     = #Pair{#Node{curr #PlusOne other right} #False}
@@ -29,7 +29,7 @@ OrdTree/Delete/delete_go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K
         (OrdTree/Balance/rotate_left K V #Node{curr #PlusOne other right})
 . . . . | #MinusOne = #Pair{#Node{curr #Zero other right} #True}
 . . . | #False = #Pair{#Node{curr balance other right} #False}
-. | #GT with (OrdTree/Delete/delete_go K V ord k right)
+. | #GT with (OrdTree/Delete/delete_go K V ord right k)
 . . | #Pair{other is_smaller} with is_smaller
 . . . | #True with balance
 . . . . | #PlusOne  = #Pair{#Node{curr #Zero left other} #True}
@@ -38,6 +38,19 @@ OrdTree/Delete/delete_go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K
         (OrdTree/Balance/rotate_right K V #Node{curr #MinusOne left other})
 . . . | #False = #Pair{#Node{curr balance left other} #False}
 
-#test: (Pair/get_fst (OrdTree U64 U64) Bool (OrdTree/Delete/delete_go U64 U64 U64/Ord 1 (OrdTree/empty U64 U64))) == (OrdTree/empty U64 U64)
-#test: (Pair/get_fst (OrdTree U64 U64) Bool (OrdTree/Delete/delete_go U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64)))) == (OrdTree/empty U64 U64)
-#test: (Pair/get_fst (OrdTree U64 U64) Bool (OrdTree/Delete/delete_go U64 U64 U64/Ord 1 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64)))) == (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/Delete/delete_go U64 U64 U64/Ord ordtree 1)
+  (Pair/get_fst (OrdTree U64 U64) Bool ordtree) == #Leaf
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  let ordtree = (OrdTree/Delete/delete_go U64 U64 U64/Ord ordtree 2)
+  (Pair/get_fst (OrdTree U64 U64) Bool ordtree) == #Leaf
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  let ordtree = (OrdTree/Delete/delete_go U64 U64 U64/Ord ordtree 1)
+  (Pair/get_fst (OrdTree U64 U64) Bool ordtree) == #Node{#Pair{2 20} #Zero #Leaf #Leaf}

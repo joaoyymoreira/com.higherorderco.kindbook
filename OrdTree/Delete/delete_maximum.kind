@@ -13,5 +13,11 @@ OrdTree/Delete/delete_maximum : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (Mayb
 . . | #Pair{#True  #Zero}     = #Pair{v #Pair{#Node{pair #MinusOne l other} #False}}
 . . | #Pair{#True  #MinusOne} = #Pair{v (OrdTree/Balance/rotate_right K V #Node{pair #MinusOne l other})}
 
-#test: (OrdTree/Delete/delete_maximum U64 U64 (OrdTree/empty U64 U64)) == #Pair{#None #Pair{#Leaf #False}}
-#test: (OrdTree/Delete/delete_maximum U64 U64 #Node{#Pair{3 30} #Zero #Leaf #Leaf}) == #Pair{#Some{#Pair{3 30}} #Pair{#Leaf #True}}
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/Delete/delete_maximum U64 U64 ordtree) == #Pair{#None #Pair{#Leaf #False}}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{3 30})
+  (OrdTree/Delete/delete_maximum U64 U64 ordtree) == #Pair{#Some{#Pair{3 30}} #Pair{#Leaf #True}}

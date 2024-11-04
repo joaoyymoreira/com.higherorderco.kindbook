@@ -6,8 +6,21 @@
 // - t2: Second OrdTree tree.
 // = The union of t1 and t2.
 OrdTree/union : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (OrdTree K V) -> (OrdTree K V)
-| K V ord t1 t2 = (OrdTree/fold K V t1 (OrdTree K V) t2 (OrdTree/insert K V ord))
+| K V ord t1 t2 = (OrdTree/fold K V t1 (OrdTree K V) t2 (λkey_value λtree (OrdTree/insert K V ord tree key_value)))
 
-#test: (OrdTree/union U64 U64 U64/Ord (OrdTree/empty U64 U64) (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
-#test: (OrdTree/union U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (OrdTree/empty U64 U64)) == (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))
-#test: (OrdTree/union U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64)))
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/union U64 U64 U64/Ord ordtree ordtree) == #Leaf
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ord_tree = (OrdTree/empty U64 U64)
+  (OrdTree/union U64 U64 U64/Ord ordtree ord_tree) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ord_tree = (OrdTree/empty U64 U64)
+  let ord_tree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  (OrdTree/union U64 U64 U64/Ord ordtree ord_tree) == #Node{#Pair{1 10} #PlusOne #Leaf #Node{#Pair{2 20} #0 #Leaf #Leaf}}

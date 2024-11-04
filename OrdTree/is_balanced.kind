@@ -14,15 +14,15 @@ OrdTree/is_balanced : ∀(K: *) ∀(V: *) (OrdTree K V) -> Bool
 // - tree: The AVL tree to check.
 // = Some Nat if balanced, None otherwise.
 OrdTree/is_balanced_go : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Maybe Nat)
-| K V #Leaf = #Some{#Zero}
+| K V #Leaf = #Some{#0}
 | K V #Node{key_value balance left right} with (OrdTree/is_balanced_go K V left)
 . | #None = #None
 . | #Some{h_left} with (OrdTree/is_balanced_go K V right)
-.. | #None = #None
-.. | #Some{h_right} with balance
-... | #MinusOne = if (Nat/eq h_left #Succ{h_right}) {#Some{#Succ{h_left}}} else {#None}
-... | #Zero     = if (Nat/eq h_left h_right) {#Some{#Succ{h_left}}} else {#None}
-... | #PlusOne  = if (Nat/eq h_right #Succ{h_left}) {#Some{#Succ{h_right}}} else {#None}
+. . | #None = #None
+. . | #Some{h_right} with balance
+. . . | #MinusOne = if (Nat/eq h_left #Succ{h_right}) {#Some{#Succ{h_left}}} else {#None}
+. . . | #Zero     = if (Nat/eq h_left h_right) {#Some{#Succ{h_left}}} else {#None}
+. . . | #PlusOne  = if (Nat/eq h_right #Succ{h_left}) {#Some{#Succ{h_right}}} else {#None}
 
 
 #test: (OrdTree/is_balanced Nat Nat (OrdTree/empty Nat Nat)) == #True

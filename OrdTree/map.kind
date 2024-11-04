@@ -8,7 +8,14 @@
 // - f: Mapping function.
 // = Mapped tree.
 OrdTree/map : ∀(K: *) ∀(V: *) ∀(A: *) ∀(B: *) ∀(ord: (Ord A)) (OrdTree K V) -> ((Pair K V) -> (Pair A B)) -> (OrdTree A B)
-| K V A B ord tree f = (OrdTree/fold K V tree (OrdTree A B) (OrdTree/empty A B) λpair λacc (OrdTree/insert A B ord (f pair) acc))
+| K V A B ord tree f = (OrdTree/fold K V tree (OrdTree A B) (OrdTree/empty A B) λpair λacc (OrdTree/insert A B ord acc (f pair)))
 
-#test: (OrdTree/map U64 U64 U64 U64 U64/Ord (OrdTree/empty U64 U64) (Function/id (Pair U64 U64))) == (OrdTree/empty U64 U64)
-#test: (OrdTree/to_list U64 U64 (OrdTree/map U64 U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 1} (OrdTree/empty U64 U64))  (λx (Pair/map U64 U64 x (λx (+ 1 x)))))) == [#Pair{2 2}]
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/map U64 U64 U64 U64 U64/Ord ordtree (Function/id (Pair U64 U64))) == #Leaf
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 1})
+  let ordtree = (OrdTree/map U64 U64 U64 U64 U64/Ord ordtree (λx (Pair/map U64 U64 x (U64/add 1))))
+  (OrdTree/to_list U64 U64 ordtree) == [#Pair{2 2}]

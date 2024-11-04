@@ -7,13 +7,19 @@
 // = Maybe containing the value if found.
 OrdTree/get : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe V)
 | K V ord #Leaf                                        key = #None
-| K V ord #Node{#Pair{curr_key curr_val} _ left right} key =
-  (Cmp/match (Maybe V)
-    (OrdTree/get K V ord left key)
-    (#Some{curr_val})
-    (OrdTree/get K V ord right key)
-    (Ord/compare K ord curr_key key))
+| K V ord #Node{#Pair{curr_key curr_val} _ left right} key with (Ord/compare K ord curr_key key)
+. | #LT = (OrdTree/get K V ord left key)
+. | #EQ = #Some{curr_val}
+. | #GT = (OrdTree/get K V ord right key)
 
-#test: (OrdTree/get U64 String U64/Ord (OrdTree/empty U64 String) 1 ) == #None
-#test: (OrdTree/get U64 String U64/Ord (OrdTree/singleton U64 String #Pair{1 "one"}) 1) == #Some{"one"}
-#test: (OrdTree/get U64 String U64/Ord (OrdTree/singleton U64 String #Pair{1 "one"}) 2) == #None
+#test:
+  let ordtree = (OrdTree/empty U64 String)
+  (OrdTree/get U64 String U64/Ord ordtree 1) == #None
+
+#test:
+  let ordtree = (OrdTree/singleton U64 String #Pair{1 "one"})
+  (OrdTree/get U64 String U64/Ord ordtree 1) == #Some{"one"}
+
+#test:
+  let ordtree = (OrdTree/singleton U64 String #Pair{1 "one"})
+  (OrdTree/get U64 String U64/Ord ordtree 2) == #None

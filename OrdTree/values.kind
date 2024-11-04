@@ -10,6 +10,18 @@ OrdTree/values : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List V)
   let right_values = (OrdTree/values K V right)
   (List/append V left_values #Cons{value right_values})
 
-#test: (OrdTree/values U64 U64 #Leaf) == []
-#test: (OrdTree/values U64 U64 #Node{#Pair{1 10} #Zero #Leaf #Leaf}) == [10]
-#test: (OrdTree/values U64 U64 #Node{#Pair{2 20} #Zero (#Node{#Pair{1 10} #Zero #Leaf #Leaf}) #Node{#Pair{3 30} #Zero #Leaf #Leaf}}) == [10 20 30]
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/values U64 U64 ordtree) == []
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  (OrdTree/values U64 U64 ordtree) == [10]
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{3 30})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  (OrdTree/values U64 U64 ordtree) == [10 20 30]

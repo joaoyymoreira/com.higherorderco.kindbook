@@ -11,8 +11,23 @@ OrdTree/map_keys : ∀(K: *) ∀(V: *) ∀(A: *) ∀(ord: (Ord A)) (OrdTree K V)
   (OrdTree/fold K V tree
     (OrdTree A V)
     (OrdTree/empty A V)
-    (λkv λacc (OrdTree/insert A V ord #Pair{(f (Pair/get_fst K V kv)) (Pair/get_snd K V kv)} acc)))
+    (λkv λacc (OrdTree/insert A V ord acc #Pair{(f (Pair/get_fst K V kv)) (Pair/get_snd K V kv)})))
 
-#test: (OrdTree/to_list U64 U64 (OrdTree/map_keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (Function/id U64))) == [#Pair{1 10}]
-#test: (OrdTree/to_list U64 U64 (OrdTree/map_keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (λx (+ x 1)))) == [#Pair{2 10}]
-#test: (OrdTree/to_list U64 U64 (OrdTree/map_keys U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))) (λx (* x 2)))) == [#Pair{2 10} #Pair{4 20}]
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (Function/id U64))
+  (OrdTree/to_list U64 U64 ordtree) ==  [#Pair{1 10}]
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (U64/add 1))
+  (OrdTree/to_list U64 U64 ordtree) ==  [#Pair{2 10}]
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (U64/mul 2))
+  (OrdTree/to_list U64 U64 ordtree) == [#Pair{2 10} #Pair{4 20}]

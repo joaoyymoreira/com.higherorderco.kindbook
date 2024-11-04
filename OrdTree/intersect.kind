@@ -17,11 +17,24 @@ OrdTree/intersect : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (OrdT
 // - acc: Accumulator AVL tree.
 // = Updated AVL tree.
 OrdTree/intersect/go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (Pair K V) -> (OrdTree K V) -> (OrdTree K V)
-| K V ord t2 #Pair{k v} acc with (OrdTree/has_key K V ord k t2)
-. | #True  = (OrdTree/insert K V ord #Pair{k v} acc)
+| K V ord t2 #Pair{k v} acc with (OrdTree/has_key K V ord t2 k)
+. | #True  = (OrdTree/insert K V ord acc #Pair{k v})
 . | #False = acc
   
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+ (OrdTree/intersect U64 U64 U64/Ord ordtree ordtree) == #Leaf
 
-#test: (OrdTree/intersect U64 U64 U64/Ord (OrdTree/empty U64 U64) (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
-#test: (OrdTree/intersect U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))) == (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))
-#test: (OrdTree/intersect U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == (OrdTree/empty U64 U64)
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ord_tree = (OrdTree/empty U64 U64)
+  let ord_tree = (OrdTree/insert U64 U64 (U64/Ord) ord_tree #Pair{1 10})
+ (OrdTree/intersect U64 U64 U64/Ord ordtree ord_tree) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ord_tree = (OrdTree/empty U64 U64)
+  let ord_tree = (OrdTree/insert U64 U64 (U64/Ord) ord_tree #Pair{2 20})
+ (OrdTree/intersect U64 U64 U64/Ord ord_tree ordtree) == #Leaf

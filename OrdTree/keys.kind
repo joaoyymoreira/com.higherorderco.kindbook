@@ -10,7 +10,24 @@ OrdTree/keys : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List K)
   let right_keys = (OrdTree/keys K V right)
   (List/append K left_keys #Cons{key right_keys})
 
-#test: (OrdTree/keys U64 String (OrdTree/empty U64 String)) == []
-#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String))) == [1]
-#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{2 "two"} (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/empty U64 String)))) == [1 2]
-#test: (OrdTree/keys U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{3 "three"} (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} (OrdTree/insert U64 String (U64/Ord) #Pair{2 "two"} (OrdTree/empty U64 String))))) == [1 2 3]
+#test:
+  let ordtree = (OrdTree/empty U64 String)
+  (OrdTree/keys U64 String ordtree) == []
+
+#test:
+  let ordtree = (OrdTree/empty U64 String)
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree #Pair{1 "one"})
+  (OrdTree/keys U64 String ordtree) ==  [1]
+
+#test:
+  let ordtree = (OrdTree/empty U64 String)
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree #Pair{1 "one"})
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree# Pair{2 "two"})
+  (OrdTree/keys U64 String ordtree) == [1 2]
+
+#test:
+  let ordtree = (OrdTree/empty U64 String)
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree #Pair{1 "one"})
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree #Pair{2 "two"})
+  let ordtree = (OrdTree/insert U64 String (U64/Ord) ordtree #Pair{3 "three"})
+  (OrdTree/keys U64 String ordtree) == [1 2 3]

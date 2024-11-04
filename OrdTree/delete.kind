@@ -2,13 +2,25 @@
 // - K: Key type.
 // - V: Value type.
 // - ord: Ord instance for K.
-// - key: Key to delete.
 // - tree: The AVL tree.
+// - key: Key to delete.
 // = The updated AVL tree.
-OrdTree/delete : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K V) -> (OrdTree K V)
-| K V ord key tree = (Pair/get_fst (OrdTree K V) Bool (OrdTree/Delete/delete_go K V ord key tree))
+OrdTree/delete : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (OrdTree K V)
+| K V ord tree key = (Pair/get_fst (OrdTree K V) Bool (OrdTree/Delete/delete_go K V ord tree key))
 
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/delete U64 U64 U64/Ord ordtree 2) == #Leaf
 
-#test: (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
-#test: (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == (OrdTree/empty U64 U64)
-#test: (OrdTree/to_list U64 U64 (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/empty U64 U64)))))) == [#Pair{1 10} #Pair{3 30}]
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  (OrdTree/delete U64 U64 U64/Ord ordtree 2) == #Leaf
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{3 30})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/delete U64 U64 U64/Ord ordtree 2)
+  (OrdTree/to_list U64 U64 ordtree) == [#Pair{1 10} #Pair{3 30}]
