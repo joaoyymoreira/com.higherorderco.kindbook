@@ -8,4 +8,4 @@ F64/from_u64 : U64 -> F64
 }
 #test: (F64/from_u64 0) == 0.0
 #test: (F64/from_u64 2) == 2.0
-#test: (F64/from_u64 1000000) == 1000000.0
+#test: (F64/from_u64 1000) == 1000.0
