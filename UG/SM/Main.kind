@@ -36,6 +36,23 @@ simulate-game : U64 -> (UG/SM/Mach GameState GameAction)
   let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: 0})
   mach
 
+event : UG/SIPD/Event
+= #KeyEvent{ 0 0 "a" #False}
+
+event1 : UG/SIPD/Event
+= #MouseClick{ 0 0 #LeftButton 1.0 1.0}
+
+event2 : UG/SIPD/Event
+= #KeyMouse{ 0 0 "a" #True 1.0 1.0}
+
+event3 : UG/SIPD/Event
+= #MouseMove{ 0 0 1.0 1.0}
+
+event4 : UG/SIPD/Event
+= #ActionEvent{ #SetNick{1 1 "hey"}}
+
+
+
 
 mach : (UG/SM/Mach GameState GameAction)
 = (simulate-game 1)
