@@ -1,0 +1,9 @@
+// Sets the 'older' field of a StateNode.
+// - S: State type.
+// - older: New older value.
+// - node: The StateNode.
+// = Updated StateNode.
+UG/SM/StateLogs/StateNode/set_older : ∀(S: *) (Maybe (UG/SM/StateLogs/StateNode S)) -> (UG/SM/StateLogs/StateNode S) -> (UG/SM/StateLogs/StateNode S)
+| S older #StateNode{tick keep life state older_} = #StateNode{tick keep life state older}
+
+#test: (UG/SM/StateLogs/StateNode/older Bool (UG/SM/StateLogs/StateNode/set_older Bool #Some{#StateNode{tick: 1 keep: 2 life: 3 state: #False older: #None}} #StateNode{tick: 0 keep: 5 life: 10 state: #True older: #None})) == #Some{#StateNode{tick: 1 keep: 2 life: 3 state: #False older: #None}}

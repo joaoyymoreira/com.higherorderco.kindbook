@@ -1,0 +1,18 @@
+// Parses a unicode escape sequence.
+// = The character corresponding to the parsed Unicode code point.
+Parser/parse_unicode_escape : (Parser Char)
+= do Parser {
+  ask (Parser/consume "{")
+  ask digits = (Parser/take_while Char/is_hex_digit)
+  ask (Parser/consume "}")
+  match (String/to_u64_base digits 16) {
+    #None: (Parser/fail Char "Invalid hexadecimal number in Unicode escape")
+    #Some{n}: (Parser/pure Char n)
+  }
+}
+
+#test: (Parser/run Char Parser/parse_unicode_escape "{41}") == #Some{'A'}
+#test: (Parser/run Char Parser/parse_unicode_escape "{1F600}") == #Some{'😀'} // 128512 = 1F600
+#test: (Parser/run Char Parser/parse_unicode_escape "{G}") == #None
+#test: (Parser/run Char Parser/parse_unicode_escape "41}") == #None
+#test: (Parser/run Char Parser/parse_unicode_escape "{41") == #None

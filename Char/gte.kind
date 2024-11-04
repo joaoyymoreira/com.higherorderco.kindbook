@@ -3,7 +3,7 @@
 // - y: The second character.
 // = True if x is greater than or equal to y, False otherwise.
 Char/gte : Char -> Char -> Bool
-= λx λy (U64/to-bool (>= x y))
+= λx λy (U64/to_bool (>= x y))
 
 #test: (Char/gte 'b' 'a') == #True
 #test: (Char/gte 'a' 'b') == #False

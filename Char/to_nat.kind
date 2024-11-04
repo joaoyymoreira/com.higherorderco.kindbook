@@ -1,0 +1,10 @@
+// Converts a character to its corresponding nat.
+// - code: The input character.
+// = The nat representation of the character.
+Char/to_nat : Char -> Nat
+= λcode (U64/to_nat code)
+
+#test: (Char/to_nat 'A') == #65
+#test: (Char/to_nat '0') == #48
+#test: (Char/to_nat 'z') == #122
+#test: (Char/to_nat '\n') == #10

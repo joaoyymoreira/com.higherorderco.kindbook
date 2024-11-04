@@ -9,4 +9,4 @@ BinMap/map : ∀(A: *) ∀(B: *) (BinMap A) -> (A -> B) -> (BinMap B)
 
 #test: (BinMap/map U64 U64 #Leaf (λx (+ x 1))) == #Leaf
 #test: (BinMap/map U64 U64 (BinMap/insert U64 #Pair{#E 3} #Leaf) (λx (* x 2))) == (BinMap/insert U64 #Pair{#E 6} #Leaf)
-#test: (BinMap/to-list U64 (BinMap/map U64 U64 (BinMap/insert U64 #Pair{#O{#E} 5} (BinMap/insert U64 #Pair{#E 3} #Leaf)) (λx (+ x 10)))) == [#Pair{#E 13} #Pair{#O{#E} 15}]
+#test: (BinMap/to_list U64 (BinMap/map U64 U64 (BinMap/insert U64 #Pair{#O{#E} 5} (BinMap/insert U64 #Pair{#E 3} #Leaf)) (λx (+ x 10)))) == [#Pair{#E 13} #Pair{#O{#E} 15}]

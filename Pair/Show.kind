@@ -1,9 +1,9 @@
 // Instance of Show for Pair
 Pair/Show : ∀(A: *) ∀(B: *) ∀(show_a: (Show A)) ∀(show_b: (Show B)) (Show (Pair A B))
 | A B show_a show_b = #Show{
-  to-string: (Pair/to-string A B show_a show_b)
+  to_string: (Pair/to_string A B show_a show_b)
 }
 
-#test: (Show/to-string (Pair Nat Nat) (Pair/Show Nat Nat Nat/Show Nat/Show) #Pair{#3 #5}) == "(3, 5)"
-#test: (Show/to-string (Pair Nat Bool) (Pair/Show Nat Bool Nat/Show Bool/Show) #Pair{#0 #True}) == "(0, True)"
-#test: (Show/to-string (Pair Bool Bool) (Pair/Show Bool Bool Bool/Show Bool/Show) #Pair{#True #False}) == "(True, False)"
+#test: (Show/to_string (Pair Nat Nat) (Pair/Show Nat Nat Nat/Show Nat/Show) #Pair{#3 #5}) == "(3, 5)"
+#test: (Show/to_string (Pair Nat Bool) (Pair/Show Nat Bool Nat/Show Bool/Show) #Pair{#0 #True}) == "(0, True)"
+#test: (Show/to_string (Pair Bool Bool) (Pair/Show Bool Bool Bool/Show Bool/Show) #Pair{#True #False}) == "(True, False)"

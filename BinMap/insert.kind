@@ -1,10 +1,10 @@
-// Inserts a key-value pair into a BinMap.
+// Inserts a key_value pair into a BinMap.
 // - A: Value type.
-// - pair: Key-value pair to insert.
+// - pair: Key_value pair to insert.
 // - m: BinMap to insert into.
 // = New BinMap with the pair inserted.
 BinMap/insert : ∀(A: *) (Pair Bits A) -> (BinMap A) -> (BinMap A)
-| A pair m = (BinMap/set A m (Pair/get-fst Bits A pair) (Pair/get-snd Bits A pair))
+| A pair m = (BinMap/set A m (Pair/get_fst Bits A pair) (Pair/get_snd Bits A pair))
 
 #test: (BinMap/get U64 (BinMap/insert U64 #Pair{#E 42} (BinMap/empty U64)) #E) == #Some{42}
 #test: (BinMap/get U64 (BinMap/insert U64 #Pair{#O{#E} 10} (BinMap/empty U64)) #O{#E}) == #Some{10}

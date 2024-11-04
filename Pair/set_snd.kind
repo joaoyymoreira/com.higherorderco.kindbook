@@ -1,0 +1,12 @@
+// Sets the 2nd value of a pair.
+// - A: 1st type.
+// - B: 2nd type.
+// - p: The pair.
+// - x: New 2nd value.
+// = Updated pair.
+Pair/set_snd : ∀(A: *) ∀(B: *) (Pair A B) -> B -> (Pair A B)
+| A B #Pair{fst snd} x = #Pair{fst x}
+
+#test: (Pair/set_snd U64 U64 #Pair{1 2} 3) == #Pair{1 3}
+#test: (Pair/set_snd Bool U64 #Pair{#True 42} 0) == #Pair{#True 0}
+#test: (Pair/set_snd U64 Bool #Pair{100 #False} #True) == #Pair{100 #True}

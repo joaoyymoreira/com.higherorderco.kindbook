@@ -1,0 +1,7 @@
+// Creates a new State with the given input and initial index of zero.
+// - input: Input string to be parsed.
+// = New State with given input and index zero.
+Parser/new_state : String -> Parser/State
+| input = #State{ input #Zero }
+
+#test: (Parser/new_state "hello") == #State{ input: "hello" index: #Zero }

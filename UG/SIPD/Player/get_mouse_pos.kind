@@ -1,0 +1,6 @@
+
+UG/SIPD/Player/get_mouse_pos : UG/SIPD/Player -> String -> V2
+| #Player{id name keys target s} key  with (OrdTree/get String (Pair Bool V2) String/Ord key keys)
+.| #Some{#Pair{pressed pos}} = pos
+.| #None = #V2{0.0 0.0} 
+

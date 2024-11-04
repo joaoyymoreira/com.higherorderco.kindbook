@@ -1,0 +1,17 @@
+// Converts a string representation of a command to the corresponding Command value.
+// - cmd: The string representation of the command.
+// = Some Command if the string matches a valid command, None otherwise.
+Bend/Cli/Command/from_string : String -> (Maybe Bend/Cli/Command)
+| cmd =
+  let gen_bend = (String/eq cmd "gen_bend")
+  let gen_core = (String/eq cmd "gen_core")
+  let gen_hvm  = (String/eq cmd "gen_hvm")
+  if gen_bend {
+    #Some{#GenBend}
+  } else if gen_core {
+    #Some{#GenCore}
+  } else if gen_hvm {
+    #Some{#GenHvm}
+  } else {
+    #None
+  }

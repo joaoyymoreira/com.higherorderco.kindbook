@@ -1,7 +1,0 @@
-Bend/Net/get-port : Bend/Net -> Bend/Net/Port -> (Bend Bend/Net/Port)
-| #Net{nam nodes len} #Port{node slot} = do Bend {
-  let key = (U64/to-bits node)
-  ask a = (Maybe/to-result _ _ (BinMap/get _ nodes key) "Port not found")
-  ask p = (Maybe/to-result _ _ (Bend/Net/Node/get a slot) "Invalid slot")
-  #Done{p}
-}

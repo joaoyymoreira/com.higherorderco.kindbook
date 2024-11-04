@@ -1,0 +1,11 @@
+// Checks if a list is non_empty.
+// - A: Element type.
+// - xs: List to check.
+// = True if non_empty, False otherwise.
+List/is_cons : ∀(A: *) (List A) -> Bool
+| A #Nil             = #False
+| A #Cons{head tail} = #True
+
+#test: (List/is_cons U64 []) == #False
+#test: (List/is_cons U64 [1]) == #True
+#test: (List/is_cons U64 [1 2 3]) == #True

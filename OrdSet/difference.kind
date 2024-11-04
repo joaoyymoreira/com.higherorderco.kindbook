@@ -7,7 +7,7 @@
 OrdSet/difference : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> (OrdSet K) -> (OrdSet K)
 | K ord s1 s2 = (OrdTree/difference K Unit ord s1 s2)
 
-#test: (OrdSet/difference U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/from-list U64 U64/Ord [2 3 4])) == (OrdSet/from-list U64 U64/Ord [1])
-#test: (OrdSet/difference U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/empty U64)) == (OrdSet/from-list U64 U64/Ord [1 2 3])
-#test: (OrdSet/difference U64 U64/Ord (OrdSet/empty U64) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/empty U64)
-#test: (OrdSet/difference U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (OrdSet/from-list U64 U64/Ord [1 2 3])) == (OrdSet/empty U64)
+#test: (OrdSet/difference U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (OrdSet/from_list U64 U64/Ord [2 3 4])) == (OrdSet/from_list U64 U64/Ord [1])
+#test: (OrdSet/difference U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (OrdSet/empty U64)) == (OrdSet/from_list U64 U64/Ord [1 2 3])
+#test: (OrdSet/difference U64 U64/Ord (OrdSet/empty U64) (OrdSet/from_list U64 U64/Ord [1 2 3])) == (OrdSet/empty U64)
+#test: (OrdSet/difference U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (OrdSet/from_list U64 U64/Ord [1 2 3])) == (OrdSet/empty U64)

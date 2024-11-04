@@ -1,0 +1,16 @@
+// Updates the cached tick of a machine state.
+// - S: State type.
+// - A: Action type.
+// - mach: Machine state to update.
+// - new_tick: New tick value.
+// = Updated Mach S A with potentially modified cached_tick.
+UG/SM/update_cached_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> (UG/SM/Mach S A)
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} new_tick =
+  if (U64/lt new_tick cached_tick) {
+    #Mach{ticks_per_second genesis_tick new_tick state_logs action_logs action_eq}
+  } else {
+    #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq}
+  }
+
+#test: (UG/SM/update_cached_tick U64 Bool (UG/SM/new_mach U64 Bool 10 (λx λy #False)) 5) == (UG/SM/new_mach U64 Bool 10 (λx λy #False))
+#test: (UG/SM/update_cached_tick U64 Bool (UG/SM/new_mach U64 Bool 10 (λx λy #False)) 200) == (UG/SM/new_mach U64 Bool 10 (λx λy #False))

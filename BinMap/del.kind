@@ -1,8 +1,8 @@
-// Removes a key-value pair from the BinMap.
+// Removes a key_value pair from the BinMap.
 // - A: Value type.
 // - m: BinMap to remove from.
 // - k: Key to remove.
-// = New BinMap with the key-value pair removed.
+// = New BinMap with the key_value pair removed.
 BinMap/del : ∀(A: *) (BinMap A) -> Bits -> (BinMap A)
 | A #Leaf        k     = #Leaf
 | A #Node{x l r} #E    = #Node{#None l r}

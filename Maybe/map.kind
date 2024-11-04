@@ -12,5 +12,5 @@ Maybe/map : ∀(A: *) ∀(B: *) (Maybe A) -> (A -> B) -> (Maybe B)
 #test: (Maybe/map Nat Nat (#Some{#5}) (Nat/add #1)) == #Some{#6}
 #test: (Maybe/map Bool Nat (#Some{#True}) (λx (Bool/if _ x #1 #0))) == #Some{#1}
 #test: (Maybe/map Bool Nat (#Some{#False}) (λx (Bool/if _ x #1 #0))) == #Some{#0}
-#test: (Maybe/map Nat Bool (#Some{#0}) (Nat/is-zero)) == #Some{#True}
-#test: (Maybe/map Nat Bool (#Some{#1}) (Nat/is-zero)) == #Some{#False}
+#test: (Maybe/map Nat Bool (#Some{#0}) (Nat/is_zero)) == #Some{#True}
+#test: (Maybe/map Nat Bool (#Some{#1}) (Nat/is_zero)) == #Some{#False}

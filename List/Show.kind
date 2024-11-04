@@ -1,5 +1,5 @@
 // Instance of Show for List
 List/Show : ∀(A: *) ∀(show: (Show A)) (Show (List A))
 | A show = #Show{
-  to-string: (List/to-string A show)
+  to_string: (List/to_string A show)
 }

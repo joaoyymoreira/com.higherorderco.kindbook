@@ -8,13 +8,13 @@
 OrdTree/filter : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (K -> Bool) -> (OrdTree K V) -> (OrdTree K V)
 | K V ord pred tree =
   use f = λkv λacc
-    if (pred (Pair/get-fst K V kv)) {
+    if (pred (Pair/get_fst K V kv)) {
       (OrdTree/insert K V ord kv acc)
     } else {
       acc
     }
   (OrdTree/fold K V tree (OrdTree K V) (OrdTree/empty K V) f)
 
-#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (== x 2))) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))))) == [#Pair{2 20}]
-#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (> x 1))) (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))))) == [#Pair{2 20} #Pair{3 30}]
-#test: (OrdTree/to-list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to-bool (== x 0))) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == []
+#test: (OrdTree/to_list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to_bool (== x 2))) (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64))))) == [#Pair{2 20}]
+#test: (OrdTree/to_list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to_bool (> x 1))) (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))))) == [#Pair{2 20} #Pair{3 30}]
+#test: (OrdTree/to_list U64 U64 (OrdTree/filter U64 U64 U64/Ord (λx (U64/to_bool (== x 0))) (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/empty U64 U64)))) == []

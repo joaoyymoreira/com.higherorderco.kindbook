@@ -1,0 +1,10 @@
+// Checks if a character is a binary digit (0 or 1).
+// - c: The character to check.
+// = True if binary digit, False otherwise.
+Char/is_binary_digit : Char -> Bool
+| c = (Bool/or (Char/eq c '0') (Char/eq c '1'))
+
+#test: (Char/is_binary_digit '0') == #True
+#test: (Char/is_binary_digit '1') == #True
+#test: (Char/is_binary_digit '2') == #False
+#test: (Char/is_binary_digit 'a') == #False

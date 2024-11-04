@@ -1,0 +1,10 @@
+// Converts a Unicode character to its binary representation.
+// - char: The character to convert.
+// = The binary representation of the character as Bits.
+Bits/from_char : Char -> Bits
+| char = (Char/to_bits char)
+
+#test: (Bits/from_char 'A') == #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}
+#test: (Bits/from_char '0') == #O{#O{#O{#O{#I{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}
+#test: (Bits/from_char '~') == #O{#I{#I{#I{#I{#I{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}
+#test: (Bits/from_char '\0') == #O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}

@@ -1,0 +1,9 @@
+// Sets the 'tick' field of a StateNode.
+// - S: State type.
+// - tick: New tick value.
+// - node: The StateNode.
+// = Updated StateNode.
+UG/SM/StateLogs/StateNode/set_tick : ∀(S: *) UG/SM/Tick -> (UG/SM/StateLogs/StateNode S) -> (UG/SM/StateLogs/StateNode S)
+| S tick #StateNode{tick_ keep life state older} = #StateNode{tick keep life state older}
+
+#test: (UG/SM/StateLogs/StateNode/tick Bool (UG/SM/StateLogs/StateNode/set_tick Bool 5 #StateNode{tick: 0 keep: 5 life: 10 state: #True older: #None})) == 5

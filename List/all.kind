@@ -7,6 +7,6 @@ List/all : ∀(A: *) (List A) -> (A -> Bool) -> Bool
 | A #Nil             cond = #True
 | A #Cons{head tail} cond = (Bool/and (cond head) (List/all A tail cond))
 
-#test: (List/all U64 [1 1 1] (λx (U64/to-bool (== x 1)))) == #True
-#test: (List/all U64 [1 2 1] (λx (U64/to-bool (== x 1)))) == #False
-#test: (List/all U64 [] (λx (U64/to-bool (== x 1)))) == #True
+#test: (List/all U64 [1 1 1] (λx (U64/to_bool (== x 1)))) == #True
+#test: (List/all U64 [1 2 1] (λx (U64/to_bool (== x 1)))) == #False
+#test: (List/all U64 [] (λx (U64/to_bool (== x 1)))) == #True

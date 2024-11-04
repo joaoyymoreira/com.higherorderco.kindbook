@@ -4,10 +4,10 @@
 // = An Cmp value: LT if a < b, EQ if a = b, GT if a > b.
 F64/compare : F64 -> F64 -> Cmp
 = λa λb
-  if (U64/to-bool (F64/eql a b)) {
+  if (U64/to_bool (F64/eql a b)) {
     #EQ
   } else {
-    if (U64/to-bool (< a b)) {
+    if (U64/to_bool (< a b)) {
       #LT
     } else {
       #GT

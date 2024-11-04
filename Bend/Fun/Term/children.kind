@@ -14,7 +14,7 @@ Term/children : Term -> (List (Pair (List String) Term))
 | #Ref{_} = []
 | #Era    = []
 | #Def{#FnDef{nam _ _ _ _} nxt} = [#Pair{[nam] nxt}]
-| #Opn{_ _ bnd bod} = [#Pair{(List/concat-maybes String bnd) bod}]
+| #Opn{_ _ bnd bod} = [#Pair{(List/concat_maybes String bnd) bod}]
 | #Wth{_ bod}       = [#Pair{[] bod}]
 | #App{fun arg}     = [#Pair{[] fun} #Pair{[] arg}]
 | #Opr{_ fst snd}   = [#Pair{[] fst} #Pair{[] snd}]
@@ -23,13 +23,13 @@ Term/children : Term -> (List (Pair (List String) Term))
 | #Lam{pat bod}     = [#Pair{(Bend/Fun/Pattern/binds pat) bod}]
 | #Let{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
 | #Ask{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
-| #Use{nam val nxt} = [#Pair{[] val} #Pair{(Maybe/to-list _ nam) nxt}]
+| #Use{nam val nxt} = [#Pair{[] val} #Pair{(Maybe/to_list _ nam) nxt}]
 
 | #Mat{bnd arg with_bnd with_arg arms} =
   (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ (rule-children bnd with_bnd) arms)
+    (List/map _ _ (rule_children bnd with_bnd) arms)
   ])
 
 | #Swt{bnd arg with_bnd with_arg pred arms} =
@@ -37,25 +37,25 @@ Term/children : Term -> (List (Pair (List String) Term))
   (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ λx #Pair{(List/concat-maybes _ (List/concat _ [[bnd] with_bnd])) x} a_num)
-    (List/map _ _ λx #Pair{(List/concat-maybes _ (List/concat _ [[bnd] with_bnd [pred]])) x} (Maybe/to-list _ a_pred))
+    (List/map _ _ λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd])) x} a_num)
+    (List/map _ _ λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd [pred]])) x} (Maybe/to_list _ a_pred))
   ])
 
 | #Fld{bnd arg with_bnd with_arg arms} =
   (List/concat Child [
     [#Pair{[] arg}]
     (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ (rule-children bnd with_bnd) arms)
+    (List/map _ _ (rule_children bnd with_bnd) arms)
   ])
 
 | #Bnd{bnd arg cond step base} =
   (List/concat Child [
     (List/map _ _ (λx #Pair{[] x}) arg)
-    [#Pair{(List/concat-maybes _ bnd) cond}
-     #Pair{(List/concat-maybes _ bnd) step}
-     #Pair{(List/concat-maybes _ bnd) base}]
+    [#Pair{(List/concat_maybes _ bnd) cond}
+     #Pair{(List/concat_maybes _ bnd) step}
+     #Pair{(List/concat_maybes _ bnd) base}]
   ])
 
-rule-children : (Maybe String) -> (List (Maybe String)) -> MatchRule -> (Pair (List String) Term)
+rule_children : (Maybe String) -> (List (Maybe String)) -> MatchRule -> (Pair (List String) Term)
 | bnd with_bnd #MatchRule{nam bndr bod} =
-  #Pair{(List/concat-maybes String (List/concat _ [[bnd] with_bnd bndr])) bod}
+  #Pair{(List/concat_maybes String (List/concat _ [[bnd] with_bnd bndr])) bod}

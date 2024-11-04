@@ -1,0 +1,7 @@
+use Bend/Fun/Term as Term
+
+Term/foldl_app : Term -> (List Term) -> Term
+| fun arg = (List/foldl Term Term app fun arg)
+
+app : Term -> Term -> Term
+| a b = #App{a b}

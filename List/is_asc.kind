@@ -1,0 +1,23 @@
+// Checks if a list of Nats is in ascending order.
+// - xs: Input list.
+// = True if ascending, False otherwise.
+List/is_asc : (List Nat) -> Bool
+| #Nil             = #True
+| #Cons{head tail} = (List/is_asc/go head tail)
+
+// Helper function for List/is_asc.
+// - prev: Previous element.
+// - xs: Remaining list.
+// = True if ascending, False otherwise.
+List/is_asc/go : Nat -> (List Nat) -> Bool
+| prev #Nil             = #True
+| prev #Cons{head tail} with (Nat/lte prev head) 
+. | #True  = (List/is_asc/go head tail)
+. | #False = #False
+
+#test: (List/is_asc []) == #True
+#test: (List/is_asc [#1]) == #True
+#test: (List/is_asc [#1 #2 #3]) == #True
+#test: (List/is_asc [#3 #2 #1]) == #False
+#test: (List/is_asc [#1 #1 #2]) == #True
+#test: (List/is_asc [#2 #1 #3]) == #False

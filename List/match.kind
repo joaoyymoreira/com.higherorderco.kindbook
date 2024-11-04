@@ -3,7 +3,7 @@
 // - P: Motive.
 // - xs: Input list.
 // - nil: Empty list case.
-// - cons: Non-empty list case.
+// - cons: Non_empty list case.
 // = Elimination result.
 List/match
 : ∀(A: *)

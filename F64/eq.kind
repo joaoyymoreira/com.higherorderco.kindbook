@@ -3,7 +3,7 @@
 // - b: Second F64 value.
 // = True if equal, False otherwise.
 F64/eq : F64 -> F64 -> Bool
-= λa λb (U64/to-bool (F64/eql a b))
+= λa λb (U64/to_bool (F64/eql a b))
 
 #test: (F64/eq 3.14 3.14) == #True
 #test: (F64/eq 3.14 2.71) == #False

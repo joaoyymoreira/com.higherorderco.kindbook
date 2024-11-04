@@ -1,0 +1,14 @@
+// Skips a comment and continues skipping trivia.
+// - acc: Accumulated skipped characters.
+// - cs: Remaining input.
+// = Pair of skipped count and remaining input.
+Parser/skip_comment : Nat -> String -> (Pair Nat String)
+| acc cs =
+  let com_len = (String/length (List/take_while Char cs (λc (Bool/not (Parser/is_newline c)))))
+  let new_acc = (Nat/add (Nat/add acc #2) com_len)
+  let rem     = (String/drop cs (#Succ{com_len}))
+  (Parser/skip_accumulate new_acc rem)
+
+#test: (Parser/skip_comment #0 "// This is a comment\nNext line") == #Pair{#22 "Next line"}
+#test: (Parser/skip_comment #5 "// Empty comment\n"             ) == #Pair{#23 ""}
+#test: (Parser/skip_comment #0 "//\nMinimal"                    ) == #Pair{#4 "Minimal"}

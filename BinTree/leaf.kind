@@ -6,5 +6,5 @@ BinTree/leaf : ∀(A: *) (BinTree A)
 
 #test: (BinTree/leaf Nat) == #Leaf
 #test: (BinTree/leaf String) == #Leaf
-#test: (BinTree/is-leaf Nat (BinTree/leaf Nat)) == #True
-#test: (BinTree/is-node Nat (BinTree/leaf Nat)) == #False
+#test: (BinTree/is_leaf Nat (BinTree/leaf Nat)) == #True
+#test: (BinTree/is_node Nat (BinTree/leaf Nat)) == #False

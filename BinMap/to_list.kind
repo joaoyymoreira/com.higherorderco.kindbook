@@ -1,0 +1,33 @@
+// Converts a BinMap to a List of (Bits,A) pairs in breadth_first order.
+// Keys are sorted in ascending order.
+// - A: Value type.
+// - m: Input BinMap.
+// = List of Pairs with Bits path and corresponding value.
+BinMap/to_list : ∀(A: *) (BinMap A) -> (List (Pair Bits A))
+| A m = (BinMap/to_list/go A [#Pair{#E m}])
+
+// Helper function to traverse the BinMap in breadth_first order
+BinMap/to_list/go : ∀(A: *) (List (Pair Bits (BinMap A))) -> (List (Pair Bits A))
+| A #Nil                                  = #Nil
+| A #Cons{#Pair{k #Node{#None    l r}} q} = (BinMap/to_list/go A (List/append _ q [#Pair{(#O{k}) l} #Pair{(#I{k}) r}]))
+| A #Cons{#Pair{k #Node{#Some{x} l r}} q} = #Cons{#Pair{k x} (BinMap/to_list/go A (List/append _ q [#Pair{(#O{k}) l} #Pair{(#I{k}) r}]))}
+| A #Cons{#Pair{k #Leaf}               q} = (BinMap/to_list/go A q)
+
+//#test:
+  //let map = (BinMap/empty U64)
+  //(BinMap/to_list U64 map) == #Nil
+
+//#test:
+  //let map = (BinMap/empty U64)
+  //let map = (BinMap/set U64 map #O{#E} 0)
+  //let map = (BinMap/set U64 map #I{#E} 1)
+  //(BinMap/to_list U64 map) == [#Pair{#O{#E} 0} #Pair{#I{#E} 1}]
+
+//#test:
+  //let map = (BinMap/empty U64)
+  //let map = (BinMap/set U64 map #O{#O{#E}} 0)
+  //let map = (BinMap/set U64 map #I{#O{#E}} 1)
+  //let map = (BinMap/set U64 map #O{#I{#E}} 2)
+  //let map = (BinMap/set U64 map #I{#I{#E}} 3)
+  //(BinMap/to_list U64 map) == [#Pair{#O{#O{#E}} 0} #Pair{#I{#O{#E}} 1} #Pair{#O{#I{#E}} 2} #Pair{#I{#I{#E}} 3}]
+

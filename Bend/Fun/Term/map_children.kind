@@ -1,0 +1,15 @@
+use Bend/Fun/Term as Term
+
+// Applies a function to all immediate child terms of a given term, passing the bound names.
+// - f: The function to apply to each child term, taking bound names and the term.
+// - term: The term whose children we want to map over.
+// = A new term with the function applied to all immediate children.
+Term/map_children :
+  ((List String) -> Term -> Term) -> Term -> Term
+| f t = (Term/mmap_children λA A Identity f t)
+
+Identity : (Monad λA A)
+= #Monad {
+  pure: λA λx x
+  bind: λA λB λx λf (f x)
+}

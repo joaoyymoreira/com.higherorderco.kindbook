@@ -1,0 +1,12 @@
+// Checks if a point lies within a rectangle.
+// - p: The point to check.
+// - r: The rectangle to check against.
+// = True if the point is inside or on the border of the rectangle.
+QuadTree/Rectangle/point_in : V2 -> QuadTree/Rectangle -> Bool
+| #V2{xp yp} #Rectangle{min_x min_y max_x max_y} =
+  let x_in = (Bool/and (F64/gte xp min_x) (F64/lte xp max_x))
+  let y_in = (Bool/and (F64/gte yp min_y) (F64/lte yp max_y))
+  (Bool/and x_in y_in)
+
+#test: (QuadTree/Rectangle/point_in #V2{2.0 2.0} #Rectangle{1.0 1.0 3.0 3.0}) == #True
+#test: (QuadTree/Rectangle/point_in #V2{0.0 0.0} #Rectangle{1.0 1.0 3.0 3.0}) == #False

@@ -1,0 +1,8 @@
+// Converts a list of characters to a string.
+// - chars: Input list of characters (U64 values).
+// = String composed of the characters in the list.
+String/from_list : (List U64) -> String
+| chars = chars
+
+#test: (String/from_list "abc") == "abc"
+#test: (String/from_list "") == ""

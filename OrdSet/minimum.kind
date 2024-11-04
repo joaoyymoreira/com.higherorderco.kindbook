@@ -5,8 +5,8 @@
 OrdSet/minimum : ∀(K: *) (OrdSet K) -> (Maybe K)
 | K set with (OrdTree/minimum K Unit set) 
 . | #None       = #None
-. | #Some{pair} = #Some{(Pair/get-fst K Unit pair)}
+. | #Some{pair} = #Some{(Pair/get_fst K Unit pair)}
 
 #test: (OrdSet/minimum U64 (OrdSet/empty U64)) == (Maybe/none U64)
-#test: (OrdSet/minimum U64 (OrdSet/from-list U64 U64/Ord [1 2 3])) == (Maybe/some U64 1)
-#test: (OrdSet/minimum U64 (OrdSet/from-list U64 U64/Ord [3 2 1])) == (Maybe/some U64 1)
+#test: (OrdSet/minimum U64 (OrdSet/from_list U64 U64/Ord [1 2 3])) == (Maybe/some U64 1)
+#test: (OrdSet/minimum U64 (OrdSet/from_list U64 U64/Ord [3 2 1])) == (Maybe/some U64 1)

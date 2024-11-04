@@ -1,0 +1,14 @@
+// Converts a binary representation (Bits) to its U64 value.
+// - bits: The Bits to convert.
+// = The U64 representation of the input Bits.
+U64/from_bits : Bits -> U64
+= λbits (U64/from_bits_go bits 1)
+
+// Helper function for U64/from_bits
+U64/from_bits_go : Bits -> U64 -> U64
+| #E       mult = 0
+| #O{tail} mult = (U64/from_bits_go tail (* 2 mult))
+| #I{tail} mult = (+ mult (U64/from_bits_go tail (* 2 mult)))
+
+#test: (U64/from_bits #I{#O{#I{#E}}}) == 5
+#test: (U64/from_bits #I{#I{#I{#E}}}) == 7

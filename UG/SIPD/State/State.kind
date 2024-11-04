@@ -1,7 +1,7 @@
 
 data UG/SIPD/State {
   #State {
-    next-id : U64
+    next_id : U64
     tick : U64
     players : (OrdMap U64 UG/SIPD/Player)
   }

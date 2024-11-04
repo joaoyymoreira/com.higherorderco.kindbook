@@ -3,7 +3,7 @@
 // = The sine of x.
 F64/sin : F64 -> F64
 | x = 
-  if (F64/is-zero x) {
+  if (F64/is_zero x) {
     x
   } else {
     (F64/cos (- x (/ 3.141592653589793 2.0)))

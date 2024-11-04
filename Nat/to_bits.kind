@@ -1,0 +1,23 @@
+// Converts a nat to its binary representation.
+// - n: The nat to convert.
+// = The binary representation of the number as Bits.
+Nat/to_bits : Nat -> Bits
+| #Zero           = #O{#E}
+| #Succ{#Zero}    = #I{#E}
+| #Succ{#Succ{n}} =
+  let quotient  = (Nat/div #Succ{#Succ{n}} #2)
+  let remainder = (Nat/mod #Succ{#Succ{n}} #2)
+  if (Nat/eq remainder #Zero) {
+    #O{(Nat/to_bits quotient)}
+  } else {
+    #I{(Nat/to_bits quotient)}
+  }
+
+#test: (Nat/to_bits #0)  == #O{#E}
+#test: (Nat/to_bits #1)  == #I{#E}
+#test: (Nat/to_bits #2)  == #O{#I{#E}}
+#test: (Nat/to_bits #3)  == #I{#I{#E}}
+#test: (Nat/to_bits #4)  == #O{#O{#I{#E}}}
+#test: (Nat/to_bits #5)  == #I{#O{#I{#E}}}
+#test: (Nat/to_bits #8)  == #O{#O{#O{#I{#E}}}}
+#test: (Nat/to_bits #15) == #I{#I{#I{#I{#E}}}}

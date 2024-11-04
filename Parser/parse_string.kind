@@ -1,0 +1,12 @@
+// Parses a quoted string.
+// = A String value representing the parsed quoted string.
+Parser/parse_string : (Parser String)
+= do Parser {
+  ask (Parser/consume "\"")
+  (Parser/parse_chars)
+}
+
+#test: (Parser/parse_string #State{"\"abc\"" #0}) == (#Done{#Reply{#State{[] #5} "abc"}})
+#test: (Parser/parse_string #State{"\"a\\nb\"" #0}) == (#Done{#Reply{#State{[] #6} "a\nb"}})
+#test: (Parser/parse_string #State{"\"\"" #0}) == (#Done{#Reply{#State{[] #2} []}})
+#test: (Parser/parse_string #State{"\"abc" #0}) == (#Fail{#Error{#4 "Unexpected end of input"}})

@@ -1,0 +1,10 @@
+// Checks if a character is uppercase.
+// - code: The character to check.
+// = True if uppercase, False otherwise.
+Char/is_upper : Char -> Bool
+= λcode (Bool/and (U64/gte code 65) (U64/lte code 90))
+
+#test: (Char/is_upper 'A') == #True
+#test: (Char/is_upper 'a') == #False
+#test: (Char/is_upper '5') == #False
+#test: (Char/is_upper '@') == #False

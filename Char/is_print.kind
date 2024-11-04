@@ -1,0 +1,12 @@
+// Checks if a character is printable.
+// - code: The character to check.
+// = True if printable, False otherwise.
+Char/is_print : Char -> Bool
+= λcode (Bool/and (U64/gte code 32) (U64/lte code 126))
+
+#test: (Char/is_print 'a') == #True
+#test: (Char/is_print 'Z') == #True
+#test: (Char/is_print '5') == #True
+#test: (Char/is_print '@') == #True
+#test: (Char/is_print '\n') == #False
+#test: (Char/is_print '\t') == #False

@@ -1,0 +1,18 @@
+// Converts a Bits representation to U64.
+// - bits: The Bits to convert.
+// = The U64 representation of the input Bits.
+Bits/to_u64 : Bits -> U64
+| bits = (Bits/to_u64_go bits 1)
+
+// Helper function for Bits/to_u64.
+// - bits: The Bits to convert.
+// - mult: The weight for the current bit position.
+// = The U64 representation after recursive processing.
+Bits/to_u64_go : Bits -> U64 -> U64
+| #E       mult = 0
+| #O{tail} mult = (Bits/to_u64_go tail (* 2 mult))
+| #I{tail} mult = (+ mult (Bits/to_u64_go tail (* 2 mult)))
+
+#test: (Bits/to_u64 #E) == 0
+#test: (Bits/to_u64 #O{#I{#E}}) == 2
+#test: (Bits/to_u64 #I{#O{#I{#E}}}) == 5

@@ -11,4 +11,4 @@ OrdTree/map : ∀(K: *) ∀(V: *) ∀(A: *) ∀(B: *) ∀(ord: (Ord A)) (OrdTree
 | K V A B ord tree f = (OrdTree/fold K V tree (OrdTree A B) (OrdTree/empty A B) λpair λacc (OrdTree/insert A B ord (f pair) acc))
 
 #test: (OrdTree/map U64 U64 U64 U64 U64/Ord (OrdTree/empty U64 U64) (Function/id (Pair U64 U64))) == (OrdTree/empty U64 U64)
-#test: (OrdTree/to-list U64 U64 (OrdTree/map U64 U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 1} (OrdTree/empty U64 U64))  (λx (Pair/map U64 U64 x (λx (+ 1 x)))))) == [#Pair{2 2}]
+#test: (OrdTree/to_list U64 U64 (OrdTree/map U64 U64 U64 U64 U64/Ord (OrdTree/insert U64 U64 U64/Ord #Pair{1 1} (OrdTree/empty U64 U64))  (λx (Pair/map U64 U64 x (λx (+ 1 x)))))) == [#Pair{2 2}]

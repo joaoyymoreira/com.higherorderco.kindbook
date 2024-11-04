@@ -1,0 +1,10 @@
+// Checks if a nat is zero.
+// - n: The nat to check.
+// = True if the input is zero, False otherwise.
+Nat/is_zero : Nat -> Bool
+| #Zero    = #True
+| #Succ{n} = #False
+
+#test: (Nat/is_zero #Zero) == #True
+#test: (Nat/is_zero #1) == #False
+#test: (Nat/is_zero #2) == #False

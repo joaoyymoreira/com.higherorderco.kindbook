@@ -1,0 +1,9 @@
+Bend/Fun/Book/map_rules :
+  (Bend/Fun/Rule -> Bend/Fun/Rule) -> Bend/Fun/Book -> Bend/Fun/Book
+| f #Book{defs adts ctrs} =
+  let defs = (BinMap/map _ _ (map_def f) defs)
+  #Book{defs adts ctrs}
+
+map_def : (Bend/Fun/Rule -> Bend/Fun/Rule) -> Bend/Fun/FnDef -> Bend/Fun/FnDef
+| f #FnDef{name type check rules src} =
+  #FnDef{name type check (List/map _ _ f rules) src}

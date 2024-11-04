@@ -1,9 +1,0 @@
-// Converts a natural number to a 64-bit signed float.
-// - x: The natural number to convert.
-// = The F64 representation of the input natural number.
-F64/from-nat : Nat -> F64
-| #Zero    = 0.0
-| #Succ{n} = (+ 1.0 (F64/from-nat n))
-
-#test: (F64/from-nat #Zero) == 0.0
-#test: (F64/from-nat #Succ{#Succ{#Zero}}) == 2.0

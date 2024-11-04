@@ -4,7 +4,7 @@
 // = The larger of the two input numbers.
 U64/max : U64 -> U64 -> U64
 = λa λb
-  if (U64/to-bool (>= a b)) {
+  if (U64/to_bool (>= a b)) {
     a
   } else {
     b

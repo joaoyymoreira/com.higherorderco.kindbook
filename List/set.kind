@@ -1,7 +1,7 @@
 // Applies a function to a specific element in a list.
 // - A: Element type.
 // - xs: Input list.
-// - n: Index of element to modify (0-based).
+// - n: Index of element to modify (0_based).
 // - fn: Function to apply.
 // = New list with function applied to nth element.
 List/set : ∀(A: *) (List A) -> Nat -> (A -> A) -> (List A)

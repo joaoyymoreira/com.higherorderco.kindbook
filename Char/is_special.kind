@@ -1,0 +1,16 @@
+// Checks if a char is special (printable but not alphanumeric).
+// - code: The char to check.
+// = True if special, False otherwise.
+Char/is_special : Char -> Bool
+= λcode
+  let is_print = (Char/is_print code)
+  let is_alpha = (Char/is_alpha code)
+  let is_digit = (Char/is_digit code)
+  let is_alphanumeric = (Bool/or is_alpha is_digit)
+  (Bool/and is_print (Bool/not is_alphanumeric))
+
+#test: (Char/is_special 64) == #True  // '@'
+#test: (Char/is_special 65) == #False // 'A'
+#test: (Char/is_special 53) == #False // '5'
+#test: (Char/is_special 0)  == #False // NUL
+#test: (Char/is_special 35) == #True  // '#'

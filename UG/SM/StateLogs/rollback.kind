@@ -33,7 +33,7 @@ UG/SM/StateLogs/rollback : ∀(S: *) U64 -> (UG/SM/StateLogs S) -> (UG/SM/StateL
 UG/SM/StateLogs/rollback/go : ∀(S: *) U64 -> U64 -> (UG/SM/StateLogs S) -> U64 -> (Pair (UG/SM/StateLogs S) U64)
 | S i amount states cut =
   let is_done = (U64/lt amount i)
-  if (U64/to-bool (U64/from-bool is_done)) {
+  if (U64/to_bool (U64/from_bool is_done)) {
     #Pair{states cut}
   } else {
     match states {

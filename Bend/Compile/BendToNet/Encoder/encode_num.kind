@@ -1,0 +1,8 @@
+// Encodes a Num (number) into its HVM bit representation
+// - num: The Num to be encoded
+// = The Bits representation of the number
+// TODO: This is temporary and we should instead use the HVM conversions
+Bend/Compile/BendToNet/Encoder/encode_num : Bend/Fun/Num -> Bits
+| #U24{n} = (U64/to_bits n)
+| #I24{n} = #E
+| #F24{n} = #E

@@ -1,4 +1,4 @@
-// Right-folds a list, combining elements with a function.
+// Right_folds a list, combining elements with a function.
 // Equivalently, transforms a list on its Church encoding.
 // - A: Type of elements.
 // - xs: The list to fold.

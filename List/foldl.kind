@@ -1,4 +1,4 @@
-// Left-folds a list.
+// Left_folds a list.
 // - A: Element type.
 // - xs: Input list.
 // - B: Accumulator type.

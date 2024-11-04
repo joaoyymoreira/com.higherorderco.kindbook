@@ -1,0 +1,14 @@
+// Checks if a character is a digit (0_9).
+// - c: The character to check.
+// = True if digit, False otherwise.
+Char/is_digit : Char -> Bool
+= λc (Bool/and (U64/gte c 48) (U64/lte c 57))
+
+#test: (Char/is_digit '0') == #True
+#test: (Char/is_digit '9') == #True
+#test: (Char/is_digit '5') == #True
+#test: (Char/is_digit 'a') == #False
+#test: (Char/is_digit 'A') == #False
+#test: (Char/is_digit '-') == #False
+#test: (Char/is_digit '/') == #False
+#test: (Char/is_digit ':') == #False

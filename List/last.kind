@@ -1,7 +1,7 @@
 // Safely retrieves the last element of a list.
 // - A: Element type.
 // - xs: Input list.
-// = Some x if non-empty (x is last element), None if empty.
+// = Some x if non_empty (x is last element), None if empty.
 List/last : ∀(A: *) (List A) -> (Maybe A)
 | A #Nil                    = #None
 | A #Cons{head #Nil}        = #Some{head}

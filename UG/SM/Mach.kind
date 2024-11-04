@@ -3,12 +3,12 @@
 // - A: Action type.
 data UG/SM/Mach (S: *) (A: *) {
   #Mach {
-    ticks-per-second: U64
-    genesis-tick: UG/SM/Tick
-    cached-tick: UG/SM/Tick
-    state-logs: (UG/SM/StateLogs S)
-    action-logs: (UG/SM/ActionLogs A)
-    action-eq: A -> A -> Bool
+    ticks_per_second: U64
+    genesis_tick: UG/SM/Tick
+    cached_tick: UG/SM/Tick
+    state_logs: (UG/SM/StateLogs S)
+    action_logs: (UG/SM/ActionLogs A)
+    action_eq: A -> A -> Bool
   }
 }
 
@@ -17,12 +17,12 @@ data UG/SM/Mach (S: *) (A: *) {
 // - A: Action type.
 // - mach: The state machine.
 // = The action logs.
-UG/SM/Mach/action-logs : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/ActionLogs A)
-| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq}
-= action-logs
+UG/SM/Mach/action_logs : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/ActionLogs A)
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq}
+= action_logs
 
 
-UG/SM/Mach/cached-tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick
-| S A #Mach{ticks-per-second genesis-tick cached-tick state-logs action-logs action-eq}
-= cached-tick
+UG/SM/Mach/cached_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq}
+= cached_tick
 

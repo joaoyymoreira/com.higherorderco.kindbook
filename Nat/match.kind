@@ -1,6 +1,6 @@
 // Applies a function to a natural number based on its structure.
 // This function allows pattern matching on natural numbers.
-// - P: A type-level function that determines the return type for each case.
+// - P: A type_level function that determines the return type for each case.
 // - n: The natural number to match on.
 // - z: The value to return in the zero case.
 // - s: The function to apply in the successor case.

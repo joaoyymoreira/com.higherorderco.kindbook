@@ -1,12 +1,12 @@
-// Gets minimum key-value pair from an AVL tree.
+// Gets minimum key_value pair from an AVL tree.
 // - K: Key type.
 // - V: Value type.
 // - tree: The AVL tree.
-// = Some (key, value) if non-empty, None otherwise.
+// = Some (key, value) if non_empty, None otherwise.
 OrdTree/minimum : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Maybe (Pair K V))
 | K V #Leaf                                = (Maybe/none (Pair K V))
-| K V #Node{key-value balance #Leaf right} = (Maybe/some (Pair K V) key-value)
-| K V #Node{key-value balance left right}  = (OrdTree/minimum K V left)
+| K V #Node{key_value balance #Leaf right} = (Maybe/some (Pair K V) key_value)
+| K V #Node{key_value balance left right}  = (OrdTree/minimum K V left)
 
 #test: (OrdTree/minimum U64 U64 (OrdTree/empty U64 U64)) == (Maybe/none (Pair U64 U64))
 #test: (OrdTree/minimum U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{5 10} (OrdTree/empty U64 U64))) == (Maybe/some (Pair U64 U64) #Pair{5 10})

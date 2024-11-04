@@ -1,0 +1,12 @@
+// Modifies the first component of a pair.
+// - A: First type.
+// - B: Second type.
+// - f: Function to apply to first component.
+// - p: Input pair.
+// = New pair with first component modified.
+Pair/mut_fst : ∀(A: *) ∀(B: *) (A -> A) -> (Pair A B) -> (Pair A B)
+| A B f #Pair{fst snd} = #Pair{(f fst) snd}
+
+#test: (Pair/mut_fst Nat Nat (λx (Nat/add x #1)) #Pair{#2 #3}) == #Pair{#3 #3}
+#test: (Pair/mut_fst Bool Nat (λx (Bool/not x)) #Pair{#True #0}) == #Pair{#False #0}
+#test: (Pair/mut_fst String Nat (λx (String/append x "!")) #Pair{"Hello" #42}) == #Pair{"Hello!" #42}

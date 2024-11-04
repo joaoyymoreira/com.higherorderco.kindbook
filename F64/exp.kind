@@ -3,7 +3,7 @@
 // - n: Exponent.
 // = x^n.
 F64/exp : F64 -> F64 -> F64
-| x n = if (F64/is-zero n) { 1.0 } else { (* x (F64/exp x (- n 1.0))) }
+| x n = if (F64/is_zero n) { 1.0 } else { (* x (F64/exp x (- n 1.0))) }
 
 #test: (F64/exp 2.0 0.0) == 1.0
 #test: (F64/exp 2.0 3.0) == 8.0

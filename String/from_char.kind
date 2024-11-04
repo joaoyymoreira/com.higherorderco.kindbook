@@ -1,0 +1,9 @@
+// Converts a char to a string.
+// - c: Input char.
+// = String with only the input char.
+String/from_char : Char -> String
+| c = #Cons{c #Nil}
+
+#test: (String/from_char 'A') == "A"
+#test: (String/from_char '0') == "0"
+#test: (String/from_char '\n') == "\n"

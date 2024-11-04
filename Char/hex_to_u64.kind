@@ -1,0 +1,21 @@
+// Converts a hex char to its U64 value.
+// - c: The hex char.
+// = The U64 value, or None if invalid.
+Char/hex_to_u64 : Char -> (Maybe U64)
+| c =
+  if (Char/is_digit c) {
+    #Some{(-c '0')}
+  } else {
+    let upper = (Char/to_upper c)
+    if (U64/to_bool (& (>= upper 'A') (<= upper 'F'))) {
+      #Some{(+10 (- upper 'A'))}
+    } else {
+      #None
+    }
+  }
+
+#test: (Char/hex_to_u64 '0') == #Some{0}
+#test: (Char/hex_to_u64 '9') == #Some{9}
+#test: (Char/hex_to_u64 'A') == #Some{10}
+#test: (Char/hex_to_u64 'f') == #Some{15}
+#test: (Char/hex_to_u64 'G') == #None

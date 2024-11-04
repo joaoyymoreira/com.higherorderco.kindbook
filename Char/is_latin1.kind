@@ -1,0 +1,11 @@
+// Checks if a character is within the Latin_1 character set.
+// - c: The character to check.
+// = True if the character is in the Latin_1 set, False otherwise.
+Char/is_latin1 : Char -> Bool
+= λc (U64/to_bool (<= c 255))
+
+#test: (Char/is_latin1 'A') == #True
+#test: (Char/is_latin1 'ñ') == #True
+#test: (Char/is_latin1 '¿') == #True
+#test: (Char/is_latin1 'ÿ') == #True
+#test: (Char/is_latin1 '€') == #False

@@ -1,0 +1,17 @@
+// Checks if a string starts with another.
+// - str: String to check.
+// - prefix: Prefix to look for.
+// = True if str starts with prefix, False otherwise.
+String/starts_with : String -> String -> Bool
+| str prefix =
+  let #Pair{prefix_list prefix_length} = (List/length_got U64 prefix)
+  let str_prefix = (List/take U64 str prefix_length)
+  let str_length = (List/length U64 str_prefix)
+  (Bool/and
+    (String/eq str_prefix prefix_list)
+    (Nat/eq str_length prefix_length))
+
+#test: (String/starts_with "Hello, World!" "Hello") == #True
+#test: (String/starts_with "Hello, World!" "World") == #False
+#test: (String/starts_with "" "") == #True
+#test: (String/starts_with "A" "AB") == #False

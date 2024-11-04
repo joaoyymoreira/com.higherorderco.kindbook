@@ -1,5 +1,0 @@
-
-UG/SIPD/Player/is-player-key-pressed : String -> (OrdMap String (Pair Bool V2)) -> Bool
-| key player-keys with (OrdTree/get String (Pair Bool V2) String/Ord key player-keys)
-.| #Some{#Pair{pressed pos}} = pressed
-.| #None = #False

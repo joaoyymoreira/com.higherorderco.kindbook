@@ -1,0 +1,32 @@
+// Checks if an AVL tree is balanced.
+// - K: Key type.
+// - V: Value type.
+// - tree: The AVL tree to check.
+// = True if the tree is balanced, False otherwise.
+OrdTree/is_balanced : ∀(K: *) ∀(V: *) (OrdTree K V) -> Bool
+| K V tree with (OrdTree/is_balanced_go K V tree)
+. | #None = #False
+. | _     = #True
+
+// Helper function for is_balanced.
+// - K: Key type.
+// - V: Value type.
+// - tree: The AVL tree to check.
+// = Some Nat if balanced, None otherwise.
+OrdTree/is_balanced_go : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Maybe Nat)
+| K V #Leaf = #Some{#Zero}
+| K V #Node{key_value balance left right} with (OrdTree/is_balanced_go K V left)
+. | #None = #None
+. | #Some{h_left} with (OrdTree/is_balanced_go K V right)
+.. | #None = #None
+.. | #Some{h_right} with balance
+... | #MinusOne = if (Nat/eq h_left #Succ{h_right}) {#Some{#Succ{h_left}}} else {#None}
+... | #Zero     = if (Nat/eq h_left h_right) {#Some{#Succ{h_left}}} else {#None}
+... | #PlusOne  = if (Nat/eq h_right #Succ{h_left}) {#Some{#Succ{h_right}}} else {#None}
+
+
+#test: (OrdTree/is_balanced Nat Nat (OrdTree/empty Nat Nat)) == #True
+#test: (OrdTree/is_balanced Nat Nat #Node{key_value: #Pair{#0 #0} balance: #Zero left: #Leaf right: #Leaf}) == #True
+#test: (OrdTree/is_balanced Nat Nat #Node{key_value: #Pair{#0 #0} balance: #PlusOne left: #Leaf right: #Node{key_value: #Pair{#1 #1} balance: #Zero left: #Leaf right: #Leaf}}) == #True
+#test: (OrdTree/is_balanced Nat Nat #Node{key_value: #Pair{#0 #0} balance: #MinusOne left: #Node{key_value: #Pair{#1 #1} balance: #Zero left: #Leaf right: #Leaf} right: #Leaf}) == #True
+#test: (OrdTree/is_balanced Nat Nat #Node{key_value: #Pair{#0 #0} balance: #PlusOne left: #Leaf right: #Node{key_value: #Pair{#1 #1} balance: #PlusOne left: #Leaf right: #Node{key_value: #Pair{#2 #2} balance: #Zero left: #Leaf right: #Leaf}}}) == #False

@@ -1,0 +1,12 @@
+use Bend/Compile/NetToHvm as C
+
+// If the port points to a var, create and return a var term.
+// If it points to a node, compile the subtree.
+C/var_or_subtree_to_hvm : Bend/Net -> Bend/Net/Port -> C/State -> (Bend (Pair Bend/Hvm/Term C/State))
+| net #Port{node slot} state with (U64/eq slot 0)
+. | #True  = (C/tree_to_hvm net node state)
+. | #False = do Bend {
+  let port = #Port{node slot} :: Bend/Net/Port
+  ask port = (Bend/Net/get_port net port)
+  #Done{(make_var port port state)}
+}

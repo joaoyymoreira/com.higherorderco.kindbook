@@ -19,7 +19,7 @@ GameAction/eq : GameAction -> GameAction -> Bool
 | #Increment #Increment = #True
 
 // Our simple game definition
-simple-game : (UG/SM/Game GameState GameAction)
+simple_game : (UG/SM/Game GameState GameAction)
 = #Game{
   init: #GameState{counter: 0}
   when: λaction λstate
@@ -30,10 +30,10 @@ simple-game : (UG/SM/Game GameState GameAction)
 }
 
 // Simulates the game for a given number of ticks
-simulate-game : U64 -> (UG/SM/Mach GameState GameAction)
+simulate_game : U64 -> (UG/SM/Mach GameState GameAction)
 | ticks =
-  let mach = (UG/SM/new-mach GameState GameAction 60 GameAction/eq)
-  let mach = (UG/SM/register-action GameState GameAction mach #TimedAction{action: #Increment time: 0})
+  let mach = (UG/SM/new_mach GameState GameAction 60 GameAction/eq)
+  let mach = (UG/SM/register_action GameState GameAction mach #TimedAction{action: #Increment time: 0})
   mach
 
 event : UG/SIPD/Event
@@ -55,11 +55,11 @@ event4 : UG/SIPD/Event
 
 
 mach : (UG/SM/Mach GameState GameAction)
-= (simulate-game 1)
+= (simulate_game 1)
 
 main : (UG/SM/Mach GameState GameAction)
-= #Mach{ticks-per-second: 60 genesis-tick: 0 cached-tick: 0 state-logs: #None action-logs: #Node{#Some{[#Increment{}]} #Leaf{} #Leaf{}} action-eq: GameAction/eq}
+= #Mach{ticks_per_second: 60 genesis_tick: 0 cached_tick: 0 state_logs: #None action_logs: #Node{#Some{[#Increment{}]} #Leaf{} #Leaf{}} action_eq: GameAction/eq}
 
 
-#test: ((simulate-game 1) == mach)
+#test: ((simulate_game 1) == mach)
 

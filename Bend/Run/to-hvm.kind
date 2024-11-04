@@ -1,6 +1,0 @@
-// Compiles a Bend Book in core form to HVM and applies all the
-// inet-level transformations.
-Bend/Run/to-hvm : Bend/Fun/Book -> (Bend Bend/Hvm/Book)
-| book = do Bend {
-  (Bend/Compile/book-to-hvm book)
-}

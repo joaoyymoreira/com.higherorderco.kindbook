@@ -1,6 +1,6 @@
 // A 2D vector with F64 components.
-// - x: The x-coordinate.
-// - y: The y-coordinate.
+// - x: The x_coordinate.
+// - y: The y_coordinate.
 data V2 {
   #V2 {
     x: F64

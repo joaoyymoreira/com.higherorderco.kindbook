@@ -1,0 +1,20 @@
+// Converts a list of Bend Nets to a list of named HVM Nets.
+// - nets: The list of Bend Nets to convert.
+// = A Result containing either:
+//   - A list of pairs, each consisting of:
+//     - The name of the original Bend Net
+//     - The converted HVM Net
+//   - An error message if any conversion fails
+Bend/Compile/NetToHvm/nets_to_hvm : (List Bend/Net) -> (Bend Bend/Hvm/Book)
+| nets = do Bend {
+  ask nets = (go nets)
+  #Done{#Book{(BinMap/from_list _ nets)}}
+}
+
+go : (List Bend/Net) -> (Bend (List (Pair Bits Bend/Hvm/Net)))
+| #Nil = #Done{#Nil}
+| #Cons{net@#Net{nam nod len} nets} = do Bend {
+  ask net  = (Bend/Compile/NetToHvm/net_to_hvm net)
+  ask nets = (go nets)
+  #Done{#Cons{#Pair{(String/hash nam) net} nets}}
+}

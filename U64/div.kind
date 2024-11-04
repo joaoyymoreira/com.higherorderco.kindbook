@@ -1,4 +1,4 @@
-// Performs integer division of two 32-bit unsigned integers.
+// Performs integer division of two 32_bit unsigned integers.
 // - a: The dividend.
 // - b: The divisor.
 // = The quotient of the division as a U64 value.

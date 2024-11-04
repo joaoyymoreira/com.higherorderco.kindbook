@@ -1,0 +1,13 @@
+// Retrieves the list of actions for a specific tick from the ActionLogs.
+// If no actions exist for the given tick, returns an empty list.
+// - A: The type of actions stored in the logs.
+// - logs: The ActionLogs to retrieve actions from.
+// - t: The tick for which to retrieve actions.
+// = The list of actions for the specified tick, or an empty list if none exist.
+UG/SM/ActionLogs/get_actions : ∀(A: *) (UG/SM/ActionLogs A) -> UG/SM/Tick -> (List A)
+| A lgs t =
+  let key = (U64/to_bits t)
+  (Maybe/match (List A) (λx (List A))
+    #Nil
+    (λactions actions)
+    (BinMap/get (List A) lgs key))

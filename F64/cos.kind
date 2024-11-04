@@ -5,10 +5,10 @@
 // With 18 iterations, we achieve a precision of approximately 14 terms.
 F64/cos : F64 -> F64
 | x = 
-  if (F64/is-zero x) {
+  if (F64/is_zero x) {
     1.0
   } else {
-  (F64/cos-go x 1.0 18.0)
+  (F64/cos_go x 1.0 18.0)
   }
 
 // Computes cosine using Taylor series.
@@ -16,13 +16,13 @@ F64/cos : F64 -> F64
 // - guess: Current guess.
 // - iter: Remaining iterations.
 // = Approximation of cos(x).
-F64/cos-go : F64 -> F64 -> F64 -> F64
+F64/cos_go : F64 -> F64 -> F64 -> F64
 | x guess iter = 
   if (F64/eq 0.0 iter) {
     guess
   } else {
     let next = (F64/div (F64/mul (F64/exp (F64/negate 1.0) iter) (F64/exp x (F64/mul 2.0 iter))) (F64/factorial (F64/mul 2.0 iter)))
-    (F64/cos-go x (+ guess next) (F64/sub iter 1.0))
+    (F64/cos_go x (+ guess next) (F64/sub iter 1.0))
   }
 #test: (F64/cos 0.0) == 1.0
 #test: (F64/cos 0.5235987755982988) == 0.8660254037844388

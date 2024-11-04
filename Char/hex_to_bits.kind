@@ -1,0 +1,16 @@
+// Converts a hex char to its 4_bit binary representation.
+// - c: The hex char.
+// = The 4_bit Bits representation, or None if invalid.
+Char/hex_to_bits : Char -> (Maybe Bits)
+| c =
+  do Maybe {
+    ask val = (Char/hex_to_u64 c)
+    ret (U64/to_bits val)
+  }
+
+#test: (Char/hex_to_bits '0') == #Some{#E}
+#test: (Char/hex_to_bits '9') == #Some{#I{#O{#O{#I{#E}}}}}
+#test: (Char/hex_to_bits 'A') == #Some{#O{#I{#O{#I{#E}}}}}
+#test: (Char/hex_to_bits 'f') == #Some{#I{#I{#I{#I{#E}}}}}
+#test: (Char/hex_to_bits 'G') == #None
+#test: (Char/hex_to_bits 'h') == #None

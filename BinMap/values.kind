@@ -3,7 +3,7 @@
 // - m: Input BinMap.
 // = List of values stored in the BinMap.
 BinMap/values : ∀(A: *) (BinMap A) -> (List A)
-| A m = (List/map (Pair Bits A) A (BinMap/to-list A m) (Pair/get-snd Bits A))
+| A m = (List/map (Pair Bits A) A (BinMap/to_list A m) (Pair/get_snd Bits A))
 
 #test:
   let map = (BinMap/empty U64)

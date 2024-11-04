@@ -1,0 +1,12 @@
+// Splits a string at the given index.
+// - s: Input string.
+// - n: Split index.
+// = Pair of strings: first n chars and the rest.
+String/split_at : String -> Nat -> (Pair String String)
+| s n = (List/split_at Char s n)
+
+#test: (String/split_at "" #0) == #Pair{"" ""}
+#test: (String/split_at "Hello" #0) == #Pair{"" "Hello"}
+#test: (String/split_at "Hello" #3) == #Pair{"Hel" "lo"}
+#test: (String/split_at "Hello" #5) == #Pair{"Hello" ""}
+#test: (String/split_at "Hello" #10) == #Pair{"Hello" ""}

@@ -1,9 +1,0 @@
-// Checks if a F64 is zero.
-// - x: The F64 to check.
-// = True if the input is zero, False otherwise.
-F64/is-zero : F64 -> Bool
-| a = (U64/to-bool (== a 0.0))
-
-#test: (F64/is-zero 0.0) == #True
-#test: (F64/is-zero 1.0) == #False
-#test: (F64/is-zero 42.1) == #False

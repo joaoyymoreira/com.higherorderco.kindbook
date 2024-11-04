@@ -15,5 +15,5 @@ BinMap/got : ∀(A: *) (BinMap A) -> Bits -> (Pair (BinMap A) (Maybe A))
 #test: (BinMap/got U64 (BinMap/set U64 #Leaf #E 3) #E) == #Pair{#Node{#Some{3} #Leaf #Leaf} #Some{3}}
 #test:
   let old = (BinMap/set _ (BinMap/new _) #E 7)
-  let neo = (Pair/get-fst _ _ (BinMap/got _ old #I{#O{#E}}))
+  let neo = (Pair/get_fst _ _ (BinMap/got _ old #I{#O{#E}}))
   old == neo

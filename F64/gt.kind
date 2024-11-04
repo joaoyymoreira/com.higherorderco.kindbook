@@ -3,7 +3,7 @@
 // - b: The second F64 value.
 // = True if the first value is greater than the second, False otherwise.
 F64/gt : F64 -> F64 -> Bool
-= λa λb (U64/to-bool (> a b))
+= λa λb (U64/to_bool (> a b))
 
 #test: (F64/gt 5.0 3.0) == #True
 #test: (F64/gt 3.0 5.0) == #False

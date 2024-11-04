@@ -1,0 +1,16 @@
+// Converts a character to its lowercase equivalent.
+// - code: The input character.
+// = The lowercase version of the input character.
+Char/to_lower : Char -> Char
+= λcode
+  if (Char/is_upper code) {
+    (+ code 32)
+  } else {
+    code
+  }
+
+#test: (Char/to_lower 'A') == 'a'
+#test: (Char/to_lower 'a') == 'a'
+#test: (Char/to_lower '5') == '5'
+#test: (Char/to_lower '@') == '@'
+#test: (Char/to_lower 'Z') == 'z'

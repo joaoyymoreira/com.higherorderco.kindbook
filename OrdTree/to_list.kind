@@ -1,0 +1,15 @@
+// Converts an AVL tree to a sorted list of key_value pairs.
+// - K: The type of keys in the tree.
+// - V: The type of values in the tree.
+// - tree: The AVL tree to convert.
+// = A list containing all key_value pairs from the tree in ascending order of keys.
+OrdTree/to_list : ∀(K: *) ∀(V: *) (OrdTree K V) -> (List (Pair K V))
+| K V #Leaf                               = #Nil
+| K V #Node{key_value balance left right} =
+  let left_list  = (OrdTree/to_list K V left)
+  let right_list = (OrdTree/to_list K V right)
+  (List/append (Pair K V) left_list #Cons{key_value right_list})
+
+#test: (OrdTree/to_list U64 U64 #Leaf) == []
+#test: (OrdTree/to_list U64 U64 (#Node{#Pair{1 10} #Zero #Leaf #Leaf})) == [#Pair{1 10}]
+#test: (OrdTree/to_list U64 U64 (#Node{#Pair{2 20} #Zero (#Node{#Pair{1 10} #Zero #Leaf #Leaf}) (#Node{#Pair{3 30} #Zero #Leaf #Leaf})})) == [#Pair{1 10} #Pair{2 20} #Pair{3 30}]

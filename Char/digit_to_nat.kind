@@ -1,0 +1,20 @@
+// Converts a digit char to its corresponding nat.
+// - c: The input char.
+// = Some n if c is a digit, where n is the corresponding nat, None otherwise.
+Char/digit_to_nat : Char -> (Maybe Nat)
+| c =
+  let n = (- c '0')
+  if (U64/to_bool (& (<= 0 n) (<= n 9))) {
+    #Some{(U64/to_nat n)}
+  } else {
+    #None
+  }
+
+#test: (Char/digit_to_nat '0') == #Some{#0}
+#test: (Char/digit_to_nat '5') == #Some{#5}
+#test: (Char/digit_to_nat '9') == #Some{#9}
+#test: (Char/digit_to_nat 'a') == #None
+#test: (Char/digit_to_nat '!') == #None
+#test: (Char/digit_to_nat ' ') == #None
+#test: (Char/digit_to_nat '\n') == #None
+#test: (Char/digit_to_nat '١') == #None

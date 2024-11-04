@@ -1,0 +1,13 @@
+// Converts Bits to String by grouping bits into chunks of 21.
+// - bits: The input Bits value to convert.
+// = String representation of the input Bits.
+String/from_bits : Bits -> String
+| bits = 
+  let chunks = (Bits/split_chunks bits #21)
+  (List/map Bits Char chunks Bits/to_char)
+
+#test: (String/from_bits #E) == ""
+#test: (String/from_bits (Nat/to_bits #65)) == "A"
+#test: (String/from_bits (String/to_bits "Hello")) == "Hello"
+#test: (String/from_bits (Nat/to_bits #8364)) == "€"
+#test: (String/from_bits (String/to_bits "Hello€")) == "Hello€"

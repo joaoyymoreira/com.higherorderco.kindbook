@@ -6,7 +6,7 @@
 List/intercalate : ∀(A: *) (List A) -> (List (List A)) -> (List A)
 | A xs #Nil             = #Nil
 | A xs #Cons{head tail} = 
-  if (List/is-nil (List A) tail) {
+  if (List/is_nil (List A) tail) {
     head
   } else {
     (List/append A head (List/append A xs (List/intercalate A xs tail)))

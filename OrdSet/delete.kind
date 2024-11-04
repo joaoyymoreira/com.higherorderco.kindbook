@@ -7,6 +7,6 @@
 OrdSet/delete : ∀(K: *) ∀(ord: (Ord K)) K -> (OrdSet K) -> (OrdSet K)
 | K ord key set = (OrdTree/delete K Unit ord key set)
 
-#test: (OrdSet/delete Nat Nat/Ord #3 (OrdSet/from-list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from-list Nat Nat/Ord [#1 #2 #4])
-#test: (OrdSet/delete Nat Nat/Ord #5 (OrdSet/from-list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from-list Nat Nat/Ord [#1 #2 #3 #4])
+#test: (OrdSet/delete Nat Nat/Ord #3 (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #4])
+#test: (OrdSet/delete Nat Nat/Ord #5 (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])) == (OrdSet/from_list Nat Nat/Ord [#1 #2 #3 #4])
 #test: (OrdSet/delete Nat Nat/Ord #1 (OrdSet/empty Nat)) == (OrdSet/empty Nat)

@@ -5,7 +5,7 @@
 // = Number of nodes in the tree.
 OrdTree/size : ∀(K: *) ∀(V: *) (OrdTree K V) -> Nat
 | K V #Leaf                               = #Zero
-| K V #Node{key-value balance left right} =
+| K V #Node{key_value balance left right} =
   let left_size  = (OrdTree/size K V left)
   let right_size = (OrdTree/size K V right)
   #Succ{(Nat/add left_size right_size)}

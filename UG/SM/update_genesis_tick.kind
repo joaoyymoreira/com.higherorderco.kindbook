@@ -1,0 +1,20 @@
+// Updates the genesis tick of a state machine.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - new_tick: The new tick value.
+// = The updated state machine.
+UG/SM/update_genesis_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> (UG/SM/Mach S A)
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} new_tick
+= let new_genesis = (U64/min new_tick genesis_tick)
+  #Mach{
+    ticks_per_second
+    genesis_tick: new_genesis
+    cached_tick
+    state_logs
+    action_logs
+    action_eq
+  }
+
+#test: (UG/SM/update_genesis_tick U64 U64 (UG/SM/new_mach U64 U64 10 U64/eq) 50) == #Mach{10 50 0 #None (BinMap/new (List U64)) U64/eq}
+#test: (UG/SM/update_genesis_tick U64 U64 (UG/SM/new_mach U64 U64 10 U64/eq) 101) == #Mach{10 100 0 #None (BinMap/new (List U64)) U64/eq}

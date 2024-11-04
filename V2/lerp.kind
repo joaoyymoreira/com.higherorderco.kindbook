@@ -6,7 +6,7 @@
 V2/lerp : V2 -> V2 -> F64 -> V2
 | a b t =
   let diff = (V2/sub b a)
-  let scaled = (V2/mul-scalar diff t)
+  let scaled = (V2/mul_scalar diff t)
   (V2/add a scaled)
 
 #test: (V2/lerp #V2{x: 0.0 y: 0.0} #V2{x: 10.0 y: 10.0} 0.5) == #V2{x: 5.0 y: 5.0}

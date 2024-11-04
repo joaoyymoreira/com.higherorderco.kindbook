@@ -1,0 +1,12 @@
+// Converts a Bits value to its corresponding Unicode character.
+// 1st: The Bits value to convert.
+// = The Unicode character corresponding to the given Bits value.
+Bits/to_char
+: ∀(bits: Bits)
+  Char
+= λbits (U64/from_bits bits)
+
+#test: (Bits/to_char #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) == 'A'
+#test: (Bits/to_char #O{#O{#O{#O{#O{#I{#E}}}}}}) == ' '
+#test: (Bits/to_char #E) == '\0'
+#test: (Bits/to_char #I{#E}) == '\u0001'

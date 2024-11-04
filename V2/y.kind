@@ -1,5 +1,5 @@
-// Gets the y-coordinate of a V2 vector.
+// Gets the y_coordinate of a V2 vector.
 // - v: The input vector.
-// = The y-coordinate.
+// = The y_coordinate.
 V2/y : V2 -> F64
 | #V2{x y} = y

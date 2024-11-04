@@ -1,6 +1,6 @@
 // Creates a new V2 vector.
-// - x: X-coordinate.
-// - y: Y-coordinate.
+// - x: X_coordinate.
+// - y: Y_coordinate.
 // = New V2 vector.
 V2/new : F64 -> F64 -> V2
 | x y = #V2{x y}

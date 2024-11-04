@@ -1,0 +1,59 @@
+use Bend/Compile/NetToHvm as C
+
+Bend/Compile/NetToHvm/tree_to_hvm : Bend/Net -> U64 -> C/State -> (Bend (Pair Bend/Hvm/Term C/State))
+| net node_id #State{vars n_vars n_nodes} = switch n_nodes {
+  0: #Fail{"cycle in tree"}
+  _{n_nodes}: do Bend {
+    let st = #State{vars n_vars n_nodes} :: C/State
+    ask #Node{main aux1 aux2 kind} = (Bend/Net/get_node net node_id)
+    match kind {
+      #Con: do Bend {
+        ask #Pair{lft st} = (C/var_or_subtree_to_hvm net aux1 st)
+        ask #Pair{rgt st} = (C/var_or_subtree_to_hvm net aux2 st)
+        #Done{#Pair{#Con{lft rgt} st}}
+      }
+      #Dup: do Bend {
+        ask #Pair{lft st} = (C/var_or_subtree_to_hvm net aux1 st)
+        ask #Pair{rgt st} = (C/var_or_subtree_to_hvm net aux2 st)
+        #Done{#Pair{#Dup{lft rgt} st}}
+      }
+      #Era:
+        #Done{#Pair{#Era st}}
+      #Var:
+        let #Pair{var st} = (make_var #Port{node_id 1} aux1 st)
+        #Done{#Pair{var st}}
+      #Rot:
+        #Fail{"attempted to compile root node"}
+      // TODO: Not yet implemented in hvm
+      #Num{_}:
+        #Done{#Pair{#Era st}}
+      #Ref{_}:
+        #Done{#Pair{#Era st}}
+      #Opr:
+        #Done{#Pair{#Era st}}
+      #Swi: do Bend {
+        ask #Pair{lft st} = (C/var_or_subtree_to_hvm net aux1 st)
+        ask #Pair{rgt st} = (C/var_or_subtree_to_hvm net aux2 st)
+        #Done{#Pair{#Con{lft rgt} st}}
+      }
+    }
+  }
+}
+
+// Returns a var term for a side link in the inet.
+// If the other side of the var was already found, use the name in the map.
+// Otherwise, create a new name and add it to the map.
+make_var : Bend/Net/Port -> Bend/Net/Port -> C/State -> (Pair Bend/Hvm/Term C/State)
+| a b #State{vars n_vars n_nodes} =
+  let key_a = (Bend/Net/Port/to_bits a)
+  match (BinMap/get _ vars key_a) {
+    #Some{var}:
+      #Pair{#Var{var} #State{vars n_vars n_nodes}}
+    #None:
+      let key_b  = (Bend/Net/Port/to_bits b)
+      let name   = (Bend/u64_to_name n_vars)
+      let n_vars = (+ 1 n_vars)
+      let vars   = (BinMap/set _ vars key_a name)
+      let vars   = (BinMap/set _ vars key_b name)
+      #Pair{#Var{name} #State{vars n_vars n_nodes}}
+  }

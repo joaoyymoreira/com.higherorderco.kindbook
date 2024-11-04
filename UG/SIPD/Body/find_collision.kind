@@ -1,0 +1,17 @@
+
+use UG/SIPD as G
+
+UG/SIPD/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
+| body #Nil = #None
+| #Body{id hitbox tick collidable} #Cons{#Body{id1 hitbox1 tick1 collidable1} rest} with collidable
+.| #Hard = 
+    let diff_ids = (U64/neq id id1)
+    let collides = (UG/Shape/collide hitbox hitbox1)
+    if (Bool/and diff_ids collides) {
+      let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
+      #Some{col_normal}
+    } else {
+      (G/Body/find_collision #Body{id hitbox tick collidable} rest)
+    }
+.| _ = (G/Body/find_collision #Body{id hitbox tick collidable} rest)
+

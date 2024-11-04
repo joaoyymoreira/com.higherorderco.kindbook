@@ -1,4 +1,0 @@
-Bend/Fun/Pattern/is-wildcard : Bend/Fun/Pattern -> Bool
-| #Var{_} = #True
-| #Chn{_} = #True
-| _       = #False

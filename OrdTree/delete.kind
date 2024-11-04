@@ -1,4 +1,4 @@
-// Deletes a key-value pair from an AVL tree.
+// Deletes a key_value pair from an AVL tree.
 // - K: Key type.
 // - V: Value type.
 // - ord: Ord instance for K.
@@ -6,9 +6,9 @@
 // - tree: The AVL tree.
 // = The updated AVL tree.
 OrdTree/delete : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) K -> (OrdTree K V) -> (OrdTree K V)
-| K V ord key tree = (Pair/get-fst (OrdTree K V) Bool (OrdTree/Delete/delete-go K V ord key tree))
+| K V ord key tree = (Pair/get_fst (OrdTree K V) Bool (OrdTree/Delete/delete_go K V ord key tree))
 
 
 #test: (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/empty U64 U64)) == (OrdTree/empty U64 U64)
 #test: (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == (OrdTree/empty U64 U64)
-#test: (OrdTree/to-list U64 U64 (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/empty U64 U64)))))) == [#Pair{1 10} #Pair{3 30}]
+#test: (OrdTree/to_list U64 U64 (OrdTree/delete U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{1 10} (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/insert U64 U64 U64/Ord #Pair{3 30} (OrdTree/empty U64 U64)))))) == [#Pair{1 10} #Pair{3 30}]

@@ -4,7 +4,7 @@
 // - ord: Ord instance for K.
 // - t1: First AVL tree.
 // - t2: Second AVL tree.
-// = New AVL tree with key-value pairs present in both trees.
+// = New AVL tree with key_value pairs present in both trees.
 OrdTree/intersect : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (OrdTree K V) -> (OrdTree K V)
 | K V ord t1 t2 = (OrdTree/fold K V t1 (OrdTree K V) (OrdTree/empty K V) (OrdTree/intersect/go K V ord t2))
 
@@ -13,11 +13,11 @@ OrdTree/intersect : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (OrdT
 // - V: Value type.
 // - ord: Ord instance for K.
 // - t2: Second AVL tree to check against.
-// - kv: Key-value pair to check.
+// - kv: Key_value pair to check.
 // - acc: Accumulator AVL tree.
 // = Updated AVL tree.
 OrdTree/intersect/go : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> (Pair K V) -> (OrdTree K V) -> (OrdTree K V)
-| K V ord t2 #Pair{k v} acc with (OrdTree/has-key K V ord k t2)
+| K V ord t2 #Pair{k v} acc with (OrdTree/has_key K V ord k t2)
 . | #True  = (OrdTree/insert K V ord #Pair{k v} acc)
 . | #False = acc
   

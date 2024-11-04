@@ -1,11 +1,11 @@
 // Retrieves the maximum element from an OrdSet.
 // - K: Element type.
 // - set: Input set.
-// = Some k if non-empty, None otherwise.
+// = Some k if non_empty, None otherwise.
 OrdSet/maximum : ∀(K: *) (OrdSet K) -> (Maybe K)
 | K set with (OrdTree/maximum K Unit set) 
 . | #None       = #None
-. | #Some{pair} = #Some{(Pair/get-fst K Unit pair)}
+. | #Some{pair} = #Some{(Pair/get_fst K Unit pair)}
 
 #test: (OrdSet/maximum U64 (OrdSet/empty U64)) == #None
 #test: (OrdSet/maximum U64 (OrdSet/insert U64 U64/Ord 5 (OrdSet/empty U64))) == #Some{5}

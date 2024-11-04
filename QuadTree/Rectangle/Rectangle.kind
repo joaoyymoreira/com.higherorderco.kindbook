@@ -1,9 +1,9 @@
 // Represents a rectangle in 2D space defined by its minimum and maximum coordinates.
 data QuadTree/Rectangle {
   #Rectangle {
-    min-x: F64
-    min-y: F64
-    max-x: F64
-    max-y: F64
+    min_x: F64
+    min_y: F64
+    max_x: F64
+    max_y: F64
   }
 }

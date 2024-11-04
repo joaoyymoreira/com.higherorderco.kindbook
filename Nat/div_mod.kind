@@ -1,0 +1,26 @@
+// Performs integer division and modulo of nats.
+// - m: The dividend.
+// - n: The divisor.
+// = A pair with the quotient and remainder.
+Nat/div_mod : Nat -> Nat -> (Pair Nat Nat)
+| m #Zero    = #Pair{#0 #0}
+| m #Succ{n} = (Nat/div_mod/go n m n #0 #0)
+
+// Helper function for division and modulo.
+// - m: The divisor minus one.
+// - n: The remaining dividend.
+// - j: Counter for the divisor.
+// - q: Accumulator for the quotient.
+// - r: Accumulator for the remainder.
+// = A pair with the final quotient and remainder.
+Nat/div_mod/go : Nat -> Nat -> Nat -> Nat -> Nat -> (Pair Nat Nat)
+| m #Zero    j q r = #Pair{q r}
+| m #Succ{n} #Zero q r = (Nat/div_mod/go m n m (#Succ{q}) #0)
+| m #Succ{n} #Succ{j} q r = (Nat/div_mod/go m n j q (#Succ{r}))
+
+#test: (Nat/div_mod #7 #3) == #Pair{#2 #1}
+#test: (Nat/div_mod #0 #5) == #Pair{#0 #0}
+#test: (Nat/div_mod #5 #0) == #Pair{(Nat/div #5 #0) (Nat/mod #5 #0)}
+#test: (Nat/div_mod #5 #1) == #Pair{#5 #0}
+#test: (Nat/div_mod #5 #6) == #Pair{#0 #5}
+#test: (Nat/div_mod #10 #3) == #Pair{#3 #1}

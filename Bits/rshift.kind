@@ -1,7 +1,7 @@
 // Performs right shift operation on a Bits value.
 // - bits: Input Bits value.
 // - n: Positions to shift right.
-// = Right-shifted result.
+// = Right_shifted result.
 Bits/rshift : Bits -> Nat -> Bits
 | bits     #Zero    = bits
 | #E       n        = #E

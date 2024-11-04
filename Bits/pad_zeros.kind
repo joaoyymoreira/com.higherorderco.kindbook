@@ -1,0 +1,18 @@
+// Pads Bits with insignificant zeroes to achieve a specific length.
+// - bits: The original Bits to be padded.
+// - n: The desired length of the resulting Bits.
+// = A new Bits value with the same significance as the input, 
+//   but padded with leading zeroes to reach the specified length.
+Bits/pad_zeros : Bits -> Nat -> Bits
+| bits      #Zero       = bits
+| #E        #Succ{pred} = #O{(Bits/pad_zeros #E pred)}
+| #O{tail}  #Succ{pred} = #O{(Bits/pad_zeros tail pred)}
+| #I{tail}  #Succ{pred} = #I{(Bits/pad_zeros tail pred)}
+
+#test: (Bits/pad_zeros #E #1) == #O{#E}
+#test: (Bits/pad_zeros #E #3) == #O{#O{#O{#E}}}
+#test: (Bits/pad_zeros #I{#E} #0) == #I{#E}
+#test: (Bits/pad_zeros #I{#E} #3) == #I{#O{#O{#E}}}
+#test: (Bits/pad_zeros #I{#O{#I{#E}}} #2) == #I{#O{#I{#E}}}
+#test: (Bits/pad_zeros #I{#O{#I{#E}}} #5) == #I{#O{#I{#O{#O{#E}}}}}
+#test: (Bits/pad_zeros #I{#I{#I{#E}}} #2) == #I{#I{#I{#E}}}

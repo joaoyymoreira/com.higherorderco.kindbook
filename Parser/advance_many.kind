@@ -1,0 +1,19 @@
+// Advances the parser by a specified number of characters and returns the consumed characters.
+// - count: The number of characters to advance.
+// = A Parser that returns a Maybe String containing the consumed characters.
+Parser/advance_many : Nat -> (Parser (Maybe String))
+| count state =
+  let #State{chars index} = state
+  let consumed            = (List/take _ chars count)
+  let new_index           = (Nat/add index count)
+  let new_input           = (String/drop chars count)
+  #Done{#Reply{#State{new_input new_index} #Some{consumed}}}
+
+#test: (Parser/advance_many #3 #State{"abcdef" #0}) == (#Done{#Reply{#State{"def" #3} #Some{"abc"}}})
+#test: (Parser/advance_many #10 #State{"abcdef" #0}) == (#Done{#Reply{#State{"" #10} #Some{"abcdef"}}})
+#test: (Parser/advance_many #6 #State{"abcdef" #0}) == (#Done{#Reply{#State{"" #6} #Some{"abcdef"}}})
+#test: (Parser/advance_many #3 #State{"" #0}) == (#Done{#Reply{#State{"" #3} #Some{""}}})
+#test: (Parser/advance_many #3 #State{"abcdef" #2}) == (#Done{#Reply{#State{"def" #5} #Some{"abc"}}})
+#test: (Parser/advance_many #0 #State{"abcdef" #0}) == (#Done{#Reply{#State{"abcdef" #0} #Some{""}}})
+#test: (Parser/advance_many #2 #State{"🌟🌠✨" #0}) == (#Done{#Reply{#State{"✨" #2} #Some{"🌟🌠"}}})
+#test: (Parser/advance_many #8 #State{"abcdef" #2}) == (#Done{#Reply{#State{"" #10} #Some{"abcdef"}}})

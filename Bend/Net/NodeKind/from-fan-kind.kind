@@ -1,3 +1,0 @@
-Bend/Net/NodeKind/from-fan-kind : Bend/Fun/FanKind -> Bend/Net/NodeKind
-| #Tup = #Con
-| #Dup = #Dup

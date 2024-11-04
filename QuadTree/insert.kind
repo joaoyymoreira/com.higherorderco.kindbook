@@ -23,7 +23,7 @@ QuadTree/distribute : ∀(A: *) (QuadTree/Object A) -> (QuadTree A) -> QuadTree/
 // - tree: The QuadTree to insert into.
 // - obj: The object to insert.
 // = The updated QuadTree.
-QuadTree/insert-if-intersects : ∀(A : *) QuadTree/Rectangle -> QuadTree/Rectangle -> (QuadTree A) -> (QuadTree/Object A) -> (QuadTree A)
+QuadTree/insert_if_intersects : ∀(A : *) QuadTree/Rectangle -> QuadTree/Rectangle -> (QuadTree A) -> (QuadTree/Object A) -> (QuadTree A)
 | A bounds rect tree obj with (QuadTree/Rectangle/intersects bounds rect)
 .| #True = (QuadTree/insert A tree obj)
 .| #False = tree
@@ -40,15 +40,15 @@ QuadTree/insert : ∀(A: *) (QuadTree A) -> (QuadTree/Object A) -> (QuadTree A)
 
 | A #Leaf{boundary objs} #Object{bounds value} with (QuadTree/Rectangle/intersects bounds boundary)
 .| #True =
-  let newObjsLen = (U64/add (List/length-u64 (QuadTree/Object A) objs) 1)
+  let newObjsLen = (U64/add (List/length_u64 (QuadTree/Object A) objs) 1)
   if (U64/lte newObjsLen QuadTree/capacity) {
     #Leaf{boundary #Cons{#Object{bounds value} objs}}
   } else {
     let pairs = (QuadTree/Rectangle/subdivide boundary)
-    let neRect = (Pair/get-fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get-fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let nwRect = (Pair/get-fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get-snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let swRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let seRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let neRect = (Pair/get_fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get_fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let nwRect = (Pair/get_fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get_snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let swRect = (Pair/get_snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get_fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let seRect = (Pair/get_snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get_snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
 
     let neTree = (List/foldr (QuadTree/Object A) #Cons{#Object{bounds value} objs} (QuadTree A) #Empty{neRect} (λobj λtree (QuadTree/distribute A obj tree neRect)))
     let nwTree = (List/foldr (QuadTree/Object A) #Cons{#Object{bounds value} objs} (QuadTree A) #Empty{nwRect} (λobj λtree (QuadTree/distribute A obj tree nwRect)))
@@ -61,14 +61,14 @@ QuadTree/insert : ∀(A: *) (QuadTree A) -> (QuadTree/Object A) -> (QuadTree A)
 | A #Node{boundary ne nw sw se} #Object{bounds value} with (QuadTree/Rectangle/intersects bounds boundary)
 .| #True = 
     let pairs = (QuadTree/Rectangle/subdivide boundary)
-    let neRect = (Pair/get-fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get-fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let nwRect = (Pair/get-fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get-snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let swRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
-    let seRect = (Pair/get-snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get-snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let neRect = (Pair/get_fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get_fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let nwRect = (Pair/get_fst QuadTree/Rectangle QuadTree/Rectangle (Pair/get_snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let swRect = (Pair/get_snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get_fst (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
+    let seRect = (Pair/get_snd QuadTree/Rectangle QuadTree/Rectangle (Pair/get_snd (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle) pairs))
 
-    let ne1 = (QuadTree/insert-if-intersects A bounds neRect ne #Object{bounds value})
-    let nw1 = (QuadTree/insert-if-intersects A bounds nwRect nw #Object{bounds value})
-    let sw1 = (QuadTree/insert-if-intersects A bounds swRect sw #Object{bounds value})
-    let se1 = (QuadTree/insert-if-intersects A bounds seRect se #Object{bounds value})
+    let ne1 = (QuadTree/insert_if_intersects A bounds neRect ne #Object{bounds value})
+    let nw1 = (QuadTree/insert_if_intersects A bounds nwRect nw #Object{bounds value})
+    let sw1 = (QuadTree/insert_if_intersects A bounds swRect sw #Object{bounds value})
+    let se1 = (QuadTree/insert_if_intersects A bounds seRect se #Object{bounds value})
     #Node{boundary ne1 nw1 sw1 se1}
 .| #False = #Node{boundary ne nw sw se}

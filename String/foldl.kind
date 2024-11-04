@@ -1,4 +1,4 @@
-// Left-folds a string.
+// Left_folds a string.
 // - str: Input string.
 // - P: Accumulator type.
 // - nil: Initial value.

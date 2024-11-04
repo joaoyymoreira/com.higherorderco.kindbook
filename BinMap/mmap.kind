@@ -16,5 +16,5 @@ BinMap/mmap
   -> (M (BinMap B))
 | M m A B bm f = (BinTree/mmap M m (Maybe A) (Maybe B) bm (λval (Maybe/mmap M m A B val f)))
 
-#test: (BinMap/mmap Maybe Maybe/Monad U64 Bool #Leaf (λx (Maybe/pure Bool (Bool/not (U64/to-bool x))))) == (Maybe/pure (BinMap Bool) (BinMap/empty Bool))
+#test: (BinMap/mmap Maybe Maybe/Monad U64 Bool #Leaf (λx (Maybe/pure Bool (Bool/not (U64/to_bool x))))) == (Maybe/pure (BinMap Bool) (BinMap/empty Bool))
 #test: (BinMap/mmap Maybe Maybe/Monad U64 U64 (BinMap/insert U64 #Pair{#O{#E} 42} #Leaf) (λx (Maybe/pure U64 (+ x 1)))) == (Maybe/pure (BinMap U64) (BinMap/insert U64 #Pair{#O{#E} 43} #Leaf))

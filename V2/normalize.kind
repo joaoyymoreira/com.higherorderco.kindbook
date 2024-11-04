@@ -4,10 +4,10 @@
 //   or the zero vector if the input is (close to) zero.
 V2/normalize : V2 -> V2
 | v = 
-  if (V2/is-zero v) {
+  if (V2/is_zero v) {
     v
   } else {
-    (V2/div-scalar v (V2/length v))
+    (V2/div_scalar v (V2/length v))
   }
 
 #test: (V2/normalize #V2{x: 0.0 y: 0.0}) == #V2{x: 0.0 y: 0.0}

@@ -1,6 +1,6 @@
 // Deconstructs a string into its first character and the rest.
 // - str: Input string.
-// = Some (first char, rest) if non-empty, None if empty.
+// = Some (first char, rest) if non_empty, None if empty.
 String/uncons : String -> (Maybe (Pair Char String))
 | #Nil         = (Maybe/none (Pair Char String))
 | #Cons{hd tl} = (Maybe/some (Pair Char String) #Pair{hd tl})

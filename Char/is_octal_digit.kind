@@ -1,0 +1,10 @@
+// Checks if a character is an octal digit (0_7).
+// - c: The character to check.
+// = True if octal digit, False otherwise.
+Char/is_octal_digit : Char -> Bool
+= λc (Bool/and (U64/gte c 48) (U64/lte c 55))
+
+#test: (Char/is_octal_digit '0') == #True
+#test: (Char/is_octal_digit '7') == #True
+#test: (Char/is_octal_digit '8') == #False
+#test: (Char/is_octal_digit 'a') == #False

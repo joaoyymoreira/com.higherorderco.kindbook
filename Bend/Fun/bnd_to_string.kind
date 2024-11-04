@@ -1,0 +1,6 @@
+// Converts a Bend name to a string representation.
+// - name: The Maybe String representing the Bend name.
+// = A string representation of the Bend name.
+Bend/Fun/bnd_to_string : (Maybe String) -> String
+| #None     = "*"
+| #Some{nam} = nam

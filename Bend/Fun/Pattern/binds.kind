@@ -5,4 +5,4 @@ use Bend/Fun/Pattern as Pat
 // = A list of all bound variable names in the pattern.
 Pat/binds : Pat -> (List String)
 | #Var{#Some{name}} = [name]
-| pat               = (List/concat-map _ _ Pat/binds (Pat/children pat))
+| pat               = (List/concat_map _ _ Pat/binds (Pat/children pat))

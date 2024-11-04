@@ -1,0 +1,27 @@
+// Converts a U64 to its string representation.
+// - n: The U64 to convert.
+// = The string representation of the number.
+U64/to_string : U64 -> String
+= λn (U64/to_string/go n String/nil)
+
+// Recursively builds the reversed string representation of a U64.
+// - n: The U64 to convert.
+// - k: The accumulator for the reversed string.
+// = The reversed string representation of the number.
+U64/to_string/go : U64 -> String -> String
+| n k =
+  if (U64/to_bool (== n 0)) {
+    match k {
+      #Nil: (String/cons '0' String/nil)
+      #Cons{h t}: k
+    }
+  } else {
+    let n10 = (/ n 10)
+    let rem = (% n 10)
+    let dig = (+ rem 48)
+    (U64/to_string/go n10 (String/cons dig k))
+  }
+
+#test: (U64/to_string 0) == "0"
+#test: (U64/to_string 42) == "42"
+#test: (U64/to_string 123456789) == "123456789"

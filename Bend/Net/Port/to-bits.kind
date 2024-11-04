@@ -1,7 +1,0 @@
-Bend/Net/Port/to-bits : Bend/Net/Port -> Bits
-| #Port{node slot} =
-  // We need to pad to make sure that the bit representation is unique.
-  // The padding should ensure at least the max hvm width.
-  let slot = (Bits/pad-zeros (U64/to-nat 32) (U64/to-bits slot))
-  let node = (U64/to-bits node)
-  (Bits/append node slot)

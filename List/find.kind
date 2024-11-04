@@ -9,5 +9,5 @@ List/find : ∀(A: *) (List A ) -> (A -> Bool) -> (Maybe A)
 . | #True  = #Some{head}
 . | #False = (List/find A tail fn)
 
-#test: (List/find U64 [1 2 3] (λx (U64/to-bool (== x 2)))) == #Some{2}
-#test: (List/find U64 [1 2 3] (λx (U64/to-bool (== x 4)))) == #None
+#test: (List/find U64 [1 2 3] (λx (U64/to_bool (== x 2)))) == #Some{2}
+#test: (List/find U64 [1 2 3] (λx (U64/to_bool (== x 4)))) == #None

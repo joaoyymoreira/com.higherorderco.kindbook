@@ -1,0 +1,10 @@
+// Checks if a character is ASCII.
+// - code: The character to check.
+// = True if ASCII, False otherwise.
+Char/is_ascii : Char -> Bool
+= λcode (U64/to_bool (< code 128))
+
+#test: (Char/is_ascii 'A') == #True
+#test: (Char/is_ascii '€') == #False
+#test: (Char/is_ascii '~') == #True
+#test: (Char/is_ascii 'ñ') == #False

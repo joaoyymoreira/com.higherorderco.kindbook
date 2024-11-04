@@ -1,4 +1,4 @@
-// The representation of a Bend program as a collection of top-level definitions.
+// The representation of a Bend program as a collection of top_level definitions.
 data Bend/Fun/Book {
   #Book {
     defs : (BinMap Bend/Fun/FnDef) // Map of function definitions

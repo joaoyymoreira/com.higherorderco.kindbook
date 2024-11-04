@@ -1,2 +1,0 @@
-Bend/Net/get-node : Bend/Net -> U64 -> (Bend Bend/Net/Node)
-| #Net{_ nodes _} node = (Maybe/to-result _ _ (BinMap/get _ nodes (U64/to-bits node)) "Node not found")

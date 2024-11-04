@@ -1,6 +1,6 @@
 // Applies logical AND to all elements in the list.
 // - xs: Input list of Bool values.
-// = Result of AND-ing all elements.
+// = Result of AND_ing all elements.
 List/and : (List Bool) -> Bool
 | #Nil             = #True
 | #Cons{head tail} = (Bool/and head (List/and tail))

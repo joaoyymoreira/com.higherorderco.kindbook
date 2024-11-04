@@ -1,0 +1,18 @@
+// Parses multiple characters until a closing quote is encountered.
+// = A list of characters representing the parsed string content.
+Parser/parse_chars : (Parser String)
+= do Parser {
+  ask c = Parser/parse_char
+  if (Char/eq c 34) {
+     (Parser/pure String "")
+  } else {
+    do Parser {
+      ask cs = Parser/parse_chars
+      ret #Cons{c cs}
+    }
+  }
+}
+
+#test: (Parser/run String Parser/parse_chars "abc\"") == #Some{"abc"}
+#test: (Parser/run String Parser/parse_chars "\"") == #Some{""}
+#test: (Parser/run String Parser/parse_chars "a\\\"b\"") == #Some{"a"}

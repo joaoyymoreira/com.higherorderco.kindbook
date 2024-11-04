@@ -7,13 +7,13 @@
 // = The computed state at the given time.
 UG/SM/compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/SM/Time -> (Pair S (UG/SM/Mach S A))
 | S A mach game time =
-  let end-t = (UG/SM/Time/time-to-tick S A mach time)
-  let #Pair{state start-tick} = (UG/SM/get-initial-state S A mach game)
-  let diff = (U64/sub end-t start-tick)
+  let end_t = (UG/SM/Time/time_to_tick S A mach time)
+  let #Pair{state start_tick} = (UG/SM/get_initial_state S A mach game)
+  let diff = (U64/sub end_t start_tick)
   if (U64/gt diff 1000000) {
     #Pair{state mach}
   } else {
-    (UG/SM/compute/go S A mach game state start-tick end-t)
+    (UG/SM/compute/go S A mach game state start_tick end_t)
   }
 
 // Helper function for UG/SM/compute.
@@ -22,18 +22,18 @@ UG/SM/compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/S
 // - mach: The state machine.
 // - game: The game rules.
 // - state: The current state.
-// - current-tick: The current tick.
-// - end-tick: The target tick.
+// - current_tick: The current tick.
+// - end_tick: The target tick.
 // = The computed state at the end tick.
 UG/SM/compute/go : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> S -> UG/SM/Tick -> UG/SM/Tick -> (Pair S (UG/SM/Mach S A))
-| S A mach game state current-tick end-tick =
-  if (U64/eq current-tick end-tick) {
+| S A mach game state current_tick end_tick =
+  if (U64/eq current_tick end_tick) {
     #Pair{state mach}
   } else {
-    let next-tick = (U64/add current-tick 1)
-    let actions = (UG/SM/ActionLogs/get-actions A (UG/SM/Mach/action-logs S A mach) current-tick)
-    let state-with-actions = (List/foldr A S (UG/SM/Game/when S A game) state actions)
-    let next-state = ((UG/SM/Game/tick S A game) state-with-actions)
-    let updated-mach = (UG/SM/update-mach S A mach current-tick state)
-    (UG/SM/compute/go S A updated-mach game next-state next-tick end-tick)
+    let next_tick = (U64/add current_tick 1)
+    let actions = (UG/SM/ActionLogs/get_actions A (UG/SM/Mach/action_logs S A mach) current_tick)
+    let state_with_actions = (List/foldr A S (UG/SM/Game/when S A game) state actions)
+    let next_state = ((UG/SM/Game/tick S A game) state_with_actions)
+    let updated_mach = (UG/SM/update_mach S A mach current_tick state)
+    (UG/SM/compute/go S A updated_mach game next_state next_tick end_tick)
   }

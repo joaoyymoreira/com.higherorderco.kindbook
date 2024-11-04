@@ -1,0 +1,18 @@
+// Converts a digit char to its corresponding U64 number.
+// - c: The input char.
+// = Some n if c is a digit, where n is the corresponding U64 number, None otherwise.
+Char/digit_to_u64 : Char -> (Maybe U64)
+| c =
+  let n = (- c '0')
+  if (U64/to_bool (& (<= 0 n) (<= n 9))) {
+    #Some{n}
+  } else {
+    #None
+  }
+
+#test: (Char/digit_to_u64 '0') == #Some{0}
+#test: (Char/digit_to_u64 '5') == #Some{5}
+#test: (Char/digit_to_u64 '9') == #Some{9}
+#test: (Char/digit_to_u64 'a') == #None
+#test: (Char/digit_to_u64 '!') == #None
+#test: (Char/digit_to_u64 ' ') == #None

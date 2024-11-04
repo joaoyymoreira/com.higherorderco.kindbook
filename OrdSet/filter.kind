@@ -14,7 +14,7 @@ OrdSet/filter : ∀(K: *) ∀(ord: (Ord K)) (OrdSet K) -> (K -> Bool) -> (OrdSet
     }
   (OrdSet/fold K set (OrdSet K) (OrdSet/empty K) f)
 
-#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (== x 2)))) == (OrdSet/from-list U64 U64/Ord [2])
-#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (> x 1)))) == (OrdSet/from-list U64 U64/Ord [3 2])
-#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx (U64/to-bool (== x 0)))) == (OrdSet/empty U64)
-#test: (OrdSet/filter U64 U64/Ord (OrdSet/from-list U64 U64/Ord [1 2 3]) (λx #True)) == (OrdSet/from-list U64 U64/Ord [1 2 3])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (λx (U64/to_bool (== x 2)))) == (OrdSet/from_list U64 U64/Ord [2])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (λx (U64/to_bool (> x 1)))) == (OrdSet/from_list U64 U64/Ord [3 2])
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (λx (U64/to_bool (== x 0)))) == (OrdSet/empty U64)
+#test: (OrdSet/filter U64 U64/Ord (OrdSet/from_list U64 U64/Ord [1 2 3]) (λx #True)) == (OrdSet/from_list U64 U64/Ord [1 2 3])

@@ -1,0 +1,11 @@
+use Bend/Compile/BendToNet/Encoder as Enc
+
+// Creates a fresh new node in the Encoder's net
+// - kind: The NodeKind of the new node
+// - enc: The current Encoder state
+// = A pair containing the new node's index and an Encoder with the updated net
+Enc/new_node : Bend/Net/NodeKind -> Enc -> (Pair U64 Enc)
+| kind #Encoder{net vars} =
+  let #Pair{idx net} = (Bend/Net/new_node kind net)
+  let enc            = {#Encoder{net vars} : Enc}
+  #Pair{idx enc}
