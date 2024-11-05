@@ -1,17 +1,22 @@
-
 use UG/SIPD as G
 
-UG/SIPD/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
-| body #Nil = #None
-| #Body{id hitbox tick collidable} #Cons{#Body{id1 hitbox1 tick1 collidable1} rest} with collidable
-.| #Hard = 
-    let diff_ids = (U64/neq id id1)
-    let collides = (UG/Shape/collide hitbox hitbox1)
-    if (Bool/and diff_ids collides) {
-      let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
-      #Some{col_normal}
-    } else {
-      (G/Body/find_collision #Body{id hitbox tick collidable} rest)
-    }
-.| _ = (G/Body/find_collision #Body{id hitbox tick collidable} rest)
-
+// Finds collision between a body and a list of bodies.
+// - body: The body to check for collisions.
+// - bodies: List of bodies to check against.
+// = The collision normal vector, if a collision is found.
+G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
+| #Body{id hitbox tick effects collidable} #Nil = #None
+| #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
+  match collidable {
+    #Hard:
+      let diff_ids = (U64/neq id id1)
+      let collides = (UG/Shape/collide hitbox hitbox1)
+      if (Bool/and diff_ids collides) {
+        let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
+        #Some{col_normal}
+      } else {
+        (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
+      }
+    _:
+      (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
+  }
