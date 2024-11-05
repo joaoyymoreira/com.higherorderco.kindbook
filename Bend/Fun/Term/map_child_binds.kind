@@ -20,26 +20,26 @@ Term/map_child_binds : ((Maybe String) -> (List Term) -> (Maybe String)) -> Term
 | f #Let{pat val nxt}     = #Let{(Pat/map_binds λx (f x [nxt]) pat) val nxt}
 | f #Ask{pat val nxt}     = #Ask{(Pat/map_binds λx (f x [nxt]) pat) val nxt}
 | f #Use{nam val nxt}     = #Use{(f nam [nxt]) val nxt}
-| f #Opn{typ var bnd bod} = #Opn{typ var (List/map _ _ λx (f x [bod]) bnd) bod}
+| f #Opn{typ var bnd bod} = #Opn{typ var (List/map _ _ bnd λx (f x [bod])) bod}
 
 | f #Mat{bnd arg with_bnd with_arg arms} =
   #Mat{
-    bnd     : (f bnd (List/map MatchRule _ λ{#MatchRule{_ _ bod}: bod} arms))
+    bnd     : (f bnd (List/map _ _ arms λ{#MatchRule{_ _ bod}: bod}))
     arg     : arg
     with_bnd: (List/map _ _
-                λb (f b (List/map MatchRule _ λ{#MatchRule{_ _ bod}: bod} arms))
-                with_bnd)
+                with_bnd
+                λb (f b (List/map _ _ arms λ{#MatchRule{_ _ bod}: bod})))
     with_arg: with_arg
-    arms    : (List/map MatchRule _
-                (λ{#MatchRule{nam bndr bod}: #MatchRule{ nam (List/map _ _ λb (f b [bod]) bndr) bod }})
-                arms)
+    arms    : (List/map _ _
+                arms
+                λ{#MatchRule{nam bndr bod}: #MatchRule{ nam (List/map _ _ bndr λb (f b [bod])) bod }})
   }
 
 | f #Swt{bnd arg with_bnd with_arg pred arms} =
   #Swt{
     (f bnd arms)
     arg
-    (List/map _ _ λb (f b arms) with_bnd)
+    (List/map _ _ with_bnd λb (f b arms))
     with_arg
     pred
     arms
@@ -47,20 +47,20 @@ Term/map_child_binds : ((Maybe String) -> (List Term) -> (Maybe String)) -> Term
 
 | f #Fld{bnd arg with_bnd with_arg arms} =
   #Fld{
-    bnd     : (f bnd (List/map MatchRule _ λ{#MatchRule{_ _ bod}: bod} arms))
+    bnd     : (f bnd (List/map _ _ arms λ{#MatchRule{_ _ bod}: bod}))
     arg     : arg
     with_bnd: (List/map _ _
-                λb (f b (List/map MatchRule _ λ{#MatchRule{_ _ bod}: bod} arms))
-                with_bnd)
+                with_bnd
+                λb (f b (List/map _ _ arms λ{#MatchRule{_ _ bod}: bod})))
     with_arg: with_arg
-    arms    : (List/map MatchRule _
-                (λ{#MatchRule{nam bndr bod}: #MatchRule{ nam (List/map _ _ λb (f b [bod]) bndr) bod }})
-                arms)
+    arms    : (List/map _ _
+                arms
+                λ{#MatchRule{nam bndr bod}: #MatchRule{ nam (List/map _ _ bndr λb (f b [bod])) bod }})
   }
 
 | f #Bnd{bnd arg cond step base} =
   #Bnd{
-    (List/map _ _ λb (f b [cond step base]) bnd)
+    (List/map _ _ bnd λb (f b [cond step base]))
     arg
     cond
     step

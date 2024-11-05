@@ -20,8 +20,8 @@ Bend/Fun/Term/unscoped_vars : Term -> (Pair (List String) (List String))
   #Pair{(List/concat String [d1 d2 d3]) (List/concat String [u2 u3])}
 
 | term =
-  let children_vars = (List/map (Pair (List String) Term) (Pair (List String) (List String)) 
-    {λ{#Pair{_ x}: (Term/unscoped_vars x)} : (Pair _ _) -> (Pair _ _)}
-    (Term/children term))
+  let children_vars = (List/map _ _
+    (Term/children term)
+    (λ{#Pair{_ x}: (Term/unscoped_vars x)} :: (Pair _ _) -> (Pair _ _)))
   let #Pair{decls uses} = (List/unzip (List String) (List String) children_vars)
   #Pair{(List/concat String decls) (List/concat String uses)}

@@ -12,22 +12,22 @@ Term/to_string : Term -> String
 | #Ask{pat val nxt} = (String/concat ["ask " (Pat/to_string pat) " = " (Term/to_string val) "; " (Term/to_string nxt)])
 | #Use{nam val nxt} = (String/concat ["use " (Bend/Fun/bnd_to_string nam) " = " (Term/to_string val) "; " (Term/to_string nxt)])
 | #App{fun arg}     = (String/concat ["(" (show_app #App{fun arg}) ")"])
-| #Fan{#Tup els}    = (String/concat ["(" (String/join ", " (List/map _ _ Term/to_string els)) ")"])
-| #Fan{#Dup els}    = (String/concat ["{" (String/join " " (List/map _ _ Term/to_string els)) "}"])
+| #Fan{#Tup els}    = (String/concat ["(" (String/join ", " (List/map _ _ els Term/to_string)) ")"])
+| #Fan{#Dup els}    = (String/concat ["{" (String/join " " (List/map _ _ els Term/to_string)) "}"])
 | #Num{val}         = (Bend/Fun/Num/to_string val)
 | #Str{val}         = (String/concat ["\"" val "\""])
-| #Lst{els}         = (String/concat ["[" (String/join ", " (List/map _ _ Term/to_string els)) "]"])
+| #Lst{els}         = (String/concat ["[" (String/join ", " (List/map _ _ els Term/to_string)) "]"])
 | #Opr{opr fst snd} = (String/concat ["(" (Bend/Fun/Op/to_string opr) " " (Term/to_string fst) " " (Term/to_string snd) ")"])
 | #Mat{bnd arg with_bnd with_arg arms} =
-  (String/concat ["match " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ MatchRule/to_string arms)) " }"])
+  (String/concat ["match " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ arms MatchRule/to_string)) " }"])
 | #Swt{bnd arg with_bnd with_arg pred arms} = (String/concat [
   "switch " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (show_swt_arms 0 pred arms) " }"])
 | #Fld{bnd arg with_bnd with_arg arms} = (String/concat [
-  "fold " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ MatchRule/to_string arms)) " }"])
+  "fold " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ arms MatchRule/to_string)) " }"])
 | #Bnd{bnd arg cond step base} = (String/concat [
-  "bend " (String/join ", " (List/map _ _ show_bnd_init (List/zip _ _ bnd arg))) " { " "when " (Term/to_string cond) ": " (Term/to_string step) "; " "else: " (Term/to_string base) " }"])
+  "bend " (String/join ", " (List/map _ _ (List/zip _ _ bnd arg) show_bnd_init)) " { " "when " (Term/to_string cond) ": " (Term/to_string step) "; " "else: " (Term/to_string base) " }"])
 | #Opn{typ var bnd bod} = (String/concat [
-  "open " typ " " (Bend/Fun/bnd_to_string var) (String/join "" (List/map _ _ λx (String/concat [" " (Bend/Fun/bnd_to_string x)]) bnd)) "; " (Term/to_string bod)])
+  "open " typ " " (Bend/Fun/bnd_to_string var) (String/join "" (List/map _ _ bnd λx (String/concat [" " (Bend/Fun/bnd_to_string x)]))) "; " (Term/to_string bod)])
 | #Ref{nam} = nam
 | #Def{def nxt} = (String/concat ["def " (FnDef/to_string def) "\n" (Term/to_string nxt)])
 | #Era = "*"
@@ -35,7 +35,7 @@ Term/to_string : Term -> String
 show_with : (List (Maybe String)) -> (List Term) -> String
 | [] [] = ""
 | with_bnd with_arg =
-  (String/concat ["with " (String/join ", " (List/map _ _ show_bnd_arg (List/zip _ _ with_bnd with_arg))) " "])
+  (String/concat ["with " (String/join ", " (List/map _ _ (List/zip _ _ with_bnd with_arg) show_bnd_arg)) " "])
 
 show_bnd_arg : (Pair (Maybe String) Term) -> String
 | #Pair{bnd arg} = (String/concat [(Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg)])

@@ -7,10 +7,10 @@ Type/to_string : Type -> String
 | #Var{name}    = name
 | #Arr{dom cod} = (String/concat ["(" (Type/to_string dom) " -> " (Type/show_arr cod) ")"])
 | #Ctr{nam arg} =
-  let arg = (String/join " " (List/map _ _ Type/to_string arg))
+  let arg = (String/join " " (List/map _ _ arg Type/to_string))
   (String/concat ["(" nam " " arg ")"])
 | #Tup{els}     =
-  let els_str = (String/join ", " (List/map _ _ Type/to_string els))
+  let els_str = (String/join ", " (List/map _ _ els Type/to_string))
   (String/concat ["(" els_str ")"])
 | #U24          = "u24"
 | #I24          = "i24"

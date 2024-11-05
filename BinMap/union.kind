@@ -7,8 +7,7 @@
 //   with values from m1 taking precedence when keys conflict.
 BinMap/union : ∀(A: *) (BinMap A) -> (BinMap A) -> (BinMap A)
 | A m1 m2 = 
-  (List/foldr (Pair Bits A) (BinMap/to_list A m1)
-    (BinMap A)
-    m2 
-    {λ{#Pair{k v}: λacc (BinMap/set A acc k v)} : (Pair Bits A) -> (BinMap A) -> (BinMap A)}
+  (List/foldr _ (BinMap/to_list _ m1) _
+    m2
+    λ{#Pair{k v}: λacc (BinMap/set _ acc k v)}
   )

@@ -18,8 +18,8 @@ Term/children : Term -> (List (Pair (List String) Term))
 | #Wth{_ bod}       = [#Pair{[] bod}]
 | #App{fun arg}     = [#Pair{[] fun} #Pair{[] arg}]
 | #Opr{_ fst snd}   = [#Pair{[] fst} #Pair{[] snd}]
-| #Fan{_ els}       = (List/map Term Child (λx #Pair{[] x}) els)
-| #Lst{els}         = (List/map Term Child (λx #Pair{[] x}) els)
+| #Fan{_ els}       = (List/map _ _ els λx #Pair{[] x})
+| #Lst{els}         = (List/map _ _ els λx #Pair{[] x})
 | #Lam{pat bod}     = [#Pair{(Bend/Fun/Pattern/binds pat) bod}]
 | #Let{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
 | #Ask{pat val nxt} = [#Pair{[] val} #Pair{(Bend/Fun/Pattern/binds pat) nxt}]
@@ -28,29 +28,29 @@ Term/children : Term -> (List (Pair (List String) Term))
 | #Mat{bnd arg with_bnd with_arg arms} =
   (List/concat Child [
     [#Pair{[] arg}]
-    (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ (rule_children bnd with_bnd) arms)
+    (List/map _ _ with_arg λx #Pair{[] x})
+    (List/map _ _ arms     (rule_children bnd with_bnd))
   ])
 
 | #Swt{bnd arg with_bnd with_arg pred arms} =
   let #Pair{a_num a_pred} = (List/unsnoc Term arms)
   (List/concat Child [
     [#Pair{[] arg}]
-    (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd])) x} a_num)
-    (List/map _ _ λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd [pred]])) x} (Maybe/to_list _ a_pred))
+    (List/map _ _ with_arg                 λx #Pair{[] x})
+    (List/map _ _ a_num                    λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd])) x})
+    (List/map _ _ (Maybe/to_list _ a_pred) λx #Pair{(List/concat_maybes _ (List/concat _ [[bnd] with_bnd [pred]])) x})
   ])
 
 | #Fld{bnd arg with_bnd with_arg arms} =
   (List/concat Child [
     [#Pair{[] arg}]
-    (List/map _ _ λx #Pair{[] x} with_arg)
-    (List/map _ _ (rule_children bnd with_bnd) arms)
+    (List/map _ (Pair _ _) with_arg λx #Pair{[] x})
+    (List/map _ _ arms     (rule_children bnd with_bnd))
   ])
 
 | #Bnd{bnd arg cond step base} =
   (List/concat Child [
-    (List/map _ _ (λx #Pair{[] x}) arg)
+    (List/map _ _ arg λx #Pair{[] x})
     [#Pair{(List/concat_maybes _ bnd) cond}
      #Pair{(List/concat_maybes _ bnd) step}
      #Pair{(List/concat_maybes _ bnd) base}]

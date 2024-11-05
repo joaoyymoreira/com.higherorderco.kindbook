@@ -4,7 +4,7 @@
 // - xs: Input list.
 // = OrdTree mapping elements to their frequencies.
 List/frequency : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdTree A Nat)
-| A ord xs = (List/foldr A xs (OrdTree A Nat) #Leaf (count_element A ord))
+| A ord xs = (List/foldr _ xs _ #Leaf (count_element A ord))
 
 // Counts an element in the frequency tree.
 // - A: Element type.
@@ -13,10 +13,10 @@ List/frequency : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdTree A Nat)
 // - tree: Current frequency tree.
 // = Updated frequency tree.
 count_element : ∀(A: *) ∀(ord: (Ord A)) A -> (OrdTree A Nat) -> (OrdTree A Nat)
-| A ord x tree with (OrdTree/get_pair A Nat ord x tree)
-. | #Some{#Pair{k v}} = (OrdTree/insert A Nat ord #Pair{k #Succ{v}} tree)
-. | #None             = (OrdTree/insert A Nat ord #Pair{x #1} tree)
+| A ord x tree with (OrdTree/get_pair _ _ ord tree x)
+. | #Some{#Pair{k v}} = (OrdTree/insert _ _ ord tree #Pair{k #Succ{v}})
+. | #None             = (OrdTree/insert _ _ ord tree #Pair{x #1})
 
-#test: (List/frequency U64 U64/Ord []) == (OrdTree/empty U64 Nat)
-#test: (List/frequency U64 U64/Ord [1]) == (OrdTree/insert U64 Nat U64/Ord #Pair{1 #1} (OrdTree/empty U64 Nat))
-#test: (List/frequency U64 U64/Ord [1 2 1 3 2 1]) == (OrdTree/insert U64 Nat U64/Ord #Pair{3 #1} (OrdTree/insert U64 Nat U64/Ord #Pair{2 #2} (OrdTree/insert U64 Nat U64/Ord #Pair{1 #3} (OrdTree/empty U64 Nat))))
+#test: (List/frequency U64 U64/Ord [])            == (OrdTree/empty _ _)
+#test: (List/frequency U64 U64/Ord [1])           == (OrdTree/insert _ _ U64/Ord (OrdTree/empty _ _) #Pair{1 #1})
+#test: (List/frequency U64 U64/Ord [1 2 1 3 2 1]) == (OrdTree/insert _ _ U64/Ord (OrdTree/insert _ _ U64/Ord (OrdTree/insert _ _ U64/Ord (OrdTree/empty _ _) #Pair{1 #3}) #Pair{2 #2}) #Pair{3 #1})

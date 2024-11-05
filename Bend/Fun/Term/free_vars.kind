@@ -12,13 +12,13 @@ go : Term -> (BinMap Unit) -> (List String)
 . | #False = [nam]
 | term scope =
   let cs = (Term/children term)
-  (List/concat _ (List/map (Pair _ _) _
-    λ{#Pair{bnd child}: (go child (add_scope bnd scope))}
-    cs))
+  (List/concat_map _ _
+    cs
+    λ{#Pair{bnd child}: (go child (add_scope bnd scope))})
 
 add_scope : (List String) -> (BinMap Unit) -> (BinMap Unit)
 | bnd scope =
   let bnd = (List/map _ (Pair Bits Unit)
-              λb #Pair{(String/hash b) #Unit}
-              bnd)
+              bnd
+              λb #Pair{(String/hash b) #Unit})
   (BinMap/union _ (BinMap/from_list Unit bnd) scope)

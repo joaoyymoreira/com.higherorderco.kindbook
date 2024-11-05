@@ -1,10 +1,12 @@
-Bend/Fun/Pattern/to_string : Bend/Fun/Pattern -> String
+use Bend/Fun/Pattern as Pat
+
+Pat/to_string : Pat -> String
 | #Var{nam}     = (Bend/Fun/bnd_to_string nam)
 | #Chn{nam}     = (String/append "$" nam)
-| #Fan #Tup els = (String/concat ["(" (String/join ", " (List/map _ _ Bend/Fun/Pattern/to_string els)) ")"])
-| #Fan #Dup els = (String/concat ["{" (String/join " " (List/map _ _ Bend/Fun/Pattern/to_string els)) "}"])
+| #Fan #Tup els = (String/concat ["(" (String/join ", " (List/map _ _ els Pat/to_string)) ")"])
+| #Fan #Dup els = (String/concat ["{" (String/join " "  (List/map _ _ els Pat/to_string)) "}"])
 | #Ctr nam #Nil = (String/concat ["(" nam ")"])
-| #Ctr nam els  = (String/concat ["(" nam " " (String/join " " (List/map _ _ Bend/Fun/Pattern/to_string els)) ")"])
+| #Ctr nam els  = (String/concat ["(" nam " " (String/join " " (List/map _ _ els Pat/to_string)) ")"])
 | #Num val      = (Nat/to_string val)
-| #Lst els      = (String/concat ["[" (String/join ", " (List/map _ _ Bend/Fun/Pattern/to_string els)) "]"])
+| #Lst els      = (String/concat ["[" (String/join ", " (List/map _ _ els Pat/to_string)) "]"])
 | #Str val      = (String/concat ["\"" val "\""])

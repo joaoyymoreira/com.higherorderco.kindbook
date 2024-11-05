@@ -1,8 +1,11 @@
+use Bend/Fun/Book as Book
+use Bend/Run/AdtEncoding as Enc
+
 // Desugars and apply all the Term_level transformations to a Book.
-Bend/Run/to_bend_core : Bend/Fun/Book -> (Bend Bend/Fun/Book)
+Bend/Run/to_bend_core : Book -> (Bend Book)
 | book = do Bend {
   // TODO: get encoding from options
-  ask book = (Bend/Transform/encode_adts Bend/Run/AdtEncoding/NumScott book)
+  ask book = (Bend/Transform/encode_adts Enc/NumScott book)
 
   ask book = (Bend/Transform/fix_ctr_pats book)
   let book = (Bend/Transform/resolve_refs book)
@@ -22,15 +25,15 @@ Bend/Run/to_bend_core : Bend/Fun/Book -> (Bend Bend/Fun/Book)
   let book = (Bend/Transform/linearize_matches book)     // TODO: other strategy for linearization
   let book = (Bend/Transform/linearize_match_with book)
 
-  ask book = (Bend/Transform/encode_match_terms Bend/Run/AdtEncoding/NumScott book)
-  ask _    = (Bend/Transform/unbound_vars book)              // Sanity check
+  ask book = (Bend/Transform/encode_match_terms Enc/NumScott book)
+  ask _    = (Bend/Transform/unbound_vars book)          // Sanity check
 
   let book = (Bend/Transform/unique_names book)
   let book = (Bend/Transform/desugar_use book)
 
   let book = (Bend/Transform/unique_names book)
   let book = (Bend/Transform/linearize_vars book)
-  ask _    = (Bend/Transform/unbound_vars book)              // Sanity check
+  ask _    = (Bend/Transform/unbound_vars book)          // Sanity check
 
   let book = (Bend/Transform/float_combinators book 64)  // TODO: get max net size from options
   ask _    = (Bend/Transform/unbound_refs book)

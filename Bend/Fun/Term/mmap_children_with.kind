@@ -14,7 +14,7 @@ Term/mmap_children_with :
   S -> (M (Pair Term S))
 | S M m f t s =
   let r = (Term/mmap_children
-            {λA S -> (M (Pair A S)) : * -> *}
+            λA S -> (M (Pair A S))
             (monad S M m)
             f
             t) :: (S -> (M (Pair Term S)))

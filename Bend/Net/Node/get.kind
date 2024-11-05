@@ -1,12 +1,5 @@
 Bend/Net/Node/get : Bend/Net/Node -> U64 -> (Maybe Bend/Net/Port)
-| #Node{main aux1 aux2 _} n =
-  switch n {
-    0: #Some{main}
-    _{n}: switch n {
-      0: #Some{aux1}
-      _{n}: switch n {
-        0: #Some{aux2}
-        _{n}: #None
-      }
-    }
-  }
+| #Node{main aux1 aux2 _} 0 = #Some{main}
+| #Node{main aux1 aux2 _} 1 = #Some{aux1}
+| #Node{main aux1 aux2 _} 2 = #Some{aux2}
+| #Node{main aux1 aux2 _} _ = #None

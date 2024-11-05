@@ -8,7 +8,5 @@ letter : U64 -> Char
 | n = (+ n 'a')
 
 go : U64 -> (List Char) -> (List Char)
-| n acc = switch n {
-  0: acc
-  _{n}: (go (/ n 26) #Cons{(letter (% n 26)) acc})
-}
+| 0 acc = acc
+| n acc = (go (/ n 26) #Cons{(letter (% n 26)) acc})

@@ -3,8 +3,8 @@ use Bend/Fun/Term as Term
 Term/has_unscoped_diff : Term -> Bool
 | term =
   let #Pair{decls uses}  = (Term/unscoped_vars term)
-  let decls = (List/map _ (Pair _ _) λx #Pair{(String/hash x) x} decls)
-  let uses  = (List/map _ (Pair _ _) λx #Pair{(String/hash x) x} uses)
+  let decls = (List/map _ (Pair _ _) decls λx #Pair{(String/hash x) x})
+  let uses  = (List/map _ (Pair _ _) uses  λx #Pair{(String/hash x) x})
   let diff1 = (BinMap/values _ (BinMap/difference _ (BinMap/from_list _ uses) (BinMap/from_list _ decls)))
   let diff2 = (BinMap/values _ (BinMap/difference _ (BinMap/from_list _ decls) (BinMap/from_list _ uses)))
   (Bool/or (Bool/not (List/is_nil _ diff1)) (Bool/not (List/is_nil _ diff2)))

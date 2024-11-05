@@ -14,9 +14,9 @@ List/dedup : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (List A)
 // = New list with duplicates removed.
 List/dedup/go : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (OrdSet A) -> (List A)
 | A ord #Nil             set = #Nil
-| A ord #Cons{head tail} set with (OrdSet/contains A ord head set) 
+| A ord #Cons{head tail} set with (OrdSet/contains A ord set head) 
 . | #True  = (List/dedup/go A ord tail set)
-. | #False = #Cons{head (List/dedup/go A ord tail (OrdSet/insert A ord head set))}
+. | #False = #Cons{head (List/dedup/go A ord tail (OrdSet/insert A ord set head))}
 
 
 #test: (List/dedup U64 U64/Ord [1 2 3 2 1]) == [1 2 3]

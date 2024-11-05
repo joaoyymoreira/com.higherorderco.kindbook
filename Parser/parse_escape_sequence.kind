@@ -13,7 +13,8 @@ Parser/parse_escape_sequence : (Parser Char)
       '\'' : (Parser/pure Char '\'')
       '\"' : (Parser/pure Char '\"')
       'u'  : Parser/parse_unicode_escape
-      _    : (Parser/fail Char (String/append "invalid_escape_char:" (String/from_char c)))
+    } else {
+      (Parser/fail Char (String/append "invalid_escape_char:" (String/from_char c)))
     }
   }
 }

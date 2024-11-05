@@ -8,7 +8,7 @@ FnDef/to_string : FnDef -> String
 | #FnDef{nam typ chk rul src} = 
   let chk = if chk { "" } else { "unchecked " } :: String
   let typ  = (Bend/Fun/Type/to_string typ)
-  let rul = (String/join "\n" (List/map _ _ (show_rule nam) rul))
+  let rul = (String/join "\n" (List/map _ _ rul (show_rule nam)))
   (String/concat [chk nam " : " typ "\n" rul])
 
 show_rule : String -> Rule -> String
@@ -16,6 +16,6 @@ show_rule : String -> Rule -> String
   let pat = if (List/is_nil _ pats) {
     ""
   } else {
-    (String/concat [" " (String/join " " (List/map _ _ Pat/to_string pats))])
+    (String/concat [" " (String/join " " (List/map _ _ pats Pat/to_string))])
   } :: String
   (String/concat ["(" nam pat ") = " (Term/to_string body)])

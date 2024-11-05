@@ -7,7 +7,7 @@ use Bend/Fun/Term as Term
 // = The String representation of the MatchRule.
 MatchRule/to_string : MatchRule -> String
 | #MatchRule{nam bnd bod} =
-  let bnd = (String/join " " (List/map _ _ Bend/Fun/bnd_to_string bnd))
+  let bnd = (String/join " " (List/map _ _ bnd Bend/Fun/bnd_to_string))
   let bnd = if (String/is_empty bnd) { "" } else { (String/append " " bnd) } :: String
-  let nam = (Maybe/run _ "*" nam)
+  let nam = (Maybe/run _ nam "*")
   (String/concat [nam bnd ": " (Term/to_string bod)])

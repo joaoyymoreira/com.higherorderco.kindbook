@@ -5,8 +5,8 @@ use Bend/Compile/BendToNet/Encoder as Enc
 // = A List of Nets with the compiled definitions or an error message
 Bend/Compile/BendToNet/book_to_nets : Bend/Fun/Book -> (Bend (List Bend/Net))
 | #Book{defs _ _} = do Bend {
-  let defs = (BinMap/values defs)
-  (List/mmap _ Bend/Monad _ _ def_to_net defs)
+  let defs = (BinMap/values _ defs)
+  (List/mmap _ Bend/Monad _ _ defs def_to_net)
 }
 
 def_to_net : Bend/Fun/FnDef -> (Bend Bend/Net)

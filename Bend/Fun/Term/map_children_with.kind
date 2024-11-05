@@ -4,7 +4,7 @@ Term/map_children_with :
   ∀(S: *) ((List String) -> Term -> S -> (Pair Term S)) -> Term -> (S -> (Pair Term S))
 | S f t = λs
   let r = (Term/mmap_children
-            {λA S -> (Pair A S) : * -> *}
+            λA S -> (Pair A S)
             (monad S)
             f
             t) :: S -> (Pair Term S)
