@@ -1,0 +1,6 @@
+// An effectful computation.
+// - S: State type.
+// = Function from state to state.
+UG/SIPD/Effect : *
+= UG/SIPD/State -> UG/SIPD/State
+
