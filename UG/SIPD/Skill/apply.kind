@@ -1,0 +1,7 @@
+// Applies skill effects to the game state.
+// - skill: The skill to apply.
+// - state: Current game state.
+// = Updated state after applying effects.
+UG/SIPD/Skill/apply : UG/SIPD/Skill -> UG/SIPD/State -> UG/SIPD/State
+| #Skill{name effects cooldown} state =
+  (List/foldl UG/SIPD/Effect effects UG/SIPD/State state λstate λeffect (effect state))
