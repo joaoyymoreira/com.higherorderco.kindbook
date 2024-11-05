@@ -3,6 +3,7 @@ data UG/SIPD/State {
   #State {
     next_id : U64
     tick : U64
-    players : (OrdMap U64 UG/SIPD/Player)
+    players : (OrdTree U64 UG/SIPD/Player)
+    hero_states : (OrdTree U64 UG/SIPD/Hero/HeroState)
   }
 }
