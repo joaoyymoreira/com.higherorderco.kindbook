@@ -1,0 +1,9 @@
+
+data UG/SIPD/Hero {
+  #Hero {
+    owner_id : U64
+    name : String
+    skills : (OrdTree String UG/SIPD/Skill)
+    body_id : U64
+  }
+}
