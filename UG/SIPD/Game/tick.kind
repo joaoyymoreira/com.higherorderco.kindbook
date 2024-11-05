@@ -1,0 +1,21 @@
+use UG/SIPD as G
+
+// Updates a cooldown in the cooldowns tree.
+// - kv: The key-value pair to update.
+// - cooldowns: The cooldowns tree.
+// = The updated cooldowns tree.
+update_cooldown : (Pair String U64) -> (OrdTree String U64) -> (OrdTree String U64)
+| #Pair{key value} cooldowns =
+  if (U64/to_bool (== value 0)) {
+    cooldowns
+  } else {
+    (OrdTree/insert String U64 String/Ord cooldowns #Pair{key (- value 1)})
+  }
+
+// Decrements all cooldowns in a hero state.
+// - state: The hero state to update.
+// = The updated hero state.
+decrement_cooldowns : G/Hero/HeroState -> G/Hero/HeroState
+| #HeroState{cooldowns} =
+  let new_cooldowns = (OrdTree/fold String U64 cooldowns (OrdTree String U64) cooldowns update_cooldown)
+  #HeroState{new_cooldowns}
