@@ -1,0 +1,12 @@
+// Filters a string based on a predicate.
+// - str: Input string.
+// - fn: Predicate function.
+// = New string with characters satisfying the predicate.
+String/filter : String -> (Char -> Bool) -> String
+| str fn = (List/filter Char str fn)
+
+#test: (String/filter "Hello" (λx (U64/to_bool (== x 'l')))) == "ll"
+#test: (String/filter "12345" (λx (U64/to_bool (> x '3')))) == "45"
+#test: (String/filter "" (λx #True)) == ""
+#test: (String/filter "abcde" (λx #False)) == ""
+#test: (String/filter "abcde" (λx #True)) == "abcde"

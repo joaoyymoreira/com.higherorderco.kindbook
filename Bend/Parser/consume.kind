@@ -1,0 +1,13 @@
+// Consumes the given string from the input after first skipping trivia.
+// - target: String to consume.
+// = Parser that returns Unit if successful, fails otherwise.
+Bend/Parser/consume : String -> (Parser Unit)
+| target = do Parser {
+  ask (Bend/Parser/skip_trivia)
+  (Bend/Parser/consume_exactly target)
+}
+
+#test: (Parser/run Unit (Bend/Parser/consume "hello") "  hello") == #Some{#Unit}
+#test: (Parser/run Unit (Bend/Parser/consume "world") "  hello") == #None
+#test: (Parser/run Unit (Bend/Parser/consume "test") "# comment\ntest") == #Some{#Unit}
+#test: (Parser/run Unit (Bend/Parser/consume "") "  ") == #Some{#Unit}

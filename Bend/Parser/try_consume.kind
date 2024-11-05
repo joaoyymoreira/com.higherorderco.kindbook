@@ -1,0 +1,23 @@
+// Tries to consume the given string from the input after first skipping trivia.
+// - target: String to consume.
+// = True if consumed, False otherwise. No input consumed on failure.
+Bend/Parser/try_consume : String -> (Parser Bool)
+| target = do Parser {
+  ask (Parser/skip_trivia)
+  (Parser/alternative Bool 
+    (do Parser {
+      ask (Bend/Parser/consume_exactly target)
+      (Parser/pure Bool #True)
+    })
+    (Parser/pure Bool #False)
+  )
+}
+
+#test: ((Bend/Parser/try_consume "hello") #State{"  hello world" #0}) == (#Done{#Reply{#State{" world" #7} #True}})
+#test: ((Bend/Parser/try_consume "hello") #State{"  goodbye" #0}) == (#Done{#Reply{#State{"goodbye" #2} #False}})
+#test: ((Bend/Parser/try_consume "") #State{"  hello" #0}) == (#Done{#Reply{#State{"hello" #2} #True}})
+#test: ((Bend/Parser/try_consume "hello") #State{"" #0}) == (#Done{#Reply{#State{"" #0} #False}})
+#test: ((Bend/Parser/try_consume "hello") #State{" hello" #0}) == (#Done{#Reply{#State{"" #6} #True}})
+#test: ((Bend/Parser/try_consume "world") #State{" hello" #0}) == (#Done{#Reply{#State{"hello" #1} #False}})
+#test: ((Bend/Parser/try_consume "") #State{" hello" #0}) == (#Done{#Reply{#State{"hello" #1} #True}})
+#test: ((Bend/Parser/try_consume "hello") #State{"hello" #0}) == (#Done{#Reply{#State{"" #5} #True}})
