@@ -4,6 +4,7 @@ data UG/SIPD/Body {
     id : U64
     hitbox : UG/Shape
     tick : UG/SIPD/State -> UG/SIPD/State
+    effects : (List UG/SIPD/Effect)
     collidable : UG/Collision/Collidable
   }
 }
