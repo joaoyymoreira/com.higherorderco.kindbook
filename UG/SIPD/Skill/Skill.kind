@@ -1,0 +1,8 @@
+
+data UG/SIPD/Skill {
+  #Skill {
+    name : String
+    effects : (List UG/SIPD/Effect)
+    cooldown : U64
+  }
+}
