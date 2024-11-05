@@ -1,0 +1,10 @@
+
+UG/SIPD/Hero/HeroState/update_cooldown : U64 -> String -> UG/SIPD/State -> U64 -> UG/SIPD/State
+| player_id key #State{next_id tick players hero_states} new_cooldown with (OrdTree/get U64 UG/SIPD/Hero/HeroState U64/Ord hero_states player_id)
+.| #None = #State{next_id tick players hero_states}
+.| #Some{#HeroState{cooldowns}} = 
+  let new_cooldowns = (OrdTree/insert String U64 String/Ord cooldowns #Pair{key new_cooldown})
+  let new_hero_states = (OrdTree/insert U64 UG/SIPD/Hero/HeroState U64/Ord hero_states #Pair{player_id #HeroState{new_cooldowns}})
+  #State{next_id tick players new_hero_states}
+
+
