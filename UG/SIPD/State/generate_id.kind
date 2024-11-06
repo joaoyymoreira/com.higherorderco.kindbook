@@ -1,0 +1,7 @@
+
+use UG/SIPD as G
+
+UG/SIPD/State/generate_id : G/State -> (Pair U64 G/State)
+| #State{next_id tick players hero_states game_map} = 
+  let nxt_next_id = (+ next_id 1)
+  (next_id , #State{nxt_next_id tick players hero_states game_map})
