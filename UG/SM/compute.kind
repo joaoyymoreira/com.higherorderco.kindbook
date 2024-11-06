@@ -10,7 +10,7 @@ UG/SM/compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/S
   let end_t = (UG/SM/Time/time_to_tick S A mach time)
   let #Pair{state start_tick} = (UG/SM/get_initial_state S A mach game)
   let diff = (U64/sub end_t start_tick)
-  if (U64/gt diff 1000000) {
+  if (U64/gt diff 1000) {
     #Pair{state mach}
   } else {
     (UG/SM/compute/go S A mach game state start_tick end_t)
@@ -32,7 +32,7 @@ UG/SM/compute/go : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> S
   } else {
     let next_tick = (U64/add current_tick 1)
     let actions = (UG/SM/ActionLogs/get_actions A (UG/SM/Mach/action_logs S A mach) current_tick)
-    let state_with_actions = (List/foldr A S (UG/SM/Game/when S A game) state actions)
+    let state_with_actions = (List/foldr A actions S state (UG/SM/Game/when S A game))
     let next_state = ((UG/SM/Game/tick S A game) state_with_actions)
     let updated_mach = (UG/SM/update_mach S A mach current_tick state)
     (UG/SM/compute/go S A updated_mach game next_state next_tick end_tick)
