@@ -1,0 +1,11 @@
+// Returns all but the last character of a string.
+// - str: Input string.
+// = The string without its last character, or empty if input is empty.
+String/init : String -> String
+| #Nil          = ""
+| #Cons{x #Nil} = ""
+| #Cons{x xs}   = #Cons{x (String/init xs)}
+
+#test: (String/init "") == ""
+#test: (String/init "a") == ""
+#test: (String/init "hola") == "hol"

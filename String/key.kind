@@ -1,0 +1,2 @@
+String/key : String -> U64
+| str = (U64/from-bits (String/hash str))

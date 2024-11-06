@@ -1,30 +1,4 @@
-@Foo = (?((0 @Foo__C2) a) a)
-
-@Foo__C0 = (a (* a))
-
-@Foo__C1 = (((* (a a)) ((b (* b)) c)) c)
-
-@Foo__C2 = (wb yb)
-  & (tb vb) ~ (@Foo__C0 (xb (0 yb)))
-  & @Foo__C1 ~ {(b c) (a b)}
-  & (a c) ~ {(e f) (d e)}
-  & (d f) ~ {(h i) (g h)}
-  & (g i) ~ {(k l) (j k)}
-  & (j l) ~ {(n o) (m n)}
-  & (m o) ~ {(q r) (p q)}
-  & (p r) ~ {(t u) (s t)}
-  & (s u) ~ {(w x) (v w)}
-  & (v x) ~ {(z ab) (y z)}
-  & (y ab) ~ {(cb db) (bb cb)}
-  & (bb db) ~ {(fb gb) (eb fb)}
-  & (eb gb) ~ {(ib jb) (hb ib)}
-  & (hb jb) ~ {(lb mb) (kb lb)}
-  & (kb mb) ~ {(ob pb) (nb ob)}
-  & (nb pb) ~ {(rb sb) (qb rb)}
-  & (qb sb) ~ {(ub vb) (tb ub)}
-  & @Foo ~ (wb xb)
-
-@main = a
-  & @Foo ~ (200 a)
+@main = c
+  & (a a) ~ ((b b) c)
 
 
