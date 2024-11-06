@@ -1,0 +1,9 @@
+// Creates a TimedAction from an action and a time.
+// - A: Action type.
+// - action: The action to be timed.
+// - time: The timestamp for the action.
+// = A TimedAction combining the action and time.
+UG/SM/TimedAction/time_action : ∀(A: *) UG/SM/Time -> A -> (UG/SM/TimedAction A)
+| A time action = #TimedAction{action time}
+
+#test: (UG/SM/TimedAction/time_action UG/SIPD/Event 1 #KeyEvent{1 1 "a" #False}) == #TimedAction{action: #KeyEvent{1 1 "a" #False} time: 1}
