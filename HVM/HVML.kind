@@ -610,27 +610,25 @@ main : String/View
   let term = (HVML/do_parse_core "(λa(λk k a) λxλy(x y))")
   ask root = (HVML/do_inject_core term)
 
-  log "[ROOT]"
-  log (HVML/Term/to_string root)
   log "[HEAP]"
   ask heap = HVML/dump_heap
   log (HVML/Heap/to_string heap)
   log "[CORE]"
   ask core = (HVML/extract_core root)
   log (HVML/Core/to_string core)
+  log ""
 
   log "[Normalizing...]"
   ask norm = (HVML/reduce root)
   log ""
 
-  log "[ROOT_NF]"
-  log (HVML/Term/to_string norm)
   log "[HEAP_NF]"
   ask heap = HVML/dump_heap
   log (HVML/Heap/to_string heap)
   log "[CORE_NF]"
   ask norm = (HVML/extract_core norm)
   log (HVML/Core/to_string norm)
+  log ""
 
   ret #View{"ok"}
 })
