@@ -103,25 +103,25 @@ HVML/Term/new : HVML/Tag -> HVML/Lab -> HVML/Loc -> HVML/Term
   let loc_enc = (<< loc 32)
   (| tag_enc (| lab_enc loc_enc))
 
-HVML/Term/get-tag : ∀(x: U64) HVML/Tag
+HVML/Term/get_tag : ∀(x: U64) HVML/Tag
 | x = (& x 0xFF)
 
-HVML/Term/get-lab : ∀(x: U64) HVML/Lab
+HVML/Term/get_lab : ∀(x: U64) HVML/Lab
 | x = (& (>> x 8) 0xFF_FFFF)
 
-HVML/Term/get-loc : ∀(x: U64) HVML/Loc
+HVML/Term/get_loc : ∀(x: U64) HVML/Loc
 | x = (& (>> x 32) 0xFFFF_FFFF)
 
 HVML/Tag/eq : HVML/Tag -> HVML/Tag -> Bool
-| x y = (U64/to-bool (== x y))
+| x y = (U64/to_bool (== x y))
 
-HVML/get-ini : (HVML U64)
+HVML/get_ini : (HVML U64)
 | #Heap{mem ini end} = #Pair{#Heap{mem ini end} ini}
 
-HVML/get-end : (HVML U64)
+HVML/get_end : (HVML U64)
 | #Heap{mem ini end} = #Pair{#Heap{mem ini end} end}
 
-HVML/get-mem : (HVML (Map U64))
+HVML/get_mem : (HVML (Map U64))
 | #Heap{mem ini end} = #Pair{#Heap{mem ini end} mem}
 
 // Memory
@@ -156,7 +156,7 @@ HVML/just : U64 -> (HVML U64)
 // Allocation
 // ----------
 
-HVML/alloc-node : U64 -> (HVML U64)
+HVML/alloc_node : U64 -> (HVML U64)
 | arity #Heap{mem ini end} =
   #Pair{#Heap{mem ini (+ end arity)} end}
 
@@ -165,9 +165,9 @@ HVML/alloc-node : U64 -> (HVML U64)
 
 HVML/VarMap : * = (Map (Maybe U64))
 
-HVML/inject-bind : String -> HVML/Term -> HVML/VarMap -> (HVML HVML/VarMap)
+HVML/inject_bind : String -> HVML/Term -> HVML/VarMap -> (HVML HVML/VarMap)
 | nam var vars =
-  let sub_loc = (HVML/Term/get-loc var)
+  let sub_loc = (HVML/Term/get_loc var)
   put var_loc = vars[(String/key nam)] := #Some{var}
   match var_loc {
     #None: do HVML {
@@ -181,38 +181,38 @@ HVML/inject-bind : String -> HVML/Term -> HVML/VarMap -> (HVML HVML/VarMap)
     }
   }
 
-HVML/inject-core : HVML/Core -> U64 -> HVML/VarMap -> (HVML HVML/VarMap)
+HVML/inject_core : HVML/Core -> U64 -> HVML/VarMap -> (HVML HVML/VarMap)
 | #Era loc vars = do HVML {
   ask (HVML/set loc (HVML/Term/new HVML/ERA 0 0))
   ret vars
 }
 | #Lam{vr0 bod} loc vars = do HVML {
-  ask lam  = (HVML/alloc-node 2)
-  ask vars = (HVML/inject-bind vr0 (HVML/Term/new HVML/VAR 0 (+ lam 0)) vars)
-  ask vars = (HVML/inject-core bod (+ lam 1) vars)
+  ask lam  = (HVML/alloc_node 2)
+  ask vars = (HVML/inject_bind vr0 (HVML/Term/new HVML/VAR 0 (+ lam 0)) vars)
+  ask vars = (HVML/inject_core bod (+ lam 1) vars)
   ask (HVML/set loc (HVML/Term/new HVML/LAM 0 lam))
   ret vars
 }
 | #App{fun arg} loc vars = do HVML {
-  ask app  = (HVML/alloc-node 2)
-  ask vars = (HVML/inject-core fun (+ app 0) vars)
-  ask vars = (HVML/inject-core arg (+ app 1) vars)
+  ask app  = (HVML/alloc_node 2)
+  ask vars = (HVML/inject_core fun (+ app 0) vars)
+  ask vars = (HVML/inject_core arg (+ app 1) vars)
   ask (HVML/set loc (HVML/Term/new HVML/APP 0 app))
   ret vars
 }
 | #Sup{tm0 tm1} loc vars = do HVML {
-  ask sup  = (HVML/alloc-node 2)
-  ask vars = (HVML/inject-core tm0 (+ sup 0) vars)
-  ask vars = (HVML/inject-core tm1 (+ sup 1) vars)
+  ask sup  = (HVML/alloc_node 2)
+  ask vars = (HVML/inject_core tm0 (+ sup 0) vars)
+  ask vars = (HVML/inject_core tm1 (+ sup 1) vars)
   ask (HVML/set loc (HVML/Term/new HVML/SUP 0 sup))
   ret vars
 }
 | #Dup{dp0 dp1 val bod} loc vars = do HVML {
-  ask dup  = (HVML/alloc-node 3)
-  ask vars = (HVML/inject-bind dp0 (HVML/Term/new HVML/DP0 0 dup) vars)
-  ask vars = (HVML/inject-bind dp1 (HVML/Term/new HVML/DP1 0 dup) vars)
-  ask vars = (HVML/inject-core val (+ dup 2) vars)
-  (HVML/inject-core bod loc vars)
+  ask dup  = (HVML/alloc_node 3)
+  ask vars = (HVML/inject_bind dp0 (HVML/Term/new HVML/DP0 0 dup) vars)
+  ask vars = (HVML/inject_bind dp1 (HVML/Term/new HVML/DP1 0 dup) vars)
+  ask vars = (HVML/inject_core val (+ dup 2) vars)
+  (HVML/inject_core bod loc vars)
 }
 | #Var{uid} loc vars = do HVML {
   put var = vars[(String/key uid)] := #Some{loc}
@@ -227,9 +227,9 @@ HVML/inject-core : HVML/Core -> U64 -> HVML/VarMap -> (HVML HVML/VarMap)
   }
 }
 
-HVML/do-inject-core : HVML/Core -> (HVML HVML/Term)
+HVML/do_inject_core : HVML/Core -> (HVML HVML/Term)
 | core = do HVML {
-  ask (HVML/inject-core core 0 {|#None})
+  ask (HVML/inject_core core 0 {|#None})
   ask root = (HVML/get 0)
   ret root
 }
@@ -238,72 +238,72 @@ HVML/do-inject-core : HVML/Core -> (HVML HVML/Term)
 // ----------
 
 // TODO: avoid extracting the same dup twice
-HVML/extract-core : HVML/Term -> (HVML HVML/Core)
-| term = when HVML/Tag/eq (HVML/Term/get-tag term) {
+HVML/extract_core : HVML/Term -> (HVML HVML/Core)
+| term = when HVML/Tag/eq (HVML/Term/get_tag term) {
   HVML/ERA: do HVML {
     ret #Era
   }
   HVML/LAM: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask bod = (HVML/get (+ loc 1))
-    let var = (U64/to-string (+ loc 0))
-    ask bod = (HVML/extract-core bod)
+    let var = (U64/to_string (+ loc 0))
+    ask bod = (HVML/extract_core bod)
     ret #Lam{var bod}
   }
   HVML/APP: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask fun = (HVML/get (+ loc 0))
     ask arg = (HVML/get (+ loc 1))
-    ask fun = (HVML/extract-core fun)
-    ask arg = (HVML/extract-core arg)
+    ask fun = (HVML/extract_core fun)
+    ask arg = (HVML/extract_core arg)
     ret #App{fun arg}
   }
   HVML/SUP: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask tm0 = (HVML/get (+ loc 0))
     ask tm1 = (HVML/get (+ loc 1))
-    ask tm0 = (HVML/extract-core tm0)
-    ask tm1 = (HVML/extract-core tm1)
+    ask tm0 = (HVML/extract_core tm0)
+    ask tm1 = (HVML/extract_core tm1)
     ret #Sup{tm0 tm1}
   }
   HVML/VAR: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask sub = (HVML/get (+ loc 0))
-    if (HVML/Tag/eq (HVML/Term/get-tag sub) HVML/SUB) do HVML {
-      ret #Var{(U64/to-string (+ loc 0))}
+    if (HVML/Tag/eq (HVML/Term/get_tag sub) HVML/SUB) do HVML {
+      ret #Var{(U64/to_string (+ loc 0))}
     } else do HVML {
-      (HVML/extract-core sub)
+      (HVML/extract_core sub)
     }
   }
   HVML/DP0: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask val = (HVML/get (+ loc 2))
-    if (U64/is-zero val) do HVML {
-      let dp0 = (U64/to-string (+ loc 0))
-      let dp1 = (U64/to-string (+ loc 1))
-      ask val = (HVML/extract-core val)
+    if (U64/is_zero val) do HVML {
+      let dp0 = (U64/to_string (+ loc 0))
+      let dp1 = (U64/to_string (+ loc 1))
+      ask val = (HVML/extract_core val)
       ret #Dup{dp0 dp1 val #Var{dp0}}
     } else do HVML {
-      ret #Var{(U64/to-string (+ loc 0))}
+      ret #Var{(U64/to_string (+ loc 0))}
     }
   }
   HVML/DP1: do HVML {
-    let loc = (HVML/Term/get-loc term)
+    let loc = (HVML/Term/get_loc term)
     ask dp0 = (HVML/get (+ loc 0))
     ask dp1 = (HVML/get (+ loc 1))
     ask val = (HVML/get (+ loc 2))
-    if (U64/is-zero val) do HVML {
-      let dp0 = (U64/to-string (+ loc 0))
-      let dp1 = (U64/to-string (+ loc 1))
-      ask val = (HVML/extract-core val)
+    if (U64/is_zero val) do HVML {
+      let dp0 = (U64/to_string (+ loc 0))
+      let dp1 = (U64/to_string (+ loc 1))
+      ask val = (HVML/extract_core val)
       ret #Dup{dp0 dp1 val #Var{dp1}}
     } else do HVML {
-      ret #Var{(U64/to-string (+ loc 1))}
+      ret #Var{(U64/to_string (+ loc 1))}
     }
   }
 } else {
   do HVML {
-    ret log "ERR-X"
+    ret log "ERR_X"
     #Era
   }
 }
@@ -312,10 +312,10 @@ HVML/extract-core : HVML/Term -> (HVML HVML/Core)
 // -------
 // Reads from runtime memory to handy containers.
 
-HVML/dump-heap/range : U64 -> U64 -> (HVML (List (Pair U64 HVML/Term)))
-| ini end = if (U64/to-bool (< ini end)) do HVML {
+HVML/dump_heap/range : U64 -> U64 -> (HVML (List (Pair U64 HVML/Term)))
+| ini end = if (U64/to_bool (< ini end)) do HVML {
   ask head = (HVML/get ini)
-  ask tail = (HVML/dump-heap/range (+ 1 ini) end)
+  ask tail = (HVML/dump_heap/range (+ 1 ini) end)
   if (U64/eq head 0) do HVML {
     ret tail
   } else do HVML {
@@ -325,78 +325,78 @@ HVML/dump-heap/range : U64 -> U64 -> (HVML (List (Pair U64 HVML/Term)))
   ret #Nil
 }
 
-HVML/dump-heap : (HVML (List (Pair U64 HVML/Term)))
+HVML/dump_heap : (HVML (List (Pair U64 HVML/Term)))
 = do HVML {
-  ask ini = HVML/get-ini
-  ask end = HVML/get-end
-  (HVML/dump-heap/range ini end)
+  ask ini = HVML/get_ini
+  ask end = HVML/get_end
+  (HVML/dump_heap/range ini end)
 }
 
 // Parsing
 // -------
 
-HVML/parse-core : (Parser HVML/Core)
+HVML/parse_core : (Parser HVML/Core)
 = do Parser {
-  ask Parser/skip-trivia
-  ask head = Parser/peek-one
-  when (Maybe/eq-with _ U64/eq) head {
+  ask Parser/skip_trivia
+  ask head = Parser/peek_one
+  when (Maybe/eq_with _ U64/eq) head {
     #Some{'λ'}: do Parser {
       ask (Parser/consume "λ")
-      ask vr0 = Parser/parse-name
-      ask bod = HVML/parse-core
+      ask vr0 = Parser/parse_name
+      ask bod = HVML/parse_core
       ret #Lam{vr0 bod}
     }
     #Some{'('}: do Parser {
       ask (Parser/consume "(")
-      ask fun = HVML/parse-core
-      ask arg = HVML/parse-core
+      ask fun = HVML/parse_core
+      ask arg = HVML/parse_core
       ask (Parser/consume ")")
       ret #App{fun arg}
     }
     #Some{'{'}: do Parser {
       ask (Parser/consume "{")
-      ask tm0 = HVML/parse-core
-      ask tm1 = HVML/parse-core
+      ask tm0 = HVML/parse_core
+      ask tm1 = HVML/parse_core
       ask (Parser/consume "}")
       ret #Sup{tm0 tm1}
     }
     #Some{'&'}: do Parser {
       ask (Parser/consume "&")
       ask (Parser/consume "{")
-      ask dp0 = Parser/parse-name
-      ask dp1 = Parser/parse-name
+      ask dp0 = Parser/parse_name
+      ask dp1 = Parser/parse_name
       ask (Parser/consume "}")
       ask (Parser/consume "=")
-      ask val = HVML/parse-core
-      ask bod = HVML/parse-core
+      ask val = HVML/parse_core
+      ask bod = HVML/parse_core
       ret #Dup{dp0 dp1 val bod}
     }
   } else {
     do Parser {
-      ask name = Parser/parse-name
+      ask name = Parser/parse_name
       ret #Var { name }
     }
   }
 }
 
-HVML/do-parse-core : String -> HVML/Core
-= λcode (Maybe/run _ (Parser/run _ HVML/parse-core code) #Era)
+HVML/do_parse_core : String -> HVML/Core
+= λcode (Maybe/run _ (Parser/run _ HVML/parse_core code) #Era)
 
 // Core Stringification
 // --------------------
 
-HVML/Core/to-string : HVML/Core -> String
+HVML/Core/to_string : HVML/Core -> String
 | #Var{nam}             = nam
 | #Era                  = "*"
-| #Lam{vr0 bod}         = (String/join "" ["λ" vr0 " " (HVML/Core/to-string bod)])
-| #App{fun arg}         = (String/join "" ["(" (HVML/Core/to-string fun) " " (HVML/Core/to-string arg) ")"])
-| #Sup{tm0 tm1}         = (String/join "" ["{" (HVML/Core/to-string tm0) " " (HVML/Core/to-string tm1) "}"])
-| #Dup{dp0 dp1 val bod} = (String/join "" ["&{" dp0 " " dp1 "} = " (HVML/Core/to-string val) " " (HVML/Core/to-string bod)])
+| #Lam{vr0 bod}         = (String/join "" ["λ" vr0 " " (HVML/Core/to_string bod)])
+| #App{fun arg}         = (String/join "" ["(" (HVML/Core/to_string fun) " " (HVML/Core/to_string arg) ")"])
+| #Sup{tm0 tm1}         = (String/join "" ["{" (HVML/Core/to_string tm0) " " (HVML/Core/to_string tm1) "}"])
+| #Dup{dp0 dp1 val bod} = (String/join "" ["&{" dp0 " " dp1 "} = " (HVML/Core/to_string val) " " (HVML/Core/to_string bod)])
 
 // Runtime Stringification
 // -----------------------
 
-HVML/Tag/to-string : HVML/Tag -> String
+HVML/Tag/to_string : HVML/Tag -> String
 | tag = when HVML/Tag/eq tag {
   HVML/AIR: "AIR"
   HVML/SUB: "SUB"
@@ -411,24 +411,24 @@ HVML/Tag/to-string : HVML/Tag -> String
   "???"
 }
 
-HVML/Lab/to-string : U64 -> String
-| loc = (String/pad-left (U64/to-hex-string loc) #6 '0')
+HVML/Lab/to_string : U64 -> String
+| loc = (String/pad_left (U64/to_hex_string loc) #6 '0')
 
-HVML/Loc/to-string : U64 -> String
-| loc = (String/pad-left (U64/to-hex-string loc) #9 '0')
+HVML/Loc/to_string : U64 -> String
+| loc = (String/pad_left (U64/to_hex_string loc) #9 '0')
 
-HVML/Term/to-string : HVML/Term -> String 
+HVML/Term/to_string : HVML/Term -> String 
 | term =
-  let tag = (HVML/Tag/to-string (HVML/Term/get-tag term))
-  let lab = (HVML/Lab/to-string (HVML/Term/get-lab term))
-  let loc = (HVML/Loc/to-string (HVML/Term/get-loc term))
+  let tag = (HVML/Tag/to_string (HVML/Term/get_tag term))
+  let lab = (HVML/Lab/to_string (HVML/Term/get_lab term))
+  let loc = (HVML/Loc/to_string (HVML/Term/get_loc term))
   (String/join "" ["Term(" tag ",0x" lab ",0x" loc ")"])
 
-HVML/Heap/to-string : (List (Pair U64 HVML/Term)) -> String
+HVML/Heap/to_string : (List (Pair U64 HVML/Term)) -> String
 | heap = (List/fold _ heap _ "" (λkv λtxt
   let #Pair{k v} = kv
-  let addr       = (String/pad-left (U64/to-hex-string k) #9 '0')
-  let term       = (HVML/Term/to-string v)
+  let addr       = (String/pad_left (U64/to_hex_string k) #9 '0')
+  let term       = (HVML/Term/to_string v)
   (String/join "" ["heap[0x" addr "] = " term "\n" txt])
 ))
 
@@ -437,9 +437,9 @@ HVML/Heap/to-string : (List (Pair U64 HVML/Term)) -> String
 
 HVML/reduce : HVML/Term -> (HVML HVML/Term)
 | term =
-  let tag = (HVML/Term/get-tag term)
-  let lab = (HVML/Term/get-lab term)
-  let loc = (HVML/Term/get-loc term)
+  let tag = (HVML/Term/get_tag term)
+  let lab = (HVML/Term/get_lab term)
+  let loc = (HVML/Term/get_loc term)
   when HVML/Tag/eq tag {
     HVML/APP: do HVML {
       ask fun = (HVML/get (+ loc 0))
@@ -467,23 +467,23 @@ HVML/reduce : HVML/Term -> (HVML HVML/Term)
 HVML/reduce/app : U64 -> U64 -> HVML/Term -> HVML/Term -> (HVML HVML/Term)
 | lab loc fun arg = do HVML {
   ask fun     = (HVML/reduce fun)
-  let fun_tag = (HVML/Term/get-tag fun)
-  let fun_lab = (HVML/Term/get-lab fun)
-  let fun_loc = (HVML/Term/get-loc fun)
-  when HVML/Tag/eq (HVML/Term/get-tag fun) {
+  let fun_tag = (HVML/Term/get_tag fun)
+  let fun_lab = (HVML/Term/get_lab fun)
+  let fun_loc = (HVML/Term/get_loc fun)
+  when HVML/Tag/eq (HVML/Term/get_tag fun) {
     // (* a)
-    // ----- APP-ERA
+    // ----- APP_ERA
     // *
     HVML/ERA: do HVML {
-      log "APP-ERA"
+      log "APP_ERA"
       ret HVML/ERA
     }
     // (λx(body) a)
-    // ------------ APP-LAM
+    // ------------ APP_LAM
     // x <- a
     // body
     HVML/LAM: do HVML {
-      log "APP-LAM"
+      log "APP_LAM"
       ask bod = (HVML/get (+ fun_loc 1))
       ask (HVML/set (+ fun_loc 0) arg)
       ask (HVML/set (+ loc     0) 0)
@@ -492,17 +492,17 @@ HVML/reduce/app : U64 -> U64 -> HVML/Term -> HVML/Term -> (HVML HVML/Term)
       (HVML/reduce bod)
     }
     // ({a b} c)
-    // --------------- APP-SUP
+    // --------------- APP_SUP
     // & {x0 x1} = c
     // {(a x0) (b x1)}
     HVML/SUP: do HVML {
-      log "APP-SUP"
+      log "APP_SUP"
       ask tm0 = (HVML/get (+ fun_loc 0))
       ask tm1 = (HVML/get (+ fun_loc 1))
-      ask du0 = (HVML/alloc-node 2)
-      ask su0 = (HVML/alloc-node 2)
-      ask ap0 = (HVML/alloc-node 2)
-      ask ap1 = (HVML/alloc-node 2)
+      ask du0 = (HVML/alloc_node 2)
+      ask su0 = (HVML/alloc_node 2)
+      ask ap0 = (HVML/alloc_node 2)
+      ask ap1 = (HVML/alloc_node 2)
       ask (HVML/set (+ du0 0) (HVML/Term/new HVML/SUB 0 0))
       ask (HVML/set (+ du0 1) (HVML/Term/new HVML/SUB 0 0))
       ask (HVML/set (+ du0 2) arg)
@@ -530,35 +530,35 @@ HVML/reduce/dup : U64 -> U64 -> U64 -> HVML/Term -> HVML/Term -> HVML/Term -> (H
 | n lab loc dp0 dp1 val =
 do HVML {
   ask val     = (HVML/reduce val)
-  let val_tag = (HVML/Term/get-tag val)
-  let val_lab = (HVML/Term/get-lab val)
-  let val_loc = (HVML/Term/get-loc val)
+  let val_tag = (HVML/Term/get_tag val)
+  let val_lab = (HVML/Term/get_lab val)
+  let val_loc = (HVML/Term/get_loc val)
   when HVML/Tag/eq val_tag {
     // & {x y} = *
-    // ----------- DUP-ERA
+    // ----------- DUP_ERA
     // x <- *
     // y <- *
     HVML/ERA: do HVML {
-      log "DUP-ERA"
+      log "DUP_ERA"
       ask (HVML/set (+ loc 0) val)
       ask (HVML/set (+ loc 1) val)
       ask (HVML/set (+ loc 2) 0)
       (HVML/get (+ loc n))
     }
     // & {r s} = λx(f)
-    // --------------- DUP-LAM
+    // --------------- DUP_LAM
     // & {f0 f1} = f
     // r <- λx0(f0)
     // s <- λx1(f1)
     // x <- {x0 x1}
     HVML/LAM: do HVML {
-      log "DUP-LAM"
+      log "DUP_LAM"
       let vr0 = (+ val_loc 0)
       ask bod = (HVML/get (+ val_loc 1))
-      ask du0 = (HVML/alloc-node 2)
-      ask lm0 = (HVML/alloc-node 2)
-      ask lm1 = (HVML/alloc-node 2)
-      ask su0 = (HVML/alloc-node 2)
+      ask du0 = (HVML/alloc_node 2)
+      ask lm0 = (HVML/alloc_node 2)
+      ask lm1 = (HVML/alloc_node 2)
+      ask su0 = (HVML/alloc_node 2)
       ask (HVML/set (+ du0 0) (HVML/Term/new HVML/SUB 0 0))
       ask (HVML/set (+ du0 1) (HVML/Term/new HVML/SUB 0 0))
       ask (HVML/set (+ du0 2) bod)
@@ -578,11 +578,11 @@ do HVML {
       (HVML/reduce got)
     }
     // & {x y} = {a b}
-    // --------------- DUP-SUP
+    // --------------- DUP_SUP
     // x <- a
     // y <- b
     HVML/SUP: do HVML {
-      log "DUP-SUP"
+      log "DUP_SUP"
       ask tm0 = (HVML/get (+ val_loc 0))
       ask tm1 = (HVML/get (+ val_loc 1))
       ask (HVML/set (+ loc 0) tm0)
@@ -596,7 +596,7 @@ do HVML {
   } else {
     do HVML {
       ask (HVML/set (+ loc 2) val)
-      use tag = if (U64/is-zero n) { HVML/DP0 } else { HVML/DP1 }
+      use tag = if (U64/is_zero n) { HVML/DP0 } else { HVML/DP1 }
       ret (HVML/Term/new tag lab loc)
     }
   }
@@ -607,30 +607,30 @@ do HVML {
 
 main : String/View
 = (HVML/run _ do HVML {
-  let term = (HVML/do-parse-core "(λa(λk k a) λxλy(x y))")
-  ask root = (HVML/do-inject-core term)
+  let term = (HVML/do_parse_core "(λa(λk k a) λxλy(x y))")
+  ask root = (HVML/do_inject_core term)
 
   log "[ROOT]"
-  log (HVML/Term/to-string root)
+  log (HVML/Term/to_string root)
   log "[HEAP]"
-  ask heap = HVML/dump-heap
-  log (HVML/Heap/to-string heap)
+  ask heap = HVML/dump_heap
+  log (HVML/Heap/to_string heap)
   log "[CORE]"
-  ask core = (HVML/extract-core root)
-  log (HVML/Core/to-string core)
+  ask core = (HVML/extract_core root)
+  log (HVML/Core/to_string core)
 
   log "[Normalizing...]"
   ask norm = (HVML/reduce root)
   log ""
 
-  log "[ROOT-NF]"
-  log (HVML/Term/to-string norm)
-  log "[HEAP-NF]"
-  ask heap = HVML/dump-heap
-  log (HVML/Heap/to-string heap)
-  log "[CORE-NF]"
-  ask norm = (HVML/extract-core norm)
-  log (HVML/Core/to-string norm)
+  log "[ROOT_NF]"
+  log (HVML/Term/to_string norm)
+  log "[HEAP_NF]"
+  ask heap = HVML/dump_heap
+  log (HVML/Heap/to_string heap)
+  log "[CORE_NF]"
+  ask norm = (HVML/extract_core norm)
+  log (HVML/Core/to_string norm)
 
   ret #View{"ok"}
 })
