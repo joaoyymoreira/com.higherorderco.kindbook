@@ -19,3 +19,29 @@ decrement_cooldowns : G/Hero/HeroState -> G/Hero/HeroState
 | #HeroState{cooldowns} =
   let new_cooldowns = (OrdTree/fold String U64 cooldowns (OrdTree String U64) cooldowns update_cooldown)
   #HeroState{new_cooldowns}
+
+update_hero_state : (Pair U64 G/Hero/HeroState) -> G/State -> G/State
+| #Pair{id hs} #State{next_id tick players hero_states game_map} = 
+  let new_hero_states = (OrdTree/insert U64 G/Hero/HeroState U64/Ord hero_states #Pair{id (decrement_cooldowns hs)})
+  #State{next_id tick players new_hero_states game_map}
+
+// Updates cooldowns for all hero states.
+// - state: The game state to update.
+// = The updated game state.
+update_cooldowns : G/State -> G/State
+| #State{next_id tick players hero_states game_map} = 
+  (OrdTree/fold U64 G/Hero/HeroState hero_states G/State #State{next_id tick players hero_states game_map} update_hero_state)
+
+UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
+| #Body{id hitbox tick effects collidable} = tick
+
+// Updates the game state for one tick.
+// - state: The current game state.
+// = The updated game state after one tick.
+tick : G/State -> G/State
+| #State{next_id tick players hero_states game_map} =
+  let #GameMap{width height bodies} = game_map
+  let body_values = (OrdTree/values U64 G/Body bodies)
+  let updated_gs = (List/fold G/Body body_values G/State #State{next_id tick players hero_states game_map} λbody λacc (G/Body/tick body acc))
+  let updated_tick = (U64/add tick 1)
+  (update_cooldowns #State{next_id updated_tick players hero_states game_map})
