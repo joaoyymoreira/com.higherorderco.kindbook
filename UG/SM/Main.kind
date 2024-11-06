@@ -18,14 +18,22 @@ GameState/counter : GameState -> U64
 GameAction/eq : GameAction -> GameAction -> Bool
 | #Increment #Increment = #True
 
+whenn : UG/SIPD/Event -> GameState -> GameState
+| #MouseClick{time pid #LeftButton x y} state = #GameState{counter: (U64/add (GameState/counter state) 1)}
+| action state = state
+
 // Our simple game definition
-simple_game : (UG/SM/Game GameState GameAction)
+simple_game : (UG/SM/Game GameState UG/SIPD/Event)
 = #Game{
   init: #GameState{counter: 0}
-  when: λaction λstate
-    match action {
-      #Increment: #GameState{counter: (U64/add (GameState/counter state) 1)}
-    }
+  when: whenn
+  tick: λstate state
+}
+
+another_game : (UG/SM/Game GameState GameAction)
+= #Game{
+  init: #GameState{counter: 0}
+  when: λaction λstate state
   tick: λstate state
 }
 
@@ -34,6 +42,7 @@ simulate_game : U64 -> (UG/SM/Mach GameState GameAction)
 | ticks =
   let mach = (UG/SM/new_mach GameState GameAction 60 GameAction/eq)
   let mach = (UG/SM/register_action GameState GameAction mach #TimedAction{action: #Increment time: 0})
+  let mach_and_state = (UG/SM/compute GameState GameAction mach another_game 10)
   mach
 
 event : UG/SIPD/Event
@@ -51,7 +60,8 @@ event3 : UG/SIPD/Event
 event4 : UG/SIPD/Event
 = #ActionEvent{ #SetNick{1 1 "hey"}}
 
-
+timedEv1 : (UG/SM/TimedAction UG/SIPD/Event)
+= (UG/SM/TimedAction/time_action UG/SIPD/Event 1 event1)
 
 
 mach : (UG/SM/Mach GameState GameAction)
