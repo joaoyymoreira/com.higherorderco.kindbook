@@ -1,0 +1,7 @@
+// Applies an effect to a game state.
+// - effect: The effect to apply.
+// - state: Current game state.
+// = Updated state after applying the effect.
+UG/SIPD/Effect/apply : UG/SIPD/Effect -> UG/SIPD/State -> UG/SIPD/State
+| effect state = (effect state)
+
