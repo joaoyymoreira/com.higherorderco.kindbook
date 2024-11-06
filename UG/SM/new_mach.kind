@@ -8,7 +8,7 @@ UG/SM/new_mach : ∀(S: *) ∀(A: *) U64 -> (A -> A -> Bool) -> (UG/SM/Mach S A)
 | S A ticks_per_second action_eq =
   #Mach{
     ticks_per_second: ticks_per_second
-    genesis_tick: 100
+    genesis_tick: 100000000000000000000000000000000000000
     cached_tick: 0
     state_logs: (Maybe/none (UG/SM/StateLogs/StateNode S))
     action_logs: (BinMap/new (List A))
