@@ -1,0 +1,19 @@
+
+use UG/SIPD as G
+
+get_skill : (OrdTree String G/Skill) -> String -> (Maybe G/Skill)
+| skills key = (OrdTree/get String G/Skill String/Ord skills key)
+
+UG/SIPD/Hero/apply_skill_if_pressed : String -> U64 -> (OrdTree String G/Skill) -> (OrdTree String (Pair Bool V2)) -> (OrdTree String U64) -> G/State -> G/State
+| key player_id skills player_keys cooldowns state with ((get_skill skills key), (G/Player/is_player_key_pressed key player_keys)) :: (Pair (Maybe G/Skill) Bool)
+.| #None #False        = state
+.| #None #True         = state
+.| #Some{skill} #False = state
+.| #Some{skill} #True  = 
+  let on_cooldown = (G/Hero/HeroState/key_on_cooldown key cooldowns)
+  if (Bool/eq on_cooldown #True) {
+    state
+  } else {
+    (G/Skill/apply skill state)
+}
+
