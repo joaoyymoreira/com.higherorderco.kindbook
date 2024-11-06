@@ -1,0 +1,30 @@
+// Initial keys for a player.
+initial_keys : (OrdTree String (Pair Bool V2))
+= (OrdTree/empty String (Pair Bool V2))
+
+// Creates a default hero.
+// - owner_id: The owner's ID.
+// - body_id: The body's ID.
+// = A default hero.
+default_hero : U64 -> U64 -> UG/SIPD/Hero
+| owner_id body_id = #Hero{
+  owner_id: owner_id
+  name: "Default"
+  skills: (OrdTree/empty String UG/SIPD/Skill)
+  body_id: body_id
+}
+
+// Initializes a player.
+// = A new player with default values.
+UG/SIPD/Player/init : UG/SIPD/Player
+= let hero = (default_hero 0 0)
+  #Player{
+    id: 0
+    name: "Anon"
+    keys: initial_keys
+    target: #V2{x: 0.0 y: 0.0}
+    hero: hero
+  }
+
+// TODO: IDs don't work on default hero, should use a real hero
+// Also have to generate a correct pid
