@@ -1,0 +1,3 @@
+
+UG/SIPD/GameMap/init : U64 -> U64 -> UG/SIPD/GameMap
+| width height = #GameMap{width height (OrdTree/empty U64 UG/SIPD/Body)}
