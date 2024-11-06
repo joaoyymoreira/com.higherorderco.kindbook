@@ -1,0 +1,9 @@
+// Extracts the player ID from an event.
+// - event: The input event.
+// = The player ID, or 0 if not applicable.
+UG/SIPD/Event/get_event_pid : UG/SIPD/Event -> U64
+| #KeyEvent{time pid key pressed}       = pid
+| #MouseClick{time pid click x y}       = pid
+| #KeyMouse{time pid key pressed x y}   = pid
+| #MouseMove{time pid x y}              = pid
+| #ActionEvent{#SetNick{time pid nick}} = pid 
