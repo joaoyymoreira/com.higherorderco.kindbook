@@ -1,5 +1,0 @@
-use Bend/Fun/Pattern as Pat
-
-Pat/unscoped-binds : Pat -> (List String)
-| #Chn nam = [nam]
-| pat      = (List/concat-map _ _ Pat/unscoped-binds (Pat/children pat))

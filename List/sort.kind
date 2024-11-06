@@ -1,10 +1,10 @@
 // Sorts a list in ascending order.
 // - A: Element type.
 // - xs: Input list to be sorted.
-// - leq: Less-than-or-equal comparison function.
+// - leq: Less_than_or_equal comparison function.
 // = New list containing all elements from xs in ascending order.
 List/sort : ∀(A: *) (List A) -> (A -> A -> Bool) -> (List A)
-| A xs leq = (List/insertion-sort A xs leq)
+| A xs leq = (List/insertion_sort A xs leq)
 
 // TODO: Use a better sorting algorithm like merge sort or quicksort
 

@@ -1,0 +1,18 @@
+// Checks if a character is whitespace.
+// - code: The character to check.
+// = True if whitespace, False otherwise.
+Char/is_space : Char -> Bool
+= λcode (U64/to_bool 
+  (| (== code 32)  // space
+  (| (== code 9)   // tab
+  (| (== code 10)  // newline
+  (| (== code 13)  // carriage return
+  (| (== code 11)  // vertical tab
+  (== code 12)))))))  // form feed
+
+#test: (Char/is_space ' ') == #True
+#test: (Char/is_space '\n') == #True
+#test: (Char/is_space '\t') == #True
+#test: (Char/is_space 'A') == #False
+#test: (Char/is_space '5') == #False
+#test: (Char/is_space '!') == #False

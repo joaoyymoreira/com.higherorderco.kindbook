@@ -1,4 +1,4 @@
-// Component-wise maximum of two V2 vectors.
+// Component_wise maximum of two V2 vectors.
 // - a: First V2 vector.
 // - b: Second V2 vector.
 // = New V2 vector with maximum values for each component.

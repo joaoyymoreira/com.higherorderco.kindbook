@@ -1,5 +1,5 @@
 // Instance of Show for Bool
 Bool/Show : (Show Bool)
 = #Show{
-    to-string: Bool/to-string
+    to_string: Bool/to_string
   }

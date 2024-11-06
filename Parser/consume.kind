@@ -3,7 +3,7 @@
 // = Parser that returns unit if successful, or fails if not found.
 Parser/consume : String -> (Parser Unit)
 | target #State{input index} =
-  if (String/starts-with input target) {
+  if (String/starts_with input target) {
     #Done{
       #Reply{
         state: 

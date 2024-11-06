@@ -1,4 +1,4 @@
-// Component-wise minimum of two V2 vectors.
+// Component_wise minimum of two V2 vectors.
 // - a: First V2 vector.
 // - b: Second V2 vector.
 // = New V2 vector with minimum values for each component.

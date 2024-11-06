@@ -1,0 +1,16 @@
+// Converts a character to its uppercase equivalent.
+// - code: The character to convert.
+// = The uppercase version of the input character.
+Char/to_upper : Char -> Char
+= λcode
+  if (Char/is_lower code) {
+    (- code 32)
+  } else {
+    code
+  }
+
+#test: (Char/to_upper 'a') == 'A'
+#test: (Char/to_upper 'A') == 'A'
+#test: (Char/to_upper '5') == '5'
+#test: (Char/to_upper '@') == '@'
+#test: (Char/to_upper 'z') == 'Z'

@@ -5,10 +5,10 @@
 Nat/xor : Nat -> Nat -> Nat
 | #Zero b = b
 | a #Zero = a
-| a b with (#Pair{(Nat/div-mod a #2) (Nat/div-mod b #2)} :: (Pair (Pair Nat Nat) (Pair Nat Nat)))
-. | #Pair{#Pair{a-div #Zero} #Pair{b-div #Zero}}               = (Nat/mul #2 (Nat/xor a-div b-div))
-. | #Pair{#Pair{a-div #Succ{#Zero}} #Pair{b-div #Succ{#Zero}}} = (Nat/mul #2 (Nat/xor a-div b-div))
-. | #Pair{#Pair{a-div a-mod} #Pair{b-div b-mod}}               = #Succ{(Nat/mul #2 (Nat/xor a-div b-div))}
+| a b with (#Pair{(Nat/div_mod a #2) (Nat/div_mod b #2)} :: (Pair (Pair Nat Nat) (Pair Nat Nat)))
+. | #Pair{#Pair{a_div #Zero} #Pair{b_div #Zero}}               = (Nat/mul #2 (Nat/xor a_div b_div))
+. | #Pair{#Pair{a_div #Succ{#Zero}} #Pair{b_div #Succ{#Zero}}} = (Nat/mul #2 (Nat/xor a_div b_div))
+. | #Pair{#Pair{a_div a_mod} #Pair{b_div b_mod}}               = #Succ{(Nat/mul #2 (Nat/xor a_div b_div))}
 
 #test: (Nat/xor #0 #0) == #0
 #test: (Nat/xor #0 #1) == #1

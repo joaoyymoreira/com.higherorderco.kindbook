@@ -2,7 +2,7 @@
 data Bend/Net {
   #Net {
     nam: String                 // Name of the inet
-    nod: (BinMap Bend/Net/Node) // Map of node-id to nodes
+    nod: (BinMap Bend/Net/Node) // Map of node_id to nodes
     len: U64                    // Number of nodes in the inet
   }
 }

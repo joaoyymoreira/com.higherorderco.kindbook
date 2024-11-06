@@ -1,0 +1,36 @@
+use Bend/Fun/Term as Term
+
+// Monadic map_children with state.
+// - f: The function to apply to each child term.
+// - s: The initial state.
+// - t: The term to map over.
+// = The final state and the term after mapping all the children, encapsulated by the monad.
+Term/mmap_children_with :
+  ∀(S: *) 
+  ∀(M: * -> *)
+  ∀(m: (Monad M))
+  ∀(f: (List String) -> Term -> S -> (M (Pair Term S)))
+  ∀(t: Term)
+  S -> (M (Pair Term S))
+| S M m f t s =
+  let r = (Term/mmap_children
+            λA S -> (M (Pair A S))
+            (monad S M m)
+            f
+            t) :: (S -> (M (Pair Term S)))
+  (r s)
+
+StateT : ∀(S: *) ∀(M: * -> *) * -> *
+| S M = λA S -> (M (Pair A S))
+
+monad : ∀(S: *) ∀(M: * -> *) ∀(m: (Monad M)) (Monad (StateT S M))
+| S M m = #Monad{
+  pure: (pure S M m)
+  bind: (bind S M m)
+}
+
+pure : ∀(S: *) ∀(M: * -> *) ∀(m: (Monad M)) ∀(A: *) A -> (StateT S M A)
+| S M #Monad{pure bind} A x s = (pure (Pair A S) #Pair{x s}) 
+
+bind : ∀(S: *) ∀(M: * -> *) ∀(m: (Monad M)) ∀(A: *) ∀(B: *) (StateT S M A) -> (A -> (StateT S M B)) -> (StateT S M B)
+| S M #Monad{pure bind} A B m f s = (bind _ _ (m s) λ{#Pair{x s}: (f x s)})

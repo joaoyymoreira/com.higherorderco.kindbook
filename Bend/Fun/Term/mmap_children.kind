@@ -1,0 +1,97 @@
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/Term as Term
+
+Term/mmap_children :
+  ∀(M: * -> *) ∀(m: (Monad M)) ∀(f: (List String) -> Term -> (M Term)) ∀(t: Term) (M Term)
+| M #Monad{pure bind} f #Var{x}       = (pure _ #Var{x})
+| M #Monad{pure bind} f #Lnk{x}       = (pure _ #Lnk{x})
+| M #Monad{pure bind} f #Num{n}       = (pure _ #Num{n})
+| M #Monad{pure bind} f #Str{s}       = (pure _ #Str{s})
+| M #Monad{pure bind} f #Ref{nam}     = (pure _ #Ref{nam})
+| M #Monad{pure bind} f #Era          = (pure _ #Era)
+
+| M #Monad{pure bind} f #Lam{pat bod} =
+  (bind _ _ (f (Pat/binds pat) bod) λbod
+  (pure _ #Lam{pat bod}))
+
+| M #Monad{pure bind} f #App{fun arg} =
+  (bind _ _ (f [] fun) λfun
+  (bind _ _ (f [] arg) λarg
+  (pure _ #App{fun arg})))
+
+| M #Monad{pure bind} f #Let{pat val nxt} =
+  (bind _ _ (f [] val) λval
+  (bind _ _ (f (Pat/binds pat) nxt) λnxt
+  (pure _ #Let{pat val nxt})))
+
+| M #Monad{pure bind} f #Wth{typ bod} =
+  (bind _ _ (f [] bod) λbod
+  (pure _ #Wth{typ bod}))
+  
+| M #Monad{pure bind} f #Ask{pat val nxt} =
+  (bind _ _ (f [] val) λval
+  (bind _ _ (f (Pat/binds pat) nxt) λnxt
+  (pure _ #Ask{pat val nxt})))
+
+| M #Monad{pure bind} f #Use{nam val nxt} =
+  (bind _ _ (f [] val) λval
+  (bind _ _ (f (List/concat_maybes _ [nam]) nxt) λnxt
+  (pure _ #Use{nam val nxt})))
+
+| M #Monad{pure bind} f #Fan{kind els} =
+  (bind _ _ (List/mmap _ #Monad{pure bind} _ _ els (f [])) λels
+  (pure _ #Fan{kind els}))
+
+| M #Monad{pure bind} f #Lst{els} =
+  (bind _ _ (List/mmap _ #Monad{pure bind} _ _ els (f [])) λels
+  (pure _ #Lst{els}))
+
+| M #Monad{pure bind} f #Opr{op fst snd} =
+  (bind _ _ (f [] fst) λfst
+  (bind _ _ (f [] snd) λsnd
+  (pure _ #Opr{op fst snd})))
+
+| M #Monad{pure bind} f #Opn{typ var bnd bod} =
+  (bind _ _ (f (List/concat_maybes _ bnd) bod) λbod
+  (pure _ #Opn{typ var bnd bod}))
+
+// Note: we don't recurse on the 'def'
+| M #Monad{pure bind} f #Def{#FnDef{nam typ chk rul src} nxt} =
+  (bind _ _ (f [nam] nxt) λnxt
+  (pure _ #Def{#FnDef{nam typ chk rul src} nxt}))
+
+| M m@#Monad{pure bind} f #Mat{bnd arg with_bnd with_arg arms} =
+  (bind _ _ (f [] arg) λarg
+  (bind _ _ (List/mmap _ m _ _ with_arg (f [])) λwith_arg
+  (bind _ _ (List/mmap _ m _ _ arms λrule
+    let #MatchRule{nam fld bod} = rule
+    (bind _ _ (f (List/concat_maybes _ #Cons{bnd fld}) bod) λbod
+    (pure MatchRule #MatchRule{nam fld bod}))) λarms
+  (pure _ #Mat{bnd arg with_bnd with_arg arms}))))
+
+| M m@#Monad{pure bind} f #Fld{bnd arg with_bnd with_arg arms} =
+  (bind _ _ (f [] arg) λarg
+  (bind _ _ (List/mmap _ m _ _ with_arg (f [])) λwith_arg
+  (bind _ _ (List/mmap _ m _ _ arms λrule
+    let #MatchRule{nam fld bod} = rule
+    (bind _ _ (f (List/concat_maybes _ #Cons{bnd fld}) bod) λbod
+    (pure MatchRule #MatchRule{nam fld bod}))) λarms
+  (pure _ #Fld{bnd arg with_bnd with_arg arms}))))
+
+| M m@#Monad{pure bind} f #Swt{bnd arg with_bnd with_arg pred arms} =
+  (bind _ _ (f [] arg) λarg
+  (bind _ _ (List/mmap _ m _ _ with_arg (f [])) λwith_arg
+  let #Pair{nums succ} = (List/unsnoc _ arms)
+  let succ             = (Maybe/run _ succ #Era)
+  (bind _ _ (List/mmap _ m _ _ nums (f (List/concat_maybes _ [bnd]))) λnums
+  (bind _ _ (f (List/concat_maybes _ [bnd pred]) succ) λsucc
+  let arms = (List/append _ nums [succ])
+  (pure _ #Swt{bnd arg with_bnd with_arg pred arms})))))
+
+| M m@#Monad{pure bind} f #Bnd{bnd arg cond step base} =
+  (bind _ _ (List/mmap _ m _ _ arg (f [])) λarg
+  (bind _ _ (f (List/concat_maybes _ bnd) cond) λcond
+  (bind _ _ (f (List/concat_maybes _ bnd) step) λstep
+  (bind _ _ (f (List/concat_maybes _ bnd) base) λbase
+  (pure _ #Bnd{bnd arg cond step base})))))

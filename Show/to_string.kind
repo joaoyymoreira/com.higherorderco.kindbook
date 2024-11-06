@@ -1,0 +1,12 @@
+// Applies the to_string function of a Show instance.
+// - A: Input type.
+// - s: Show instance for A.
+// - x: Value to convert to string.
+// = String representation of x.
+Show/to_string : ∀(A: *) ∀(s: (Show A)) A -> String
+| A #Show{to_string} x = (to_string x)
+
+#test: (Show/to_string Bool Bool/Show #True) == "True"
+#test: (Show/to_string Bool Bool/Show #False) == "False"
+#test: (Show/to_string Nat Nat/Show #0) == "0"
+#test: (Show/to_string Nat Nat/Show #3) == "3"

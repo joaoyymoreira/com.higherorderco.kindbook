@@ -1,0 +1,15 @@
+// Ensures two Bits values have the same length by padding with leading zeros.
+// - a: The 1st Bits value.
+// - b: The 2nd Bits value.
+// = A pair of Bits values with equal length, padded if necessary.
+Bits/pad_length : Bits -> Bits -> (Pair Bits Bits)
+| a b =
+  let #Pair{bits_a len_a} = (Bits/length_got a)
+  let #Pair{bits_b len_b} = (Bits/length_got b)
+  let trg_len             = (Nat/max len_a len_b)
+  #Pair{(Bits/pad_zeros bits_a trg_len) (Bits/pad_zeros bits_b trg_len)}
+
+#test: (Bits/pad_length #E #E) == #Pair{#E #E}
+#test: (Bits/pad_length #O{#E} #I{#E}) == #Pair{#O{#E} #I{#E}}
+#test: (Bits/pad_length #O{#I{#E}} #I{#E}) == #Pair{#O{#I{#E}} #I{#O{#E}}}
+#test: (Bits/pad_length #E #I{#O{#E}}) == #Pair{#O{#O{#E}} #I{#O{#E}}}

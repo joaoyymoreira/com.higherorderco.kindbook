@@ -1,4 +1,4 @@
-// Divides a V2 vector by another V2 vector component-wise.
+// Divides a V2 vector by another V2 vector component_wise.
 // - a: Dividend vector.
 // - b: Divisor vector.
 // = Resulting vector.

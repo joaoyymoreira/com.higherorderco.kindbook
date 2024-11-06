@@ -2,13 +2,13 @@
 // - 1st: The input string to be hashed.
 // = A Bits value representing the computed hash of the input string.
 String/hash : String -> Bits
-| str = (U64/to-bits (List/foldr _ str _ 0 fxhash-step))
+| str = (U64/to_bits (List/foldr _ str _ 0 fxhash_step))
 
 // Performs a single step of the FxHash64 algorithm.
 // - char: The character to be incorporated into the hash.
 // - hash: The current hash value.
 // = The updated hash value after processing the character.
-fxhash-step : U64 -> U64 -> U64
+fxhash_step : U64 -> U64 -> U64
 | char hash =
   let seed = 5871781006564002453 // 0x517cc1b727220a95u64
   let hash = (U64/lrot hash 5)
@@ -16,7 +16,7 @@ fxhash-step : U64 -> U64 -> U64
   let hash = (* hash seed)
   hash
 
-#test : (String/hash "") == (U64/to-bits 0)
+#test : (String/hash "") == (U64/to_bits 0)
 #test : (Bits/eq (String/hash "a") (String/hash "")) == #False
 #test : (Bits/eq (String/hash "a") (String/hash "z")) == #False
 #test : (Bits/eq (String/hash "hello") (String/hash "world")) == #False

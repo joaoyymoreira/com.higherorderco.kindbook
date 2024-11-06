@@ -10,8 +10,8 @@ BinTree/all : ∀(A: *) (BinTree A) -> (A -> Bool) -> Bool
     #True
     λval λlft λrgt (Bool/and (cond val) (Bool/and lft rgt)))
 
-#test: (BinTree/all U64 #Leaf (λx (U64/to-bool (== x 1)))) == #True
-#test: (BinTree/all U64 #Node{1 #Leaf #Leaf} (λx (U64/to-bool (== x 1)))) == #True
-#test: (BinTree/all U64 #Node{2 #Leaf #Leaf} (λx (U64/to-bool (== x 1)))) == #False
-#test: (BinTree/all U64 #Node{1 #Node{2 #Leaf #Leaf} #Node{3 #Leaf #Leaf}} (λx (U64/to-bool (> x 0)))) == #True
-#test: (BinTree/all U64 #Node{1 #Node{2 #Leaf #Leaf} #Node{3 #Leaf #Leaf}} (λx (U64/to-bool (> x 1)))) == #False
+#test: (BinTree/all U64 #Leaf (λx (U64/to_bool (== x 1)))) == #True
+#test: (BinTree/all U64 #Node{1 #Leaf #Leaf} (λx (U64/to_bool (== x 1)))) == #True
+#test: (BinTree/all U64 #Node{2 #Leaf #Leaf} (λx (U64/to_bool (== x 1)))) == #False
+#test: (BinTree/all U64 #Node{1 #Node{2 #Leaf #Leaf} #Node{3 #Leaf #Leaf}} (λx (U64/to_bool (> x 0)))) == #True
+#test: (BinTree/all U64 #Node{1 #Node{2 #Leaf #Leaf} #Node{3 #Leaf #Leaf}} (λx (U64/to_bool (> x 1)))) == #False

@@ -5,7 +5,7 @@
 List/stripe : ∀(A: *) (List (List A)) -> (List (List A))
 | A #Nil                   = #Nil
 | A #Cons{#Nil xss}        = (List/stripe A xss)
-| A #Cons{#Cons{x xs} xss} = #Cons{#Cons{x #Nil} (List/zip-cons A xs (List/stripe A xss))}
+| A #Cons{#Cons{x xs} xss} = #Cons{#Cons{x #Nil} (List/zip_cons A xs (List/stripe A xss))}
 
 #test: (List/stripe U64 []) == []
 #test: (List/stripe U64 [[1] [2 3] [4 5 6]]) == [[1] [2] [3 4] [5] [6]]

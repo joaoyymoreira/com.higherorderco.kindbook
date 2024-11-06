@@ -1,0 +1,23 @@
+// Deletes the maximum key_value pair from an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - tree: The input AVL tree.
+// = A pair containing the deleted key_value pair (if any) and the updated tree with a height change indicator.
+OrdTree/Delete/delete_maximum : ∀(K: *) ∀(V: *) (OrdTree K V) -> (Pair (Maybe (Pair K V)) (Pair (OrdTree K V) Bool))
+| K V #Leaf                       = #Pair{#None #Pair{#Leaf #False}}
+| K V #Node{pair balance l #Leaf} = #Pair{#Some{pair} #Pair{l #True}}
+| K V #Node{pair balance l r} with (OrdTree/Delete/delete_maximum K V r)
+. | #Pair{v #Pair{other is_smaller}} with #Pair{is_smaller balance} :: (Pair Bool OrdTree/Balance)
+. . | #Pair{#False _}         = #Pair{v #Pair{#Node{pair balance l other} #False}} 
+. . | #Pair{#True  #PlusOne}  = #Pair{v #Pair{#Node{pair #Zero l other} #True}}
+. . | #Pair{#True  #Zero}     = #Pair{v #Pair{#Node{pair #MinusOne l other} #False}}
+. . | #Pair{#True  #MinusOne} = #Pair{v (OrdTree/Balance/rotate_right K V #Node{pair #MinusOne l other})}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/Delete/delete_maximum U64 U64 ordtree) == #Pair{#None #Pair{#Leaf #False}}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{3 30})
+  (OrdTree/Delete/delete_maximum U64 U64 ordtree) == #Pair{#Some{#Pair{3 30}} #Pair{#Leaf #True}}

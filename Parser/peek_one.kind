@@ -1,0 +1,12 @@
+// Peeks at the next character in the input without consuming it.
+// - state: The current parser state.
+// = A Reply containing the current state and the next character (if any).
+Parser/peek_one : (Parser (Maybe Char))
+| state =
+  let #State{input index} = state
+  let next_char           = (String/head input)
+  #Done{#Reply{#State{input index} next_char}}
+
+#test: (Parser/peek_one #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #Some{97}}})
+#test: (Parser/peek_one #State{[] #0}) == (#Done{#Reply{#State{[] #0} #None}})
+#test: (Parser/peek_one #State{"!@#" #0}) == (#Done{#Reply{#State{"!@#" #0} #Some{33}}})

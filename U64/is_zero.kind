@@ -1,0 +1,12 @@
+// Checks if a U64 is zero.
+// - x: The U64 to check.
+// = True if the input is zero, False otherwise.
+U64/is_zero : U64 -> Bool
+= λ{
+  0: #True
+  1+p: #False
+}
+
+#test: (U64/is_zero 0) == #True
+#test: (U64/is_zero 1) == #False
+#test: (U64/is_zero 42) == #False

@@ -5,4 +5,4 @@ OrdSet/empty : ∀(K: *) (OrdSet K)
 = λK (OrdTree/empty K Unit)
 
 #test: (OrdSet/size U64 (OrdSet/empty U64)) == #0
-#test: (OrdSet/to-list U64 (OrdSet/empty U64)) == #Nil
+#test: (OrdSet/to_list U64 (OrdSet/empty U64)) == #Nil

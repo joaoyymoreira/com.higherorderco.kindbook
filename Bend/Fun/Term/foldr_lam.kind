@@ -1,0 +1,7 @@
+use Bend/Fun/Term as Term
+
+Term/foldr_lam : Term -> (List (Maybe String)) -> Term
+| bod bnd = (List/foldr _ bnd _ bod lam)
+
+lam : (Maybe String) -> Term -> Term
+| a b = #Lam{#Var{a} b}

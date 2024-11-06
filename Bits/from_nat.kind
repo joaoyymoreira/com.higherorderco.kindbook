@@ -1,0 +1,11 @@
+// Converts a nat to its binary representation as Bits.
+// - n: The nat to convert.
+// = The binary representation of the number as Bits.
+Bits/from_nat : Nat -> Bits
+| n = (Nat/to_bits n)
+
+#test: (Bits/from_nat #0) == #O{#E}
+#test: (Bits/from_nat #1) == #I{#E}
+#test: (Bits/from_nat #2) == #O{#I{#E}}
+#test: (Bits/from_nat #3) == #I{#I{#E}}
+#test: (Bits/from_nat #8) == #O{#O{#O{#I{#E}}}}

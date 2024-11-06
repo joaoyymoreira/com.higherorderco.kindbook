@@ -1,0 +1,66 @@
+// Parses a list of elements separated by a specified separator.
+// Accepts an optional trailing separator.
+// - A: Element type.
+// - el: Parser for the elements.
+// - sep: String separator.
+// - min_els: Minimum number of elements required.
+// = A parser that produces a list of parsed elements.
+Bend/Parser/sep_by : ∀(A: *) (Parser A) -> String -> Nat -> (Parser (List A))
+| A el sep min_els = do Parser {
+  ask els = (Bend/Parser/sep_by/go A el sep min_els #Nil)
+  ret (List/reverse A els)
+}
+
+// Auxiliary function for sep_by.
+Bend/Parser/sep_by/go : ∀(A: *) (Parser A) -> String -> Nat -> (List A) -> (Parser (List A))
+| A el sep #Succ{#Succ{n}} acc = do Parser {
+  ask (Bend/Parser/skip_trivia)
+  ask val = el
+  ask (Bend/Parser/consume sep)
+  (Bend/Parser/sep_by/go A el sep #Succ{n} #Cons{val acc})
+}
+| A el sep #Succ{#Zero} acc = do Parser {
+  ask (Bend/Parser/skip_trivia)
+  ask val = el
+  ask res = (Parser/alternative (List A)
+    (do Parser {
+      ask (Bend/Parser/consume sep)
+      (Bend/Parser/sep_by/go A el sep #Zero #Cons{val acc})
+    })
+    (do Parser {
+      ask (Bend/Parser/try_consume sep)
+      ret #Cons{val acc}
+    }))
+  ret res
+}
+| A el sep #Zero acc = do Parser {
+  ask (Bend/Parser/skip_trivia)
+  (Parser/alternative (List A)
+    (do Parser {
+      ask val = el
+      ask res = (Parser/alternative (List A)
+        (do Parser {
+          ask (Bend/Parser/consume sep)
+          (Bend/Parser/sep_by/go A el sep #Zero #Cons{val acc})
+        })
+        (do Parser {
+          ask consumed = (Bend/Parser/try_consume sep)
+          ret #Cons{val acc}
+        }))
+      ret res
+    })
+    (Parser/pure (List A) acc)
+  )
+}
+
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"" #0}) == (#Done{#Reply{#State{"" #0} []}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"," #0}) == (#Done{#Reply{#State{"," #0} []}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo" #0}) == (#Done{#Reply{#State{"" #3} ["foo"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo," #0}) == (#Done{#Reply{#State{"" #4} ["foo"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo,bar,baz" #0}) == (#Done{#Reply{#State{"" #11} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo,bar,baz," #0}) == (#Done{#Reply{#State{"" #12} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo , bar , baz" #0}) == (#Done{#Reply{#State{"" #15} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #0) #State{"foo,,bar,,,baz" #0}) == (#Done{#Reply{#State{",bar,,,baz" #4} ["foo"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #2) #State{"foo,bar" #0}) == (#Done{#Reply{#State{"" #7} ["foo" "bar"]}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) "," #2) #State{"foo" #0}) == (#Fail{#Error{#3 "Expected ,"}})
+#test: ((Bend/Parser/sep_by String (Bend/Parser/parse_var_name) ";" #0) #State{"foo;bar;baz" #0}) == (#Done{#Reply{#State{"" #11} ["foo" "bar" "baz"]}})

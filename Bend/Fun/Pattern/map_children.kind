@@ -1,0 +1,10 @@
+use Bend/Fun/Pattern as Pat
+
+Bend/Fun/Pattern/map_children : (Bend/Fun/Pattern -> Bend/Fun/Pattern) -> Bend/Fun/Pattern -> Bend/Fun/Pattern
+| f #Var{x}    = #Var{x}
+| f #Chn{x}    = #Chn{x}
+| f #Fan{k ps} = #Fan{k (List/map _ _ ps f)}
+| f #Ctr{n ps} = #Ctr{n (List/map _ _ ps f)}
+| f #Num{x}    = #Num{x}
+| f #Lst{ps}   = #Lst{(List/map _ _ ps f)}
+| f #Str{x}    = #Str{x}

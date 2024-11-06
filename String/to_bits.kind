@@ -1,0 +1,12 @@
+// Converts a string to its binary representation with padded char bits.
+// - s: Input string.
+// = Binary representation as Bits, each char using 21 bits.
+String/to_bits : String -> Bits
+| s =
+  use char_to_bits = λx (Char/to_bits x)
+  use bits_list = (List/map Char Bits s char_to_bits)
+  (Bits/concat bits_list)
+
+#test: (String/to_bits "") == #E
+#test: (String/to_bits "A") == #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}
+#test: (String/to_bits "AB") == #I{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#I{#O{#O{#O{#O{#I{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#O{#E}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}

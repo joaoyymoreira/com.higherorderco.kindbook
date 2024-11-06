@@ -4,7 +4,7 @@
 data OrdTree (K: *) (V: *) {
   #Leaf
   #Node {
-    key-value: (Pair K V)
+    key_value: (Pair K V)
     balance: OrdTree/Balance
     left: (OrdTree K V)
     right: (OrdTree K V)

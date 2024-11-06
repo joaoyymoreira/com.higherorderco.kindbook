@@ -1,0 +1,8 @@
+// Adds a number to a term.
+// - term: The original term.
+// - n   : The number to add.
+// = The resulting term after addition.
+Bend/Fun/Term/add_num : Bend/Fun/Term -> U64 -> Bend/Fun/Term 
+| term n with (U64/eq n 0)
+. | #True  = term
+. | #False = #Opr{#Add term #Num{#U24{n}}}

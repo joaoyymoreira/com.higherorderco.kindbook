@@ -1,0 +1,20 @@
+// Splits a Bits value at a specified position.
+// - bits: The Bits value to be split.
+// - m: The position at which to split the Bits.
+// = A Pair of Bits where the first element contains the bits before the split point,
+//   and the second element contains the bits after the split point.
+Bits/split_at : Bits -> Nat -> (Pair Bits Bits)
+| bits     #Zero       = #Pair{#E bits}
+| #E       #Succ{pred} = #Pair{(Bits/pad_zeros #E pred) #E}
+| #O{tail} #Succ{pred} = 
+  let #Pair{k rest} = (Bits/split_at tail pred) 
+  #Pair{#O{k} rest}
+| #I{tail} #Succ{pred} = 
+  let #Pair{k rest} = (Bits/split_at tail pred) 
+  #Pair{#I{k} rest}
+
+#test: (Bits/split_at (#O{#I{#E}}) #0) == #Pair{#E (#O{#I{#E}})}
+#test: (Bits/split_at (#O{#I{#E}}) #1) == (#Pair{(#O{#E}) (#I{#E})})
+#test: (Bits/split_at (#I{#O{#E}}) #3) == (#Pair{(#I{#O{#E}}) #E})
+#test: (Bits/split_at #E #1) == (#Pair{#E #E})
+#test: (Bits/split_at (#I{#O{#E}}) #2) == (#Pair{(#I{#O{#E}}) #E})

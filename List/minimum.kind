@@ -2,7 +2,7 @@
 // - A: Element type.
 // - ord: Ord instance for A.
 // - xs: Input list.
-// = Minimum element if non-empty, None if empty.
+// = Minimum element if non_empty, None if empty.
 List/minimum : ∀(A: *) ∀(ord: (Ord A)) (List A) -> (Maybe A)
 | A ord #Nil             = #None
 | A ord #Cons{head tail} = 

@@ -3,7 +3,7 @@
 // - b: The second character.
 // = True if equal, False otherwise.
 Char/eq : Char -> Char -> Bool
-= λa λb (U64/to-bool (U64/eql a b))
+= λa λb (U64/to_bool (U64/eql a b))
 
 #test: (Char/eq 'a' 'a') == #True
 #test: (Char/eq 'a' 'b') == #False

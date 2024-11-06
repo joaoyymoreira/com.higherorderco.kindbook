@@ -1,0 +1,12 @@
+// Converts a natural number into a unique name.
+// - n: The number to convert.
+// = A unique string representation of the number, using only lowercase ascii characters.
+Bend/u64_to_name : U64 -> String
+| n = (go (/ n 26) #Cons{(letter (% n 26)) []})
+
+letter : U64 -> Char
+| n = (+ n 'a')
+
+go : U64 -> (List Char) -> (List Char)
+| 0 acc = acc
+| n acc = (go (/ n 26) #Cons{(letter (% n 26)) acc})

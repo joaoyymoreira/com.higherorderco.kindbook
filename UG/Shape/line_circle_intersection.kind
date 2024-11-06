@@ -1,0 +1,55 @@
+// Checks if a line segment intersects with a circle.
+// - start: Starting point of the line segment.
+// - end: Ending point of the line segment.
+// - center: Center of the circle.
+// - radius: Radius of the circle.
+// = True if the line segment intersects with the circle, False otherwise.
+UG/Shape/line_circle_intersection : V2 -> V2 -> V2 -> F64 -> Bool
+| #V2{x1 y1} #V2{x2 y2} #V2{cx cy} radius = 
+  let dx = (F64/sub x2 x1)
+  let dy = (F64/sub y2 y1)
+  
+  // Calculate quadratic equation coefficients
+  let a = (F64/add (F64/mul dx dx) (F64/mul dy dy))
+  
+  let b = (F64/mul 2.0 
+    (F64/add 
+      (F64/mul dx (F64/sub x1 cx))
+      (F64/mul dy (F64/sub y1 cy))))
+      
+  let c1 = (F64/add (F64/mul cx cx) (F64/mul cy cy))
+  let c2 = (F64/add (F64/mul x1 x1) (F64/mul y1 y1))
+  let c3 = (F64/mul 2.0 
+    (F64/add 
+      (F64/mul cx x1) 
+      (F64/mul cy y1)))
+  let c4 = (F64/mul radius radius)
+  let c = (F64/sub (F64/add c1 c2) (F64/add c3 c4))
+  
+  // Calculate discriminant
+  let disc = (F64/sub 
+    (F64/mul b b) 
+    (F64/mul (F64/mul 4.0 a) c))
+    
+  // If discriminant is negative, no intersection
+  if (F64/lt disc 0.0) {
+    #False
+  } else {
+    // Calculate intersection points
+    let t1 = (F64/div 
+      (F64/add (F64/negate b) (F64/sqrt disc))
+      (F64/mul 2.0 a))
+      
+    let t2 = (F64/div 
+      (F64/sub (F64/negate b) (F64/sqrt disc))
+      (F64/mul 2.0 a))
+      
+    // Check if either intersection point lies on the line segment
+    let valid1 = (Bool/and (F64/gte t1 0.0) (F64/lte t1 1.0))
+    let valid2 = (Bool/and (F64/gte t2 0.0) (F64/lte t2 1.0))
+    (Bool/or valid1 valid2)
+  }
+
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 0.0} 0.5) == #True
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 0.0} #V2{1.0 2.0} 0.5) == #False
+#test: (UG/Shape/line_circle_intersection #V2{0.0 0.0} #V2{2.0 2.0} #V2{1.0 1.0} 1.0) == #True

@@ -1,0 +1,13 @@
+// Parses a quoted character.
+// = Returns the parsed character.
+Parser/parse_quoted_char : (Parser Char)
+= do Parser {
+  ask y = (Parser/consume "'")
+  ask c = Parser/parse_char
+  ask x = (Parser/consume "'")
+  ret c
+}
+
+#test: (Parser/parse_quoted_char #State{"'a'" #0}) == (#Done{#Reply{#State{[] #3} 'a'}})
+#test: (Parser/parse_quoted_char #State{"'\\n'" #0}) == (#Done{#Reply{#State{[] #4} '\n'}})
+#test: (Parser/parse_quoted_char #State{"'ab'" #0}) == (#Fail{#Error{#2 "Expected '"}})

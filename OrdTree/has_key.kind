@@ -1,0 +1,20 @@
+// Checks if a key exists in the tree.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - tree: The AVL tree.
+// - key: Key to search.
+// = True if key exists, False otherwise.
+OrdTree/has_key : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> Bool
+| K V ord #Leaf                                 key = #False
+| K V ord #Node{#Pair{curr_key _} _ left right} key =
+  match (Ord/compare K ord key curr_key) {
+    #LT: (OrdTree/has_key K V ord left key)
+    #EQ: #True
+    #GT: (OrdTree/has_key K V ord right key)
+  }
+
+#test: (OrdTree/has_key U64 U64 U64/Ord #Leaf 5) == #False
+#test: (OrdTree/has_key U64 U64 U64/Ord #Node{#Pair{5 10} #Zero #Leaf #Leaf} 5) == #True
+#test: (OrdTree/has_key U64 U64 U64/Ord #Node{#Pair{5 10} #Zero #Leaf #Leaf} 3) == #False
+#test: (OrdTree/has_key U64 U64 U64/Ord #Node{#Pair{5 10} #Zero #Leaf #Node{#Pair{7 14} #Zero #Leaf #Leaf}} 7) == #True

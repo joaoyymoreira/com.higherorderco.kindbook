@@ -4,7 +4,7 @@
 // = String with n repetitions of c.
 String/replicate : Nat -> Char -> String
 | #Zero    c = ""
-| #Succ{n} c = (String/append (String/from-char c) (String/replicate n c))
+| #Succ{n} c = (String/append (String/from_char c) (String/replicate n c))
 
 #test: (String/replicate #0 'a') == ""
 #test: (String/replicate #3 'a') == "aaa"

@@ -1,0 +1,16 @@
+// Converts a string to Bits in the given base.
+// - str: String to convert.
+// - base: Base for conversion.
+// = Maybe Bits with converted number if successful, None otherwise.
+String/to_bits_base : String -> U64 -> (Maybe Bits)
+| str base = 
+  (Maybe/map U64 Bits (String/to_u64_base str base)  U64/to_bits )
+
+#test: (String/to_bits_base "" 10) == #None
+#test: (String/to_bits_base "GG" 16) == #None
+#test: (String/to_bits_base "FF" 16) == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}
+#test: (String/to_bits_base "777" 8) == #Some{#I{#I{#I{#I{#I{#I{#I{#I{#I{#E}}}}}}}}}}
+#test: (String/to_bits_base "0000" 2) == #Some{#E}
+#test: (String/to_bits_base "0001" 2) == #Some{#I{#E}}
+#test: (String/to_bits_base "1010" 2) == #Some{#O{#I{#O{#I{#E}}}}}
+#test: (String/to_bits_base "123" 10) == #Some{#I{#I{#O{#I{#I{#I{#I{#E{}}}}}}}}}

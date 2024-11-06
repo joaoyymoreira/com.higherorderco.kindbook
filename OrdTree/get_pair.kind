@@ -1,0 +1,31 @@
+// Retrieves a key_value pair from an AVL tree.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - tree: The AVL tree.
+// - key: Key to search for.
+// = Maybe containing the key_value pair if found.
+OrdTree/get_pair : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe (Pair K V))
+| K V ord #Leaf key = #None
+| K V ord #Node{kv balance left right} key with (Ord/compare K ord key (Pair/get_fst K V kv))
+. | #LT = (OrdTree/get_pair K V ord left key)
+. | #EQ = #Some{kv}
+. | #GT = (OrdTree/get_pair K V ord right key)
+
+// #test: (OrdTree/get_pair U64 U64 U64/Ord 2 (OrdTree/empty U64 U64)) == #None
+// #test: (OrdTree/get_pair U64 U64 U64/Ord 2 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == #Some{#Pair{2 20}}
+// #test: (OrdTree/get_pair U64 U64 U64/Ord 1 (OrdTree/insert U64 U64 U64/Ord #Pair{2 20} (OrdTree/empty U64 U64))) == #None
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/get_pair U64 U64 U64/Ord ordtree 2) == #None
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  (OrdTree/get_pair U64 U64 U64/Ord ordtree 2) == #Some{#Pair{2 20}}
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  (OrdTree/get_pair U64 U64 U64/Ord ordtree 1) == #None

@@ -1,5 +1,5 @@
 // Instance of Show for Bits
 Bits/Show : (Show Bits)
 = #Show{
-    to-string: Bits/to-string
+    to_string: Bits/to_string
   }

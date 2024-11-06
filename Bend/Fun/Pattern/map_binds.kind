@@ -1,0 +1,4 @@
+
+Bend/Fun/Pattern/map_binds : ((Maybe String) -> (Maybe String)) -> Bend/Fun/Pattern -> Bend/Fun/Pattern
+| f #Var{x} = #Var{(f x)}
+| f pat     = (Bend/Fun/Pattern/map_children (Bend/Fun/Pattern/map_binds f) pat)

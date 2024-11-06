@@ -1,0 +1,28 @@
+// Converts a string to a U64 in the given base.
+// - str: String to convert.
+// - base: Base for conversion.
+// = Maybe U64 with converted number if successful, None otherwise.
+String/to_u64_base : String -> U64 -> (Maybe U64)
+| #Nil         base = #None
+| #Cons{hd tl} base = (String/to_u64_base/go #Cons{hd tl} base 0)
+
+// Helper function for String/to_u64_base
+// - chars: List of characters to convert.
+// - base: Base for conversion.
+// - acc: Accumulator for the result.
+// = Maybe U64 with converted number if successful, None otherwise.
+String/to_u64_base/go : String -> U64 -> U64 -> (Maybe U64)
+| #Nil         base acc = #Some{acc}
+| #Cons{hd tl} base acc =
+  let digit = (Char/to_digit_u64 hd base)
+  (Maybe/fold U64 digit
+    (Maybe U64) 
+    #None
+    (λvalue (String/to_u64_base/go tl base (+ (* acc base) value))))
+
+#test: (String/to_u64_base "" 10) == #None
+#test: (String/to_u64_base "GG" 16) == #None
+#test: (String/to_u64_base "777" 8) == #Some{511}
+#test: (String/to_u64_base "FF" 16) == #Some{255}
+#test: (String/to_u64_base "123" 10) == #Some{123}
+#test: (String/to_u64_base "1010" 2) == #Some{10}

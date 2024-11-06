@@ -1,0 +1,18 @@
+use Bend/Compile/BendToNet/Encoder as Enc
+
+// Adds one of the ports of a Bend variable to the Encoder.
+// If the variable has already been seen, links the port to the other side.
+// If the variable has not been seen, stores the port in the var map.
+// - encoder: The current Encoder state
+// - name: The name of the variable
+// - up: The port to link the variable to
+// = An updated Encoder or None on error
+Enc/link_var : Enc -> String -> Bend/Net/Port -> (Maybe Enc)
+| #Encoder{net vars} nam up with (BinMap/take _ vars (String/hash nam))
+. | #Pair{vars #Some{port}} = do Maybe {
+  ask net = (Bend/Net/link net port up)
+  #Some{#Encoder{net vars}}
+}
+. | #Pair{vars #None} =
+  let vars = (BinMap/set _ vars (String/hash nam) up)
+  #Some{#Encoder{net vars}}

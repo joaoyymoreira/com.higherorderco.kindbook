@@ -22,4 +22,4 @@ Maybe/mmap
 #test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (#Some{3}) (λx #None)) == #None
 #test: (Maybe/mmap Maybe Maybe/Monad U64 U64 #None (λx (Maybe/pure U64 x))) == #Some{#None}
 #test: (Maybe/mmap Maybe Maybe/Monad U64 U64 (#Some{3}) (λx (Maybe/pure U64 (+ x 1)))) == #Some{#Some{4}}
-#test: (Maybe/mmap Maybe Maybe/Monad U64 Bool (#Some{0}) (λx (Maybe/pure Bool (U64/to-bool (== x 0))))) == #Some{#Some{#True}}
+#test: (Maybe/mmap Maybe Maybe/Monad U64 Bool (#Some{0}) (λx (Maybe/pure Bool (U64/to_bool (== x 0))))) == #Some{#Some{#True}}

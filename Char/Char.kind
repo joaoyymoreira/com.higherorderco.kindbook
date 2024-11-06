@@ -1,5 +1,5 @@
 // Represents a character in the Unicode character set.
-// In Kind, characters are represented as 32-bit unsigned integers (U64).
+// In Kind, characters are represented as 32_bit unsigned integers (U64).
 Char 
 : * 
 = U64

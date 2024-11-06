@@ -1,0 +1,12 @@
+// Gets the initial state and tick of a game.
+// - S: State type.
+// - A: Action type.
+// - mach: The state machine.
+// - game: The game.
+// = A pair of the initial state and tick.
+UG/SM/get_initial_state : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> (Pair S UG/SM/Tick)
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} #Game{init when tick} =
+  (Maybe/match (UG/SM/StateLogs/StateNode S) (λx (Pair S UG/SM/Tick))
+    (#Pair{init genesis_tick})
+    (λnode #Pair{(UG/SM/StateLogs/StateNode/state S node) (UG/SM/StateLogs/StateNode/tick S node)})
+    state_logs)

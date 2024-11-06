@@ -1,9 +1,0 @@
-// Converts a F64 to a Bool.
-// - x: The F64 value to convert.
-// = True if x is non-zero, False otherwise.
-F64/to-bool : F64 -> Bool
-| a = (U64/to-bool (!= a 0.0))
-
-#test: (F64/to-bool 0.0) == #False
-#test: (F64/to-bool 1.0) == #True
-#test: (F64/to-bool 5.0) == #True

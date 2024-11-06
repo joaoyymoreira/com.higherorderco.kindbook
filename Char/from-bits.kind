@@ -1,9 +1,0 @@
-// Converts Bits to Char.
-// - b: The Bits to convert.
-// = The Char representation of the input Bits.
-Char/from-bits : Bits -> Char
-| b = (U64/from-bits b)
-
-#test: (Char/from-bits #I{#O{#O{#O{#O{#O{#I{#E}}}}}}}) == 'A'
-#test: (Char/from-bits #O{#I{#I{#I{#I{#I{#I{#E}}}}}}}) == '~'
-#test: (Char/from-bits #E) == '\0'

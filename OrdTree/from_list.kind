@@ -1,0 +1,20 @@
+// Creates an OrdTree from a list of key_value pairs.
+// - K: Key type.
+// - V: Value type.
+// - ord: Ord instance for K.
+// - xs: List of key_value pairs.
+// = The resulting OrdTree.
+OrdTree/from_list : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (List (Pair K V)) -> (OrdTree K V)
+| K V ord xs = (List/foldr (Pair K V) xs (OrdTree K V) (OrdTree/empty K V) (λpair λacc (OrdTree/insert K V ord acc pair)))
+
+#test:
+  let ordtree = [] :: (List (Pair U64 U64))
+  (OrdTree/from_list U64 U64 U64/Ord ordtree) == #Leaf
+
+#test:
+  let ordtree = [#Pair{1 10}] :: (List (Pair U64 U64))
+  (OrdTree/from_list U64 U64 U64/Ord ordtree) == #Node{#Pair{1 10} #Zero #Leaf #Leaf}
+
+#test:
+  let ordtree = [#Pair{2 20} #Pair{1 10}] :: (List (Pair U64 U64))
+  (OrdTree/from_list U64 U64 U64/Ord ordtree) == #Node{#Pair{1 10} #PlusOne #Leaf #Node{#Pair{2 20} #Zero #Leaf #Leaf}}

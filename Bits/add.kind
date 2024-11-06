@@ -2,7 +2,7 @@
 // - a: The 1st Bits value.
 // - b: The 2nd Bits value.
 // = A new Bits value representing the sum of a and b.
-// Note: This function handles carry-over automatically.
+// Note: This function handles carry_over automatically.
 Bits/add : Bits -> Bits -> Bits
 | #E         b          = b
 | #O{a.tail} #E         = #O{a.tail}

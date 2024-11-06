@@ -1,9 +1,9 @@
-// Inserts a key-value pair into the BinMap.
+// Inserts a key_value pair into the BinMap.
 // - A: Value type.
 // - m: BinMap to insert into.
 // - k: Bits key to insert.
 // - v: Value to associate with the key.
-// = New BinMap with the key-value pair inserted.
+// = New BinMap with the key_value pair inserted.
 BinMap/set : ∀(A: *) (BinMap A) -> Bits -> A -> (BinMap A)
 | A #Leaf        #E    v = #Node{#Some{v} #Leaf #Leaf}
 | A #Leaf        #O{b} v = #Node{#None (BinMap/set A #Leaf b v) #Leaf}

@@ -4,5 +4,5 @@
 // = A Show instance for Maybe A.
 Maybe/Show : ∀(A: *) ∀(show: (Show A)) (Show (Maybe A))
 | A show = #Show{
-  to-string: (Maybe/to-string A show)
+  to_string: (Maybe/to_string A show)
 }

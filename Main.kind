@@ -31,7 +31,7 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 //main : Nat
 //= let map = #Node{#Some{47244640257} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{4294967302} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{60129542145} #Leaf{} #Leaf{}}} #Node{#Some{34359738370} #Leaf{} #Node{#Some{103079215110} #Leaf{} #Leaf{}}}} #Node{#Some{17179869189} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{90194313222} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{111669149697} #Leaf{} #Leaf{}}}}} #Node{#Some{8589934597} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{60129542150} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{77309411334} #Leaf{} #Leaf{}}} #Node{#Some{34359738369} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{25769803778} #Node{#None{} #Leaf{} #Node{#Some{85899345921} #Leaf{} #Leaf{}}} #Node{#Some{60129542146} #Leaf{} #Leaf{}}}}} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{51539607557} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{73014444034} #Leaf{} #Leaf{}}} #Node{#Some{4} #Leaf{} #Node{#Some{115964116993} #Leaf{} #Leaf{}}}} #Node{#Some{4} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{94489280517} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313218} #Leaf{} #Leaf{}}} #Node{#Some{47244640257} #Leaf{} #Leaf{}}}} #Node{#Some{12884901894} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Node{#None{} #Leaf{} #Node{#Some{68719476741} #Leaf{} #Leaf{}}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Leaf{}} #Node{#Some{90194313217} #Leaf{} #Leaf{}}} #Node{#Some{47244640258} #Leaf{} #Node{#Some{115964116994} #Leaf{} #Leaf{}}}} #Node{#Some{25769803777} #Node{#None{} #Leaf{} #Node{#Some{98784247810} #Leaf{} #Leaf{}}} #Node{#Some{98784247809} #Leaf{} #Leaf{}}}}}} :: (BinMap U64)
   ////(BinMap/invert _ map)
-  //let lst = (BinMap/to-list _ map)
+  //let lst = (BinMap/to_list _ map)
   //(List/length _ lst)
 
 
@@ -106,9 +106,9 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
   //ask x = (IO/swap 42 1)
   //ask y = (IO/swap 42 2)
   //ask z = (IO/swap 42 3)
-  //ask (IO/print (String/join "" ["x: " (U64/to-string x)]))
-  //ask (IO/print (String/join "" ["y: " (U64/to-string y)]))
-  //ask (IO/print (String/join "" ["z: " (U64/to-string z)]))
+  //ask (IO/print (String/join "" ["x: " (U64/to_string x)]))
+  //ask (IO/print (String/join "" ["y: " (U64/to_string y)]))
+  //ask (IO/print (String/join "" ["z: " (U64/to_string z)]))
   //ret #Unit
 //}
 
@@ -140,7 +140,7 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 // TODO: inspired on double, create a fib function with U64 inputs
 // it must be a tail recursive function
 // remember the switch syntax is:
-// switch n { 0: ... _{np}: ... } // here, np is n-1
+// switch n { 0: ... _{np}: ... } // here, np is n_1
 // it can NOT have more than 2 cases.
 
 //o bλ__0 match __0 {#Pair:λ__0 match __0 {#A:λv 5 #B:λv 6 } }
@@ -151,7 +151,7 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 
 //main : Bool = (String/eq "(" ")")
 
-//main : Bits = (String/to-bits "o")
+//main : Bits = (String/to_bits "o")
 //main : Bits = (Bits/concat [#O{#I{#E}} #I{#O{#E}}])
 
 
@@ -234,7 +234,7 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 //Foo : ∀(x: (Maybe (Pair U64 U64))) U64
 //= λx match x {
   //#Some{pair}: match pair {
-    //#Pair{a b}: match (U64/is-zero a) {
+    //#Pair{a b}: match (U64/is_zero a) {
       //#True: (Foo x)
       //#False: 0
     //}
@@ -288,7 +288,7 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 //= #View { "// Comment 1\/ Comment 2\nabc" }
 
 
-//main = Parser/parse-unicode-escape
+//main = Parser/parse_unicode_escape
 
 
 
@@ -455,13 +455,13 @@ main : ∀(A: *) ∀(x: (List A)) (List A)
 //pull ((Foo m) n) ### dep=4 ari=2 skp=0
 //pull λy #False{} ### dep=3 ari=2 skp=1
 //pull #False{} ### dep=4 ari=2 skp=0
-//WARNING: inconsistent cross-branch lambda count on: match n {#Succ:λn ((Foo m) n) #_:λy #False{} }
+//WARNING: inconsistent cross_branch lambda count on: match n {#Succ:λn ((Foo m) n) #_:λy #False{} }
 //pull λx match x {#Zero:#True{} #_:λy #False{} } ### dep=1 ari=1 skp=0
 //pull match n {#Zero:#True{} #_:λy #False{} } ### dep=2 ari=2 skp=0
 //pull #True{} ### dep=2 ari=2 skp=0
 //pull λy #False{} ### dep=2 ari=2 skp=1
 //pull #False{} ### dep=3 ari=2 skp=0
-//WARNING: inconsistent cross-branch lambda count on: match m {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* }
+//WARNING: inconsistent cross_branch lambda count on: match m {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* }
 //pull * ### dep=1 ari=1 skp=1
 //ct0 = λx match x {#Succ:λm λx match x {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:λx match x {#Zero:#True{} #_:λy #False{} } #_:* }
 //ct1 = λm λn λv2 λv3 match m {#Succ:λm match n {#Succ:λn ((Foo m) n) #_:λy #False{} } #Zero:match n {#Zero:#True{} #_:λy #False{} } #_:* }

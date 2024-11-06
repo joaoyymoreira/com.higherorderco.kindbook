@@ -9,5 +9,5 @@ List/filter : ∀(A: *) (List A) -> (A -> Bool) -> (List A)
 . | #True  = #Cons{head (List/filter A tail fn)}
 . | #False = (List/filter A tail fn)
 
-#test: (List/filter U64 [1 2 3 4 5] (λx (U64/to-bool (> x 2)))) == [3 4 5]
-#test: (List/filter U64 [1 2 3 2 1] (λx (U64/to-bool (== x 2)))) == [2 2]
+#test: (List/filter U64 [1 2 3 4 5] (λx (U64/to_bool (> x 2)))) == [3 4 5]
+#test: (List/filter U64 [1 2 3 2 1] (λx (U64/to_bool (== x 2)))) == [2 2]

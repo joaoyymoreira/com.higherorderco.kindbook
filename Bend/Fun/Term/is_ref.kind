@@ -1,0 +1,4 @@
+
+Bend/Fun/Term/is_ref : Bend/Fun/Term -> Bool
+| #Ref{_} = #True
+| _       = #False

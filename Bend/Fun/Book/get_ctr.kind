@@ -1,0 +1,8 @@
+// Retrieves a constructor definition from a Book by its name.
+// - book: The Book to search in.
+// - name: The name of the constructor to retrieve.
+// = Some ctr if a constructor with the given name is found in the Book,
+//   None if no such constructor exists.
+Bend/Fun/Book/get_ctr : Bend/Fun/Book -> String -> (Bend Bend/Fun/Adt/Ctr)
+| #Book{_ _  ctr} nam =
+  (Maybe/to_result _ _ (BinMap/get _ ctr (String/hash nam)) "Ctr not found")

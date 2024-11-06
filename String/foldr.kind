@@ -1,4 +1,4 @@
-// Right-folds a string.
+// Right_folds a string.
 // - str: Input string.
 // - P: Result type.
 // - nil: Initial value.

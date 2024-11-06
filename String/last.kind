@@ -1,0 +1,10 @@
+// Gets the last character of a string.
+// - str: Input string.
+// = Some c if non-empty (c is last char), None if empty.
+String/last : String -> (Maybe Char)
+| str = (List/last Char str)
+
+#test: (String/last "")        == #None
+#test: (String/last "a")       == #Some{'a'}
+#test: (String/last "abc")     == #Some{'c'}
+#test: (String/last "Hello!")  == #Some{'!'}

@@ -1,9 +1,0 @@
-// Checks if a string is empty.
-// - s: The string to check.
-// = True if empty, False otherwise.
-String/is-empty : String -> Bool
-| #Nil         = #True
-| #Cons{hd tl} = #False
-
-#test: (String/is-empty String/nil) == #True
-#test: (String/is-empty "a") == #False

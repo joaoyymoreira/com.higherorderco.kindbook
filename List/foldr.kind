@@ -1,4 +1,4 @@
-// Right-folds a list.
+// Right_folds a list.
 // - A: Input type.
 // - xs: Input list.
 // - B: Result type.

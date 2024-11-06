@@ -1,7 +1,7 @@
 // Safely deconstructs a list into its head and tail.
 // - A: Input type.
 // - xs: Input list.
-// = Some pair of head and tail if non-empty, None if empty.
+// = Some pair of head and tail if non_empty, None if empty.
 List/uncons : ∀(A: *) (List A) -> (Maybe (Pair A (List A)))
 | A #Nil             = #None
 | A #Cons{head tail} = #Some{#Pair{head tail}}

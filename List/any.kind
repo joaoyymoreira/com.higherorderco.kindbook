@@ -7,5 +7,5 @@ List/any : ∀(A: *)  (List A) -> (A -> Bool) -> Bool
 | A #Nil             cond = #False
 | A #Cons{head tail} cond = (Bool/or (cond head) (List/any A tail cond))
 
-#test: (List/any U64 [1 2 3 4] (λx (U64/to-bool (== x 3)))) == #True
-#test: (List/any U64 [1 2 3 4] (λx (U64/to-bool (== x 5)))) == #False
+#test: (List/any U64 [1 2 3 4] (λx (U64/to_bool (== x 3)))) == #True
+#test: (List/any U64 [1 2 3 4] (λx (U64/to_bool (== x 5)))) == #False

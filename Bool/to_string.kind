@@ -1,0 +1,9 @@
+// Converts a Bool to a String.
+// - b: The Bool to convert.
+// = String representation of the Bool.
+Bool/to_string : Bool -> String
+| #True  = "True"
+| #False = "False"
+
+#test: (Bool/to_string #True)  == "True"
+#test: (Bool/to_string #False) == "False"

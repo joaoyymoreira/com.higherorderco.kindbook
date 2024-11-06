@@ -1,0 +1,10 @@
+// Checks if a character is lowercase.
+// - code: The character to check.
+// = True if lowercase, False otherwise.
+Char/is_lower : Char -> Bool
+= λcode (Bool/and (U64/gte code 97) (U64/lte code 122))
+
+#test: (Char/is_lower 'a') == #True
+#test: (Char/is_lower 'A') == #False
+#test: (Char/is_lower '5') == #False
+#test: (Char/is_lower '@') == #False

@@ -1,0 +1,53 @@
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pat
+
+Term/to_string : Term -> String
+| #Lam{pat bod}     = (String/concat ["λ" (Pat/to_string pat) " " (Term/to_string bod)])
+| #Var{nam}         = nam
+| #Lnk{nam}         = (String/concat ["$" nam])
+| #Let{pat val nxt} = (String/concat ["let " (Pat/to_string pat) " = " (Term/to_string val) "; " (Term/to_string nxt)])
+| #Wth{typ bod}     = (String/concat ["with " typ " { " (Term/to_string bod) " }"])
+| #Ask{pat val nxt} = (String/concat ["ask " (Pat/to_string pat) " = " (Term/to_string val) "; " (Term/to_string nxt)])
+| #Use{nam val nxt} = (String/concat ["use " (Bend/Fun/bnd_to_string nam) " = " (Term/to_string val) "; " (Term/to_string nxt)])
+| #App{fun arg}     = (String/concat ["(" (show_app #App{fun arg}) ")"])
+| #Fan{#Tup els}    = (String/concat ["(" (String/join ", " (List/map _ _ els Term/to_string)) ")"])
+| #Fan{#Dup els}    = (String/concat ["{" (String/join " " (List/map _ _ els Term/to_string)) "}"])
+| #Num{val}         = (Bend/Fun/Num/to_string val)
+| #Str{val}         = (String/concat ["\"" val "\""])
+| #Lst{els}         = (String/concat ["[" (String/join ", " (List/map _ _ els Term/to_string)) "]"])
+| #Opr{opr fst snd} = (String/concat ["(" (Bend/Fun/Op/to_string opr) " " (Term/to_string fst) " " (Term/to_string snd) ")"])
+| #Mat{bnd arg with_bnd with_arg arms} =
+  (String/concat ["match " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ arms MatchRule/to_string)) " }"])
+| #Swt{bnd arg with_bnd with_arg pred arms} = (String/concat [
+  "switch " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (show_swt_arms 0 pred arms) " }"])
+| #Fld{bnd arg with_bnd with_arg arms} = (String/concat [
+  "fold " (Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg) " " (show_with with_bnd with_arg) "{ " (String/join "; " (List/map _ _ arms MatchRule/to_string)) " }"])
+| #Bnd{bnd arg cond step base} = (String/concat [
+  "bend " (String/join ", " (List/map _ _ (List/zip _ _ bnd arg) show_bnd_init)) " { " "when " (Term/to_string cond) ": " (Term/to_string step) "; " "else: " (Term/to_string base) " }"])
+| #Opn{typ var bnd bod} = (String/concat [
+  "open " typ " " (Bend/Fun/bnd_to_string var) (String/join "" (List/map _ _ bnd λx (String/concat [" " (Bend/Fun/bnd_to_string x)]))) "; " (Term/to_string bod)])
+| #Ref{nam} = nam
+| #Def{def nxt} = (String/concat ["def " (FnDef/to_string def) "\n" (Term/to_string nxt)])
+| #Era = "*"
+
+show_with : (List (Maybe String)) -> (List Term) -> String
+| [] [] = ""
+| with_bnd with_arg =
+  (String/concat ["with " (String/join ", " (List/map _ _ (List/zip _ _ with_bnd with_arg) show_bnd_arg)) " "])
+
+show_bnd_arg : (Pair (Maybe String) Term) -> String
+| #Pair{bnd arg} = (String/concat [(Bend/Fun/bnd_to_string bnd) " = " (Term/to_string arg)])
+
+show_app : Term -> String
+| #App{fun arg} = (String/concat [(show_app fun) " " (Term/to_string arg)])
+| term          = (Term/to_string term)
+
+show_swt_arms : U64 -> (Maybe String) -> (List Term) -> String
+| n pred []              = ""
+| n pred [arm]           = (String/concat ["_ " (Bend/Fun/bnd_to_string pred) ": " (Term/to_string arm)])
+| n pred #Cons{arm arms} = (String/concat [(U64/to_string n) ": " (Term/to_string arm) "; " (show_swt_arms (+ n 1) pred arms)])
+
+show_bnd_init : (Pair (Maybe String) Term) -> String
+| #Pair{fst snd} = (String/concat [(Bend/Fun/bnd_to_string fst) " = " (Term/to_string snd)])

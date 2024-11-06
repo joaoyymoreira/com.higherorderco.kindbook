@@ -5,7 +5,7 @@
 String/contains : String -> String -> Bool
 | str #Nil    = #True
 | #Nil substr = #False
-| str substr with (String/starts-with str substr)
+| str substr with (String/starts_with str substr)
 . | #True  = #True
 . | #False = (String/contains (String/tail str) substr)
 

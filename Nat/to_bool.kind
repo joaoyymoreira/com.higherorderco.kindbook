@@ -1,0 +1,10 @@
+// Converts a Nat to a Bool.
+// - n: The Nat value to convert.
+// = True if n is non_zero, False otherwise.
+Nat/to_bool : Nat -> Bool
+| #Zero    = #False
+| #Succ{n} = #True
+
+#test: (Nat/to_bool #0) == #False
+#test: (Nat/to_bool #1) == #True
+#test: (Nat/to_bool #5) == #True

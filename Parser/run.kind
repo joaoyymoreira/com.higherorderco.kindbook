@@ -2,9 +2,9 @@
 // - A: Parsed value type.
 // - parser: Parser to run.
 // - input: Input string to parse.
-// = Some parsed-value if successful, None if failed.
+// = Some parsed_value if successful, None if failed.
 Parser/run : ∀(A: *) (Parser A) -> String -> (Maybe A)
-| A parser input = match (parser (Parser/new-state input)) {
+| A parser input = match (parser (Parser/new_state input)) {
   #Done{reply}: 
     match reply {
       #Reply{x value}: #Some{value}

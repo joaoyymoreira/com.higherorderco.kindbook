@@ -1,0 +1,11 @@
+// Checks if a Result is Done.
+// - A: Success type.
+// - E: Error type.
+// - r: The Result to check.
+// = True if Done, False if Fail.
+Result/is_done : ∀(A: *) ∀(E: *) (Result A E) -> Bool
+| A E #Done{value} = #True
+| A E #Fail{error} = #False
+
+#test: (Result/is_done U64 String #Done{42}) == #True
+#test: (Result/is_done U64 String #Fail{"error"}) == #False

@@ -1,0 +1,14 @@
+// Checks if a BinMap is empty.
+// - A: Value type.
+// - map: The BinMap to check.
+// = True if the map is empty, False otherwise.
+BinMap/is_empty : ∀(A: *) (BinMap A) -> Bool
+| A #Leaf = #True
+| A #Node{#None l r} with (BinMap/is_empty A l)
+. | #True  = (BinMap/is_empty A r)
+. | #False = #False
+| A #Node{#Some{_} _ _} = #False
+
+#test: (BinMap/is_empty U64 (BinMap/empty U64)) == #True
+#test: (BinMap/is_empty U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#E} 1})) == #False
+#test: (BinMap/is_empty U64 (BinMap/insert U64 (BinMap/insert U64 (BinMap/empty U64) #Pair{#O{#E} 1}) #Pair{#I{#E} 2})) == #False

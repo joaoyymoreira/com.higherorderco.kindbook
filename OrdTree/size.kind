@@ -5,11 +5,27 @@
 // = Number of nodes in the tree.
 OrdTree/size : ∀(K: *) ∀(V: *) (OrdTree K V) -> Nat
 | K V #Leaf                               = #Zero
-| K V #Node{key-value balance left right} =
+| K V #Node{key_value balance left right} =
   let left_size  = (OrdTree/size K V left)
   let right_size = (OrdTree/size K V right)
   #Succ{(Nat/add left_size right_size)}
 
-#test: (OrdTree/size U64 U64 (OrdTree/empty U64 U64)) == #0
-#test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64))) == #1
-#test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{2 3} (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64)))) == #2
+// #test: (OrdTree/size U64 U64 (OrdTree/empty U64 U64)) == #0
+// #test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64))) == #1
+// #test: (OrdTree/size U64 U64 (OrdTree/insert U64 U64 (U64/Ord) #Pair{2 3} (OrdTree/insert U64 U64 (U64/Ord) #Pair{1 2} (OrdTree/empty U64 U64)))) == #2
+
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  (OrdTree/size U64 U64 ordtree) == #0
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 2})
+  (OrdTree/size U64 U64 ordtree) == #1
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 2})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 3})
+  (OrdTree/size U64 U64 ordtree) == #2

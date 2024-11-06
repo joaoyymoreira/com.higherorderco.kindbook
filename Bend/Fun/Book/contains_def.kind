@@ -1,0 +1,7 @@
+// Checks if a Book contains a function definition with the given name.
+// - book: The Book to check.
+// - name: The name of the function to look for.
+// = True if the Book contains a function definition with the given name, False otherwise.
+Bend/Fun/Book/contains_def : Bend/Fun/Book -> String -> Bool 
+| #Book{defs _ _} nam =
+  (BinMap/contains _ defs (String/hash nam))

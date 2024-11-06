@@ -2,12 +2,12 @@
 // - r: The rectangle to subdivide.
 // = A pair of pairs containing the four quadrants (NE,NW),(SW,SE).
 QuadTree/Rectangle/subdivide : QuadTree/Rectangle -> (Pair (Pair QuadTree/Rectangle QuadTree/Rectangle) (Pair QuadTree/Rectangle QuadTree/Rectangle))
-| #Rectangle{min-x min-y max-x max-y} =
-  let mid-x = (F64/div (F64/add min-x max-x) 2.0)
-  let mid-y = (F64/div (F64/add min-y max-y) 2.0)
+| #Rectangle{min_x min_y max_x max_y} =
+  let mid_x = (F64/div (F64/add min_x max_x) 2.0)
+  let mid_y = (F64/div (F64/add min_y max_y) 2.0)
   #Pair{
-    fst: #Pair{fst: #Rectangle{mid-x mid-y max-x max-y} snd: #Rectangle{min-x mid-y mid-x max-y}}
-    snd: #Pair{fst: #Rectangle{min-x min-y mid-x mid-y} snd: #Rectangle{mid-x min-y max-x mid-y}}
+    fst: #Pair{fst: #Rectangle{mid_x mid_y max_x max_y} snd: #Rectangle{min_x mid_y mid_x max_y}}
+    snd: #Pair{fst: #Rectangle{min_x min_y mid_x mid_y} snd: #Rectangle{mid_x min_y max_x mid_y}}
   }
 
 #test: (QuadTree/Rectangle/subdivide #Rectangle{0.0 0.0 4.0 4.0}) == #Pair{fst: #Pair{fst: #Rectangle{2.0 2.0 4.0 4.0} snd: #Rectangle{0.0 2.0 2.0 4.0}} snd: #Pair{fst: #Rectangle{0.0 0.0 2.0 2.0} snd: #Rectangle{2.0 0.0 4.0 2.0}}}

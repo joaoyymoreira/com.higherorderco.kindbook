@@ -1,0 +1,8 @@
+
+data UG/SIPD/GameMap {
+  #GameMap {
+    width : U64
+    height : U64
+    bodies : (OrdTree U64 UG/SIPD/Body)
+  }
+}

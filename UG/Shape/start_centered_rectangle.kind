@@ -1,0 +1,15 @@
+// Creates a vertical rectangular Shape with the center at its bottom.
+// The rectangle extends along the positive y_axis.
+// - start: Starting point (center of the shape).
+// - width: Rectangle width.
+// - height: Rectangle height.
+// = Rectangle Shape with center at start point.
+UG/Shape/start_centered_rectangle : V2 -> F64 -> F64 -> UG/Shape
+  | start width height =
+  let half_width = (F64/div width 2.0)
+  let top_left     = (V2/new (F64/sub 0.0 half_width) height)
+  let top_right    = (V2/new half_width height)
+  let bottom_right = (V2/new half_width 0.0)
+  let bottom_left  = (V2/new (F64/sub 0.0 half_width) 0.0)
+  
+  #Polygon{start [top_left top_right bottom_right bottom_left]}

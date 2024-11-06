@@ -1,9 +1,0 @@
-// Converts a nat to its corresponding Unicode character.
-// - n: The nat to convert.
-// = The Unicode character corresponding to the given nat.
-Char/from-nat : Nat -> Char
-= λn (U64/from-nat n)
-
-#test: (Char/from-nat #65) == 'A'
-#test: (Char/from-nat #97) == 'a'
-#test: (Char/from-nat #48) == '0'

@@ -1,11 +1,11 @@
 // Creates a singleton AVL tree.
 // - K: Key type.
 // - V: Value type.
-// - p: Key-value pair.
+// - p: Key_value pair.
 // = AVL tree with one element.
 OrdTree/singleton : ∀(K: *) ∀(V: *) (Pair K V) -> (OrdTree K V)
 | K V p = #Node{
-  key-value: p
+  key_value: p
   balance: #Zero
   left: #Leaf
   right: #Leaf

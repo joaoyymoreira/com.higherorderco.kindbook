@@ -1,0 +1,19 @@
+// Calculates absolute vertices of a Shape.
+// - shape: Shape to calculate vertices for.
+// = List of V2 points representing absolute vertices.
+UG/Shape/abs_vertices : UG/Shape -> (List V2)
+| #Circle{center radius} = #Nil
+| #Polygon{center vertices} =
+  (List/map V2 V2 vertices (UG/Shape/abs_vertices/go center))
+
+// Calculates absolute vertex position.
+// - center: Polygon center.
+// - v: Relative vertex position.
+// = Absolute vertex position.
+UG/Shape/abs_vertices/go : V2 -> V2 -> V2
+| #V2{c1 c2} #V2{p1 p2} =
+  let x = (F64/add c1 p1)
+  let y = (F64/add c2 p2)
+  #V2{x y}
+
+#test: (UG/Shape/abs_vertices (UG/Shape/circle #V2{x: 0.0 y: 0.0} 1.0)) == #Nil

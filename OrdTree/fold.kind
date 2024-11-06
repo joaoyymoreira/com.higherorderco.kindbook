@@ -8,10 +8,10 @@
 // = The result of folding the tree.
 OrdTree/fold : ∀(K: *) ∀(V: *) (OrdTree K V) -> ∀(P: *) P -> ((Pair K V) -> P -> P) -> P
 | K V #Leaf                               P leaf node = leaf
-| K V #Node{key-value balance left right} P leaf node =
-  let left-result = (OrdTree/fold K V left P leaf node)
-  let curr-result = (node key-value left-result)
-  (OrdTree/fold K V right P curr-result node)
+| K V #Node{key_value balance left right} P leaf node =
+  let left_result = (OrdTree/fold K V left P leaf node)
+  let curr_result = (node key_value left_result)
+  (OrdTree/fold K V right P curr_result node)
 
 #test: (OrdTree/fold U64 String #Leaf U64 0 (λp λacc (+ acc 1))) == 0
-#test: (OrdTree/fold U64 String (OrdTree/insert U64 String (U64/Ord) #Pair{1 "one"} #Leaf) (List (Pair U64 String)) [] (λp λacc #Cons{p acc})) == [#Pair{1 "one"}]
+#test: (OrdTree/fold U64 String (OrdTree/insert U64 String (U64/Ord) #Leaf #Pair{1 "one"}) (List (Pair U64 String)) [] (λp λacc #Cons{p acc})) == [#Pair{1 "one"}]

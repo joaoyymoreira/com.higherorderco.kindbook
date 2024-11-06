@@ -1,0 +1,80 @@
+// Skips a single_line comment.
+Bend/Parser/skip_single_line_comment : (Parser Unit)
+= do Parser {
+  ask is_comment = (Parser/starts_with "#")
+  if is_comment {
+    do Parser {
+      ask x = (Parser/advance_one)
+      ask x = (Parser/take_while (λc (Char/neq c '\n')))
+      ask x = (Parser/advance_one)
+      ret #Unit
+    }
+  } else {
+    (Parser/pure Unit #Unit)
+  }
+}
+
+// Skips a multi_line comment.
+Bend/Parser/skip_multi_line_comment : Nat -> (Parser Unit)
+| depth = do Parser {
+  ask is_comment = (Parser/starts_with "#{")
+  if is_comment {
+    do Parser {
+      ask y = (Parser/advance_many #2)
+      (Bend/Parser/skip_to_comment_end #Succ{depth})
+    }
+  } else {
+    (Parser/pure Unit #Unit)
+  }
+} 
+
+// Auxiliary function for skip_multi_line_comment.
+Bend/Parser/skip_to_comment_end : Nat -> (Parser Unit)
+| #Zero    = (Parser/pure Unit #Unit)
+| depth    = do Parser {
+  ask is_start = (Parser/starts_with "#{")
+  ask is_end   = (Parser/starts_with "#}")
+  if (is_start) {
+    (Bend/Parser/skip_multi_line_comment depth)
+  } else if (is_end) {
+    do Parser {
+      ask w = (Parser/advance_many #2)
+      (Bend/Parser/skip_to_comment_end (Nat/pred depth))
+    }
+  } else {
+    do Parser {
+      ask w = (Parser/advance_one)
+      (Bend/Parser/skip_to_comment_end depth)
+    }
+  }
+}
+
+// Skips all trivia (whitespace and comments).
+Bend/Parser/skip_trivia : (Parser Unit)
+= do Parser {
+  ask c = (Parser/peek_one)
+  match c {
+    #Some{v}:
+      if (Char/is_space v) {
+        do Parser {
+          ask z = (Parser/advance_one)
+          (Bend/Parser/skip_trivia)
+        }      
+      } else if (Char/eq v '#') {
+        do Parser {
+          ask _ = (Bend/Parser/skip_multi_line_comment #0)
+          ask _ = (Bend/Parser/skip_single_line_comment)
+          (Bend/Parser/skip_trivia)
+        }
+      } else {
+        (Parser/pure Unit #Unit)
+      }
+    #None: (Parser/pure Unit #Unit)
+  }
+} 
+
+#test: (Bend/Parser/skip_trivia #State{"code" #0}) == #Done{#Reply{#State{"code" #0} #Unit}}
+#test: (Bend/Parser/skip_trivia #State{"   code" #0}) == #Done{#Reply{#State{"code" #3} #Unit}}
+#test: (Bend/Parser/skip_trivia #State{"   # This is a comment\n  #{This is a\nmulti_line comment#}\n  code" #0}) == #Done{#Reply{#State{"code" #60} #Unit}} 
+#test: (Bend/Parser/skip_trivia #State{"#{Nested #{comments#} are #} handled" #0}) == #Done{#Reply{#State{"handled" #29} #Unit}} 
+#test: (Bend/Parser/skip_trivia #State{"  # Comment\n  code" #0}) == #Done{#Reply{#State{"code" #14} #Unit}}

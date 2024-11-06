@@ -1,0 +1,10 @@
+// Checks if a V2 vector is zero.
+// - v: The vector to check.
+// = True if both components are zero, False otherwise.
+V2/is_zero : V2 -> Bool
+| #V2{x y} = (Bool/and (F64/is_zero x) (F64/is_zero y))
+
+#test: (V2/is_zero #V2{x: 0.0 y: 0.0}) == #True
+#test: (V2/is_zero #V2{x: 1.0 y: 0.0}) == #False
+#test: (V2/is_zero #V2{x: 0.0 y: 1.0}) == #False
+#test: (V2/is_zero #V2{x: 1.0 y: 1.0}) == #False

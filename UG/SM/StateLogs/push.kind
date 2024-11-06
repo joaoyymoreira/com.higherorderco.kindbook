@@ -14,7 +14,7 @@ UG/SM/StateLogs/push : ∀(S: *) S -> (UG/SM/StateLogs S) -> UG/SM/Tick -> (UG/S
 UG/SM/StateLogs/push/go : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> UG/SM/Tick -> U64 -> (UG/SM/StateLogs S)
 = λS λnew_state λnode λt λkeep
   switch keep {
-    0: #Some{(UG/SM/StateLogs/StateNode/set-keep S 1 node)}
+    0: #Some{(UG/SM/StateLogs/StateNode/set_keep S 1 node)}
     1+keep:
       let life = (UG/SM/StateLogs/StateNode/life S node)
       (UG/SM/StateLogs/push/go/life S new_state node t life)
@@ -25,10 +25,10 @@ UG/SM/StateLogs/push/go/life : ∀(S: *) S -> (UG/SM/StateLogs/StateNode S) -> U
 = λS λnew_state λnode λt λkeep
   switch keep {
     0:
-      let updated_node = (UG/SM/StateLogs/StateNode/set-keep S 0 node)
+      let updated_node = (UG/SM/StateLogs/StateNode/set_keep S 0 node)
        #Some{#StateNode{t 0 (UG/SM/StateLogs/StateNode/life S node) new_state #Some{updated_node}}} 
     1+new_life:
-      let updated_node = (UG/SM/StateLogs/StateNode/set-keep S 0 (UG/SM/StateLogs/StateNode/set-life S new_life node))
+      let updated_node = (UG/SM/StateLogs/StateNode/set_keep S 0 (UG/SM/StateLogs/StateNode/set_life S new_life node))
       #Some{#StateNode{t 0 0 new_state #Some{updated_node}}}
   }
 

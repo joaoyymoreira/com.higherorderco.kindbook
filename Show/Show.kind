@@ -1,6 +1,6 @@
 // Represents the Show trait for a type A.
 data Show (A: *) {
   #Show {
-    to-string: A -> String
+    to_string: A -> String
   }
 }

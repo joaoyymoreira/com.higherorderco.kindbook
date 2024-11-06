@@ -1,7 +1,7 @@
-// Multiplies two V2 vectors component-wise.
+// Multiplies two V2 vectors component_wise.
 // - a: First vector.
 // - b: Second vector.
-// = Component-wise product.
+// = Component_wise product.
 V2/mul : V2 -> V2 -> V2
 | #V2{x0 y0} #V2{x1 y1} = #V2{
     x: (F64/mul x0 x1)

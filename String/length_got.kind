@@ -1,0 +1,9 @@
+// Computes string length while preserving it.
+// - str: Input string.
+// = Pair of original string and its length.
+String/length_got : String -> (Pair String Nat)
+| str = (List/length_got U64 str)
+
+#test: (Pair/get_snd String Nat (String/length_got "")) == #0
+#test: (Pair/get_snd String Nat (String/length_got "Hello")) == #5
+#test: (Pair/get_fst String Nat (String/length_got "Agda")) == "Agda"

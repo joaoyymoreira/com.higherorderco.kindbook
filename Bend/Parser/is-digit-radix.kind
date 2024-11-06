@@ -1,0 +1,31 @@
+// Checks if a char is a valid digit for the given radix.
+// Accepts underscores for any radix.
+// - radix: The numeric base (2, 10, or 16).
+// - c: The char to check.
+// = True if valid digit for the radix, False otherwise.
+Bend/Parser/is_digit_radix : U64 -> Char -> Bool
+| radix c =
+  if (Char/eq c '_') {
+    #True
+  } else if (U64/eq radix 16) {
+    (Char/is_hex_digit c)
+  } else if (U64/eq radix 2) {
+    (Bool/or (Char/eq c '0') (Char/eq c '1'))
+  } else if (U64/eq radix 10) {
+    (Char/is_digit c)
+  } else {
+    #False
+  }
+
+#test: (Bend/Parser/is_digit_radix 16 'F') == #True
+#test: (Bend/Parser/is_digit_radix 16 'f') == #True
+#test: (Bend/Parser/is_digit_radix 16 'G') == #False
+#test: (Bend/Parser/is_digit_radix 2 '0') == #True
+#test: (Bend/Parser/is_digit_radix 2 '1') == #True
+#test: (Bend/Parser/is_digit_radix 2 '2') == #False
+#test: (Bend/Parser/is_digit_radix 10 '5') == #True
+#test: (Bend/Parser/is_digit_radix 10 'A') == #False
+#test: (Bend/Parser/is_digit_radix 8 '7') == #False
+#test: (Bend/Parser/is_digit_radix 16 '_') == #True
+#test: (Bend/Parser/is_digit_radix 2 '_') == #True
+#test: (Bend/Parser/is_digit_radix 10 '_') == #True

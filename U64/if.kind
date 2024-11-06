@@ -3,10 +3,10 @@
 // - cond: The condition to evaluate.
 // - then: The value to return if the condition is true.
 // - else: The value to return if the condition is false.
-// = The 'then' value if 'cond' is non-zero, otherwise the 'else' value.
+// = The 'then' value if 'cond' is non_zero, otherwise the 'else' value.
 U64/if : ∀(A: *) U64 -> A -> A -> A
 = λA λcond λt λf
-  if (U64/to-bool cond) {
+  if (U64/to_bool cond) {
     t
   } else {
     f

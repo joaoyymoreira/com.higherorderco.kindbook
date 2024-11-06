@@ -1,0 +1,15 @@
+// Calculates the length of a Bits structure and returns the original Bits.
+// - bits: The Bits value to measure.
+// = A pair of the original Bits and its length as a Nat.
+Bits/length_got : Bits -> (Pair Bits Nat)
+| #E       = #Pair{#E #0}
+| #O{tail} = 
+  let #Pair{rest len} = (Bits/length_got tail)
+  #Pair{#O{rest} #Succ{len}}
+| #I{tail} = 
+  let #Pair{rest len} = (Bits/length_got tail)
+  #Pair{#I{rest} #Succ{len}}
+
+#test: (Bits/length_got #E) == #Pair{#E #0}
+#test: (Bits/length_got #O{#E}) == #Pair{#O{#E} #1}
+#test: (Bits/length_got #I{#O{#I{#E}}}) == #Pair{#I{#O{#I{#E}}} #3}

@@ -1,0 +1,33 @@
+// Maps keys of an OrdTree, preserving values and structure.
+// - K: Original key type.
+// - V: Value type.
+// - A: New key type.
+// - ord: Ord instance for A.
+// - tree: Input OrdTree.
+// - f: Function to map keys.
+// = OrdTree with mapped keys.
+OrdTree/map_keys : ∀(K: *) ∀(V: *) ∀(A: *) ∀(ord: (Ord A)) (OrdTree K V) -> (K -> A) -> (OrdTree A V)
+| K V A ord tree f =
+  (OrdTree/fold K V tree
+    (OrdTree A V)
+    (OrdTree/empty A V)
+    (λkv λacc (OrdTree/insert A V ord acc #Pair{(f (Pair/get_fst K V kv)) (Pair/get_snd K V kv)})))
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (Function/id U64))
+  (OrdTree/to_list U64 U64 ordtree) ==  [#Pair{1 10}]
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (U64/add 1))
+  (OrdTree/to_list U64 U64 ordtree) ==  [#Pair{2 10}]
+
+#test:
+  let ordtree = (OrdTree/empty U64 U64)
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{1 10})
+  let ordtree = (OrdTree/insert U64 U64 (U64/Ord) ordtree #Pair{2 20})
+  let ordtree = (OrdTree/map_keys U64 U64 U64 (U64/Ord) ordtree (U64/mul 2))
+  (OrdTree/to_list U64 U64 ordtree) == [#Pair{2 10} #Pair{4 20}]

@@ -1,0 +1,6 @@
+Bend/Net/new_node : Bend/Net/NodeKind -> Bend/Net -> (Pair U64 Bend/Net)
+| knd #Net{nam nod len} =
+  let new = #Node {#Port{len 0} #Port{len 1} #Port{len 2} knd} :: Bend/Net/Node
+  let nod = (BinMap/set _ nod (U64/to_bits len) new)
+  let net = #Net {nam nod (+ 1 len)} :: Bend/Net
+  #Pair{len net}

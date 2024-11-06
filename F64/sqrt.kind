@@ -1,20 +1,20 @@
-// Calculates the square root of an F64 using Newton-Raphson method.
+// Calculates the square root of an F64 using Newton_Raphson method.
 // - x: Input value.
 // = Square root of x.
 F64/sqrt : F64 -> F64
 | x =
-  if (F64/is-zero x) {
+  if (F64/is_zero x) {
     x
   } else {
-    (F64/sqrt-go x (F64/div x 2.0) 10)
+    (F64/sqrt_go x (F64/div x 2.0) 10)
   }
 
-// Newton-Raphson iteration for square root.
+// Newton_Raphson iteration for square root.
 // - x: Input value.
 // - guess: Current guess.
 // - iter: Remaining iterations.
 // = Improved square root approximation.
-F64/sqrt-go : F64 -> F64 -> U64 -> F64
+F64/sqrt_go : F64 -> F64 -> U64 -> F64
 | x guess iter =
   switch iter {
     0: guess
@@ -23,7 +23,7 @@ F64/sqrt-go : F64 -> F64 -> U64 -> F64
       if (F64/eq guess next) {
         next
       } else {
-        (F64/sqrt-go x next p)
+        (F64/sqrt_go x next p)
       }
   }
 

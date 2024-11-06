@@ -1,0 +1,17 @@
+// Splits a list into chunks based on a predicate.
+// - A: Element type.
+// - xs: Input list.
+// - pred: Predicate function.
+// = List of chunks.
+List/split_chunks_left : ∀(A: *) (List A) -> (A -> Bool) -> (List (List A))
+| A #Nil pred = []
+| A #Cons{x xs} pred with (pred x) 
+. | #True = #Cons{#Cons{x []} (List/split_chunks_left A xs pred)}
+. | #False with (List/split_chunks_left A xs pred) 
+. . | #Nil          = #Cons{#Cons{x []} []}
+. . | #Cons{ys yss} = #Cons{#Cons{x ys} yss}
+
+#test: (List/split_chunks_left U64 [1 2 0 3 4 0 5] (λx (U64/to_bool (== x 0)))) == [[1 2 0] [3 4 0] [5]]
+#test: (List/split_chunks_left U64 [] (λx (U64/to_bool (== x 0)))) == []
+#test: (List/split_chunks_left U64 [0 1 2 0 3] (λx (U64/to_bool (== x 0)))) == [[0] [1 2 0] [3]]
+#test: (List/split_chunks_left U64 [1 2 3] (λx (U64/to_bool (== x 0)))) == [[1 2 3]]

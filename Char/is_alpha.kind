@@ -1,0 +1,10 @@
+// Checks if a character is alphabetic.
+// - code: The character to check.
+// = True if alphabetic, False otherwise.
+Char/is_alpha : Char -> Bool
+| code = (Bool/or (Char/is_upper code) (Char/is_lower code))
+
+#test: (Char/is_alpha 'a') == #True
+#test: (Char/is_alpha 'Z') == #True
+#test: (Char/is_alpha '5') == #False
+#test: (Char/is_alpha '@') == #False

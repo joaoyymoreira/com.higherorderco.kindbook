@@ -1,0 +1,16 @@
+// Finds the closest point between two polygons.
+// - p1: Vertices of the first polygon.
+// - p2: Vertices of the second polygon.
+// = The closest point between the polygons.
+closest_point_polygon_polygon : (List V2) -> (List V2) -> V2
+| p1 p2 = (V2/new 10000.0 10000.0)
+
+// Calculates the collision normal between two shapes.
+// - s1: First shape.
+// - s2: Second shape.
+// = The normalized collision normal vector.
+UG/Collision/calculate_collision_normal : UG/Shape -> UG/Shape -> V2
+| #Circle{c1 r1} #Circle{c2 r2}  = (V2/normalize (V2/sub c1 c2))
+| #Circle{c1 r1} #Polygon{c2 v2} = (V2/normalize (V2/sub c1 (UG/Shape/closest_point_on_polygon c1 (UG/Shape/abs_vertices #Polygon{c2 v2})))) 
+| #Polygon{c1 v1} #Circle{c2 r2} = (V2/normalize (V2/sub (UG/Shape/closest_point_on_polygon c2 (UG/Shape/abs_vertices #Polygon{c1 v1})) c1))
+| #Polygon{c1 v1} #Polygon{c2 v2} = (V2/normalize (closest_point_polygon_polygon (UG/Shape/abs_vertices #Polygon{c1 v1}) (UG/Shape/abs_vertices #Polygon{c2 v2})))

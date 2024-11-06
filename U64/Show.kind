@@ -1,5 +1,5 @@
 // Instance of Show for U64
 U64/Show : (Show U64)
 = #Show{
-    to-string: U64/to-string
+    to_string: U64/to_string
   }

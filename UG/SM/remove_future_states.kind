@@ -1,0 +1,11 @@
+// Removes future states from the machine's state logs.
+// - S: State type.
+// - A: Action type.
+// - mach: Machine state to update.
+// - tick: Current tick.
+// = Updated Mach with future states removed from state_logs.
+UG/SM/remove_future_states : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> (UG/SM/Mach S A)
+| S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} tick =
+  let rollback_amount = (UG/SM/StateLogs/find_rollback_amount S tick state_logs)
+  let new_logs = (UG/SM/StateLogs/rollback S rollback_amount state_logs)
+  #Mach{ticks_per_second genesis_tick cached_tick new_logs action_logs action_eq}

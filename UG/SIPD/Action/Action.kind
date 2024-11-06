@@ -1,4 +1,4 @@
-// Represents player actions in the game or meta-game.
+// Represents player actions in the game or meta_game.
 // Similar to Event, but specific to game actions rather than computer interaction.
 data UG/SIPD/Action {
   // Sets a player's nickname.

@@ -7,16 +7,16 @@ Bits/sub : Bits -> Bits -> Bits
 | x          #E         = x
 | #O{x}      #O{y}      = #O{(Bits/sub x y)}
 | #I{x}      #O{y}      = #I{(Bits/sub x y)}
-| #O{x}      #I{y}      = #I{(Bits/sub (Bits/sub-borrow x) y)}
+| #O{x}      #I{y}      = #I{(Bits/sub (Bits/sub_borrow x) y)}
 | #I{x}      #I{y}      = #O{(Bits/sub x y)}
 
 // Handles borrowing during subtraction.
 // - bits: The Bits to borrow from.
 // = The Bits after borrowing.
-Bits/sub-borrow : Bits -> Bits
+Bits/sub_borrow : Bits -> Bits
 | #E       = #E
 | #I{bits} = #O{bits}
-| #O{bits} = #I{(Bits/sub-borrow bits)}
+| #O{bits} = #I{(Bits/sub_borrow bits)}
 
 #test: (Bits/sub #I{#I{#E}} #I{#E}) == #O{#I{#E}}
 #test: (Bits/sub #O{#I{#E}} #O{#I{#E}}) == #O{#O{#E}}

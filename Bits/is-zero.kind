@@ -1,7 +1,0 @@
-// Checks if a Bits value represents zero.
-// - bits: The Bits value to check.
-// = True if the Bits value represents zero, False otherwise.
-Bits/is-zero : Bits -> Bool
-| #E       = #True
-| #O{tail} = (Bits/is-zero tail)
-| #I{tail} = #False

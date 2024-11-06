@@ -1,0 +1,24 @@
+// FIXME: this file isn't working
+
+// Splits a Bits value into chunks of a specified length.
+// - bits: The length of each chunk.
+// - n: The Bits value to be split.
+// = A List of Bits, where each element is a chunk of the specified length.
+Bits/split_chunks : Bits -> Nat -> (List Bits)
+| bits     #Zero = []
+| #E       n     = []
+| #O{tail} n with (Bits/split_at #O{tail} n)
+. | #Pair{collected rest} with rest
+. . | #E            = #Cons{collected []}
+. . | #O{rest.tail} = #Cons{collected (Bits/split_chunks #O{rest.tail} n)}
+. . | #I{rest.tail} = #Cons{collected (Bits/split_chunks #I{rest.tail} n)}
+| #I{tail} n with (Bits/split_at #I{tail} n) 
+. | #Pair{collected rest} with rest
+. . | #E            = #Cons{collected []}
+. . | #O{rest.tail} = #Cons{collected (Bits/split_chunks #O{rest.tail} n)}
+. . | #I{rest.tail} = #Cons{collected (Bits/split_chunks #I{rest.tail} n)}
+
+#test: (Bits/split_chunks #E #3) == []
+#test: (Bits/split_chunks (Nat/to_bits #45) #2) == (#Cons{#I{#O{#E}} #Cons{#I{#I{#E}} #Cons{#O{#I{#E}} []}}})
+#test: (Bits/split_chunks (Nat/to_bits #123) #3) == (#Cons{#I{#I{#O{#E}}} #Cons{#I{#I{#I{#E}}} #Cons{#I{#O{#E}} []}}})
+#test: (Bits/split_chunks (Nat/to_bits #15) #8) == (#Cons{#I{#I{#I{#I{#O{#O{#O{#E}}}}}}} []})

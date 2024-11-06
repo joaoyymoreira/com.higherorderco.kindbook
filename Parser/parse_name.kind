@@ -1,0 +1,12 @@
+// Parses a name from the input.
+// = A Parser that returns a String containing the parsed name, or fails if no valid name is found.
+Parser/parse_name : (Parser String)
+| state with (Parser/take_while Parser/is_name_char state)
+. | #Done{  #Reply{_ #Nil}}       = (Parser/fail _ "Expected a name" state)
+. | #Done{r@#Reply{_ #Cons{_ _}}} = #Done{r}
+. | #Fail{e}                      = #Fail{e}
+
+
+#test: (Parser/parse_name #State{"abc_123 def" #0}) == #Done{#Reply{(#State{" def" #7}) "abc_123"}}
+#test: (Parser/parse_name #State{" abc" #0})        == #Fail{#Error{#0 "Expected a name"}}
+#test: (Parser/parse_name #State{"abc_def.ghi" #0}) == #Done{#Reply{(#State{"" #11}) "abc_def.ghi"}}

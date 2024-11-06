@@ -1,0 +1,62 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+
+// Returns a list of all recursive functions in a Book.
+Book/recursive_defs : Book -> (List String)
+| book@#Book{defs _ _} =
+  let deps   = (book_deps book)
+  let defs   = (List/map _ _ (BinMap/values _ defs) FnDef/get_nam)
+  let cycles = (book_cycles deps defs)
+  (List/dedup _ String/Ord (List/concat _ cycles))
+
+// Collect the direct function dependencies of a Book.
+// That is, for each function, which functions appear as Ref in its body.
+book_deps : Book -> (BinMap (BinMap String))
+| #Book{defs adts ctrs} = (BinMap/map _ _ defs def_deps)
+
+def_deps : FnDef -> (BinMap String)
+| #FnDef{name type check rules src} =
+  let deps = (List/concat_map _ _ rules λ{#Rule{_ bod}: (term_deps bod)})
+  (BinMap/from_list _ (List/map _ _ deps λdep #Pair{(String/hash dep) dep}))
+
+term_deps : Term -> (List String)
+| #Ref{nam} = [nam]
+| term      = (List/concat_map _ _ (Term/children term) λ{#Pair{_ x}: (term_deps x)})
+
+// Return the list of all recursive function call cycles in a Book.
+// - deps: The direct function dependencies of the Book.
+// - defs: A list of names of all function definitions in the Book.
+// = A list of lists of function names, where each list represents a cycle.
+book_cycles : (BinMap (BinMap String)) -> (List String) -> (List (List String))
+| deps defs =
+  let initial = (List/map _ (Pair _ (List _)) defs λdef #Pair{def []})
+  (def_cycles deps (BinMap/new _) [] initial)
+
+// Walks the dependency graph to find all cycles.
+// TODO: Use a more efficient algorithm that doesn't need to check the entire path.
+def_cycles : (BinMap (BinMap String)) -> (BinMap Unit) -> (List (List String)) -> (List (Pair String (List String))) -> (List (List String))
+| deps visited cycles #Nil =
+  cycles
+| deps visited cycles #Cons{#Pair{nam path} to_visit} =
+  if (BinMap/contains _ visited (String/hash nam)) {
+    // Check if the current ref is already in the stack, which indicates a cycle.
+    let cycles = (check_cycle nam path cycles)
+    (def_cycles deps visited cycles to_visit)
+  } else {
+    let visited = (BinMap/set _ visited (String/hash nam) #Unit)
+    let path    = #Cons{nam path} :: (List _)
+    let new     = (get_new_deps deps nam path)
+    (def_cycles deps visited cycles (List/append _ to_visit new))
+  }
+
+check_cycle : String -> (List String) -> (List (List String)) -> (List (List String))
+| nam path cycles with (List/split_chunks _ path λx (String/eq nam x))
+. | #Cons{cycle #Cons{_ _}} = #Cons{#Cons{nam cycle} cycles}
+. | _                       = cycles
+
+get_new_deps : (BinMap (BinMap String)) -> String -> (List String) -> (List (Pair String (List String)))
+| deps nam path with (BinMap/get _ deps (String/hash nam))
+. | #Some{deps} = (List/map _ _ (BinMap/values _ deps) λdep #Pair{dep path})
+. | #None       = #Nil

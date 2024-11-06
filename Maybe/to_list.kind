@@ -1,0 +1,10 @@
+// Converts a Maybe value to a List.
+// - A: The type of the value inside Maybe.
+// - m: The Maybe value to convert.
+// = An empty list if the input is None, or a singleton list containing the value if it's Some.
+Maybe/to_list : ∀(A: *) (Maybe A) -> (List A)
+| A #None        = #Nil
+| A #Some{value} = #Cons{value #Nil}
+
+#test: (Maybe/to_list U64 #None) == #Nil
+#test: (Maybe/to_list U64 #Some{42}) == #Cons{42 #Nil}
