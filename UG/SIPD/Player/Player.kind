@@ -5,6 +5,6 @@ data UG/SIPD/Player {
     name : String
     keys : (OrdTree String (Pair Bool V2))
     target : V2 
-    s : UG/SIPD/State
+    hero : UG/SIPD/Hero
   }
 }
