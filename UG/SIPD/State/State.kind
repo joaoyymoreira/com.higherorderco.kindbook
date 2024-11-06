@@ -5,5 +5,6 @@ data UG/SIPD/State {
     tick : U64
     players : (OrdTree U64 UG/SIPD/Player)
     hero_states : (OrdTree U64 UG/SIPD/Hero/HeroState)
+    game_map : UG/SIPD/GameMap
   }
 }
