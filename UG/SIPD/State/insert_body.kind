@@ -1,0 +1,7 @@
+
+use UG/SIPD as G
+
+UG/SIPD/State/insert_body : G/State -> G/Body -> G/State
+| #State{next_id tick players hero_states game_map} body =
+  let new_game_map = (G/GameMap/insert_body game_map body) 
+  #State{next_id tick players hero_states new_game_map}
