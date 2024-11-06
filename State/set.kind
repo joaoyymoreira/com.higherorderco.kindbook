@@ -1,0 +1,9 @@
+// Sets the state in a State monad.
+// - S: State type.
+// - s: New state value.
+// = A State computation that sets the state.
+State/set : ∀(S: *) S -> (State S Unit)
+| S s = λst #Pair{s #Unit}
+
+#test: (State/set Nat #3 #5) == #Pair{#3 #Unit}
+#test: (State/set Bool #True #False) == #Pair{#True #Unit}

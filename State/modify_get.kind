@@ -1,0 +1,12 @@
+// Modifies the state and returns the new state.
+// - S: State type.
+// - f: Function to modify the state.
+// = A State computation that modifies and returns the new state.
+State/modify_get : ∀(S: *) (S -> S) -> (State S S)
+| S f = λs
+  let new_s = (f s)
+  #Pair{new_s new_s}
+
+#test: (State/modify_get U64 (λx (+ x 1)) 5) == #Pair{6 6}
+#test: (State/modify_get U64 (λx (* x 2)) 3) == #Pair{6 6}
+#test: (State/modify_get Bool (λx (Bool/not x)) #True) == #Pair{#False #False}

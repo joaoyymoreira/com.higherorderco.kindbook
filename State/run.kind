@@ -1,0 +1,11 @@
+// Runs a stateful computation with an initial state.
+// - S: State type.
+// - A: Result type.
+// - m: The stateful computation to run.
+// - s: The initial state.
+// = A pair containing the final result and the final state.
+State/run : ∀(S: *) ∀(A: *) (State S A) -> S -> (Pair S A)
+| S A m s = (m s)
+
+#test: (State/run U64 U64 (State/pure U64 U64 42) 0) == #Pair{0 42}
+#test: (State/run U64 Unit (State/set U64 20) 0) == #Pair{20 #Unit}

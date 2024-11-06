@@ -1,0 +1,7 @@
+// Retrieves the current state.
+// - S: State type.
+// = A State computation that returns the current state.
+State/get : ∀(S: *) (State S S)
+| S = λs #Pair{s s}
+
+#test: (State/get U64 3) == #Pair{3 3}
