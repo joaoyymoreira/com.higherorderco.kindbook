@@ -1,0 +1,61 @@
+
+use UG/SIPD as G
+
+insert_skill : (OrdTree String G/Skill) -> String -> G/Skill -> (OrdTree String G/Skill)
+| skills key val = (OrdTree/insert String G/Skill String/Ord skills #Pair{key val})
+
+insert_cooldown : (OrdTree String U64) -> String -> U64 -> (OrdTree String U64)
+| cooldowns key val = (OrdTree/insert String U64 String/Ord cooldowns #Pair{key val})
+
+make_skills : G/State -> U64 -> U64 -> (Pair (OrdTree String G/Skill) G/State)
+| #State{next_id tick players hero_states game_map} player_id body_id =
+  let s = (OrdTree/empty String G/Skill)
+
+  let s_cooldowns = (OrdTree/empty String U64)
+  let s_cooldowns = (insert_cooldown s_cooldowns "RightClick" 0)
+  //let s_cooldowns = (insert_cooldown s_cooldowns "Q" 0)
+
+  let new_hero_states = (OrdTree/insert U64 G/Hero/HeroState U64/Ord hero_states (player_id , #HeroState{s_cooldowns}))
+
+  (s , #State{next_id tick players new_hero_states game_map})
+
+get_body_effects_state : (Maybe G/Body) -> G/State -> G/State
+| #Some{body} state = (G/Body/apply_effects body state)
+| #None state       = state
+
+apply_skill_if_not_on_cooldown : G/Skill -> U64 -> G/State -> G/State
+| skill cooldown state =
+  if (U64/eq cooldown 0) {
+    (G/Skill/apply skill state) 
+  } else {
+    state
+  }
+
+tick : U64 -> G/State -> G/State
+| pid #State{next_id tick players hero_states #GameMap{width height bodies}} with (OrdTree/get U64 G/Player U64/Ord players pid)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Player{id name keys target #Hero{owner_id name skills hero_body_id}}} with (OrdTree/get U64 G/Hero/HeroState U64/Ord hero_states pid)
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+..| #Some{#HeroState{cooldowns}} =
+  let maybe_hero_body = (OrdTree/get U64 G/Body U64/Ord bodies hero_body_id)
+  let body_effects_state = (get_body_effects_state maybe_hero_body #State{next_id tick players hero_states #GameMap{width height bodies}})
+  let skill_keys = (OrdTree/keys String G/Skill skills)
+  let state_after_skills = (G/Hero/apply_pressed_skills skill_keys pid skills keys cooldowns body_effects_state)
+
+  let maybe_right_click = (OrdTree/get String G/Skill String/Ord skills "RightClick")
+  match maybe_right_click {
+    #None: state_after_skills
+    #Some{skill}: match (OrdTree/get String U64 String/Ord cooldowns "RightClick") {
+      #None: state_after_skills
+      #Some{cooldown}: (apply_skill_if_not_on_cooldown skill cooldown state_after_skills)
+    }
+  }
+
+li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
+| state owner_id pos =
+  let name  = "Li-Ming" 
+  let shape = (UG/Shape/circle pos 20.0)
+  let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #TakesEffects})
+  let #Pair{skills state} = (make_skills state owner_id owner_id)
+  (#Hero{owner_id name skills owner_id} , state) 
+
