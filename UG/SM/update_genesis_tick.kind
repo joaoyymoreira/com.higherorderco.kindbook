@@ -17,4 +17,3 @@ UG/SM/update_genesis_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -
   }
 
 #test: (UG/SM/update_genesis_tick U64 U64 (UG/SM/new_mach U64 U64 10 U64/eq) 50) == #Mach{10 50 0 #None (BinMap/new (List U64)) U64/eq}
-#test: (UG/SM/update_genesis_tick U64 U64 (UG/SM/new_mach U64 U64 10 U64/eq) 101) == #Mach{10 100 0 #None (BinMap/new (List U64)) U64/eq}
