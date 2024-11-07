@@ -52,7 +52,7 @@ tick : U64 -> G/State -> G/State
     }
   }
 
-li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
+UG/SIPD/Hero/li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
 | state owner_id pos =
   let name  = "Li-Ming" 
   let shape = (UG/Shape/circle pos 20.0)
