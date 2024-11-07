@@ -1,0 +1,4 @@
+
+UG/SIPD/Skill/move : U64 -> U64 -> U64 -> UG/SIPD/Skill
+| pid body_id cooldown = #Skill{"move" [(UG/SIPD/Effect/move pid body_id)] cooldown}
+  
