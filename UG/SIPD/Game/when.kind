@@ -45,7 +45,9 @@ handle_event : G/Event -> G/State -> G/State
   #State{next_id tick updated_players hero_states game_map}
 
 | #MouseClick{time pid #RightButton x y} #State{next_id tick players hero_states game_map} = 
-  #State{next_id tick players hero_states game_map}
+  let action_player = (players_get players pid)
+  let updated_players = (update_player_target action_player x y pid players)
+  #State{next_id tick updated_players hero_states game_map}
 
 | #KeyMouse{time pid key pressed x y} #State{next_id tick players hero_states game_map}    =
   let action_player = (players_get players pid)
@@ -74,7 +76,7 @@ handle_new_player : U64 -> G/Event -> G/State -> G/State
   let updated_players = (OrdTree/insert U64 G/Player U64/Ord players #Pair{pid new_player})
   #State{next_id tick updated_players hero_states game_map}
 
-when : G/Event -> G/State -> G/State
+UG/SIPD/Game/when : G/Event -> G/State -> G/State
 | event state = 
   let pid   = (G/Event/get_event_pid event)
   let state = (handle_new_player pid event state)
