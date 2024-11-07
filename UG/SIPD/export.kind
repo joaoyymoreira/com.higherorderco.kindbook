@@ -1,0 +1,27 @@
+// Exports for UG/SIPD module
+
+// Export for UG/SM/register_action
+export_register_action : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/TimedAction A) -> (UG/SM/Mach S A)
+= UG/SM/register_action
+
+// Export for UG/SM/compute
+export_compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/SM/Time -> (Pair S (UG/SM/Mach S A))
+= UG/SM/compute
+
+// Export for UG/SIPD/Game/init
+export_game_init : UG/SIPD/State
+= UG/SIPD/Game/init
+
+// Export for UG/SIPD/Game/tick
+export_game_tick : UG/SIPD/State -> UG/SIPD/State
+= UG/SIPD/Game/tick
+
+// Export for UG/SIPD/Game/when
+export_game_when : UG/SIPD/Event -> UG/SIPD/State -> UG/SIPD/State
+= UG/SIPD/Game/when
+
+export_time_action : ∀(A: *) UG/SM/Time -> A -> (UG/SM/TimedAction A)
+= UG/SM/TimedAction/time_action
+
+export_game : UG/SIPD/Game
+= #Game{init: UG/SIPD/Game/init when: UG/SIPD/Game/when tick: UG/SIPD/Game/tick }
