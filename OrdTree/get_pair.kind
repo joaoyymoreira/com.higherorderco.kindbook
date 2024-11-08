@@ -7,10 +7,10 @@
 // = Maybe containing the key_value pair if found.
 OrdTree/get_pair : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe (Pair K V))
 | K V ord #Leaf key = #None
-| K V ord #Node{kv balance left right} key with (Ord/compare K ord (Pair/get_fst K V kv) key)
-. | #LT = (OrdTree/get_pair K V ord right key)
+| K V ord #Node{kv balance left right} key with (Ord/compare K ord key (Pair/get_fst K V kv) )
+. | #LT = (OrdTree/get_pair K V ord left key)
 . | #EQ = #Some{kv}
-. | #GT = (OrdTree/get_pair K V ord left key)
+. | #GT = (OrdTree/get_pair K V ord right key)
 
 #test:
   let ordtree = (OrdTree/empty U64 U64)

@@ -7,10 +7,10 @@
 // = Maybe containing the value if found.
 OrdTree/get : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe V)
 | K V ord #Leaf                                        key = #None
-| K V ord #Node{#Pair{curr_key curr_val} _ left right} key with (Ord/compare K ord curr_key key)
-. | #LT = (OrdTree/get K V ord right key)
+| K V ord #Node{#Pair{curr_key curr_val} _ left right} key with (Ord/compare K ord key curr_key)
+. | #LT = (OrdTree/get K V ord left key)
 . | #EQ = #Some{curr_val}
-. | #GT = (OrdTree/get K V ord left key)
+. | #GT = (OrdTree/get K V ord right key)
 
 #test:
   let ordtree = (OrdTree/empty U64 String)
