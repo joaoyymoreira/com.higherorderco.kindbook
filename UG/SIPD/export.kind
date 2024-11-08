@@ -25,3 +25,6 @@ export_time_action : ∀(A: *) UG/SM/Time -> A -> (UG/SM/TimedAction A)
 
 export_game : UG/SIPD/Game
 = #Game{init: UG/SIPD/Game/init when: UG/SIPD/Game/when tick: UG/SIPD/Game/tick }
+
+export_action_eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
+= UG/SIPD/Event/eq

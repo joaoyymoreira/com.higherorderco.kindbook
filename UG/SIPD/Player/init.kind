@@ -1,6 +1,9 @@
 // Initial keys for a player.
 initial_keys : (OrdTree String (Pair Bool V2))
-= (OrdTree/empty String (Pair Bool V2))
+= 
+  let keys = (OrdTree/empty String (Pair Bool V2))
+  let keys = (OrdTree/insert String (Pair Bool V2) String/Ord keys #Pair{"E" #Pair{#False #V2{0.0 0.0}}})
+  keys
 
 // Creates a default hero.
 // - owner_id: The owner's ID.
