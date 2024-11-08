@@ -1,0 +1,22 @@
+
+use UG/SIPD as G
+
+get_body : (OrdTree U64 G/Body) -> U64 -> (Maybe G/Body)
+| bodies body_id = (OrdTree/get U64 G/Body U64/Ord bodies body_id)
+
+delete_body : (OrdTree U64 G/Body) -> U64 -> (OrdTree U64 G/Body)
+| bodies body_id = (OrdTree/delete U64 G/Body U64/Ord bodies body_id)
+
+UG/SIPD/Effect/with_duration : U64 -> U64 -> G/Effect
+| duration body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (get_body bodies body_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Body{id hitbox body_tick effects collidable}} with (U64/gt duration 0)
+..| #True = 
+  let remaining_ticks = (- duration 1) 
+  let new_effect = (G/Effect/with_duration remaining_ticks body_id) 
+  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id hitbox body_tick #Cons{new_effect effects} collidable}) 
+..| #False =
+  let updated_bodies = (delete_body bodies body_id)
+  #State{next_id tick players hero_states #GameMap{width height updated_bodies}}
+
+
