@@ -1,0 +1,10 @@
+use UG/SIPD as G
+
+// Creates a teleport skill.
+// - pid: Player ID.
+// - body_id: Body ID to teleport.
+// - range: Maximum teleportation range.
+// - cooldown: Skill cooldown.
+// = A teleport skill.
+G/Skill/teleport : U64 -> U64 -> F64 -> U64 -> G/Skill
+| pid body_id range cooldown = #Skill{"teleport" [(G/Effect/teleport pid body_id range)] cooldown}

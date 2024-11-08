@@ -11,9 +11,12 @@ make_skills : G/State -> U64 -> U64 -> (Pair (OrdTree String G/Skill) G/State)
 | #State{next_id tick players hero_states game_map} player_id body_id =
   let s = (OrdTree/empty String G/Skill)
   let s = (insert_skill s "RightClick" (G/Skill/move player_id body_id 0))
+  let s = (insert_skill s "E" (G/Skill/teleport player_id body_id 100.0 100))
 
   let s_cooldowns = (OrdTree/empty String U64)
   let s_cooldowns = (insert_cooldown s_cooldowns "RightClick" 0)
+  let s_cooldowns = (insert_cooldown s_cooldowns "E"          0)
+  
   //let s_cooldowns = (insert_cooldown s_cooldowns "Q" 0)
 
   let new_hero_states = (OrdTree/insert U64 G/Hero/HeroState U64/Ord hero_states (player_id , #HeroState{s_cooldowns}))
