@@ -6,7 +6,7 @@ use UG/SIPD as G
 // - range: Maximum teleportation range.
 // - state: Current game state.
 // = Updated game state after teleportation.
-G/Effect/teleport : U64 -> U64 -> F64 -> G/State -> G/State
+G/Effect/teleport : U64 -> U64 -> F64 -> G/Effect
 | pid body_id range #State{next_id tick players hero_states #GameMap{width height bodies}} with ((G/Player/get_player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _)
 .| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies}}
@@ -18,4 +18,5 @@ G/Effect/teleport : U64 -> U64 -> F64 -> G/State -> G/State
   let movement      = (V2/mul_scalar direction teleport_dist)
   let new_center    = (V2/add hitbox_center movement)
   let new_hitbox    = (UG/Shape/move hitbox movement)
+  log "HERE ON TELEPORT"
   (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id new_hitbox body_tick effects collidable})
