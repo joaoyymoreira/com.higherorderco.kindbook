@@ -8,9 +8,9 @@
 OrdTree/get : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe V)
 | K V ord #Leaf                                        key = #None
 | K V ord #Node{#Pair{curr_key curr_val} _ left right} key with (Ord/compare K ord curr_key key)
-. | #LT = (OrdTree/get K V ord left key)
+. | #LT = (OrdTree/get K V ord right key)
 . | #EQ = #Some{curr_val}
-. | #GT = (OrdTree/get K V ord right key)
+. | #GT = (OrdTree/get K V ord left key)
 
 #test:
   let ordtree = (OrdTree/empty U64 String)
@@ -23,3 +23,13 @@ OrdTree/get : ∀(K: *) ∀(V: *) ∀(ord: (Ord K)) (OrdTree K V) -> K -> (Maybe
 #test:
   let ordtree = (OrdTree/singleton U64 String #Pair{1 "one"})
   (OrdTree/get U64 String U64/Ord ordtree 2) == #None
+
+#test:
+  let ordtree = (OrdTree/singleton String U64 #Pair{"RightClick" 1})
+  let ordtree = (OrdTree/insert String U64 String/Ord ordtree #Pair{"E" 2})
+  (OrdTree/get String U64 String/Ord ordtree "E") == #Some{2}
+
+#test:
+  let ordtree = (OrdTree/singleton U64 U64 #Pair{1 1})
+  let ordtree = (OrdTree/insert U64 U64 U64/Ord ordtree #Pair{2 2})
+  (OrdTree/get U64 U64 U64/Ord ordtree 2) == #Some{2}

@@ -1,4 +1,4 @@
-// Compares two string.
+// Compares two strings.
 // - a: First string.
 // - b: Second string.
 // = LT if a < b, EQ if a = b, GT if a > b.
@@ -12,3 +12,11 @@ String/compare : String -> String -> Cmp
     #EQ: (String/compare as bs)
     #GT: #GT
   }
+
+#test: (String/compare "" "") == #EQ
+#test: (String/compare "a" "b") == #LT
+#test: (String/compare "b" "a") == #GT
+#test: (String/compare "abc" "abc") == #EQ
+#test: (String/compare "abc" "abcd") == #LT
+#test: (String/compare "abcd" "abc") == #GT
+#test: (String/compare "hello" "world") == #LT
