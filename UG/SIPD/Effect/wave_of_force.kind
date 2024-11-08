@@ -1,0 +1,6 @@
+
+use UG/SIPD as G
+
+tick_wave : U64 -> G/State -> G/State
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} =
+
