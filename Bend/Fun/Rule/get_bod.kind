@@ -1,0 +1,5 @@
+// Gets the body of a Rule.
+// - rule: The Rule to get the body from.
+// = The body of the Rule.
+Bend/Fun/Rule/get_bod : Bend/Fun/Rule -> Bend/Fun/Term
+| #Rule{pats body} = body

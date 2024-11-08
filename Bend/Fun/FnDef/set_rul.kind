@@ -1,0 +1,9 @@
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+
+// Sets the rules of a function definition.
+// - fndef: The function definition to modify.
+// - rules: The new rules to set.
+// = The updated function definition.
+FnDef/set_rul : FnDef -> (List Rule) -> FnDef
+| #FnDef{nam typ chk rul src} rules = #FnDef{nam typ chk rules src}

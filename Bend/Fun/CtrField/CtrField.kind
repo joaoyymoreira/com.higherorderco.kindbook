@@ -1,5 +1,5 @@
 // A field of a constructor.
-data Bend/Fun/Adt/CtrField {
+data Bend/Fun/CtrField {
   #CtrField {
     nam : String        // Name of the field
     rec : Bool          // Whether the field is recursive

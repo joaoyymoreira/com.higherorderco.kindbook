@@ -1,0 +1,252 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+
+Scope : *
+  = (BinMap (List String))
+
+// Makes all variables in each definition have a new unique name.
+// Skips unbound variables.
+// Precondition: Definition references have been resolved.
+// - book: The Book to apply unique names to.
+// = The Book with unique names applied.
+Bend/Transform/unique_names : Book -> Book
+| #Book{defs adts ctrs} =
+  let defs = (List/foldr _ (BinMap/to_list _ defs) (List (Pair _ _)) [] (λpair λdefs
+    let (key, def) = pair
+    let def        = (FnDef/set_rul def (go_rules 0 (FnDef/get_rul def)))
+    ((key, def) : defs)))
+  #Book{(BinMap/from_list _ defs) adts ctrs}
+
+// Applies unique names to a list of rules.
+// - gen  : The current name generator.
+// - rules: The list of rules to process.
+// = The updated list of rules with unique names.
+go_rules : U64 -> (List Rule) -> (List Rule)
+| gen [] = []
+| gen (#Rule{pats bod} : rules) =
+  let s             = (BinMap/empty _)
+  let (s, gen)      = (push_scope (List/map _ _ (List/concat_map _ _ pats Pat/binds) λx #Some{x}) gen s)
+  let (s, bod, gen) = (go_term gen bod s)
+  let (s, pats)     = (List/foldr _ pats (Pair _ _) (s, []) (λpat λpair
+    let (s, pats) = pair
+    let (s, pat)  = (pop_pat pat s)
+    (s, (pat : pats))))
+  let rules         = (go_rules gen rules)
+  (#Rule{pats bod} : rules)
+
+
+// Applies unique names to a term.
+// - gen : The current name generator.
+// - s   : The current scope.
+// - term: The term to process.
+// = A triple with the updated scope, term, and generator.
+go_term : U64 -> Term -> (State Scope (Term & U64))
+| gen #Var{nam} s =
+  let (s, nam) = (use_var nam s)
+  (s, #Var{nam}, gen)
+| gen #Mat{bnd arg with_bnd with_arg arms} s =
+  let (s, arg, gen)        = (go_term gen arg s)
+  let (s, with_arg, gen)   = (go_list gen with_arg s)
+  let (s, gen)             = (push_scope (bnd : []) gen s)
+  let (s, gen)             = (push_scope with_bnd gen s)
+  let (s, arms, gen)       = (go_match gen arms s)
+  let (s, with_bnd)        = (pop_list with_bnd s)
+  let (s, bnd)             = (pop_scope bnd s)
+  (s, #Mat{bnd arg with_bnd with_arg arms}, gen)
+| gen #Fld{bnd arg with_bnd with_arg arms} s =
+  let (s, arg, gen)        = (go_term gen arg s)
+  let (s, with_arg, gen)   = (go_list gen with_arg s)
+  let (s, gen)             = (push_scope (bnd : []) gen s)
+  let (s, gen)             = (push_scope with_bnd gen s)
+  let (s, arms, gen)       = (go_match gen arms s)
+  let (s, with_bnd)        = (pop_list with_bnd s)
+  let (s, bnd)             = (pop_scope bnd s)
+  (s, #Fld{bnd arg with_bnd with_arg arms}, gen)
+| gen #Swt{bnd arg with_bnd with_arg pred arms} s =
+  let (s, arg, gen)        = (go_term gen arg s)
+  let (s, with_arg, gen)   = (go_list gen with_arg s)
+  let (s, gen)             = (push_scope (bnd : []) gen s)
+  let (s, gen)             = (push_scope with_bnd gen s)
+  let (s, pred, arms, gen) = (go_swt gen pred arms s)
+  let (s, with_bnd)        = (pop_list with_bnd s)
+  let (s, bnd)             = (pop_scope bnd s)
+  (s, #Swt{bnd arg with_bnd with_arg pred arms}, gen)
+| gen #Bnd{bnd arg cond step base} s =
+  let (s, arg, gen)        = (go_list gen arg s)
+  let (s, gen)             = (push_scope bnd gen s)
+  let (s, cond, gen)       = (go_term gen cond s)
+  let (s, step, gen)       = (go_term gen step s)
+  let (s, base, gen)       = (go_term gen base s)
+  let (s, bnd)             = (pop_list bnd s)
+  (s, #Bnd{bnd arg cond step base}, gen)
+| gen #Let{pat val nxt} s =
+  let (s, val, gen)        = (go_term gen val s)
+  let (s, gen)             = (push_pat pat gen s)
+  let (s, nxt, gen)        = (go_term gen nxt s)
+  let (s, pat)             = (pop_pat pat s)
+  (s, #Let{pat val nxt}, gen)
+| gen #Ask{pat val nxt} s =
+  let (s, val, gen)        = (go_term gen val s)
+  let (s, gen)             = (push_pat pat gen s)
+  let (s, nxt, gen)        = (go_term gen nxt s)
+  let (s, pat)             = (pop_pat pat s)
+  (s, #Ask{pat val nxt}, gen)
+| gen #Use{nam val nxt} s =
+  let (s, val, gen)        = (go_term gen val s)
+  let (s, gen)             = (push_scope (nam : []) gen s)
+  let (s, nxt, gen)        = (go_term gen nxt s)
+  let (s, nam)             = (pop_scope nam s)
+  (s, #Use{nam val nxt}, gen)
+| gen #Lam{pat bod} s =
+  let (s, gen)             = (push_pat pat gen s)
+  let (s, bod, gen)        = (go_term gen bod s)
+  let (s, pat)             = (pop_pat pat s)
+  (s, #Lam{pat bod}, gen)
+| gen #Fan{fan els} s =
+  let (s, els, gen)       = (go_list gen els s)
+  (s, #Fan{fan els}, gen)
+| gen #Lst{els} s =
+  let (s, els, gen)       = (go_list gen els s)
+  (s, #Lst{els}, gen)
+| gen #App{fun arg} s =
+  let (s, fun, gen)       = (go_term gen fun s)
+  let (s, arg, gen)       = (go_term gen arg s)
+  (s, #App{fun arg}, gen)
+| gen #Opr{opr fst snd} s =
+  let (s, fst, gen)       = (go_term gen fst s)
+  let (s, snd, gen)       = (go_term gen snd s)
+  (s, #Opr{opr fst snd}, gen)
+| gen #Wth{typ bod} s =
+  let (s, bod, gen)       = (go_term gen bod s)
+  (s, #Wth{typ bod}, gen)
+| gen term s = (s, term, gen)
+
+// Applies unique names to a list of terms.
+go_list : U64 -> (List Term) -> (State Scope ((List Term) & U64))
+| gen [] s = (s, [], gen)
+| gen (t : ts) s =
+  let (s, t,  gen) = (go_term gen t s)
+  let (s, ts, gen) = (go_list gen ts s)
+  (s, (t : ts), gen)
+
+// Applies unique names to a list of match rules.
+go_match : U64 -> (List MatchRule) -> (State Scope ((List MatchRule) & U64))
+| gen [] s = (s, [], gen)
+| gen (#MatchRule{nam bnd bod} : arms) s =
+  let (s, gen)       = (push_scope bnd gen s)
+  let (s, bod, gen)  = (go_term gen bod s)
+  let (s, bnd)       = (pop_list bnd s)
+  let arm            = #MatchRule{nam bnd bod} :: MatchRule
+  let (s, arms, gen) = (go_match gen arms s)
+  (s, (arm : arms), gen)
+
+// Applies unique names to switch cases.
+go_swt : U64 -> (Maybe String) -> (List Term)
+                   -> (State Scope ((Maybe String) & (List Term) & U64))
+| gen pred [] s =
+  (s, pred, [], gen)
+| gen pred (x : []) s =
+  let (s, gen)           = (push_scope (pred : []) gen s)
+  let (s, x, gen)        = (go_term gen x s)
+  let (s, pred)          = (pop_scope pred s)
+  (s, pred, (x : []), gen)
+| gen pred (x : xs) s =
+  let (s, x, gen)        = (go_term gen x s)
+  let (s, pred, xs, gen) = (go_swt gen pred xs s)
+  (s, pred, (x : xs), gen)
+
+
+// Generates a new unique name and increments the counter.
+// - count: The current counter value.
+// = A pair with the new name and the incremented counter.
+fresh : U64 -> (String & U64)
+| count = ((Bend/u64_to_name count), (+ count 1))
+
+// Pushes a new scope onto the stack.
+// - names: The list of names to push.
+// - count: The current name counter.
+// - s    : The current scope.
+// = A pair with the updated scope and new counter.
+push_scope : (List (Maybe String)) -> U64 -> (State Scope U64)
+| (#Some{name} : xs) count s =
+  let (nam, count) = (fresh count)
+  let nams         = (Maybe/run _ (BinMap/get _ s (String/hash name)) [])
+  let s        = (BinMap/set _ s (String/hash name) (nam : nams))
+  (push_scope xs count s)
+| (#None : xs)       count s = (push_scope xs count s)
+| []                 count s = (s, count)
+
+// Pushes a new scope based on a pattern.
+// - pat: The pattern to push.
+// - gen: The current name generator.
+// - s  : The current scope.
+// = A pair with the updated scope and new generator.
+push_pat : Pat -> U64 -> (State Scope U64)
+| pat gen s = (push_scope (List/map _ _ (Pat/binds pat) λx #Some{x}) gen s)
+
+// Pops a name from the scope.
+// - nam: The name to pop.
+// - s  : The current scope.
+// = A pair with the updated scope and popped name.
+pop_scope : (Maybe String) -> (State Scope (Maybe String))
+| #Some{nam} s with (BinMap/get _ s (String/hash nam)) :: (Maybe _)
+. | #Some{(nam : nams)} = ((BinMap/set _ s (String/hash nam) nams), #Some{nam})
+. | _                   = (s, #Some{nam})
+| #None s = (s, #None)
+
+// Pops a list of names from the scope.
+// - bnds: The list of names to pop.
+// - s   : The current scope.
+// = A pair with the updated scope and popped names.
+pop_list : (List (Maybe String)) -> (State Scope (List (Maybe String)))
+| bnds s =
+  (List/foldr _ bnds _ (s, []) (λbnd λpair
+    let (s, bnds) = pair
+    let (s, bnd)  = (pop_scope bnd s)
+    (s, (bnd : bnds))))
+
+// Pops a pattern from the scope.
+// - pat: The pattern to pop.
+// - s  : The current scope.
+// = A pair with the updated scope and pattern.
+pop_pat : Pat -> (State Scope Pat)
+| #Var{#Some{name}} s with (BinMap/get _ s (String/hash name)) :: (Maybe _)
+. | #Some{(nam : nams)} =
+  let s = (BinMap/set _ s (String/hash name) nams)
+  (s, #Var{#Some{nam}})
+. | _                   =
+  (s, #Var{#Some{name}})
+
+| #Var{#None} s = (s, #Var{#None})
+
+| #Fan{kind pats} s =
+  let (s, pats) = (List/mmap (State _) (State/Monad Scope) _ _ pats pop_pat s)
+  (s, #Fan{kind pats})
+
+| #Ctr{name pats} s =
+  let (s, pats) = (List/mmap (State _) (State/Monad Scope) _ _ pats pop_pat s)
+  (s, #Ctr{name pats})
+| #Lst{pats} s =
+  let (s, pats) = (List/mmap (State _) (State/Monad Scope) _ _ pats pop_pat s)
+  (s, #Lst{pats})
+
+| #Chn{nam} s = (s, #Chn{nam})
+| #Num{num} s = (s, #Num{num})
+| #Str{str} s = (s, #Str{str})
+
+// Uses a variable from the current scope.
+// - nam: The name to use.
+// - s  : The current scope.
+// = A pair with the updated scope and name.
+use_var : String -> (State Scope String)
+| nam s with (BinMap/get _ s (String/hash nam)) :: (Maybe _)
+. | #Some{(nam : _)} = (s, nam)
+
+// Unbound variable case.
+// Don't do anything so we can use this pass before checking for unbounds.
+// Note that this may cause name conflicts.
+. | _                = (s, nam)

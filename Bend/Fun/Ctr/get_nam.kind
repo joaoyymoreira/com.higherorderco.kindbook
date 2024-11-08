@@ -1,0 +1,5 @@
+// Gets the name of a constructor.
+// - ctr: The constructor.
+// = The name of the constructor.
+Bend/Fun/Ctr/get_nam : Bend/Fun/Ctr -> String
+| #Ctr{nam _ _ _} = nam

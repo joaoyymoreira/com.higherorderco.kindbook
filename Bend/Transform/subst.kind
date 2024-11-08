@@ -1,17 +1,18 @@
+use Bend/Fun/Term as Term
 // Substitutes occurrences of a variable with a given term
 // - from: The name of the variable to substitute
 // - to: The term to substitute in place of the variable
 // - term: The term to perform substitution on
 // = A new term with substitutions applied
-Bend/Transform/subst : String -> Bend/Fun/Term -> Bend/Fun/Term -> Bend/Fun/Term
+Bend/Transform/subst : String -> Term -> Term -> Term
 | from to term = 
-  let term = (Bend/Fun/Term/map-children
-    (λbinds child
-      if (List/any-true (String/eq from) binds) {
+  let term = (Term/map_children
+    λbinds λchild
+      if (List/any _ binds (String/eq from)) {
         child
       } else {
         (Bend/Transform/subst from to child)
-      })
+      }
     term)
   match term {
     #Var{nam}: if (String/eq nam from) {

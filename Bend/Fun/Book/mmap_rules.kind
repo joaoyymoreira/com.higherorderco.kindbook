@@ -1,13 +1,15 @@
-// Bend/Fun/Book/mmap_rules
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
 
-Bend/Fun/Book/mmap_rules :
-  ∀(M: * -> *) (Monad M) -> (Bend/Fun/Rule -> (M Bend/Fun/Rule)) -> Bend/Fun/Book -> (M Bend/Fun/Book)
+Book/mmap_rules :
+  ∀(M: * -> *) (Monad M) -> (Rule -> (M Rule)) -> Book -> (M Book)
 | M m@#Monad{pure bind} f #Book{defs adts ctrs} =
-  (bind _ _ (BinMap/mmap _ m _ _ defs (mmap_def _ m f)) λdefs
-  (pure _ #Book{defs adts ctrs}))
+  (bind _ _ (BinMap/mmap M m _ _ defs (mmap_def _ m f)) λdefs
+  (pure Book #Book{defs adts ctrs}))
 
 mmap_def :
-  ∀(M: * -> *) (Monad M) -> (Bend/Fun/Rule -> (M Bend/Fun/Rule)) -> Bend/Fun/FnDef -> (M Bend/Fun/FnDef)
+  ∀(M: * -> *) (Monad M) -> (Rule -> (M Rule)) -> FnDef -> (M FnDef)
 | M m@#Monad{pure bind} f #FnDef{nam typ chk rul src} =
-  (bind _ _ (List/mmap _ m _ _ rul f) λrul
+  (bind _ _ (List/mmap M m _ _ rul f) λrul
   (pure _ #FnDef{nam typ chk rul src}))

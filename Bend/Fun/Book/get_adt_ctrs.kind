@@ -6,7 +6,7 @@ use Bend/Fun/Book as Book
 // = Some ctrs if an ADT with the given name is found in the Book,
 //   where ctrs is a List of Ctr (constructors),
 //   None if no such ADT exists.
-Book/get_adt_ctrs : Book -> String -> (Bend (List Bend/Fun/Adt/Ctr))
+Book/get_adt_ctrs : Book -> String -> (Bend (List Bend/Fun/Ctr))
 | book nam = do Bend {
   ask #Adt{_ _ ctr _} = (Book/get_adt book nam)
   (List/mmap _ Bend/Monad _ _ ctr (Book/get_ctr book))

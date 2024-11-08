@@ -1,0 +1,6 @@
+// Sets the definitions of a Book.
+// - book: The book to update.
+// - defs: The new definitions to set.
+// = The updated Book with the new definitions.
+Bend/Fun/Book/set_defs : Bend/Fun/Book -> (BinMap Bend/Fun/FnDef) -> Bend/Fun/Book
+| #Book{_ adts ctrs} defs = #Book{defs adts ctrs}

@@ -1,0 +1,13 @@
+// Applies a function that returns Maybe to each element of a list,
+// keeping only the #Some results.
+// - A: The type of elements in the input list.
+// - B: The type of elements in the output list.
+// - xs: The input list.
+// - fn: The function to apply to each element, returning Maybe.
+// = A new list containing only the #Some results of applying fn.
+List/filter_map : ∀(A: *) ∀(B: *) (List A) -> (A -> (Maybe B)) -> (List B)
+| A B #Nil fn =
+  #Nil
+| A B #Cons{head tail} fn with (fn head)
+. | #Some{y} = #Cons{y (List/filter_map A B tail fn)}
+. | #None    = (List/filter_map A B tail fn)

@@ -1,0 +1,5 @@
+// Gets the definitions from a Book.
+// - book: The Book to extract definitions from.
+// = The List of definitions in the Book.
+Bend/Fun/Book/get_defs : Bend/Fun/Book -> (BinMap Bend/Fun/FnDef)
+| #Book{defs _ _} = defs

@@ -1,0 +1,7 @@
+use Bend/Fun/Adt as Adt
+
+// Gets the name of an ADT.
+// - adt: The ADT to get the name from.
+// = The name of the ADT.
+Bend/Fun/Adt/get_nam : Adt -> String
+| #Adt{nam _ _ _} = nam

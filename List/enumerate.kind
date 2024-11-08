@@ -10,4 +10,4 @@ List/enumerate/go : ∀(A: *)(List A) -> Nat -> (List (Pair Nat A))
 | A #Nil             n = #Nil
 | A #Cons{head tail} n = #Cons{#Pair{n head} (List/enumerate/go A tail (#Succ{n}))}
 
-#test: (List/enumerate (List U64) ["0" "1"]) == [#Pair{#0 "0"} #Pair{#1 "1"}]
+#test: (List/enumerate String ["0" "1"]) == [#Pair{#0 "0"} #Pair{#1 "1"}]

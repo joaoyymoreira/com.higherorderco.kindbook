@@ -1,0 +1,7 @@
+use Bend/Fun/CtrField as CtrField
+
+// Gets the name of a constructor field.
+// - field: The constructor field.
+// = The name of the field.
+CtrField/get_nam : CtrField -> String
+| #CtrField{nam _ _} = nam

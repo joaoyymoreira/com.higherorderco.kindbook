@@ -1,0 +1,13 @@
+// Enumerates a list, pairing each element with its index.
+// - A: Element type.
+// - xs: Input list.
+// = List of (index, element) pairs.
+List/enumerate_u64 : ∀(A: *) (List A) -> (List (Pair U64 A))
+= λA λxs (go A xs 0)
+
+// Recursive helper for enumerate.
+go : ∀(A: *)(List A) -> U64 -> (List (Pair U64 A))
+| A #Nil             n = #Nil
+| A #Cons{head tail} n = #Cons{#Pair{n head} (go A tail (+ n 1))}
+
+#test: (List/enumerate_u64 String ["0" "1"]) == [#Pair{0 "0"} #Pair{1 "1"}]

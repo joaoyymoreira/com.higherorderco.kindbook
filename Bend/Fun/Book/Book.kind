@@ -3,6 +3,6 @@ data Bend/Fun/Book {
   #Book {
     defs : (BinMap Bend/Fun/FnDef) // Map of function definitions
     adts : (BinMap Bend/Fun/Adt)   // Map of ADTs
-    ctrs : (BinMap Bend/Fun/Adt/Ctr)   // Map of constructors
+    ctrs : (BinMap Bend/Fun/Ctr)   // Map of constructors
   }
 }

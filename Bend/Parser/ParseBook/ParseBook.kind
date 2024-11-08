@@ -3,6 +3,6 @@ data Bend/Parser/ParseBook {
   #ParseBook {
     fun_defs : (BinMap Bend/Fun/FnDef)
     adts     : (BinMap Bend/Fun/Adt)
-    ctrs     : (BinMap Bend/Fun/Adt/Ctr)
+    ctrs     : (BinMap Bend/Fun/Ctr)
   }
 }

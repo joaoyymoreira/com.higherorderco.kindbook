@@ -1,0 +1,28 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+use Bend/Fun/MatchRule as MatchRule
+
+// Linearizes all variables specified in the `with` clauses of match terms.
+Bend/Transform/linearize_match_with : Book -> Book
+| book = (Book/map_rules (λr let #Rule{pats body} = r #Rule{pats (linearize_term body)}) book)
+
+// Linearizes with clauses in a term
+linearize_term : Term -> Term
+| term = 
+  let term = (Term/map_children (λ_ linearize_term) term)
+  match term {
+    #Mat{bnd arg with_bnd with_arg arms}:
+      let arms = (List/map _ _ arms (λ{#MatchRule{nam fld bod}:
+        let bod = (Term/foldr_lam bod with_bnd)
+        #MatchRule{nam fld bod} :: MatchRule})
+      )
+      let term = #Mat{bnd arg with_bnd with_arg arms} :: Term
+      (Term/foldl_app term with_arg)
+
+    #Swt{bnd arg with_bnd with_arg pred arms}:
+      let arms = (List/map _ _ arms (λarm (Term/foldr_lam arm with_bnd)))
+      let term = #Swt{bnd arg #Nil #Nil pred arms} :: Term
+      (Term/foldl_app term with_arg)
+
+    _: term
+  }

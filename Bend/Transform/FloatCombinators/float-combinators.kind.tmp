@@ -1,7 +1,7 @@
-is-combinator : Bend/Fun/Term -> Bool
-| term = (Bool/and (List/is-nil (Bend/Fun/Term/free-vars term))
-         (Bool/and (Bool/not (Bend/Fun/Term/has-unscoped-diff term))
-                  (Bool/not (Bend/Fun/Term/is-ref term))))
+is_combinator : Bend/Fun/Term -> Bool
+| term = (Bool/and (List/is_nil (Bend/Fun/Term/free_vars term))
+         (Bool/and (Bool/not (Bend/Fun/Term/has_unscoped_diff term))
+                  (Bool/not (Bend/Fun/Term/is_ref term))))
 
 // Creates a new function from the given term.
 // The new function is added to the context.
@@ -11,7 +11,7 @@ float : Bend/Transform/FloatCombinators/Ctx -> Bool -> Bend/Fun/Term -> (Pair Be
   let nam = (String/append (Bend/Fun/FnDef/name (Bend/Transform/FloatCombinators/Ctx/def ctx)) 
             (String/append "__C" (U64/show (Bend/Transform/FloatCombinators/Ctx/name-gen ctx))))
   let ctx = (Bend/Transform/FloatCombinators/Ctx/set-name-gen ctx (+ (Bend/Transform/FloatCombinators/Ctx/name-gen ctx) 1))
-  let def = (Bend/Fun/FnDef/new-gen nam #Cons{#Rule{#Nil term} #Nil} (Bend/Fun/FnDef/src (Bend/Transform/FloatCombinators/Ctx/def ctx)) #True)
+  let def = (Bend/Fun/FnDef/new_gen nam #Cons{#Rule{#Nil term} #Nil} (Bend/Fun/FnDef/src (Bend/Transform/FloatCombinators/Ctx/def ctx)) #True)
   let ctx = (Bend/Transform/FloatCombinators/Ctx/set-combinators ctx (BinMap/set (Bend/Transform/FloatCombinators/Ctx/combinators ctx) (String/hash nam) #Pair{safe def}))
   #Pair{#Ref{nam} ctx}
 
@@ -38,9 +38,9 @@ term-size : Bend/Fun/Term -> U64
 
 float-term-child : Bool -> Bend/Fun/Term -> (Pair Bend/Transform/FloatCombinators/Ctx U64) -> (Pair Bend/Fun/Term (Pair Bend/Transform/FloatCombinators/Ctx U64))
 | par_comb child #Pair{ctx par_size} = 
-  let child_safe = (Bend/Transform/FloatCombinators/is-safe ctx #Nil child)
+  let child_safe = (Bend/Transform/FloatCombinators/is_safe ctx #Nil child)
   let child_size = (term-size child)
-  let child_comb = (is-combinator child)
+  let child_comb = (is_combinator child)
   let too_large = if par_comb {
     (U64/gt par_size (Bend/Transform/FloatCombinators/Ctx/max-size ctx))
   } else {
@@ -58,10 +58,10 @@ float-term-child : Bool -> Bend/Fun/Term -> (Pair Bend/Transform/FloatCombinator
 float-term : Bend/Fun/Term -> Bend/Transform/FloatCombinators/Ctx -> (Pair Bend/Fun/Term Bend/Transform/FloatCombinators/Ctx)
 | term ctx = 
   // Float from the bottom up
-  let #Pair{term ctx} = (Bend/Transform/FloatCombinators/map-float-children float-term term ctx)
+  let #Pair{term ctx} = (Bend/Transform/FloatCombinators/map-float_children float-term term ctx)
   let par_size = (term-size term)
-  let par_comb = (is-combinator term)
-  let #Pair{term #Pair{ctx _}} = (Bend/Transform/FloatCombinators/map-float-children (float-term-child par_comb) term #Pair{ctx par_size})
+  let par_comb = (is_combinator term)
+  let #Pair{term #Pair{ctx _}} = (Bend/Transform/FloatCombinators/map-float_children (float-term-child par_comb) term #Pair{ctx par_size})
   #Pair{term ctx}
 
 float-combinators-defs : (List Bend/Fun/FnDef) -> (Pair (List Bend/Fun/FnDef) (BinMap (Pair Bool Bend/Fun/FnDef))) -> (Pair (List Bend/Fun/FnDef) (List Bend/Fun/FnDef))
@@ -74,10 +74,10 @@ float-combinators-defs : (List Bend/Fun/FnDef) -> (Pair (List Bend/Fun/FnDef) (B
     #Cons{rule #Nil}: 
       let ctx = (Bend/Transform/FloatCombinators/Ctx/init-ctx book def max_size acc_combs)
       let #Pair{bod ctx} = (float-term (Bend/Fun/Rule/body rule) ctx)
-      let def = (Bend/Fun/FnDef/set-rules def #Cons{(Bend/Fun/Rule/set-body rule bod) #Nil})
+      let def = (Bend/Fun/FnDef/set_rul def #Cons{(Bend/Fun/Rule/set-body rule bod) #Nil})
       (float-combinators-defs defs #Pair{#Cons{def acc_defs} (Bend/Transform/FloatCombinators/Ctx/combinators ctx)})
     _: 
-      let def = (Bend/Fun/FnDef/set-rules def #Cons{#Rule{#Nil #Era} #Nil})
+      let def = (Bend/Fun/FnDef/set_rul def #Cons{#Rule{#Nil #Era} #Nil})
       (float-combinators-defs defs #Pair{#Cons{def acc_defs} acc_combs})
   }
 
@@ -88,4 +88,4 @@ Bend/Transform/FloatCombinators/float-combinators : Bend/Fun/Book -> U64 -> Bend
   let #Pair{keys defs} = (List/unzip (BinMap/to-list (Bend/Fun/Book/defs book)))
   let #Pair{defs combinators} = (float-combinators-defs defs #Pair{#Nil BinMap/empty})
   let defs = (List/map (λdef #Pair{(String/hash (Bend/Fun/FnDef/name def)) def}) (List/append combinators defs))
-  (Bend/Fun/Book/set-defs book (BinMap/from-list defs))
+  (Bend/Fun/Book/set_defs book (BinMap/from_list defs))

@@ -1,0 +1,8 @@
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+
+// Gets the rules of a function definition.
+// - fndef: The function definition.
+// = The rules of the function definition.
+FnDef/get_rul : FnDef -> (List Rule)
+| #FnDef{_ _ _ rul _} = rul

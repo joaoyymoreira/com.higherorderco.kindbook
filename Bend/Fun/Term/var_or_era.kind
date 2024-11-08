@@ -1,0 +1,3 @@
+Bend/Fun/Term/var_or_era : (Maybe String) -> Bend/Fun/Term
+| #Some{nam} = #Var{nam}
+| #None      = #Era

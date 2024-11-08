@@ -1,0 +1,106 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/MatchRule as MatchRule
+
+// Desugars 'fold' expressions in a Book.
+// - book: The Book to desugar.
+// = A new Book with all 'fold' expressions desugared, or an error message.
+Bend/Transform/desugar_fold : Book -> (Bend Book)
+| book = do Bend {
+  let defs = (BinMap/values _ (Book/get_defs book))
+  ask defs = (desugar_defs book defs)
+  let defs = (List/map _ (Pair _ _) defs (λdef ((String/hash (FnDef/get_nam def)), def)))
+  #Done{(Book/set_defs book (BinMap/from_list _ defs))}
+}
+
+// Desugars 'fold' expressions in a list of function definitions.
+// - defs: The list of function definitions to desugar.
+// = A new list of function definitions with all 'fold' expressions desugared.
+desugar_defs : Book -> (List FnDef) -> (Bend (List FnDef))
+| book []       = #Done{[]}
+| book def:defs = do Bend {
+  ask (rules, new_defs, _) = (desugar_rules book def 0 (FnDef/get_rul def))
+  let def  = (FnDef/set_rul def rules)
+  ask defs = (desugar_defs book (List/append _ new_defs defs))
+  #Done{#Cons{def defs}}
+}
+
+// Desugars 'fold' expressions in a list of rules.
+// - def: The function definition the rules belong to.
+// - fresh: The fresh name count.
+// - rules: The list of rules to desugar.
+// = The desugared rules, the lifted folds, and the updated fresh name count.
+desugar_rules : Book -> FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
+| book def fresh [] = do Bend {
+  ret ([], [], fresh)
+}
+| book def fresh (#Rule{pats body} : rules) = do Bend {
+  ask (rules, defs,     fresh) = (desugar_rules book def fresh rules)
+  ask (body,  new_defs, fresh) = (desugar_term  book def fresh body)
+  ret (#Cons{#Rule{pats body} rules}, (List/append _ new_defs defs), fresh)
+}
+
+// Desugars 'fold' expressions in a term.
+// - def: The function definition the term is in.
+// - fresh: The fresh name count.
+// - term: The term to desugar.
+// = The desugared term, the lifted folds and the fresh name count.
+//   Doesn't desugar inside the folds themselves.
+desugar_term : Book -> FnDef -> U64 -> Term -> (Bend (Term & (List FnDef) & U64))
+| book #FnDef{nam typ chk rul src} fresh term@#Fld{bnd arg with_bnd with_arg arms} = do Bend {
+  ask if (Term/has_unscoped_diff term) {
+    #Fail{"Can't have non self-contained unscoped variables in a 'fold'"}
+  } else {
+    #Done{0}
+  }
+  let new_nam = (String/concat [nam "__fold" (U64/to_string fresh)])
+  let fresh = (+ fresh 1)
+
+  // Gather the free variables
+  // They will be implicitly captured by the new function
+  let fvs = (List/concat_map _ _ arms (λrule 
+    let #MatchRule{_ bnds body} = rule
+    let fvs = (Term/free_vars body)
+    let is_free = (λx (Bool/not (List/contains _ String/IsEqual (List/concat_maybes _ bnds) x))) :: _ -> _
+    (List/filter _ fvs is_free)))
+  let fvs = (List/filter _ fvs (λx (Bool/not (List/contains _ String/IsEqual (List/concat_maybes _ bnd:with_bnd) x))))
+
+  // Transform the recursive fields into aliases to recursive calls to the fold
+  ask arms = (List/mmap _ Bend/Monad _ _ arms (λrule do Bend {
+    let #MatchRule{nam bnds body} = rule
+    ask nam             = (Maybe/to_result _ _ nam "fold with no ctr")
+    ask #Ctr{_ _ _ fld} = (Book/get_ctr book nam)
+    let rec             = (List/map _ _ fld λ{#CtrField{_ rec _}: rec})
+    let bndsA           = (List/filter_map _ _ (List/zip _ _ bnds rec) (λpair 
+      let #Pair{bnd rec} = pair
+      if rec { bnd } else { #None }))
+    let body            = (List/foldr _ bndsA _ body (λbnd λbod
+      let val = (Term/foldl_app #Ref{new_nam} (List/map _ _ bnd:fvs λx #Var{x}))
+      #Use{#Some{bnd} val bod}))
+    ret (#MatchRule{#Some{nam} bnds body} :: MatchRule)
+  }))
+
+  // Create the new function
+  let var = "%x"
+  let bod = #Mat{#None #Var{var} with_bnd (List/map _ _ with_bnd Term/var_or_era) arms} :: Term
+  let bod = (Term/foldr_lam bod with_bnd)
+  let bod = (Term/foldr_lam bod (List/map _ _ var:fvs λx #Some{x}))
+  let def = (FnDef/new_gen new_nam [#Rule{[] bod}] src chk)
+
+  // Substitute the fold by a call to the new function
+  let term = (Term/foldl_app #Ref{new_nam} (arg : (List/map _ _ fvs λx #Var{x})))
+  let term = (Term/foldl_app #Ref{new_nam} with_arg)
+  ret (term, [def], fresh)
+}
+
+| book def@#FnDef{_ _ _ _ _} fresh term = do Bend {
+  (Term/mmap_children_with _ _ Bend/Monad
+    (λ_ λchild λs do Bend {
+      let (defs, fresh) = s
+      ask (child, new_defs, fresh) = (desugar_term book def fresh child)
+      ret (child, (List/append _ new_defs defs), fresh)
+    })
+    term ([], fresh))
+}

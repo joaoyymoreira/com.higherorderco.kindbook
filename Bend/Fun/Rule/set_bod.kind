@@ -1,0 +1,9 @@
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+
+// Sets the body of a rule.
+// - rule: The rule to set the body of.
+// - body: The new body.
+// = A new rule with the new body.
+Bend/Fun/Rule/set_bod : Rule -> Term -> Rule
+| #Rule{pat bod} new = #Rule{pat new}

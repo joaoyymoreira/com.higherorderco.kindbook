@@ -1,0 +1,49 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/MatchRule as MatchRule
+use Bend/Fun/Ctr as Ctr
+
+// Desugars 'open' expressions in a Book.
+// - book: The Book to desugar.
+// = The desugared Book or an error message.
+Bend/Transform/desugar_open : Book -> (Bend Book)
+| book = (Book/mmap_rules _ Bend/Monad (desugar_rule book) book)
+
+// Desugars 'open' expressions in a term.
+// - book: The Book to desugar.
+// - term: The term to desugar.
+// = The desugared term or an error message.
+desugar_term : Book -> Term -> (Bend Term)
+| book #Opn{typ var bnd bod} = do Bend {
+  ask ctrs = (Book/get_adt_ctrs book typ)
+  match ctrs {
+    #Cons{ctr ctrs}: match ctrs {
+      #Nil : do Bend {
+        let #Ctr{nam _ _ _} = ctr
+        ask bod = (desugar_term book bod)
+        let rule = #MatchRule{#Some{nam} bnd bod} :: MatchRule
+        ret #Mat{#None (Term/var_or_era var) [] [] [rule]}
+      }
+      _: #Fail{(String/concat ["Type '" typ "' of an 'open' doesn't have exactly one constructor"])}
+    }
+    _: #Fail{(String/concat ["Type '" typ "' of an 'open' doesn't have exactly one constructor"])}
+  }
+}
+| book #Def{def nxt} = do Bend {
+  ask rules = (List/mmap _ Bend/Monad _ _ (FnDef/get_rul def) (desugar_rule book))
+  ask nxt   = (desugar_term book nxt)
+  ret #Def{(FnDef/set_rul def rules) nxt}
+}
+| book term = (Term/mmap_children _ Bend/Monad (λ_ (desugar_term book)) term)
+
+// Desugars 'open' expressions in a rule.
+// - book: The Book to desugar.
+// - rule: The rule to desugar.
+// = The desugared rule or an error message.
+desugar_rule : Book -> Rule -> (Bend Rule)
+| book rule = do Bend {
+  ask body = (desugar_term book (Rule/get_bod rule))
+  ret (Rule/set_bod rule body)
+}

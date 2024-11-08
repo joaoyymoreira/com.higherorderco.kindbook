@@ -1,0 +1,83 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pat
+
+// Resolves constructor patterns
+Bend/Transform/fix_ctr_pats : Book -> (Bend Book)
+| book@#Book{defs adts ctrs} = do Bend {
+  ask defs = for def in (BinMap/values _ defs) {
+    ask def = (fix_term book #Def{def #Era})
+    ask def = match def {
+      #Def{def _}: #Done{def}
+      _          : #Fail{"Unexpected term type after fixing match defs"}
+    }
+    ret (BinMap/set _ defs (String/hash (FnDef/get_nam def)) def)
+  }
+  ret #Book{defs adts ctrs}
+}
+
+
+resolve_pat : Book -> Pat -> Pat
+| book #Var{#Some{nam}} = 
+  if (Result/is_done _ _ (Book/get_ctr book nam)) {
+    #Ctr{nam #Nil}
+  } else {
+    #Var{#Some{nam}}
+  }
+| book pat = (Pat/map_children (resolve_pat book) pat)
+
+
+check_good_ctr : Book -> Pat -> (Bend U64)
+| book #Ctr{nam args} = do Bend {
+  ask ctr = (Result/fold _ _ 
+    (Book/get_ctr book nam) _
+    λx #Done{x} 
+    (λ_ #Fail{(String/concat ["Unbound constructor '" nam "' in pattern matching rule."])}))
+  let #Ctr{_ adt _ fld} = ctr
+  let exp = (List/length_u64 _ fld)
+  let got = (List/length_u64 _ args)
+  if (U64/neq exp got) {
+    #Fail{(String/concat ["Incorrect arity for constructor '" nam " of type '" adt "' in pattern matching rule. Expected " (U64/to_string exp) " fields, found " (U64/to_string got) "."])}
+  } else {
+    #Done{0}
+  }
+}
+| book pat = do Bend {
+  ask (List/mmap _ Bend/Monad _ _ (Pat/children pat) (λchild (check_good_ctr book child)))
+  ret 0
+}
+
+
+fix_pat : Book -> Pat -> (Bend Pat)
+| book pat = do Bend {
+  let pat = (resolve_pat book pat)
+  ask (check_good_ctr book pat)
+  ret pat
+}
+
+
+fix_term : Book -> Term -> (Bend Term)
+| book #Def{#FnDef{nam typ chk rul src} nxt} = do Bend {
+  ask #Rule{pats body} = (Maybe/to_result _ _ (List/head _ rul) "No rules")
+  let ari = (List/length_u64 _ pats)
+  ask rul = (List/mmap _ Bend/Monad _ _ rul (fix_rule book ari))
+  ask nxt = (fix_term book nxt)
+  ret #Def{#FnDef{nam typ chk rul src} nxt}
+}
+| book term =
+  (Term/mmap_children Bend Bend/Monad λ_ λt (fix_term book t) term)
+
+
+fix_rule : Book -> U64 -> Rule -> (Bend Rule)
+| book def_arity #Rule{pats body} = do Bend {
+  ask if (U64/neq def_arity (List/length_u64 _ pats)) {
+    #Fail{(String/concat ["Incorrect pattern matching rule arity. Expected " (U64/to_string def_arity) " args, found " (U64/to_string (List/length_u64 _ pats)) "."])}
+  } else {
+    #Done{0}
+  }
+  ask pats = (List/mmap _ Bend/Monad _ _ pats (fix_pat book))
+  ask body = (fix_term book body)
+  #Done{#Rule{pats body}}
+}

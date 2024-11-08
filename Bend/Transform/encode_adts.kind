@@ -1,0 +1,56 @@
+use Bend/Run/AdtEncoding as AdtEncoding
+use Bend/Fun/Book as Book
+use Bend/Fun/Adt as Adt
+use Bend/Fun/Ctr as Ctr
+use Bend/Fun/CtrField as CtrField
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Term as Term
+
+// Encodes ADTs in a Book according to the specified encoding.
+// - encoding: The ADT encoding strategy to use.
+// - book: The Book to encode ADTs in.
+// = A new Book with encoded ADTs, or an error message.
+Bend/Transform/encode_adts : AdtEncoding -> Book -> (Bend Book)
+| encoding book = do Bend {
+  let nams = (List/map _ _ (BinMap/values _ (Book/get_adts book)) Adt/get_nam)
+  (List/mfoldl _ Bend/Monad _ nams _ book (encode_adt encoding))
+}
+
+encode_ctr_scott : Adt -> Ctr -> (List FnDef)
+| #Adt{adt_nam _ ctrs src} #Ctr{nam _ typ fld} = 
+  let args = (List/map CtrField String fld CtrField/get_nam)
+  let bod  = (Term/foldl_app #Var{nam} (List/map _ _ args λx #Var{x}))
+  let bod  = (Term/foldr_lam bod (List/map _ _ ctrs (λx #Some{x})))
+  let bod  = (Term/foldr_lam bod (List/map _ _ args (λx #Some{x})))
+  [(FnDef/new_gen nam [#Rule{[] bod}] src #True)]
+
+encode_ctr_num_scott : Adt -> (Pair U64 Ctr) -> (List FnDef)
+| #Adt{adt_nam _ ctrs src} (tag, #Ctr{nam _ typ fld}) = 
+  let fld     = (List/map _ _ fld CtrField/get_nam)
+  let tag_nam = (String/concat [nam "/tag"])
+  let tag_def = (FnDef/new_gen tag_nam [#Rule{[] #Num{#U24{tag}}}] src #True)
+  let x       = "%x"
+  let bod     = (Term/foldl_app #App{#Var{x} #Ref{tag_nam}}
+                 (List/map _ _ fld (λf #Var{f})))
+  let bod     = #Lam{#Var{#Some{x}} bod} :: Term
+  let bod     = (Term/foldr_lam bod (List/map _ _ fld (λf #Some{f})))
+  let ctr_def = (FnDef/new_gen nam [#Rule{[] bod}] src #True)
+  [tag_def ctr_def]
+
+// Encodes a single ADT in a Book.
+// - encoding: The ADT encoding strategy to use.
+// - book: The Book containing the ADT.
+// - adt_name: The name of the ADT to encode.
+// = A new Book with the encoded ADT, or an error message.
+encode_adt : AdtEncoding -> Book -> String -> (Bend Book)
+| encoding book adt_name = do Bend {
+  ask adt  = (Book/get_adt book adt_name)
+  let #Adt{_ _ ctr _} = adt
+  ask ctrs = (List/mmap _ Bend/Monad _ _ ctr (Book/get_ctr book))
+  let defs = (match encoding {
+    #Scott:    (List/concat _ (List/map _ _ ctrs (encode_ctr_scott adt)))
+    #NumScott: (List/concat _ (List/map _ _ (List/enumerate_u64 _ ctrs) (encode_ctr_num_scott adt)))
+  } :: (List FnDef))
+  let book = (List/foldr _ defs _ book (λdef λbook (Book/add_fn_def book def)))
+  #Done{book}
+}

@@ -1,0 +1,93 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pat
+
+// Inserts duplications and erasures so that each variable is used exactly once.
+Bend/Transform/linearize_vars : Book -> Book
+| book = (Book/map_rules
+  λ{#Rule{pats body}:
+    let (body, _) = (linearize_term body (BinMap/empty _))
+    #Rule{pats body}}
+  book)
+
+// Linearizes variables in a term.
+linearize_term : Term -> (BinMap U64) -> (Pair Term (BinMap U64))
+// Let terms with just a variable get inlined
+| #Let{#Var{#Some{nam}} val nxt} var_uses = 
+  let (nxt, var_use)  = (linearize_term nxt var_uses)
+  let uses            = (get_var_uses nam var_uses)
+  let (val, var_uses) = (linearize_term val var_uses)
+  let term = switch uses {
+    0: #Let{#Var{#None} val nxt}
+    1: (Bend/Transform/subst nam val nxt)
+    2+_: #Let{(duplicate_pat nam uses) val nxt}
+  } :: Term
+  (term, var_uses)
+
+// Count var uses and update the name to the duplication
+| #Var{nam} var_uses = 
+  let count     = (get_var_uses nam var_uses)
+  let new_count = (+ count 1)
+  let var_uses  = (BinMap/set _ var_uses (String/hash nam) new_count)
+  let term      = #Var{(dup_name nam new_count)} :: Term
+  (term, var_uses)
+
+| term var_uses = 
+  // linearize the children
+  let (term, var_uses) = (Term/map_children_with _ (λ_ linearize_term) term var_uses)
+  // erase unused bindings
+  let term = (Term/map_child_binds (λbind λ_ (erase_unused_bind bind var_uses)) term)
+  // add duplications of bindings
+  let term = (duplicate_term term var_uses)
+  (term, var_uses)
+
+// Creates a new name by appending the use count to the original name.
+// If the use count is 1, it returns the original name.
+dup_name : String -> U64 -> String
+| name uses with (== uses 1)
+. | 1 = name
+. | _ = (String/concat [name "_" (U64/to_string uses)])
+
+// Retrieves the number of uses for a given variable name from the BinMap.
+// Returns 0 if the variable is not found or if the name is None.
+get_var_uses : String -> (BinMap U64) -> U64
+| name var_uses with (BinMap/get _ var_uses (String/hash name))
+. | #Some{count} = count
+. | #None        = 0
+
+// Creates a duplicate pattern for variables used multiple times.
+// The pattern is a Fan of Dup kind with variables named name_1, name_2, etc.
+duplicate_pat : String -> U64 -> Pat
+| name uses = 
+  #Fan{#Dup (List/map _ _ (U64/range 1 (+ uses 1)) λi #Var{#Some{(dup_name name i)}})}
+
+// Erases bindings that are not used (count is 0)
+erase_unused_bind : (Maybe String) -> (BinMap U64) -> (Maybe String)
+| #None       var_uses = #None
+| #Some{bind} var_uses with (== (get_var_uses bind var_uses) 0)
+. | 0 = #Some{bind}
+. | _ = #None
+
+// Adds duplication bindings for variables used multiple times
+duplicate_binds : (List String) -> Term -> (BinMap U64) -> Term
+| #Nil            nxt var_uses = nxt
+| #Cons{bnd bnds} nxt var_uses = 
+  let nxt = (duplicate_binds bnds nxt var_uses)
+  let uses = (get_var_uses bnd var_uses)
+  if (U64/gt uses 1) {
+    #Let{(duplicate_pat bnd uses) #Var{bnd} nxt}
+  } else {
+    nxt
+  }
+
+// Applies duplication to specific term types (Lam and Let)
+duplicate_term : Term -> (BinMap U64) -> Term
+| #Lam{pat bod} var_uses = 
+  let bod = (duplicate_binds (Pat/binds pat) bod var_uses)
+  #Lam{pat bod}
+| #Let{pat val nxt} var_uses = 
+  let nxt = (duplicate_binds (Pat/binds pat) nxt var_uses)
+  #Let{pat val nxt}
+| term var_uses = term

@@ -1,9 +1,0 @@
-// A constructor definition.
-data Bend/Fun/Adt/Ctr {
-  #Ctr {
-    nam : String                       // Name of the constructor
-    adt : String                       // Name of the ADT the constructor belongs to
-    typ : Bend/Fun/Type                // Type of the constructor
-    fld : (List Bend/Fun/Adt/CtrField) // Fields of the constructor
-  }
-}

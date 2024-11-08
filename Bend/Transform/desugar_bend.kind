@@ -1,0 +1,89 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+
+RECURSIVE_KW : String
+| = "fork"
+
+NEW_FN_SEP : String
+| = "__bend"
+
+// Desugars 'bend' expressions in a Book
+// - book: The Book to desugar
+// = The Book with 'bend' terms lifted to top-level functions, or an error message.
+Bend/Transform/desugar_bend : Book -> (Bend Book)
+| #Book{defs adts ctrs} = do Bend {
+  let defs = (BinMap/values _ defs)
+  ask defs = (desugar_defs defs)
+  let defs = (List/map _ (Pair _ _) defs (λdef ((String/hash (FnDef/get_nam def)), def)))
+  #Done{#Book{(BinMap/from_list _ defs) adts ctrs}}
+}
+
+desugar_defs : (List FnDef) -> (Bend (List FnDef))
+| [] = do Bend {
+  #Done{#Nil}
+}
+| def:defs = do Bend {
+  ask (rules, new_defs, _) = (desugar_rules def 0 (FnDef/get_rul def))
+  ask defs = (desugar_defs (List/append _ new_defs defs))
+  ret (FnDef/set_rul def rules) : defs
+}
+
+desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
+| def fresh [] = do Bend {
+  ret ([], [], fresh)
+}
+| def fresh (#Rule{pats body} : rules) = do Bend {
+  ask (rules, defs, fresh)    = (desugar_rules def fresh rules)
+  ask (body, new_defs, fresh) = (desugar_term def 0 body)
+  ret ((#Rule{pats body} : rules), (List/append _ new_defs defs), fresh)
+}
+
+desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
+| #FnDef{nam typ chk rul src} fresh term@#Bnd{bnd arg cond step base} = do Bend {
+  ask if (Term/has_unscoped_diff term) {
+    #Fail{"Can't have non self-contained unscoped variables in a 'bend'"}
+  } else {
+    #Done{0}
+  }
+
+  let name = (String/concat [nam NEW_FN_SEP (U64/to_string fresh)])
+  let fresh = (+ fresh 1)
+
+  // Gather defthe free variables
+  // They will be implicitly captured by the new function
+  let fvs = (Term/free_vars step)
+  let fvs = (List/filter _ fvs (λx (String/neq RECURSIVE_KW x)))
+  let fvs = (List/append _ fvs (Term/free_vars base))
+  let fvs = (List/append _ fvs (Term/free_vars cond))
+  let fvs = (List/filter _ fvs (λx (Bool/not (List/contains _ String/IsEqual (List/concat_maybes _ bnd) x))))
+
+  // Add a substitution of `fork`, a use term with a partially applied recursive call
+  let step = #Use{
+    #Some{RECURSIVE_KW}
+    (Term/foldl_app (Term/foldl_app #Ref{name} (List/map _ _ fvs λx #Var{x})) arg)
+    step
+  } :: Term
+
+  // Create the new function
+  let body = #Swt{#Some{"_"} cond [] [] #Some{"_-1"} [base step]} :: Term
+  let body = (Term/foldr_lam body bnd)
+  let body = (Term/foldr_lam body (List/map _ _ fvs λx #Some{x}))
+  let def  = (FnDef/new_gen name [#Rule{[] body}] src chk)
+
+  // Substitute the bend by a call to the new function
+  let term = (Term/foldl_app #Ref{name} (List/map _ _ fvs λx #Var{x}))
+  let term = (Term/foldl_app term arg)
+  #Done{(term, [def], fresh)}
+}
+
+| def@#FnDef{_ _ _ _ _} fresh term =
+  (Term/mmap_children_with _ _ Bend/Monad
+    (λ_ λchild λ{#Pair{defs fresh}: do Bend {
+      ask (child, new_defs, fresh) = (desugar_term def fresh child)
+      ret (child, (List/append _ new_defs defs), fresh)
+    }})
+    term
+    ([], fresh)
+  )

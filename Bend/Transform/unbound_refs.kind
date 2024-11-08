@@ -1,0 +1,32 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+
+// Check unbound references in a book
+Bend/Transform/unbound_refs : Book -> (Bend U64)
+| book@#Book{defs _ _} = do Bend {
+  let defs = (BinMap/values _ defs)
+  for def in defs {
+    let #FnDef{_ _ _ rul _} = def
+    for rule in rul {
+      let #Rule{_ bod} = rule
+      ask _            = (unbound_refs_term book bod)
+      ret 0
+    }
+    ret 0
+  }
+  ret 0
+}
+
+// Check unbound references in a term
+unbound_refs_term : Book -> Term -> (Bend U64)
+| book #Ref{nam} with (Book/get_def book nam)
+. | #Done{_} = #Done{0}
+. | #Fail{_} = #Fail{(String/concat ["Unbound reference '"  nam "'"])}
+| book term = do Bend {
+  for child in (Term/children term) {
+    let (_, child) = child
+    ask _          = (unbound_refs_term book child)
+    ret 0
+  }
+  ret 0
+}

@@ -1,0 +1,79 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+use Bend/Fun/Pattern as Pat
+
+// Desugars 'def' expressions in a Book, lifting them to top-level functions
+// - book: The Book to desugar
+// = Either the desugared Book or an error message
+Bend/Transform/desugar_local_def : Book -> (Bend Book)
+| book = do Bend {
+  let defs = (BinMap/values _ (Book/get_defs book))
+  ask defs = (desugar_defs defs)
+  let defs = (List/map _ (Pair _ _) defs λdef ((String/hash (FnDef/get_nam def)), def))
+  ret (Book/set_defs book (BinMap/from_list _ defs))
+}
+
+desugar_defs : (List FnDef) -> (Bend (List FnDef))
+| []       = #Done{[]}
+| def:defs = do Bend {
+  ask (rules, new_defs, _) = (desugar_rules def 0 (FnDef/get_rul def))
+  let def = (FnDef/set_rul def rules)
+  ask defs = (desugar_defs (List/append _ new_defs defs))
+  ret (def:defs)
+}
+
+desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
+| def fresh [] = do Bend {
+  ret ([], [], fresh)
+}
+| def fresh rule:rules = do Bend {
+  ask (bod,   new_defs, fresh) = (desugar_term def fresh (Rule/get_bod rule))
+  ask (rules, defs,     fresh) = (desugar_rules def fresh rules)
+  let rule = (Rule/set_bod rule bod)
+  ret ((rule:rules), (List/append _ new_defs defs), fresh)
+}
+
+desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
+| def fresh #Def{local_def nxt} = do Bend {
+  let #FnDef{def_nam _ def_chk _ def_src} = def
+  let local_nam = (FnDef/get_nam local_def)
+  let rules = (FnDef/get_rul local_def)
+  ask (List/mmap _ Bend/Monad _ _ rules (λrule do Bend {
+    let #Rule{pats body} = rule
+    let #Pair{bnds uses} = (Term/unscoped_vars body)
+    let bnds = (List/append _ (List/concat_map _ _ pats Pat/unscoped_binds) bnds)
+    if (List/is_nil _ (List/append _ (List/difference _ String/IsEqual bnds uses) (List/difference _ String/IsEqual uses bnds))) {
+      #Done{0}
+    } else {
+      #Fail{"Can't have non self-contained unscoped variables in a 'def' expression"}
+    }
+  }))
+  let name = (String/concat [def_nam "__local_" (U64/to_string fresh) "_" local_nam])
+  let fvs   = (List/concat_map _ _ rules (λr
+    let #Rule{pats body} = r
+    let fvs = (Term/free_vars body)
+    (List/filter _ fvs (λx (Bool/not (List/contains _ String/IsEqual (List/concat_map _ _ pats Pat/binds) x))))))
+  let fvs   = (List/dedup _ String/Ord fvs)
+  let rules = (List/map _ _ rules (λr
+    let #Rule{p b} = r
+    #Rule{p (Term/foldr_lam b (List/map _ _ fvs λx #Some{x}))} :: Rule
+  ))
+  let new_def = (FnDef/new_gen name rules def_src def_chk)
+  let fresh   = (+ fresh 1)
+  ask (nxt, defs, fresh) = (desugar_term def fresh nxt)
+  let call    = (Term/foldl_app #Ref{name} (List/map _ _ fvs λx #Var{x}))
+  let nxt     = #Use{#Some{local_nam} call nxt} :: Term
+  ret (nxt, (new_def:defs), fresh)
+}
+
+| def fresh term = do Bend {
+  (Term/mmap_children_with _ _ Bend/Monad
+    (λ_ λchild λs do Bend {
+      let #Pair{defs fresh} = s
+      ask (child, new_defs, fresh) = (desugar_term def fresh child)
+      ret (child, (List/append _ new_defs defs), fresh)
+    })
+    term ([], fresh))
+}

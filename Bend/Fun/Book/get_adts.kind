@@ -1,0 +1,8 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Adt as Adt
+
+// Gets all ADTs from a Book.
+// - book: The Book to extract ADTs from.
+// = A BinMap containing all ADTs in the Book.
+Book/get_adts : Book -> (BinMap Adt)
+| #Book{_ adts _} = adts
