@@ -1,3 +1,6 @@
+
+use UG/SIPD as G
+
 // Applies all effects of a body to the game state.
 // - body: The body with effects.
 // - state: Current game state.
@@ -14,8 +17,12 @@ UG/SIPD/Body/apply_effects/go : UG/SIPD/Body -> UG/SIPD/State -> (List UG/SIPD/E
 | body state #Nil                = state
 | body state #Cons{head tail} = 
   let updated_body = (UG/SIPD/Body/set_effects body tail)
-  let updated_state = (head state)
-  (UG/SIPD/Body/apply_effects/go updated_body updated_state tail)
+  let #Body{id hitbox tick effects collidable} = updated_body
+  let #State{next_id state_tick players hero_states game_map} = state
+  let #GameMap{width height bodies} = game_map
+  let updated_bodies = (OrdTree/insert U64 G/Body U64/Ord bodies #Pair{id updated_body})
+  let new_state = (G/Effect/apply head #State{next_id state_tick players hero_states #GameMap{width height updated_bodies}})
+  (UG/SIPD/Body/apply_effects/go updated_body new_state tail)
 
 // Sets new effects for a body.
 // - body: The body to update.
