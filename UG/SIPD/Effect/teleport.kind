@@ -18,5 +18,4 @@ G/Effect/teleport : U64 -> U64 -> F64 -> G/Effect
   let movement      = (V2/mul_scalar direction teleport_dist)
   let new_center    = (V2/add hitbox_center movement)
   let new_hitbox    = (UG/Shape/move hitbox movement)
-  log "HERE ON TELEPORT"
   (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id new_hitbox body_tick effects collidable})

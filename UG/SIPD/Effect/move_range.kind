@@ -1,11 +1,8 @@
 
 use UG/SIPD as G
 
-get_body : U64 -> (OrdTree U64 G/Body) -> (Maybe G/Body)
-| body_id bodies = (OrdTree/get U64 G/Body U64/Ord bodies body_id)
-
 UG/SIPD/Effect/move_range : U64 -> V2 -> F64 -> U64 -> G/State -> G/State
-| body_id target range duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (get_body body_id bodies)
+| body_id target range duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Body{id hitbox body_tick effects collidable}} =
   let hitbox_center = (UG/Shape/get_center hitbox)
@@ -26,8 +23,7 @@ UG/SIPD/Effect/move_range : U64 -> V2 -> F64 -> U64 -> G/State -> G/State
     if (U64/gt duration 0) {
       let new_effect = (G/Effect/move_range body_id target range (- duration 1))
       (G/State/insert_body inserted_state #Body{id new_hitbox body_tick #Cons{new_effect effects} collidable}) 
-    } else {
-      inserted_state
+    } else { 
+      (G/State/delete_body inserted_state body_id)
     }
   }
-
