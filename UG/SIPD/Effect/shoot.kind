@@ -1,0 +1,44 @@
+
+use UG/SIPD as G
+
+grow_projectile : G/State -> U64 -> G/State
+| #State{next_id tick players hero_states #GameMap{width height bodies}} body_id with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
+..| #Circle{center radius} = 
+  let growth_factor = 1.05
+  let new_radius = (F64/mul radius growth_factor)
+  let new_hitbox = (UG/Shape/circle center new_radius)
+  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id new_hitbox b_tick effects collidable})
+..| #Polygon{center vertices} = #State{next_id tick players hero_states #GameMap{width height bodies}}
+
+tick_projectile : U64 -> G/State -> G/State
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{body} = 
+  let state = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies}})
+  (grow_projectile state body_id)
+
+shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
+| #Body{id hitbox b_tick effects collidable} player range bullet_radius duration state = 
+  let hero_pos = (UG/Shape/get_center hitbox)
+  let mouse_pos = (G/Player/get_mouse_pos player "W")
+  let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let bullet_pos = hero_pos
+  let real_target = (V2/add hero_pos (V2/mul_scalar direction range))
+  let bullet_shape = (UG/Shape/circle hero_pos bullet_radius)
+  let #Pair{bullet_id state} = (G/State/generate_id state) 
+
+  let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable})
+  let move_effect = (G/Effect/move_range bullet_id real_target range duration)
+
+  let state_after_spawn = (G/Effect/apply spawn_effect state)
+  (G/Effect/apply move_effect state_after_spawn)
+
+UG/SIPD/Effect/shoot : U64 -> F64 -> F64 -> U64 -> G/Effect
+| player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+..| #Some{hero_body} = (shoot/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}})
+
