@@ -1,14 +1,8 @@
 
 use UG/SIPD as G
 
-get_body : (OrdTree U64 G/Body) -> U64 -> (Maybe G/Body)
-| bodies body_id = (OrdTree/get U64 G/Body U64/Ord bodies body_id)
-
-get_player : (OrdTree U64 G/Player) -> U64 -> (Maybe G/Player)
-| players player_id = (OrdTree/get U64 G/Player U64/Ord players player_id)
-
 tick_wave : U64 -> G/State -> G/State
-| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (get_body bodies body_id)
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
 .| #None       = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{body} = (UG/SIPD/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies}})
 
@@ -17,7 +11,7 @@ create_wave_body : V2 -> U64 -> F64 -> G/Body
   #Body{id (UG/Shape/circle position wave_radius) (tick_wave id) [] #Untouchable}
 
 UG/SIPD/Effect/wave_of_force : U64 -> U64 -> F64 -> G/Effect
-| player_id duration wave_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (get_player players player_id)
+| player_id duration wave_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
 .| #None         = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{player} = 
   let target = (G/Player/get_mouse_pos player "Z")
