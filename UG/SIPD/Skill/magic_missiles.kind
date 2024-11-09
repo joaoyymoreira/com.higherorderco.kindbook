@@ -1,0 +1,16 @@
+use UG/SIPD as G
+
+// Creates a magic missiles skill.
+// - pid: Player ID.
+// - range: Maximum missile range.
+// - duration: Missile flight duration.
+// - missile_radius: Radius of each missile.
+// - cooldown: Skill cooldown.
+// = A magic missiles skill.
+G/Skill/magic_missiles : U64 -> F64 -> U64 -> F64 -> U64 -> G/Skill
+| pid range duration missile_radius cooldown = 
+  #Skill{
+    name: "magic_missiles"
+    effects: [(G/Effect/magic_missiles pid range duration missile_radius)]
+    cooldown: cooldown
+  }

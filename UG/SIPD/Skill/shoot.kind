@@ -1,0 +1,16 @@
+use UG/SIPD as G
+
+// Creates a shoot skill.
+// - player_id: Player ID.
+// - range: Maximum shooting range.
+// - bullet_radius: Radius of the bullet.
+// - duration: Duration of the bullet's flight.
+// - cooldown: Skill cooldown.
+// = A shoot skill.
+G/Skill/shoot : U64 -> F64 -> F64 -> U64 -> U64 -> G/Skill
+| player_id range bullet_radius duration cooldown = 
+  #Skill{
+    name: "shoot"
+    effects: [(G/Effect/shoot player_id range bullet_radius duration)]
+    cooldown: cooldown
+  }
