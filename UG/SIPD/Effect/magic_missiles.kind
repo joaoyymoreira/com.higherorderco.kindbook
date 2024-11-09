@@ -1,0 +1,66 @@
+
+use UG/SIPD as G
+
+magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
+| hero_pos mouse_pos range =
+  let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
+  let distance = (F64/min (V2/length (V2/sub mouse_pos hero_pos)) range)
+  let perpend = (V2/perpendicular direction)
+  let spread = (F64/mul (F64/sub 1.0 (F64/div distance range)) 0.5)
+  let side_offset = (V2/mul_scalar perpend (F64/mul spread range))
+
+  let left_target = (V2/sub max_target side_offset)
+  let right_target = (V2/add max_target side_offset)
+  
+  #Pair{max_target #Pair{left_target right_target}}
+
+magic_missiles/tick_projectile : U64 -> G/State -> G/State
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies}})
+
+magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Body
+| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #TakesEffects}
+
+magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/State
+| #Body{id hitbox b_tick effects collidable} #Player{pid name keys target hero} range duration missile_radius state =
+  let hero_pos = (UG/Shape/get_center hitbox)
+  let mouse_pos = (G/Player/get_mouse_pos #Player{pid name keys target hero} "Q")
+  let click_pos = target
+
+  let #Pair{center_target targets} = (magic_missiles/calculate_targets hero_pos mouse_pos range)
+  let #Pair{left_target right_target} = targets
+
+  let #Pair{p1_id state} = (G/State/generate_id state)
+  let projectile1 = (magic_missiles/create_projectile p1_id hero_pos center_target missile_radius)
+  let #Pair{p2_id state} = (G/State/generate_id state) 
+  let projectile2 = (magic_missiles/create_projectile p2_id hero_pos left_target missile_radius)
+  let #Pair{p3_id state} = (G/State/generate_id state) 
+  let projectile3 = (magic_missiles/create_projectile p3_id hero_pos right_target missile_radius)
+
+  let spawn_effect1 = (G/Effect/spawn_body projectile1)
+  let move_effect1 = (G/Effect/move_range p1_id left_target range duration)
+
+  let spawn_effect2 = (G/Effect/spawn_body projectile2)
+  let move_effect2 = (G/Effect/move_range p2_id center_target range duration)
+
+  let spawn_effect3 = (G/Effect/spawn_body projectile3)
+  let move_effect3 = (G/Effect/move_range p3_id right_target range duration)
+
+  let state = (G/Effect/apply spawn_effect1 state)
+  let state = (G/Effect/apply spawn_effect2 state)
+  let state = (G/Effect/apply spawn_effect3 state)
+  let state = (G/Effect/apply move_effect1 state)
+  let state = (G/Effect/apply move_effect2 state)
+  let state = (G/Effect/apply move_effect3 state)
+
+  state
+
+UG/SIPD/Effect/magic_missiles : U64 -> F64 -> U64 -> F64 -> G/Effect
+| player_id range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+..| #Some{hero_body} = (magic_missiles/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies}})
+
