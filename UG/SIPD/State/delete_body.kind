@@ -1,0 +1,10 @@
+use UG/SIPD as G
+
+// Deletes a body from the State.
+// - state: The current state.
+// - body_id: ID of the body to delete.
+// = Updated state with the body removed.
+G/State/delete_body : G/State -> U64 -> G/State
+| #State{next_id tick players hero_states game_map} body_id =
+  let new_game_map = (G/GameMap/delete_body game_map body_id)
+  #State{next_id tick players hero_states new_game_map}
