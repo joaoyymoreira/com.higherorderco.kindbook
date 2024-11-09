@@ -1,8 +1,15 @@
-
 use UG/SIPD as G
 
 get_skill : (OrdTree String G/Skill) -> String -> (Maybe G/Skill)
 | skills key = (OrdTree/get String G/Skill String/Ord skills key)
+
+revert_cooldown : (Maybe G/Hero/HeroState) -> G/State -> U64 -> String -> U64 -> G/State
+| #None state pid key new_cooldown = state
+| #Some{#HeroState{cooldowns}} state pid key new_cooldown =
+  let updated_cooldowns = (OrdTree/insert String U64 String/Ord cooldowns #Pair{key new_cooldown})
+  let #State{next_id tick players hero_states game_map} = state 
+  let updated_hero_states = (OrdTree/insert U64 G/Hero/HeroState U64/Ord hero_states #Pair{pid #HeroState{updated_cooldowns}})
+  #State{next_id tick players updated_hero_states game_map}
 
 UG/SIPD/Hero/apply_skill_if_pressed : String -> U64 -> (OrdTree String G/Skill) -> (OrdTree String (Pair Bool V2)) -> (OrdTree String U64) -> G/State -> G/State
 | key player_id skills player_keys cooldowns state with ((get_skill skills key), (G/Player/is_player_key_pressed key player_keys)) :: (Pair (Maybe G/Skill) Bool)
@@ -14,6 +21,9 @@ UG/SIPD/Hero/apply_skill_if_pressed : String -> U64 -> (OrdTree String G/Skill) 
   if (Bool/eq on_cooldown #True) {
     state
   } else {
-    (G/Skill/apply skill state)
-}
-
+    let new_state = (G/Skill/apply skill state)
+    let #Skill{name effects new_cooldown} = skill
+    let #State{next_id tick players hero_states game_map} = new_state 
+    let hero_state = (OrdTree/get U64 G/Hero/HeroState U64/Ord hero_states player_id)
+    (revert_cooldown hero_state new_state player_id key new_cooldown)
+  }
