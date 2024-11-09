@@ -1,0 +1,6 @@
+
+use UG/SIPD as G
+
+UG/SIPD/Body/get_body : U64 -> (OrdTree U64 G/Body) -> (Maybe G/Body)
+| body_id bodies = (OrdTree/get U64 G/Body U64/Ord bodies body_id)
+
