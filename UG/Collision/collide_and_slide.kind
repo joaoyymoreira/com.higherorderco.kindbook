@@ -1,0 +1,26 @@
+use UG/SIPD as G
+
+collide_and_slide/go : G/Body -> V2 -> V2 -> (List G/Body) -> Nat -> (Pair V2 V2)
+| #Body{id hitbox tick effects collidable} position remaining_movement obstacles #Zero = #Pair{position remaining_movement}
+| #Body{id hitbox tick effects collidable} position remaining_movement obstacles #Succ{n} = 
+  let new_position = (V2/add position remaining_movement)
+
+  let new_hitbox = (UG/Shape/move hitbox (V2/sub new_position position))
+
+  match (G/Body/find_collision #Body{id new_hitbox tick effects collidable} obstacles) {
+    #None: #Pair{new_position #V2{0.0 0.0}}
+    #Some{collision_normal}: 
+      let slide_plane = (V2/normalize collision_normal)
+      let slide_movement = (V2/sub remaining_movement (V2/mul_scalar slide_plane (V2/dot remaining_movement slide_plane)))
+      (collide_and_slide/go #Body{id new_hitbox tick effects collidable} position slide_movement obstacles n)
+  }
+
+// Collides and slides a body against obstacles.
+// - body: The body to move.
+// - movement: The intended movement vector.
+// - obstacles: List of obstacle bodies.
+// = The final position and remaining movement.
+UG/Collision/collide_and_slide : G/Body -> V2 -> (List G/Body) -> (Pair V2 V2)
+| #Body{id hitbox tick effects collidable} movement obstacles =
+  let initial_position = (UG/Shape/get_center hitbox)
+  (collide_and_slide/go #Body{id hitbox tick effects collidable} initial_position movement obstacles #3)
