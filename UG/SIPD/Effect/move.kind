@@ -16,13 +16,12 @@ UG/SIPD/Effect/move : U64 -> U64 -> G/Effect
     let direction = (V2/normalize distance_to_target)
     
     let movement = (V2/mul_scalar direction (F64/min constant_speed ln))
-    //let movement = (V2/mul_scalar direction ln)
 
-    // TODO implement collide and slide
     // probably shouldnt transform ordmap to list every tick
-    //let #Pair{final_movement collision_rest) = (collide_and_slide
+    let bodies_list = (OrdTree/values U64 G/Body bodies)
+    let #Pair{final_movement collision_rest} = (UG/Collision/collide_and_slide #Body{body_id hitbox body_tick effects collidable} movement bodies_list)
 
-    let new_hitbox = (UG/Shape/move hitbox movement)
+    let new_hitbox = (UG/Shape/move hitbox (V2/sub final_movement hitbox_center))
 
     let updated_bodies = (OrdTree/insert U64 G/Body U64/Ord bodies #Pair{body_id #Body{body_id new_hitbox body_tick effects collidable}})
 

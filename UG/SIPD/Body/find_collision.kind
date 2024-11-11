@@ -11,6 +11,7 @@ G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
     #Hard:
       let diff_ids = (U64/neq id id1)
       let collides = (UG/Shape/collide hitbox hitbox1)
+
       if (Bool/and diff_ids collides) {
         let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
         #Some{col_normal}
