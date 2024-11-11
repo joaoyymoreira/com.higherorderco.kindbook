@@ -17,7 +17,7 @@ Bend/Transform/encode_adts : AdtEncoding -> Book -> (Bend Book)
 }
 
 encode_ctr_scott : Adt -> Ctr -> (List FnDef)
-| #Adt{adt_nam _ ctrs src} #Ctr{nam _ typ fld} = 
+| #Adt{adt_nam _ ctrs src} #Ctr{nam _ typ fld} =
   let args = (List/map CtrField String fld CtrField/get_nam)
   let bod  = (Term/foldl_app #Var{nam} (List/map _ _ args λx #Var{x}))
   let bod  = (Term/foldr_lam bod (List/map _ _ ctrs (λx #Some{x})))
@@ -25,7 +25,7 @@ encode_ctr_scott : Adt -> Ctr -> (List FnDef)
   [(FnDef/new_gen nam [#Rule{[] bod}] src #True)]
 
 encode_ctr_num_scott : Adt -> (Pair U64 Ctr) -> (List FnDef)
-| #Adt{adt_nam _ ctrs src} (tag, #Ctr{nam _ typ fld}) = 
+| #Adt{adt_nam _ ctrs src} (tag, #Ctr{nam _ typ fld}) =
   let fld     = (List/map _ _ fld CtrField/get_nam)
   let tag_nam = (String/concat [nam "/tag"])
   let tag_def = (FnDef/new_gen tag_nam [#Rule{[] #Num{#U24{tag}}}] src #True)
@@ -52,5 +52,5 @@ encode_adt : AdtEncoding -> Book -> String -> (Bend Book)
     #NumScott: (List/concat _ (List/map _ _ (List/enumerate_u64 _ ctrs) (encode_ctr_num_scott adt)))
   } :: (List FnDef))
   let book = (List/foldr _ defs _ book (λdef λbook (Book/add_fn_def book def)))
-  #Done{book}
+  ret book
 }

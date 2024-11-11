@@ -1,10 +1,5 @@
 use Bend/Fun/Pattern as Pat
 
-Bend/Fun/Pattern/mmap_binds :
-  ∀(M: * -> *) (Monad M) -> ((Maybe String) -> (M (Maybe String))) -> Bend/Fun/Pattern -> (M Bend/Fun/Pattern)
-
-| M #Monad{pure bind} f #Var{x} =
-  (bind (Maybe String) Pat (f x) λx (pure Pat #Var{x}))
-
-| M m f pat =
-  (Bend/Fun/Pattern/mmap_children M m (Bend/Fun/Pattern/mmap_binds M m f) pat)
+Pat/mmap_binds : ∀(M: * -> *) (Monad M) -> ((Maybe String) -> (M (Maybe String))) -> Pat -> (M Pat)
+| M #Monad{pure bind} f #Var{x} = (bind _ _ (f x) λx (pure _ #Var{x}))
+| M m                 f pat     = (Pat/mmap_children M m (Pat/mmap_binds M m f) pat)

@@ -1,0 +1,8 @@
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Pattern as Pattern
+
+// Gets the patterns of a Rule.
+// - rule: The Rule to get the patterns from.
+// = The patterns of the Rule.
+Rule/get_pat : Rule -> (List Pattern)
+| #Rule{pats _} = pats

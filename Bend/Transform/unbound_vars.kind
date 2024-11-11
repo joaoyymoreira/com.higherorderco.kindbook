@@ -64,7 +64,6 @@ unbound_vars_term : Term -> (List String) -> (BinMap (String & U64 & U64)) -> (B
 }
 
 
-
 // Adds a list of names to the scope
 add_bnd : (List String) -> (List String) -> (List String)
 | scope names = (List/append _ names scope)
@@ -81,13 +80,13 @@ use_global : (BinMap (String & U64 & U64)) -> String -> (BinMap (String & U64 & 
 
 // Updates the binding count of global variables
 bnd_global : (BinMap (String & U64 & U64)) -> (List String) -> (BinMap (String & U64 & U64))
-| global #Cons{nam nams} = 
+| global (nam;;nams) = 
   let global = match (BinMap/get _ global (String/hash nam)) {
     #Some{x}: 
-      let (_, bnd, uses) = x :: (String & U64 & U64)
+      let (_, bnd, uses) = x :: (_ & _ & _)
       (BinMap/set _ global (String/hash nam) #Pair{nam #Pair{(+ bnd 1) uses}}) :: (BinMap _)
     #None: 
       (BinMap/set _ global (String/hash nam) #Pair{nam #Pair{1 0}})
   } :: (BinMap _)
   (bnd_global global nams)
-| global #Nil = global
+| global [] = global

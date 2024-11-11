@@ -1,0 +1,6 @@
+// Returns the predecessor of a U64 number, or 0 if the input is 0.
+// - x: The U64 number to get the predecessor of.
+// = The predecessor of x, or 0 if x is 0.
+U64/pred : U64 -> U64
+| 0 = 0
+| x = (- x 1)

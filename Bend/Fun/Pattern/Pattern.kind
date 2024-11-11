@@ -5,7 +5,7 @@ data Bend/Fun/Pattern {
   #Chn {nam: String}
   #Fan {knd: Bend/Fun/FanKind pat: (List Bend/Fun/Pattern)}
   #Ctr {nam: String           pat: (List Bend/Fun/Pattern)}
-  #Num {val: Nat}
+  #Num {val: U64}
   #Lst {pat: (List Bend/Fun/Pattern)}
   #Str {val: String}
 }

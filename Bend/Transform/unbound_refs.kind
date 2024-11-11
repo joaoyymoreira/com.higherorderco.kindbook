@@ -25,7 +25,7 @@ unbound_refs_term : Book -> Term -> (Bend U64)
 | book term = do Bend {
   for child in (Term/children term) {
     let (_, child) = child
-    ask _          = (unbound_refs_term book child)
+    ask (unbound_refs_term book child)
     ret 0
   }
   ret 0

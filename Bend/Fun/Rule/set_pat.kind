@@ -1,0 +1,9 @@
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Pattern as Pattern
+
+// Sets the patterns of a Rule.
+// - rule: The Rule to modify.
+// - pats: The new patterns to set.
+// = The Rule with updated patterns.
+Rule/set_pat : Rule -> (List Pattern) -> Rule
+| #Rule{_ bod} pats = #Rule{pats bod}

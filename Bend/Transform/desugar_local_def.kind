@@ -17,22 +17,22 @@ Bend/Transform/desugar_local_def : Book -> (Bend Book)
 
 desugar_defs : (List FnDef) -> (Bend (List FnDef))
 | []       = #Done{[]}
-| def^defs = do Bend {
+| def;;defs = do Bend {
   ask (rules, new_defs, _) = (desugar_rules def 0 (FnDef/get_rul def))
   let def = (FnDef/set_rul def rules)
   ask defs = (desugar_defs (List/append _ new_defs defs))
-  ret (def^defs)
+  ret (def;;defs)
 }
 
 desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
 | def fresh [] = do Bend {
   ret ([], [], fresh)
 }
-| def fresh rule^rules = do Bend {
+| def fresh rule;;rules = do Bend {
   ask (bod,   new_defs, fresh) = (desugar_term def fresh (Rule/get_bod rule))
   ask (rules, defs,     fresh) = (desugar_rules def fresh rules)
   let rule = (Rule/set_bod rule bod)
-  ret ((rule^rules), (List/append _ new_defs defs), fresh)
+  ret ((rule;;rules), (List/append _ new_defs defs), fresh)
 }
 
 desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
@@ -65,7 +65,7 @@ desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64))
   ask (nxt, defs, fresh) = (desugar_term def fresh nxt)
   let call    = (Term/foldl_app #Ref{name} (List/map _ _ fvs λx #Var{x}))
   let nxt     = #Use{#Some{local_nam} call nxt} :: Term
-  ret (nxt, (new_def^defs), fresh)
+  ret (nxt, (new_def;;defs), fresh)
 }
 
 | def fresh term = do Bend {

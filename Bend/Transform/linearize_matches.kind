@@ -9,10 +9,10 @@ Bend/Transform/linearize_matches : Book -> Book
 | book = (Book/map_rules λ{#Rule{pats bod}: #Rule{pats (linearize_term bod)}} book)
 
 update_with : (List (Maybe String)) -> (List Term) -> (List String) -> (Pair (List (Maybe String)) (List Term))
-| #Cons{#Some{nam} with_bnd} #Cons{arg with_arg} free_vars =
+| (#Some{nam} ;; with_bnd) (arg ;; with_arg) free_vars =
   if (List/contains _ String/IsEqual free_vars nam) {
     let (with_bnd, with_arg) = (update_with with_bnd with_arg free_vars)
-    (#Cons{#Some{nam} with_bnd}, #Cons{arg with_arg})
+    ((#Some{nam} ;; with_bnd), (arg ;; with_arg))
   } else {
     (update_with with_bnd with_arg free_vars)
   }
@@ -27,12 +27,12 @@ lift_match_vars :
   ((List (Maybe String)) & (List Term) & (List Term))
 | with_bnd with_arg arms =
   let free_vars = (List/concat_map _ _ arms (λpair 
-    let #Pair{bnd arm} = pair
+    let (bnd, arm) = pair
     (List/difference _ String/IsEqual (Term/free_vars arm) bnd)))
-  let free_vars = (List/dedup _ String/Ord free_vars)
-  let #Pair{with_bnd with_arg} = (update_with with_bnd with_arg free_vars)
-  let free_vars = (List/map _ (Maybe _) free_vars λx #Some{x})
-  let arms = (List/map _ _ arms (λpair 
+  let free_vars            = (List/dedup _ String/Ord free_vars)
+  let (with_bnd, with_arg) = (update_with with_bnd with_arg free_vars)
+  let free_vars            = (List/map _ (Maybe _) free_vars λx #Some{x})
+  let arms                 = (List/map _ _ arms (λpair 
     let (_, arm) = pair
     (Term/foldr_lam arm free_vars)))
   (with_bnd, with_arg, arms)
@@ -48,7 +48,7 @@ linearize_term : Term -> Term
         ((List/concat_maybes _ bnds), bod)))
       let (with_bnd, with_arg, bods) = (lift_match_vars with_bnd with_arg armsA)
       let arms = (List/map _ _ (List/zip _ _ bods arms) (λpair
-        let (bod, arm) = pair
+        let (bod, arm)             = pair
         let #MatchRule{nam bnds _} = arm
         #MatchRule{nam bnds bod} :: MatchRule))
       #Mat{bnd arg with_bnd with_arg arms}

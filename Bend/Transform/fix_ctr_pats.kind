@@ -31,9 +31,9 @@ resolve_pat : Book -> Pat -> Pat
 
 check_good_ctr : Book -> Pat -> (Bend U64)
 | book #Ctr{nam args} = do Bend {
-  ask ctr = (Result/fold _ _ 
+  ask ctr = (Result/fold _ _
     (Book/get_ctr book nam) _
-    λx #Done{x} 
+    λx #Done{x}
     (λ_ #Fail{(String/concat ["Unbound constructor '" nam "' in pattern matching rule."])}))
   let #Ctr{_ adt _ fld} = ctr
   let exp = (List/length_u64 _ fld)
@@ -79,5 +79,5 @@ fix_rule : Book -> U64 -> Rule -> (Bend Rule)
   }
   ask pats = (List/mmap _ Bend/Monad _ _ pats (fix_pat book))
   ask body = (fix_term book body)
-  #Done{#Rule{pats body}}
+  ret #Rule{pats body}
 }

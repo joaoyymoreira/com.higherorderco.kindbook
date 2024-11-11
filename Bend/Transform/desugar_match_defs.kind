@@ -1,0 +1,469 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Term as Term
+use Bend/Fun/Rule as Rule
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/FanKind as FanKind
+use Bend/Fun/CtrField as CtrField
+use Bend/Fun/MatchRule as MatchRule
+
+// Converts equational-style pattern matching function definitions into trees of match terms.
+Bend/Transform/desugar_match_defs : Book -> (Bend Book)
+| book = do Bend {
+  let (keys, defs) = (List/unzip _ _ (BinMap/to_list _ (Book/get_defs book)))
+  ask defs = (List/mmap _ Bend/Monad _ _ defs (desugar_def book))
+  ret (Book/set_defs book (BinMap/from_list _ (List/zip _ _ keys defs)))
+}
+
+desugar_def : Book -> FnDef -> (Bend FnDef)
+| book def = do Bend {
+  // Desugar the Def terms inside of this function
+  ask rules = (List/mmap _ Bend/Monad _ _ (FnDef/get_rul def) (λr do Bend {
+    ask body = (desugar_def_term book (Rule/get_bod r))
+    ret (Rule/set_bod r body)
+  }))
+  // TODO: Show warning on repeated bind.
+  ask rules    = (List/mmap _ Bend/Monad _ _ rules fix_repeated_binds)
+  ask rule     = (Maybe/to_result _ _ (List/head _ rules) "No rule")
+  let ari      = (List/length_u64 _ (Rule/get_pat rule))
+  let args     = (List/map _ _ (U64/range 0 ari) (λi (String/concat ["%arg" (U64/to_string i)])))
+  ask body     = (simplify_rule_match book args rules [])
+  let body     = (Term/foldr_lam body (List/map _ _ args λx #Some{x}))
+  ret (FnDef/set_rul def [#Rule{[] body}])
+}
+
+// Recursively desugars the pattern-matching def terms.
+desugar_def_term : Book -> Term -> (Bend Term)
+| book #Def{def nxt} = do Bend {
+  ask def = (desugar_def book def)
+  ask nxt = (desugar_def_term book nxt)
+  ret #Def{def nxt}
+}
+| book term = 
+  (Term/mmap_children _ Bend/Monad (λ_ (desugar_def_term book)) term)
+
+// Creates the match tree for a given pattern matching function definition.
+// For each constructor, a match case is created.
+//
+// The match cases follow the same order as the order the constructors are in
+// the ADT declaration.
+//
+// If there are constructors of different types for the same arg, returns a type error.
+//
+// If no patterns match one of the constructors, returns a non-exhaustive match error.
+//
+// Any nested subpatterns are extracted and moved into a nested match
+// expression, together with the remaining match arguments.
+//
+// Linearizes all the arguments that are used in at least one of the bodies.
+simplify_rule_match : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+// All arguments have been processed, all the remaining rules match, so we pick the first one.
+| book [] (rule ;; _) with_ = 
+  #Done{(Rule/get_bod rule)}
+// The first rule matches all patterns, so we just return it as an optimization.
+| book args (rule ;; rules) with_ = 
+  if (List/all _ (Rule/get_pat rule) Pat/is_wildcard) {
+    (irrefutable_fst_row_rule args rule)
+  } else {
+    do Bend {
+      // Process the first column of the remaining rules.
+      let rules = (rule ;; rules) :: (List _)
+      ask typ = (infer_typ_fst_col book rules)
+      (match typ {
+        #Any:        (var_rule book       args rules with_)
+        #Adt{nam}:   (adt_rule book nam   args rules with_)
+        #Fan{fan n}: (fan_rule book fan n args rules with_)
+        #Num:        (num_rule book       args rules with_)
+      })
+    }
+  }
+| book args [] with_ = 
+  // This should be unreachable, treated inside the specific rules
+  #Fail{"unexpected non-exhaustive pattern matching rule"}
+
+// Irrefutable first row rule.
+// Short-circuits the encoding in case the first rule always matches.
+// This is useful to avoid unnecessary pattern matching.
+irrefutable_fst_row_rule : (List String) -> Rule -> (Bend Term)
+| args #Rule{pats body} = 
+  (List/mfoldl _ Bend/Monad _ (List/zip _ _ args pats) _ body (λterm λp
+    let (arg, pat) = p
+    match pat {
+      #Var{bnd}: match bnd {
+        #None:      #Done{term}
+        #Some{bnd}: #Done{#Use{#Some{bnd} #Var{arg} term}}
+      }
+      #Chn{bnd}:    #Done{#Let{#Chn{bnd}  #Var{arg} term}}
+      _:            #Fail{"Invalid pattern in irrefutable row rule"}
+    }
+  ))
+
+
+// When the first column has constructors, create a branch on the constructors
+// of the first arg.
+//
+// The extracted nested patterns and remaining args are handled recursively in
+// a nested expression for each match arm.
+//
+// If we imagine a complex match expression representing what's left of the
+// encoding of a pattern matching function:
+// ```hvm
+// data MyType = (CtrA ctrA_field0 ... ctrA_fieldA) | (CtrB ctrB_field0 ... ctrB_fieldB) | CtrC | ...
+//
+// case x0 ... xN {
+//   (CtrA p0_0_0 ... p0_A) p0_1 ... p0_N : (Body0 p0_0_0 ... p0_0_A p0_1 ... p0_N)
+//   ...
+//   varI pI_1 ... pI_N: (BodyI varI pI_1 ... pI_N)
+//   ...
+//   (CtrB pJ_0_0 ... pJ_0_B) pJ_1 ... pJ_N: (BodyJ pJ_0_0 ... pJ_0_B pJ_1 ... pJ_N)
+//   ...
+//   (CtrC) pK_1 ... pK_N: (BodyK p_1 ... pK_N)
+//   ...
+// }
+// ```
+// is converted into
+// ```hvm
+// match x0 {
+//   CtrA: case x.ctrA_field0 ... x.ctrA_fieldA x1 ... xN {
+//     p0_0_0 ... p0_0_B p0_1 ... p0_N :
+//       (Body0 p0_0_0 ... p0_0_B )
+//     x.ctrA_field0 ... x.ctrA_fieldA pI_1 ... pI_N:
+//       use varI = (CtrA x.ctrA_field0 ... x.ctrA_fieldN); (BodyI varI pI_1 ... pI_N)
+//     ...
+//   }
+//   CtrB: case x.ctrB_field0 ... x.ctrB_fieldB x1 ... xN {
+//     x.ctrB_field0 ... x.ctrB_fieldB pI_1 ... pI_N:
+//       use varI = (CtrB x.ctrB_field0 ... x.ctrB_fieldB); (BodyI varI pI_1 ... pI_N)
+//     pJ_0_0 ... pJ_0_B pJ_1 ... pJ_N :
+//       (BodyJ pJ_0_0 ... pJ_0_B pJ_1 ... pJ_N)
+//     ...
+//   }
+//   CtrC: case * x1 ... xN {
+//     * pI_1 ... pI_N:
+//       use varI = CtrC; (BodyI varI pI_1 ... pI_N)
+//     * pK_1 ... pK_N:
+//       (BodyK p_1 ... pK_N)
+//     ...
+//   }
+//   ...
+// }
+// ```
+// Where `case` represents a call of the [`simplify_rule_match`] function.
+adt_rule : Book -> String -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+| book adt_nam [] rules with_ = 
+  #Fail{"Adt rule with no args"}
+| book adt_nam (arg ;; args) rules with_ = do Bend {
+  // Create a match with all the constructors of the ADT, in order.
+  ask ctrs = (Book/get_adt_ctrs book adt_nam)
+  ask arms = (List/mmap _ Bend/Monad _ _ ctrs (λctr do Bend {
+    let #Ctr{ctr_nam adt_nam _ ctr_fld} = ctr
+    let new_args = (List/map _ _ ctr_fld (λf (String/concat [arg "." (CtrField/get_nam f)])))
+    let args     = (List/append _ new_args args)
+    // For each constructor, filter the rules that match it.
+    ask rules = (List/mfoldl _ Bend/Monad _ rules (List _) [] (λacc λrule do Bend {
+      let #Rule{pats body} = rule
+      ask (pat, pats) = (Maybe/to_result _ _ (List/uncons _ pats) "no pats")
+      match pat {
+        // Same ctr: extract subpatterns.
+        // (Ctr pat0_0 ... pat0_m) pat1 ... patN: body
+        // becomes
+        // pat0_0 ... pat0_m pat1 ... patN: body
+        #Ctr{nam new_pats}: 
+          if (String/eq ctr_nam nam) {
+            let pats = (List/append _ new_pats pats)
+            let rule = #Rule{pats body} :: Rule
+            #Done{rule ;; acc}
+          } else {
+            #Done{acc}
+          }
+        // Var: match and rebuild the constructor.
+        // var pat1 ... patN: body
+        // becomes
+        // arg0.field0 ... arg0.fieldM pat1 ... patN:
+        //   use var = (Ctr arg0.field0 ... arg0.fieldM); body
+        #Var{var}:
+          let new_pats = (List/map _ Pat args (λarg #Var{#Some{arg}}))
+          let pats     = (List/append _ new_pats pats)
+          let val      = (List/foldl _ args Term #Ref{ctr_nam} (λacc λarg #App{acc #Var{arg}}))
+          let body     = #Use{var val body} :: Term
+          #Done{#Rule{pats body} ;; acc}
+        // Doesn't match the constructor, so we continue.
+        _: #Done{acc}
+      }}))
+    ask _ = if (List/is_nil _ rules) {
+      #Fail{(String/concat ["Non-exhaustive pattern matching rule. Constructor '" ctr_nam "' of type '" adt_nam "' not covered"])}
+    } else {
+      #Done{0}
+    }
+    ask body = (simplify_rule_match book args rules with_)
+    let arm  = #MatchRule{#Some{ctr_nam} (List/map _ _ args λx #Some{x}) body} :: MatchRule
+    #Done{arm}
+  }))
+  let with_    = (List/append _ with_ args)
+  let with_bnd = (List/map _ (Maybe _) with_ λx #Some{x})
+  let with_arg = (List/map _ Term      with_ λx #Var{x})
+  #Done{#Mat{#Some{arg} #Var{arg} with_bnd with_arg arms}}
+}
+
+// Tuple/Dup rule.
+// ```bend
+// case x0 ... xN {
+//   (p0_0, ... p0_M) p1 ... pN:
+//     (Body p0_0 ... p0_M p1 ... pN)
+// }
+// ```
+// becomes
+// ```bend
+// let (x0.0, ... x0.M) = x0;
+// case x0.0 ... x0.M x1 ... xN {
+//   p0_0 ... p0_M p1 ... pN:
+//     (Body p0_0 ... p0_M p1 ... pN)
+// }
+// ```
+fan_rule : Book -> FanKind -> U64 -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+| book fan len [] rules with_ = 
+  #Fail{"Fan rule with no args"}
+| book fan len (arg ;; args) rules with_ = do Bend {
+  let new_args = (List/map _ _ (U64/range 0 len) (λi (String/concat [arg "." (U64/to_string i)])))
+  // Filter the rules that match the tuple pattern
+  ask rules = (List/mmap _ Bend/Monad _ Rule rules (λrule do Bend {
+    let #Rule{pats body} = rule
+    ask (pat, pats)      = (Maybe/to_result _ _ (List/uncons _ pats) "Fan rule missing pattern")
+    ask (body, new_pats) = match pat {
+      // If fan pattern, extract the subpatterns
+      #Fan{_ pats}:
+        #Done{(body, pats) :: (_ & _)}
+      // TODO: Missing Chn patterns?
+      // If Var pattern, rebuild the tuple
+      #Var{var}:
+        let body     = #Use{var #Fan{fan (List/map _ _ new_args λx #Var{x})} body} :: Term
+        let new_pats = (List/map _ Pat new_args (λnam #Var{#Some{nam}}))
+        #Done{(body, new_pats)}
+      _:
+        #Fail{"Invalid pattern in fan rule"}
+    }
+    let pats = (List/append _ new_pats pats)
+    #Done{#Rule{pats body}}
+  }))
+  let bnd  = (List/map _ Pat new_args (λnam #Var{#Some{nam}}))
+  let args = (List/append _ new_args args)
+  ask nxt  = (simplify_rule_match book args rules with_)
+  ret #Let{#Fan{fan bnd} #Var{arg} nxt}
+}
+
+// Var rule.
+// `case x0 ... xN { var p1 ... pN: (Body var p1 ... pN) }`
+// becomesTerm as Term
+// `case x1 ... xN { p1 ... pN: use var = x0; (Body var p1 ... pN) }`
+var_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+| book [] rules with_ = 
+  #Fail{"Var rule with no args"}
+| book (arg ;; args) rules with_ = do Bend {
+  ask rules = (List/mmap _ Bend/Monad _ _ rules (λrule do Bend {
+    let #Rule{pats body} = rule
+    ask (pat, pats)      = (Maybe/to_result _ _ (List/uncons _ pats) "Var rule with no patterns")
+    let body = match pat {
+      // TODO: I'm pretty sure this has a bug on unscoped binds (they'll become scoped).
+      #Var{bnd}: match bnd {
+        #Some{bnd}: #Use{#Some{bnd} #Var{arg} body}
+        _:          body
+      }
+      _:            body
+    } :: Term
+    #Done{#Rule{pats body} :: Rule}
+  }))
+  (simplify_rule_match book args rules (arg ;; with_))
+}
+
+// Desugars number pattern matching rules into switch expressions
+// - book    : The book containing all definitions
+// - args    : The list of arguments
+// - rules   : The list of rules to desugar
+// - with_   : The list of variables in scope
+// = A term representing the desugared match, or an error message
+num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+| book [] rules with_ = 
+  #Fail{"Num rule with no args"}
+
+| book (arg ;; args) rules with_ = do Bend {
+  // Check for wildcard pattern
+  let has_wildcard = (List/any _ rules (λrule 
+    let #Rule{pats _} = rule
+    (Maybe/fold _ (List/head _ pats) _ #False λpat (Pat/is_wildcard pat))))
+
+  ask if has_wildcard {
+    #Done{0}
+  } else {
+    #Fail{"Non-exhaustive pattern matching rule. Default case of number type not covered."}
+  }
+  let pred = (String/concat [arg "-1"])
+
+  // Since numbers have infinite (2^24) constructors, they require special treatment.
+  // We first iterate over each present number then get the default.
+  let nums = (List/filter_map _ _ rules (λrule 
+    let #Rule{pats _} = rule
+    (Maybe/fold _ (List/head _ pats) _ #None (λpat 
+      match pat {
+        #Num{n}: #Some{n}
+        _      : #None
+      }))))
+
+  // Number cases
+  ask num_bods = (List/mmap _ Bend/Monad _ _ nums (λn do Bend {
+    // Filter the rules that match the number
+    ask rules = (List/mfoldl _ Bend/Monad _ rules (List Rule) [] (λacc λrule do Bend {
+      let #Rule{pats body} = rule
+      ask (pat, pats) = (Maybe/to_result _ _ (List/uncons _ pats) "Num rule missing pattern")
+      match pat {
+        #Num{m}  :
+          if (U64/eq n m) {
+            #Done{acc}
+          } else {
+            #Done{(#Rule{pats body} ;; acc)}
+          }
+        #Var{var}: #Done{(#Rule{pats #Use{var #Num{#U24{n}} body}} ;; acc)}
+        _        : #Done{acc}
+      }
+    }))
+    ask term = (simplify_rule_match book args rules with_)
+    ret term
+  }))
+
+  // Default case
+  ask last_num = (Maybe/to_result _ _ (List/last _ nums) "Num rule with no number cases")
+  ask rules    = (List/mfoldl _ Bend/Monad _ rules (List Rule) [] (λacc λrule do Bend {
+    let #Rule{pats body} = rule
+    ask (pat, pats)      = (Maybe/to_result _ _ (List/uncons _ pats) "Num rule missing pattern")
+    match pat {
+      #Var{var}: match var {
+        #Some{var}: 
+          let num = (+ last_num 1)
+          let val = (Term/add_num #Var{var} num)
+          let bod = #Use{#Some{var} val body} :: Term
+          let bod = (fast_pred_access num var pred bod)
+          #Done{(#Rule{pats bod} ;; acc)}
+        _: #Done{acc}
+      }
+      _: #Done{acc}
+    }
+  }))
+
+  let dflt_with = (List/append _ with_ [pred])
+  ask dflt_body = (simplify_rule_match book args rules dflt_with)
+
+  // Linearize previously matched vars and current args.
+  let with_     = (List/append _ with_ args)
+  let with_bnd  = (List/map _ (Maybe _) with_ λx #Some{x})
+  let with_arg  = (List/map _ Term      with_ λx #Var{x})
+
+  // Make switches for the last numbers
+  //  switch arg = (pred +1 +num_i-1 - num_i) { 0: body_i; _: acc }
+  // nums[i] >= nums[i-1]+1, so we do a sub here.
+  ask zero      = (Maybe/to_result _ _ (List/head _ nums) "Num rule with no number cases")
+
+  // Args for the switches are (nums[i] - nums[i-1] - 1), which is always >= 0 since numbers are sorted.
+  // For the first case, we don't subtract anything.
+  let vals      = (List/map _ _ (List/zip _ _ nums (List/drop _ nums #1)) (λpair
+    let (n, n_1) = pair
+    (Term/sub_num #Var{pred} (- (- n n_1) 1))))
+
+  let vals = ((Term/sub_num #Var{arg} zero) ;; vals) :: (List Term)
+
+  let term = (List/foldr _ (List/zip _ _ num_bods vals) _ dflt_body (λpair λterm
+    let (bod, val) = pair
+    #Swt{#Some{arg} val with_bnd with_arg #Some{pred} [bod term]}))
+
+  ret term
+}
+
+// Replaces subtractions of a variable by a number with the pred variable
+// - num : The number being subtracted
+// - var : The variable being subtracted from
+// - pred: The name of the predecessor variable
+// - term: The term to process
+// = The processed term
+fast_pred_access : U64 -> String -> String -> Term -> Term
+| num var pred #Opr{#Sub #Var{fst} #Num{#U24{snd}}} =
+  if (Bool/and (String/eq fst var) (U64/eq snd num)) {
+    #Var{pred}
+  } else {
+    #Opr{#Sub #Var{fst} #Num{#U24{snd}}}
+  }
+| num var pred term = (Term/map_children (λ_ λchild (fast_pred_access num var pred child)) term)
+
+infer_typ_fst_col : Book -> (List Rule) -> (Bend MatchType)
+| book rules = do Bend {
+  let fst_col = (List/map _ _ rules (λr (List/head _ (Rule/get_pat r))))
+  ask fst_col = (Maybe/to_result _ _ (List/mmap _ Maybe/Monad _ _ fst_col λx x) "wrong arity in rule")
+  (List/mfoldl _ Bend/Monad _ fst_col _ #Any (λexp λpat
+    let got = (Pat/to_match_type pat)
+    if (MatchType/eq #Any got) {
+      #Done{got}
+    } else { if (MatchType/eq exp #Any) {
+      #Done{exp}
+    } else { if (MatchType/eq exp got) {
+      #Done{exp}
+    } else {
+      #Fail{(String/concat [
+        "Type mismatch in pattern matching rule. Expected a constructor of type '"
+        (MatchType/to_string exp) "', got '" (Pat/to_string pat)
+        "' with type '" (MatchType/to_string got) "'."
+      ])}
+    }}}
+  ))
+}
+
+data MatchType {
+  #Any
+  #Fan {kind: FanKind arity: U64}
+  #Num
+  #Adt {name: String}
+}
+
+// Equality comparison for MatchType
+MatchType/eq : MatchType -> MatchType -> Bool
+| #Any          #Any          = #True
+| #Fan{#Tup n1} #Fan{#Tup n2} = (U64/eq n1 n2)
+| #Fan{#Dup n1} #Fan{#Dup n2} = (U64/eq n1 n2)
+| #Num          #Num          = #True
+| #Adt{s1}      #Adt{s2}      = (String/eq s1 s2)
+| _             _             = #False
+
+MatchType/to_string : MatchType -> String
+| #Any         = "any"
+| #Adt{nam}    = nam
+| #Fan{#Tup n} = (String/concat [(U64/to_string n) "-tuple"])
+| #Fan{#Dup n} = (String/concat [(U64/to_string n) "-dup"])
+| #Num         = "number"
+
+Pat/to_match_type : Pat -> MatchType
+| #Var{_}        = #Any
+| #Chn{_}        = #Any
+| #Num{_}        = #Num
+| #Fan{fan args} = #Fan{fan (List/length_u64 _ args)}
+| #Ctr{nam _}    = #Adt{nam}
+| #Str{_}        = #Adt{"String"}
+| #Lst{args}     = #Adt{"List"}
+
+// When a rule has repeated bind, the only one that is actually useful is the last one.
+//
+// Example: In `(Foo x x x x) = x`, the function should return the fourth argument.
+//
+// To avoid having to deal with this, we can just erase any repeated binds.
+// ```bend
+// (Foo a (Succ a) (Cons a)) = (a a)
+// // After this transformation, becomes:
+// (Foo * (Succ *) (Cons a)) = (a a)
+// ```
+fix_repeated_binds : Rule -> (Bend Rule)
+| rule = do Bend {
+  let (_, pats) = (List/mmap (State _) (State/Monad (List _)) _ _ (Rule/get_pat rule) (λpat λfound
+    (Pat/mmap_binds (State _) (State/Monad _) (λbnd λfound
+      if (List/contains _ (Maybe/IsEqual _ String/IsEqual) found bnd) { 
+        ((bnd ;; found), #None)
+      } else {
+        (found, bnd)
+      }
+    ) pat found)) [])
+  ret (Rule/set_pat rule pats)
+}

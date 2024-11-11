@@ -1,10 +1,11 @@
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
+use Bend/Fun/Rule as Rule
 use Bend/Fun/MatchRule as MatchRule
 
 // Linearizes all variables specified in the `with` clauses of match terms.
 Bend/Transform/linearize_match_with : Book -> Book
-| book = (Book/map_rules (λr let #Rule{pats body} = r #Rule{pats (linearize_term body)}) book)
+| book = (Book/map_rules (λr (Rule/set_bod r (linearize_term (Rule/get_bod r)))) book)
 
 // Linearizes with clauses in a term
 linearize_term : Term -> Term
@@ -21,7 +22,7 @@ linearize_term : Term -> Term
 
     #Swt{bnd arg with_bnd with_arg pred arms}:
       let arms = (List/map _ _ arms (λarm (Term/foldr_lam arm with_bnd)))
-      let term = #Swt{bnd arg #Nil #Nil pred arms} :: Term
+      let term = #Swt{bnd arg [] [] pred arms} :: Term
       (Term/foldl_app term with_arg)
 
     _: term

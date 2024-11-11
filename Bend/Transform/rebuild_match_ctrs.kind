@@ -13,12 +13,12 @@ Bend/Transform/rebuild_match_ctrs : Book -> (Bend Book)
       let #Rule{pat bod} = rule
       ask bod = (rebuild_term book bod)
       let rule = #Rule{pat bod} :: Rule
-      ret #Cons{rule rul2}
+      ret (rule;;rul2)
     }
     let def = #FnDef{nam typ chk rul2 src} :: Bend/Fun/FnDef
-    #Done{(BinMap/set _ defs key def)}
+    ret (BinMap/set _ defs key def)
   }
-  #Done{#Book{defs adts ctrs}}
+  ret #Book{defs adts ctrs}
 }
 
 rebuild_term : Book -> Term -> (Bend Term)
@@ -27,13 +27,13 @@ rebuild_term : Book -> Term -> (Bend Term)
   match term {
     #Mat{bnd arg with_bnd with_arg arms}: do Bend {
       ask arms = (List/mmap _ Bend/Monad _ _ arms (rebuild_match_arm book bnd))
-      #Done{#Mat{bnd arg with_bnd with_arg arms}}
+      ret #Mat{bnd arg with_bnd with_arg arms}
     }
     #Swt{bnd arg with_bnd with_arg pred arms}: do Bend {
-      ask pred = (Maybe/to_result _ _ pred "Switch with no pred")
-      let last_arm = (- (List/length_u64 _ arms) 1)
+      ask pred         = (Maybe/to_result _ _ pred "Switch with no pred")
+      let last_arm     = (- (List/length_u64 _ arms) 1)
       let rebuilt_arms = (List/map _ _ (List/enumerate_u64 _ arms) (rebuild_switch_arm bnd pred last_arm))
-      #Done{#Swt{bnd arg with_bnd with_arg #Some{pred} rebuilt_arms}}
+      ret #Swt{bnd arg with_bnd with_arg #Some{pred} rebuilt_arms}
     }
     _: #Done{term}
   }
@@ -43,7 +43,7 @@ rebuild_match_arm : Book -> (Maybe String) -> Bend/Fun/MatchRule -> (Bend Bend/F
 | book bnd #MatchRule{nam fld bod} = do Bend {
   ask nam = (Maybe/to_result _ _ nam "Match with no constructor")
   let bod = #Use{bnd (Term/foldl_app #Ref{nam} (List/map _ _ fld Term/var_or_era)) bod} :: Term
-  #Done{#MatchRule{#Some{nam} fld bod}}
+  ret #MatchRule{#Some{nam} fld bod}
 }
 
 rebuild_switch_arm : (Maybe String) -> String -> U64 -> (Pair U64 Term) -> Term

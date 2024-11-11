@@ -40,7 +40,7 @@ encode_match : Bend/Run/AdtEncoding -> Term -> (List Bend/Fun/MatchRule) -> (Ben
   let arms = (List/map _ _ arms (λrule 
     let #MatchRule{_ bnd bod} = rule
     (Term/foldr_lam bod bnd)))
-  #Done{(Term/foldl_app arg arms)}
+  ret (Term/foldl_app arg arms)
 }
 | NumScott arg arms = do Bend {
   let arms = (List/map _ _ arms (λrule 
@@ -51,13 +51,13 @@ encode_match : Bend/Run/AdtEncoding -> Term -> (List Bend/Fun/MatchRule) -> (Ben
     #Cons{arm arms}: match arms {
       #Nil: do Bend {
         let bod = #Swt{#None #Var{"%tag"} #Nil #Nil #None #Cons{arm #Cons{#Era #Nil}}}
-        #Done{#Lam{#Var{#Some{"%tag"}} bod}}
+        ret #Lam{#Var{#Some{"%tag"}} bod}
       }
       _: (make_num_scott_swt arms)
     }
     _: (make_num_scott_swt arms)
   }
-  #Done{#App{arg match}}
+  ret #App{arg match}
 }
 
 
@@ -65,8 +65,8 @@ make_num_scott_swt : (List Term) -> (Bend Term)
 | #Nil            = #Fail{"No match arms"}
 | #Cons{arm #Nil} = #Done{#Lam{#Var{#None} arm}}
 | #Cons{arm arms} = do Bend {
-  let bod = #Swt{#None #Var{"%tag"} [] [] #None #Cons{arm arms}} :: Term
-  #Done{#Lam{#Var{#Some{"%tag"}} bod}}
+  let bod = #Swt{#None #Var{"%tag"} [] [] #None (arm;;arms)} :: Term
+  ret #Lam{#Var{#Some{"%tag"}} bod}
 }
 
 // Convert into a sequence of native switches, decrementing by 1 each switch.
@@ -75,10 +75,10 @@ make_num_scott_swt : (List Term) -> (Bend Term)
 // `switch n {0: A; _: λ%x match %x {0: B; _: λn-2 (C n-2)}}`
 encode_switch : Term -> (Maybe String) -> (List Term) -> (Bend Term)
 | arg pred arms = do Bend {
-  let #Pair{nums succ} = (List/unsnoc _ arms)
-  ask succ = (Maybe/to_result _ _ succ "Switch with only 1 arms")
-  let succ = #Lam{#Var{pred} succ} :: Term
-  let body = (List/foldr _ (List/enumerate_u64 _ nums) _ succ (λpair λacc 
+  let (nums, succ) = (List/unsnoc _ arms)
+  ask succ         = (Maybe/to_result _ _ succ "Switch with only 1 arms")
+  let succ         = #Lam{#Var{pred} succ} :: Term
+  let body         = (List/foldr _ (List/enumerate_u64 _ nums) _ succ (λpair λacc 
     let (i, arm) = pair
     let arms = [arm acc] :: (List Term)
     if (U64/eq i 0) {
@@ -87,5 +87,5 @@ encode_switch : Term -> (Maybe String) -> (List Term) -> (Bend Term)
       #Lam{#Var{#Some{"%x"}} #Swt{#None #Var{"%x"} [] [] #None arms}}
     }
   ))
-  #Done{body}
+  ret body
 }

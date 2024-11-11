@@ -1,0 +1,9 @@
+use Bend/Fun/Term as Term
+
+// Subtracts a number from a Term, if possible.
+// - term: The term to subtract from.
+// - num : The number to subtract.
+// = The resulting term after subtraction, or the original term if not possible.
+Term/sub_num : Term -> U64 -> Term
+| term 0 = term
+| term n = #Opr{#Sub term #Num{#U24{n}}}
