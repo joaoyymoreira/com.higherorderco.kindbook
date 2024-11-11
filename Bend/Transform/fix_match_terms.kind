@@ -11,7 +11,7 @@ use Bend/Fun/Rule as Rule
 // If one of the constructors is not covered, it won't be present in the map.
 term_per_ctr : String -> Book -> String -> (BinMap Term) -> (List MatchRule) -> (Bend (BinMap Term))
 | bnd book adt_nam bods [] = #Done{bods}
-| bnd book adt_nam bods #MatchRule{nam _ bod}:arms with (Book/get_ctr book (Maybe/run _ nam ""))
+| bnd book adt_nam bods #MatchRule{nam _ bod}^arms with (Book/get_ctr book (Maybe/run _ nam ""))
 . | #Done{#Ctr{nam adt _ fields}} = do Bend {
   ask if (String/neq adt_nam adt) {
     #Fail{(String/concat ["ADT mismatch in match term. Expected constructor of type " adt_nam ", but got " nam "of type " adt])}
@@ -33,7 +33,7 @@ term_per_ctr : String -> Book -> String -> (BinMap Term) -> (List MatchRule) -> 
     if (BinMap/contains _ bods key) {
       acc
     } else {
-      ((key, #Use{nam #Var{bnd} bod}) : acc) :: (List (Pair _ Term))
+      ((key, #Use{nam #Var{bnd} bod}) ^ acc) :: (List (Pair _ Term))
     }
   }))
   ask if (List/is_nil _ cases) {
@@ -59,7 +59,7 @@ fix_match_arm : String -> (BinMap Term) -> Ctr -> (Bend MatchRule)
 
 // Makes the normalized version of all of a match's arms.
 fix_match : Book -> (Maybe String) -> Term -> (List (Maybe String)) -> (List Term) -> (List MatchRule) -> (Bend (List MatchRule))
-| book bnd arg with_bnd with_arg (#MatchRule{nam bnds body}:arms)
+| book bnd arg with_bnd with_arg (#MatchRule{nam bnds body}^arms)
   with (Book/get_ctr book (Maybe/run _ nam ""))
 . | #Done{#Ctr{nam adt _ fld}} = do Bend {
   ask bnd  = (Maybe/to_result _ _ bnd "Match with no bind")

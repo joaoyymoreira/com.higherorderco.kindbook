@@ -24,20 +24,20 @@ desugar_defs : (List FnDef) -> (Bend (List FnDef))
 | [] = do Bend {
   #Done{#Nil}
 }
-| def:defs = do Bend {
+| def^defs = do Bend {
   ask (rules, new_defs, _) = (desugar_rules def 0 (FnDef/get_rul def))
   ask defs = (desugar_defs (List/append _ new_defs defs))
-  ret (FnDef/set_rul def rules) : defs
+  ret (FnDef/set_rul def rules) ^ defs
 }
 
 desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
 | def fresh [] = do Bend {
   ret ([], [], fresh)
 }
-| def fresh (#Rule{pats body} : rules) = do Bend {
+| def fresh (#Rule{pats body} ^ rules) = do Bend {
   ask (rules, defs, fresh)    = (desugar_rules def fresh rules)
   ask (body, new_defs, fresh) = (desugar_term def 0 body)
-  ret ((#Rule{pats body} : rules), (List/append _ new_defs defs), fresh)
+  ret ((#Rule{pats body} ^ rules), (List/append _ new_defs defs), fresh)
 }
 
 desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
