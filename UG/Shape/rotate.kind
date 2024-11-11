@@ -1,0 +1,11 @@
+// Rotates a shape by an angle.
+// - shape: The shape to rotate.
+// - angle: The angle in radians.
+// = The rotated shape.
+UG/Shape/rotate : UG/Shape -> F64 -> UG/Shape
+| #Circle{center radius} angle    = #Circle{center radius}
+| #Polygon{center vertices} angle =
+  let rotated_vertices = (List/map V2 V2 vertices (λvert (V2/rotate vert angle)))
+  #Polygon{center rotated_vertices}
+
+#test: (UG/Shape/rotate (#Circle{#V2{x: 0.0 y: 0.0} radius: 5.0}) 1.57) == (#Circle{#V2{x: 0.0 y: 0.0} radius: 5.0})
