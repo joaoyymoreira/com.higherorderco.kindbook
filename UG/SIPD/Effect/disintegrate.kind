@@ -1,0 +1,81 @@
+use UG/SIPD as G
+
+// Calculates the angle between two points.
+// - p1: First point.
+// - p2: Second point.
+// = Angle in radians.
+calculate_alpha : V2 -> V2 -> F64
+| #V2{x y} #V2{x1 y1} =
+  let dx = (F64/sub x1 x)
+  let dy = (F64/sub 0.0 (F64/sub y1 y))
+  (F64/sub 0.0 (atan2 dx dy))
+
+// Updates the disintegrate line effect.
+// - line_id: ID of the line body.
+// - player_id: ID of the player.
+// - line_width: Width of the line.
+// - line_range: Range of the line.
+// - state: Current game state.
+// = Updated game state.
+UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G/State
+| line_id player_id line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body line_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{line} with (G/Body/get_body player_id bodies)
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+..| #Some{hero} with (G/Player/get_player players player_id)
+...| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+...| #Some{player} =
+  let #Body{hero_id hero_hitbox hero_tick hero_effects hero_collidable} = hero
+  let hero_pos = (UG/Shape/get_center hero_hitbox)
+  let def_line = (UG/Shape/start_centered_rectangle hero_pos line_width line_range)
+
+  let #Body{line_id line_hitbox line_tick line_effects line_collidable} = line
+  
+  let #Player{pid player_name player_keys player_target player_hero} = player
+  let angle = (calculate_alpha hero_pos player_target) 
+
+  let new_line_shape = (UG/Shape/rotate def_line angle)
+  let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
+  
+ (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable} new_state) 
+
+disintegrate/create_disintegrate_line : U64 -> U64 -> F64 -> F64 -> V2 -> V2 -> G/Body
+| line_id player_id line_width line_range start end =
+  let direction = (V2/normalize (V2/sub end start))
+  let center = start
+  let body_shape = (UG/Shape/start_centered_rectangle center line_width line_range)
+  let body_tick = (G/Effect/tick_disintegrate_line line_id player_id line_width line_range)
+  #Body{line_id body_shape body_tick [] #Untouchable}
+
+disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
+| block_time player_id state =
+  let movement_key = "RightClick"
+  (G/Hero/HeroState/update_cooldown player_id movement_key state block_time) 
+
+UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
+| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #Some{#Player{id name keys target hero}} =
+  let #Hero{owner_id hero_name skills body_id} = hero 
+  
+  let hero_body = (G/Body/get_body body_id bodies)
+  match hero_body {
+    #None: #State{next_id tick players hero_states #GameMap{width height bodies}}
+    #Some{body}:
+      let #Body{body_id hitbox body_tick effects collidable} = body
+      let hero_pos = (UG/Shape/get_center hitbox)    
+      let target = (G/Player/get_mouse_pos #Player{id name keys target hero} "R")
+      let direction = (V2/normalize (V2/sub target hero_pos))
+      let line_end = (V2/add hero_pos (V2/mul_scalar direction line_range))
+      let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies}})
+      let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range hero_pos line_end)
+
+      let spawn_effect = (G/Effect/spawn_body disintegrate_line)
+      let with_duration = (G/Effect/with_duration duration new_id)
+      let state = (G/Effect/apply spawn_effect new_state)
+      let state = (disintegrate/block_player_movement duration player_id state)
+      let state = (G/Effect/apply with_duration new_state)
+
+      state
+  }
+
