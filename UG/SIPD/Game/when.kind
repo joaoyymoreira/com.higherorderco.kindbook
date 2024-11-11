@@ -71,7 +71,7 @@ handle_new_player : U64 -> G/Event -> G/State -> G/State
 .| #Some{#Player{pid name keys target s}} = #State{next_id tick players hero_states game_map}
 .| #None         = 
   let initial_name = (get_player_name event) 
-  let #Pair{new_player new_state} = (G/Player/init #State{next_id tick players hero_states game_map})
+  let #Pair{new_player new_state} = (G/Player/init pid #State{next_id tick players hero_states game_map})
   let #State{next_id tick players hero_states game_map} = new_state
   let updated_players = (OrdTree/insert U64 G/Player U64/Ord players #Pair{pid new_player})
   #State{next_id tick updated_players hero_states game_map}
