@@ -2,7 +2,7 @@
 // - center: The center point of the square.
 // - side_length: The length of each side.
 // = A Shape representing the square.
-Shape/square : V2 -> F64 -> UG/Shape
+UG/Shape/square : V2 -> F64 -> UG/Shape
 | center side_length =
   let half_side = (F64/div side_length 2.0)
   let neg_half = (F64/sub 0.0 half_side)
