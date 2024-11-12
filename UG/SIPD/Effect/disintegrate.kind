@@ -7,7 +7,7 @@ use UG/SIPD as G
 calculate_alpha : V2 -> V2 -> F64
 | #V2{x y} #V2{x1 y1} =
   let dx = (F64/sub x1 x)
-  let dy = (F64/sub 0.0 (F64/sub y1 y))
+  let dy = (F64/sub y1 y)
   (F64/sub 0.0 (atan2 dx dy))
 
 // Updates the disintegrate line effect.
@@ -54,13 +54,15 @@ disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
 
 UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
 | player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+.| #None = 
+  #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Player{id name keys target hero}} =
   let #Hero{owner_id hero_name skills body_id} = hero 
   
   let hero_body = (G/Body/get_body body_id bodies)
   match hero_body {
-    #None: #State{next_id tick players hero_states #GameMap{width height bodies}}
+    #None: 
+      #State{next_id tick players hero_states #GameMap{width height bodies}}
     #Some{body}:
       let #Body{body_id hitbox body_tick effects collidable} = body
       let hero_pos = (UG/Shape/get_center hitbox)    
@@ -74,7 +76,7 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
       let with_duration = (G/Effect/with_duration duration new_id)
       let state = (G/Effect/apply spawn_effect new_state)
       let state = (disintegrate/block_player_movement duration player_id state)
-      let state = (G/Effect/apply with_duration new_state)
+      let state = (G/Effect/apply with_duration state)
 
       state
   }
