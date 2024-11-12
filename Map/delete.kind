@@ -1,0 +1,10 @@
+// Deletes a key from a Map by setting its value to None.
+// - A: Value type.
+// - map: The input map.
+// - key: The key to delete.
+// = The updated map.
+Map/delete : ∀(A: *) (Map (Maybe A)) -> U64 -> (Map (Maybe A))
+| A map key =
+  put x0 = map[key] := #None
+  map
+
