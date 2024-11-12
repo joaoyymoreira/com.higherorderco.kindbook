@@ -2,5 +2,6 @@
 data UG/SIPD/Hero/HeroState {
   #HeroState {
     cooldowns : (OrdTree String U64)
+    health : U64
   }
 }

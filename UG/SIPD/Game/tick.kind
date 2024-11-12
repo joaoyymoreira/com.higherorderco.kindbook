@@ -16,21 +16,23 @@ update_cooldown : (Pair String U64) -> (OrdTree String U64) -> (OrdTree String U
 // - state: The hero state to update.
 // = The updated hero state.
 decrement_cooldowns : G/Hero/HeroState -> G/Hero/HeroState
-| #HeroState{cooldowns} =
+| #HeroState{cooldowns health} =
   let new_cooldowns = (OrdTree/fold String U64 cooldowns (OrdTree String U64) cooldowns update_cooldown)
-  #HeroState{new_cooldowns}
+  #HeroState{new_cooldowns health}
 
-update_hero_state : (Pair U64 G/Hero/HeroState) -> G/State -> G/State
-| #Pair{id hs} #State{next_id tick players hero_states game_map} = 
-  let new_hero_states = (OrdTree/insert U64 G/Hero/HeroState U64/Ord hero_states #Pair{id (decrement_cooldowns hs)})
+update_hero_state : G/State -> U64 -> G/Hero/HeroState -> G/State
+| #State{next_id tick players hero_states game_map} id hs = 
+  let new_hero_states = (Map/insert G/Hero/HeroState hero_states id (decrement_cooldowns hs))
   #State{next_id tick players new_hero_states game_map}
 
 // Updates cooldowns for all hero states.
 // - state: The game state to update.
 // = The updated game state.
+// FIX LIMIT ON FOLD -> ADD A NUMBER OF HERO STATES IN STATE (LENGTH)
 update_cooldowns : G/State -> G/State
 | #State{next_id tick players hero_states game_map} = 
-  (OrdTree/fold U64 G/Hero/HeroState hero_states G/State #State{next_id tick players hero_states game_map} update_hero_state)
+  (Map/fold G/Hero/HeroState G/State hero_states 100 #State{next_id tick players hero_states game_map} update_hero_state)
+// (OrdTree/fold U64 G/Hero/HeroState hero_states G/State #State{next_id tick players hero_states game_map} update_hero_state)
 
 UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
 | #Body{id hitbox tick effects collidable} = tick
