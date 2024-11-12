@@ -12,7 +12,7 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{line} with (G/Body/get_body player_id bodies)
 ..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
-..| #Some{hero} with (G/Player/get_player players player_id)
+..| #Some{hero} with (Map/get G/Player players player_id)
 ...| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
 ...| #Some{player} =
   let #Body{hero_id hero_hitbox hero_tick hero_effects hero_collidable} = hero
@@ -43,7 +43,7 @@ disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
   (G/Hero/HeroState/update_cooldown player_id movement_key state block_time) 
 
 UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
-| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
 .| #None = 
   #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Player{id name keys target hero}} =

@@ -44,7 +44,7 @@ apply_skill_if_not_on_cooldown : G/Skill -> U64 -> G/State -> G/State
   }
 
 tick : U64 -> G/State -> G/State
-| pid #State{next_id tick players hero_states #GameMap{width height bodies}} with (OrdTree/get U64 G/Player U64/Ord players pid)
+| pid #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players pid)
 .| #None = 
   #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Player{id name keys target #Hero{owner_id name skills hero_body_id}}} with (Map/get G/Hero/HeroState hero_states pid)

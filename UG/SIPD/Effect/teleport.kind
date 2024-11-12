@@ -7,7 +7,7 @@ use UG/SIPD as G
 // - state: Current game state.
 // = Updated game state after teleportation.
 G/Effect/teleport : U64 -> U64 -> F64 -> G/Effect
-| pid body_id range #State{next_id tick players hero_states #GameMap{width height bodies}} with ((G/Player/get_player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _)
+| pid body_id range #State{next_id tick players hero_states #GameMap{width height bodies}} with ((Map/get G/Player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _)
 .| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Player{id name keys target hero}} #Some{#Body{id hitbox body_tick effects collidable}} =

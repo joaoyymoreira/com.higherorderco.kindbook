@@ -36,7 +36,7 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   (G/Effect/apply move_effect state_after_spawn)
 
 UG/SIPD/Effect/shoot : U64 -> F64 -> F64 -> U64 -> G/Effect
-| player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+| player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
 ..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}

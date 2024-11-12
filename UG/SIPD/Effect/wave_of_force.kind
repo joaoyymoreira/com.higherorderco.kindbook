@@ -11,7 +11,7 @@ create_wave_body : V2 -> U64 -> F64 -> G/Body
   #Body{id (UG/Shape/circle position wave_radius) (tick_wave id) [] #Untouchable}
 
 UG/SIPD/Effect/wave_of_force : U64 -> U64 -> F64 -> G/Effect
-| player_id duration wave_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Player/get_player players player_id)
+| player_id duration wave_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
 .| #None         = #State{next_id tick players hero_states #GameMap{width height bodies}}
 .| #Some{player} = 
   let target = (G/Player/get_mouse_pos player "Z")

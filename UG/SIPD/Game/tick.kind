@@ -32,7 +32,6 @@ update_hero_state : G/State -> U64 -> G/Hero/HeroState -> G/State
 update_cooldowns : G/State -> G/State
 | #State{next_id tick players hero_states game_map} = 
   (Map/fold G/Hero/HeroState G/State hero_states 100 #State{next_id tick players hero_states game_map} update_hero_state)
-// (OrdTree/fold U64 G/Hero/HeroState hero_states G/State #State{next_id tick players hero_states game_map} update_hero_state)
 
 UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
 | #Body{id hitbox tick effects collidable} = tick

@@ -2,25 +2,22 @@
 
 use UG/SIPD as G
 
-update_player_name : (Maybe G/Player) -> String -> U64 -> (OrdTree U64 G/Player) -> (OrdTree U64 G/Player)
+update_player_name : (Maybe G/Player) -> String -> U64 -> (Map (Maybe G/Player)) -> (Map (Maybe G/Player))
 | maybe_player nick player_id players with maybe_player
 .| #None         = players
-.| #Some{#Player{id name keys target s}} = (OrdTree/insert U64 G/Player U64/Ord players #Pair{player_id #Player{id nick keys target s}})
+.| #Some{#Player{id name keys target s}} = (Map/insert G/Player players player_id #Player{id nick keys target s})
 
-update_player_key : (Maybe G/Player) -> String -> Bool -> U64 -> V2 -> (OrdTree U64 G/Player) -> (OrdTree U64 G/Player)
+update_player_key : (Maybe G/Player) -> String -> Bool -> U64 -> V2 -> (Map (Maybe G/Player)) -> (Map (Maybe G/Player))
 | maybe_player key pressed player_id mouse players with maybe_player
 .| #None         = players
 .| #Some{#Player{id name keys target s}} = 
   let new_keys = (OrdTree/insert String (Pair Bool V2) String/Ord keys #Pair{key #Pair{pressed mouse}})
-  (OrdTree/insert U64 G/Player U64/Ord players #Pair{player_id #Player{id name new_keys target s}})
+  (Map/insert G/Player players player_id #Player{id name new_keys target s})
 
-update_player_target : (Maybe G/Player) -> F64 -> F64 -> U64 -> (OrdTree U64 G/Player) -> (OrdTree U64 G/Player)
+update_player_target : (Maybe G/Player) -> F64 -> F64 -> U64 -> (Map (Maybe G/Player)) -> (Map (Maybe G/Player))
 | maybe_player x  y player_id players with maybe_player
 .| #None         = players
-.| #Some{#Player{id name keys target s}} = (OrdTree/insert U64 G/Player U64/Ord players #Pair{player_id #Player{id name keys #V2{x y} s}})
-
-players_get : (OrdTree U64 G/Player) -> U64 -> (Maybe G/Player)
-| players player_id = (OrdTree/get U64 G/Player U64/Ord players player_id)
+.| #Some{#Player{id name keys target s}} = (Map/insert G/Player players player_id #Player{id name keys #V2{x y} s})
 
 get_key_value : String -> (Maybe G/Player) -> (Maybe (Pair Bool V2))
 | key maybe_player with maybe_player
@@ -34,23 +31,23 @@ get_mouse_pos : (Maybe (Pair Bool V2)) -> V2
 
 handle_event : G/Event -> G/State -> G/State
 | #KeyEvent{time pid key pressed} #State{next_id tick players hero_states game_map}        =
-  let action_player = (players_get players pid)
+  let action_player = (Map/get G/Player players pid)
   let old_value = (get_mouse_pos (get_key_value key action_player))
   let updated_players = (update_player_key action_player key pressed pid old_value players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #MouseClick{time pid #LeftButton x y} #State{next_id tick players hero_states game_map}  =
-  let action_player = (players_get players pid)
+  let action_player = (Map/get G/Player players pid)
   let updated_players = (update_player_target action_player x y pid players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #MouseClick{time pid #RightButton x y} #State{next_id tick players hero_states game_map} = 
-  let action_player = (players_get players pid)
+  let action_player = (Map/get G/Player players pid)
   let updated_players = (update_player_target action_player x y pid players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #KeyMouse{time pid key pressed x y} #State{next_id tick players hero_states game_map}    =
-  let action_player = (players_get players pid)
+  let action_player = (Map/get G/Player players pid)
   let updated_players = (update_player_key action_player key pressed pid #V2{x y} players)
   #State{next_id tick updated_players hero_states game_map}
 
@@ -58,7 +55,7 @@ handle_event : G/Event -> G/State -> G/State
   #State{next_id tick players hero_states game_map}
 
 | #ActionEvent{#SetNick{time pid nick}} #State{next_id tick players hero_states game_map}  =
-  let action_player = (players_get players pid)
+  let action_player = (Map/get G/Player players pid)
   let updated_players = (update_player_name action_player nick pid players)
   #State{next_id tick updated_players hero_states game_map}
 
@@ -67,13 +64,13 @@ get_player_name : G/Event -> String
 | event                                 = "Anon"
 
 handle_new_player : U64 -> G/Event -> G/State -> G/State
-| pid event #State{next_id tick players hero_states game_map} with (players_get players pid)
+| pid event #State{next_id tick players hero_states game_map} with (Map/get G/Player players pid)
 .| #Some{#Player{pid name keys target s}} = #State{next_id tick players hero_states game_map}
 .| #None         = 
   let initial_name = (get_player_name event) 
   let #Pair{new_player new_state} = (G/Player/init pid #State{next_id tick players hero_states game_map})
   let #State{next_id tick players hero_states game_map} = new_state
-  let updated_players = (OrdTree/insert U64 G/Player U64/Ord players #Pair{pid new_player})
+  let updated_players = (Map/insert G/Player players pid new_player)
   #State{next_id tick updated_players hero_states game_map}
 
 UG/SIPD/Game/when : G/Event -> G/State -> G/State
