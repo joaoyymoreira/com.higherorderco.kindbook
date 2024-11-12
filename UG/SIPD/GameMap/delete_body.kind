@@ -5,6 +5,6 @@ use UG/SIPD as G
 // - body_id: The id of the body to delete.
 // = The updated GameMap with the body removed.
 G/GameMap/delete_body : G/GameMap -> U64 -> G/GameMap
-| #GameMap{width height bodies} body_id = 
+| #GameMap{width height bodies bodies_count} body_id = 
   let bodies = (G/Body/delete_body body_id bodies)
-  #GameMap{width height bodies}
+  #GameMap{width height bodies bodies_count}

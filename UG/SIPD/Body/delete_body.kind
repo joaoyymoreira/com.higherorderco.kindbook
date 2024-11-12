@@ -4,5 +4,5 @@ use UG/SIPD as G
 // - body_id: The id of the body to delete.
 // - bodies: The OrdTree containing bodies.
 // = The updated OrdTree with the body removed.
-UG/SIPD/Body/delete_body : U64 -> (OrdTree U64 G/Body) -> (OrdTree U64 G/Body)
-| body_id bodies = (OrdTree/delete U64 G/Body U64/Ord bodies body_id)
+UG/SIPD/Body/delete_body : U64 -> (Map (Maybe G/Body)) -> (Map (Maybe G/Body))
+| body_id bodies = (Map/delete G/Body bodies body_id)

@@ -1,5 +1,8 @@
 
+use UG/SIPD as G
+
 UG/SIPD/GameMap/insert_body : UG/SIPD/GameMap -> UG/SIPD/Body -> UG/SIPD/GameMap
-| #GameMap{width height bodies} #Body{id hitbox tick effects collidable} = 
-  let bodies = (OrdTree/insert U64 UG/SIPD/Body U64/Ord bodies #Pair{id #Body{id hitbox tick effects collidable}})
-  #GameMap{width height bodies}
+| #GameMap{width height bodies bodies_count} #Body{id hitbox tick effects collidable} = 
+  let bodies = (Map/insert G/Body bodies id #Body{id hitbox tick effects collidable})
+  let new_body_count = (+ bodies_count 1)
+  #GameMap{width height bodies new_body_count}

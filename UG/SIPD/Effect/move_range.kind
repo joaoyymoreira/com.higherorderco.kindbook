@@ -2,15 +2,15 @@
 use UG/SIPD as G
 
 UG/SIPD/Effect/move_range : U64 -> V2 -> F64 -> U64 -> G/State -> G/State
-| body_id target range duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| body_id target range duration #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox body_tick effects collidable}} =
   let hitbox_center = (UG/Shape/get_center hitbox)
   let distance_to_target = (V2/sub target hitbox_center)
   let ln = (V2/length distance_to_target)
 
   if (Bool/or (F64/lt ln 3.0) (F64/lte range 0.0)) {
-    #State{next_id tick players hero_states #GameMap{width height bodies}}
+    #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
   } else {
     let constant_speed = 10.0
     let move_distance = (F64/min constant_speed range)
@@ -18,7 +18,7 @@ UG/SIPD/Effect/move_range : U64 -> V2 -> F64 -> U64 -> G/State -> G/State
     let movement = (V2/mul_scalar direction move_distance)
     let new_hitbox = (UG/Shape/move hitbox movement)
 
-    let inserted_state = (UG/SIPD/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id new_hitbox body_tick effects collidable})
+    let inserted_state = (UG/SIPD/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox body_tick effects collidable})
   
     if (U64/gt duration 0) {
       let new_effect = (G/Effect/move_range body_id target range (- duration 1))

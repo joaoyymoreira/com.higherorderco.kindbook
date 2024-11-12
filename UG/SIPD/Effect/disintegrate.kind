@@ -8,12 +8,12 @@ use UG/SIPD as G
 // - state: Current game state.
 // = Updated game state.
 UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G/State
-| line_id player_id line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body line_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| line_id player_id line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body line_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{line} with (G/Body/get_body player_id bodies)
-..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 ..| #Some{hero} with (Map/get G/Player players player_id)
-...| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+...| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 ...| #Some{player} =
   let #Body{hero_id hero_hitbox hero_tick hero_effects hero_collidable} = hero
   let hero_pos = (UG/Shape/get_center hero_hitbox)
@@ -25,7 +25,7 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G
   let angle = (V2/calculate_angle hero_pos player_target) 
 
   let new_line_shape = (UG/Shape/rotate def_line angle)
-  let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
+  let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
   
  (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable} new_state) 
 
@@ -43,23 +43,23 @@ disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
   (G/Hero/HeroState/update_cooldown player_id movement_key state block_time) 
 
 UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
-| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
+| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
 .| #None = 
-  #State{next_id tick players hero_states #GameMap{width height bodies}}
+  #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{id name keys target hero}} =
   let #Hero{owner_id hero_name skills body_id} = hero 
   
   let hero_body = (G/Body/get_body body_id bodies)
   match hero_body {
     #None: 
-      #State{next_id tick players hero_states #GameMap{width height bodies}}
+      #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
     #Some{body}:
       let #Body{body_id hitbox body_tick effects collidable} = body
       let hero_pos = (UG/Shape/get_center hitbox)    
       let target = (G/Player/get_mouse_pos #Player{id name keys target hero} "R")
       let direction = (V2/normalize (V2/sub target hero_pos))
       let line_end = (V2/add hero_pos (V2/mul_scalar direction line_range))
-      let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies}})
+      let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
       let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range hero_pos line_end)
 
       let spawn_effect = (G/Effect/spawn_body disintegrate_line)

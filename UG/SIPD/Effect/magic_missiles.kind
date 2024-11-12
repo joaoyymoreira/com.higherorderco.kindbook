@@ -16,9 +16,9 @@ magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
   #Pair{max_target #Pair{left_target right_target}}
 
 magic_missiles/tick_projectile : U64 -> G/State -> G/State
-| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
-.| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies}})
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+.| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 
 magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Body
 | id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #TakesEffects}
@@ -58,9 +58,9 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   state
 
 UG/SIPD/Effect/magic_missiles : U64 -> F64 -> U64 -> F64 -> G/Effect
-| player_id range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| player_id range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
-..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
-..| #Some{hero_body} = (magic_missiles/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies}})
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+..| #Some{hero_body} = (magic_missiles/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range duration missile_radius #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 

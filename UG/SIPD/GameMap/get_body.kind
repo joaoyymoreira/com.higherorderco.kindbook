@@ -1,3 +1,3 @@
 
-UG/SIPD/GameMap/get_body : (OrdTree U64 UG/SIPD/Body) -> U64 -> (Maybe UG/SIPD/Body)
-| bodies body_id = (OrdTree/get U64 UG/SIPD/Body U64/Ord bodies body_id)
+UG/SIPD/GameMap/get_body : (Map (Maybe UG/SIPD/Body)) -> U64 -> (Maybe UG/SIPD/Body)
+| bodies body_id = (Map/get UG/SIPD/Body bodies body_id)

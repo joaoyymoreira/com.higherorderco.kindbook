@@ -1,30 +1,29 @@
 use UG/SIPD as G 
 
 UG/SIPD/Effect/move : U64 -> U64 -> G/Effect
-| pid body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with ((Map/get G/Player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _) 
-.| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies}}
-.| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| pid body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with ((Map/get G/Player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _) 
+.| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+.| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{player_id name keys target hero}} #Some{#Body{body_id hitbox body_tick effects collidable}} =
   let hitbox_center = (UG/Shape/get_center hitbox)
   let distance_to_target = (V2/sub target hitbox_center)
   let ln = (V2/length distance_to_target)
 
   if (F64/lt ln 0.1) {
-    #State{next_id tick players hero_states #GameMap{width height bodies}}
+    #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
   } else {
     let constant_speed = 3.0
     let direction = (V2/normalize distance_to_target)
     
     let movement = (V2/mul_scalar direction (F64/min constant_speed ln))
 
-    // probably shouldnt transform ordmap to list every tick
-    let bodies_list = (OrdTree/values U64 G/Body bodies)
+    let bodies_list = (Map/values G/Body bodies bodies_count)
     let #Pair{final_movement collision_rest} = (UG/Collision/collide_and_slide #Body{body_id hitbox body_tick effects collidable} movement bodies_list)
 
     let new_hitbox = (UG/Shape/move hitbox (V2/sub final_movement hitbox_center))
 
-    let updated_bodies = (OrdTree/insert U64 G/Body U64/Ord bodies #Pair{body_id #Body{body_id new_hitbox body_tick effects collidable}})
+    let updated_map = (G/GameMap/insert_body #GameMap{width height bodies bodies_count} #Body{body_id new_hitbox body_tick effects collidable})
 
-    #State{next_id tick players hero_states #GameMap{width height updated_bodies}}
+    #State{next_id tick players hero_states updated_map}
   }
   

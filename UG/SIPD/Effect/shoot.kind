@@ -2,21 +2,21 @@
 use UG/SIPD as G
 
 grow_projectile : G/State -> U64 -> G/State
-| #State{next_id tick players hero_states #GameMap{width height bodies}} body_id with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} body_id with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
 ..| #Circle{center radius} = 
   let growth_factor = 1.05
   let new_radius = (F64/mul radius growth_factor)
   let new_hitbox = (UG/Shape/circle center new_radius)
-  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{id new_hitbox b_tick effects collidable})
-..| #Polygon{center vertices} = #State{next_id tick players hero_states #GameMap{width height bodies}}
+  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox b_tick effects collidable})
+..| #Polygon{center vertices} = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 
 tick_projectile : U64 -> G/State -> G/State
-| body_id #State{next_id tick players hero_states #GameMap{width height bodies}} with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{body} = 
-  let state = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies}})
+  let state = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
   (grow_projectile state body_id)
 
 shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
@@ -36,9 +36,9 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   (G/Effect/apply move_effect state_after_spawn)
 
 UG/SIPD/Effect/shoot : U64 -> F64 -> F64 -> U64 -> G/Effect
-| player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}} with (Map/get G/Player players player_id)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
+| player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
+.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
-..| #None = #State{next_id tick players hero_states #GameMap{width height bodies}}
-..| #Some{hero_body} = (shoot/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies}})
+..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+..| #Some{hero_body} = (shoot/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 
