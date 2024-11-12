@@ -1,0 +1,43 @@
+// Folds over a Map with a limit.
+// - A: Value type.
+// - B: Accumulator type.
+// - map: The input map.
+// - limit: The maximum key to consider.
+// - init: Initial accumulator value.
+// - f: Folding function.
+// = The final accumulated value.
+Map/fold/go : ∀(A: *) ∀(B: *) (Map (Maybe A)) -> U64 -> B -> (B -> U64 -> A -> B) -> B
+| A B map limit acc f with (U64/eq limit 0)
+.| #True = 
+  get el = map[0]
+  match el {
+    #None: acc
+    #Some{val}: (f acc 0 val)
+  }
+.| #False =
+  get el = map[limit]
+  match el {
+    #None: (Map/fold/go A B map (- limit 1) acc f)
+    #Some{val}: (Map/fold/go A B map (- limit 1) (f acc limit val) f)
+  } 
+
+// Folds over a Map.
+// - A: Value type.
+// - B: Accumulator type.
+// - map: The input map.
+// - limit: The maximum key to consider.
+// - init: Initial accumulator value.
+// - f: Folding function.
+// = The final accumulated value.
+Map/fold : ∀(A: *) ∀(B: *) (Map (Maybe A)) -> U64 -> B -> (B -> U64 -> A -> B) -> B
+| A B map limit init f = (Map/fold/go A B map limit init f)
+
+// Test map for folding.
+Map/fold/test_map : (Map (Maybe U64))
+= { 1: #None 2: #Some{10} 5: #Some{20} | #None }
+
+// Test: sum of values in the map
+#test: (Map/fold U64 U64 Map/fold/test_map 5 0 λacc λkey λval (+ acc val)) == 30
+
+// Test: product of values in the map
+#test: (Map/fold U64 U64 Map/fold/test_map 5 1 λacc λkey λval (* acc val)) == 200

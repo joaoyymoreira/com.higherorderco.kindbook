@@ -1,0 +1,19 @@
+// Retrieves a value from a Map.
+// - A: Value type.
+// - map: The input map.
+// - key: The key to look up.
+// = The value associated with the key, if it exists.
+Map/get : ∀(A: *) (Map (Maybe A)) -> U64 -> (Maybe A)
+| A map key =
+  get x1 = map[key]
+  x1
+
+// Test map for get function.
+Map/get/test_map : (Map (Maybe U64))
+= { 0: #Some{42} 1: #None 2: #Some{10} 5: #Some{20} | #None }
+
+#test: (Map/get U64 Map/get/test_map 0) == #Some{42}
+#test: (Map/get U64 Map/get/test_map 1) == #None
+#test: (Map/get U64 Map/get/test_map 2) == #Some{10}
+#test: (Map/get U64 Map/get/test_map 5) == #Some{20}
+#test: (Map/get U64 Map/get/test_map 10) == #None

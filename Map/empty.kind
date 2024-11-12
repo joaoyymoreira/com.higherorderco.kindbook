@@ -1,0 +1,7 @@
+// Creates an empty Map.
+// - A: Value type.
+// = An empty Map.
+Map/empty : ∀(A: *) (Map (Maybe A))
+| A = { | #None }
+
+#test: (Map/get U64 (Map/empty U64) 42) == #None

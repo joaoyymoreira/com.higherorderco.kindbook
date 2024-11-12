@@ -1,0 +1,27 @@
+
+Map/values/go : ∀(A: *) (Map (Maybe A)) -> U64 -> (List A) -> (List A)
+| typ map limit acc with (U64/eq limit 0)
+.| #True = 
+  get el = map[0]
+  match el {
+    #None: acc
+    #Some{val}: #Cons{val acc}
+  }
+.| #False =
+  get el = map[limit]
+  match el {
+    #None: (Map/values/go typ map (- limit 1) acc)
+    #Some{val}: (Map/values/go typ map (- limit 1) #Cons{val acc})
+  } 
+
+Map/values : ∀(A: *) (Map (Maybe A)) -> U64 -> (List A)
+| typ map limit = (Map/values/go typ map limit [])
+
+
+Map/values/test_map : (Map (Maybe U64))
+= { 1: #None 2: #Some{10} 5: #Some{20} | #None }
+
+#test: (Map/values U64 Map/values/test_map 3) == [10]
+#test: (Map/values U64 Map/values/test_map 1) == []
+#test: (Map/values U64 Map/values/test_map 100) == [10 20]
+
