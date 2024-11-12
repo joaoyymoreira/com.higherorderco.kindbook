@@ -1,0 +1,18 @@
+use UG/SIPD as G
+
+// Creates a disintegrate skill.
+// - player_id: Player ID.
+// - duration: Duration of the disintegrate effect.
+// - line_width: Width of the disintegrate line.
+// - line_range: Range of the disintegrate line.
+// - cooldown: Skill cooldown.
+// = A disintegrate skill.
+G/Skill/disintegrate : U64 -> U64 -> F64 -> F64 -> U64 -> G/Skill
+| player_id duration line_width line_range cooldown = 
+  #Skill{
+    name: "disintegrate"
+    effects: [(G/Effect/disintegrate player_id duration line_width line_range)]
+    cooldown: cooldown
+  }
+
+#test: (G/Skill/disintegrate 1 100 5.0 200.0 500) == #Skill{name: "disintegrate" effects: [(G/Effect/disintegrate 1 100 5.0 200.0)] cooldown: 500}
