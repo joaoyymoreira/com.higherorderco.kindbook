@@ -1,15 +1,5 @@
 use UG/SIPD as G
 
-// Calculates the angle between two points.
-// - p1: First point.
-// - p2: Second point.
-// = Angle in radians.
-calculate_alpha : V2 -> V2 -> F64
-| #V2{x y} #V2{x1 y1} =
-  let dx = (F64/sub x1 x)
-  let dy = (F64/sub y1 y)
-  (F64/sub 0.0 (atan2 dx dy))
-
 // Updates the disintegrate line effect.
 // - line_id: ID of the line body.
 // - player_id: ID of the player.
@@ -32,7 +22,7 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G
   let #Body{line_id line_hitbox line_tick line_effects line_collidable} = line
   
   let #Player{pid player_name player_keys player_target player_hero} = player
-  let angle = (calculate_alpha hero_pos player_target) 
+  let angle = (V2/calculate_angle hero_pos player_target) 
 
   let new_line_shape = (UG/Shape/rotate def_line angle)
   let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies}} #Body{line_id new_line_shape line_tick line_effects line_collidable})

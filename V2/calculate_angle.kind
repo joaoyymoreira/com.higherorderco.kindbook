@@ -1,0 +1,10 @@
+// Calculates the angle between two points.
+// - p1: First point.
+// - p2: Second point.
+// = Angle in radians.
+V2/calculate_angle : V2 -> V2 -> F64
+| #V2{x y} #V2{x1 y1} =
+  let dx = (F64/sub x1 x)
+  let dy = (F64/sub y1 y)
+  (F64/sub 0.0 (atan2 dx dy))
+
