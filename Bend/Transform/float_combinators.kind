@@ -1,0 +1,277 @@
+use Bend/Fun/Book as Book
+use Bend/Fun/Rule as Rule
+use Bend/Fun/Term as Term
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/MatchRule as MatchRule
+
+// Floats combinators in a Book
+Bend/Transform/float_combinators : Book -> U64 -> Book
+| book max_size =
+  // TODO: Don't float the entrypoint function
+  let defs          = (BinMap/values _ (Book/get_defs book))
+  let (defs, combs) = (float_defs book max_size defs [] (BinMap/empty _))
+  let defs = (List/append _ (FnDef/to_kvs defs) (FnDef/to_kvs combs))
+  (Book/set_defs book (BinMap/from_list _ defs))
+
+float_defs : Book -> U64 -> (List FnDef) -> (List FnDef) -> (BinMap (Bool & FnDef)) -> ((List FnDef) & (List FnDef))
+| book max_size []          acc combs =
+  let combs = (List/map _ _ (BinMap/values _ combs) (λx let (_, def) = x def))
+  (acc, combs)
+| book max_size (def;;defs) acc combs with (FnDef/get_rul def)
+. | [rule] =
+  let ctx                   = #Ctx{book combs def 0 max_size 0} :: Ctx
+  let (ctx, bod)            = (float_term (Rule/get_bod rule) ctx)
+  let #Ctx{_ combs _ _ _ _} = ctx
+  let def                   = (FnDef/set_rul def [#Rule{[] bod}])
+  (float_defs book max_size defs (def;;acc) combs)
+. | _ = 
+  let def = (FnDef/set_rul def [#Rule{[] #Era}])
+  (float_defs book max_size defs (def;;acc) combs)
+
+data Ctx {
+  #Ctx {
+    book     : Book
+    combs    : (BinMap (Pair Bool FnDef))
+    def      : FnDef
+    name_gen : U64
+    max_size : U64
+    def_size : U64
+  }
+}
+
+float_term : Term -> (State Ctx Term)
+| term ctx =
+  // Float from the bottom up
+  let (ctx, term) = (map_float_children _ float_term term ctx)
+  // Check the parent (current term)
+  let par_size    = (term_size term)
+  let par_comb    = (is_combinator term)
+  let (s, term)   = (map_float_children _ (float_term_child par_comb) term (ctx, par_size))
+  let (ctx, _)    = s :: (Pair _ _)
+  (ctx, term)
+
+float_term_child : Bool -> Term -> (State (Ctx & U64) Term)
+| par_comb child (ctx, par_size) =
+  let #Ctx{book combs def name_gen max_size def_size} = ctx
+  let child_safe = (is_safe ctx [] child)
+  let child_size = (term_size child)
+  let child_comb = (is_combinator child)
+  let too_large  = if par_comb {
+    (U64/gt par_size max_size)
+  } else {
+    (U64/gt def_size max_size)
+  } :: Bool
+  if (Bool/and child_comb (Bool/and (U64/gt child_size 0) (Bool/or (Bool/not child_safe) too_large))) {
+    let ctx          = #Ctx{book combs def name_gen max_size (- def_size child_size)} :: Ctx
+    let par_size     = (- par_size child_size)
+    let (ctx, child) = (float child_safe child ctx)
+    ((ctx, par_size), child)
+  } else {
+    ((ctx, par_size), child)
+  }
+
+// Creates a new function from the given term.
+// The new function is added to the context.
+// = Returns a term referencing the new function and the updated context.
+float : Bool -> Term -> (State Ctx Term)
+| safe term ctx =
+  let #Ctx{book combs def name_gen max_size def_size} = ctx
+  let nam   = (String/concat [(FnDef/get_nam def) "__C" (U64/to_string name_gen)])
+  let def   = (FnDef/new_gen nam [#Rule{[] term}] (FnDef/get_src def) #True)
+  let combs = (BinMap/set _ combs (String/hash nam) (safe, def))
+  let ctx   = #Ctx{book combs def (+ name_gen 1) max_size def_size} :: Ctx
+  (ctx, #Ref{nam})
+
+is_combinator : Term -> Bool
+| term = (Bool/and (List/is_nil _ (Term/free_vars term))
+         (Bool/and (Bool/not (Term/has_unscoped_diff term))
+                   (Bool/not (Term/is_ref term))))
+
+pattern_size : Pat -> U64
+| #Fan{_ pats} = (+ (- (List/length_u64 _ pats) 1) (List/sum_u64 (List/map _ _ pats pattern_size)))
+| #Var{_}      = 0
+| #Chn{_}      = 0
+| _            = 0  // Should be unreachable
+
+base_size : Term -> U64
+| #Let{pat _ _}        = (pattern_size pat)
+| #Fan{_ els}          = (- (List/length_u64 _ els) 1)
+| #Mat{_ _ _ _ arms}   = (List/length_u64 _ arms)
+| #Swt{_ _ _ _ _ arms} = (* 2 (- (List/length_u64 _ arms) 1))
+| #Lam{_ _}            = 1
+| #App{_ _}            = 1
+| #Opr{_ _ _}          = 1
+| _                    = 0
+
+term_size : Term -> U64
+| term =
+  let size_children = (List/map _ _ (Term/children term) (λpair let (_, t) = pair (term_size t)))
+  (+ (List/sum_u64 size_children) (base_size term))
+
+
+// Checks if a term is safe to float.
+// A term can be considered safe if it is:
+// - A Number or an Eraser.
+// - A Tuple or Superposition where all elements are safe.
+// - An application or numeric operation where all arguments are safe.
+// - A safe Lambda, e.g. a nullary constructor or a lambda with safe body.
+// - A Reference with a safe body.
+//
+// A reference to a recursive definition (or mutually recursive) is not safe.
+is_safe : Ctx -> (List String) -> Term -> Bool
+| ctx seen #Num{_}          = #True
+| ctx seen #Era             = #True
+| ctx seen #Fan{_ els}      = (List/all _ els (is_safe ctx seen))
+| ctx seen #App{fun arg}    = (Bool/and (is_safe ctx seen fun) (is_safe ctx seen arg))
+| ctx seen #Opr{_ fst snd}  = (Bool/and (is_safe ctx seen fst) (is_safe ctx seen snd))
+| ctx seen #Lam{_ bod}      = (is_safe_lambda ctx seen [] bod)
+| ctx seen #Ref{nam}        =
+  let #Ctx{book combs _ _ _ _} = ctx
+  // TODO: Constructors are safe
+  if (List/contains _ String/IsEqual seen nam) {
+    #False  // A recursive function, not safe
+  } else {
+    let seen = (nam ;; seen) :: (List _)
+    let def  = (BinMap/get _ (Book/get_defs book) (String/hash nam))
+    let comb = (BinMap/get _ combs (String/hash nam))
+    match def {
+      #Some{def}: (is_safe_def ctx seen def)
+      #None     : match comb {
+        #Some{comb}:
+          // A previously floated, safe combinator
+          let (seen, _) = comb
+          if seen { #True } else { #False }
+        #None      : #False
+      }
+    }
+  }
+// TODO: This is overly conservative.
+//       Variables can be safe depending on how they're used.
+//       For example, in a well-typed numop they're safe.
+| ctx _ _                   = #False
+
+// A sequence of lambdas is safe if the body of the last lambda is safe.
+// If the body is a reference, it's not in active position, so it's safe.
+// If it's a variable bound in the lambdas, it's a nullary constructor, so it's safe.
+is_safe_lambda : Ctx -> (List String) -> (List String) -> Term -> Bool
+| ctx seen bnd #Lam{pat bod} = (is_safe_lambda ctx seen (List/append _ (Pat/binds pat) bnd) bod)
+| ctx seen bnd #Var{nam}     = (List/contains _ String/IsEqual bnd nam)  // Nullary-constructor
+| ctx seen bnd #Ref{_}       = #True                                     // Reference to preexisting definition
+| ctx seen bnd term          = (is_safe ctx seen term)
+
+is_safe_def : Ctx -> (List String) -> FnDef -> Bool
+| ctx seen #FnDef{_ _ _ []     _} = #True                                // Invalid, but technically safe
+| ctx seen #FnDef{_ _ _ [rul]  _} =
+  let bnd = (List/concat_map _ _ (Rule/get_pat rul) Pat/binds)
+  (is_safe_lambda ctx seen bnd (Rule/get_bod rul))
+| ctx seen #FnDef{_ _ _ (_;;_) _} = #False                               // More than one rule == match, not safe
+
+
+map_float_children : ∀(S: *) (Term -> (State S Term)) -> Term -> (State S Term)
+// Consider the entire chain of applications, so that we don't fragment it too much.
+| S f #App{fun@#App{_ _} arg} st = 
+  let (st, fun) = (map_float_children S f fun st)
+  let (st, arg) = (f arg st)
+  (st, #App{fun arg})
+
+| S f #App{fun arg} st = 
+  let (st, fun) = (f fun st)
+  let (st, arg) = (f arg st)
+  (st, #App{fun arg})
+
+| S f #Mat{bnd arg with_bnd with_arg arms} st = 
+  let (st, arg)      = (f arg st)
+  let (st, with_arg) = (map_list S f with_arg st)
+  let (st, arms)     = (map_match S f arms st)
+  (st, #Mat{bnd arg with_bnd with_arg arms})
+
+| S f #Swt{bnd arg with_bnd with_arg pred arms} st = 
+  let (st, arg)      = (f arg st)
+  let (st, with_arg) = (map_list S f with_arg st)
+  let (st, arms)     = (map_list S f arms st)
+  (st, #Swt{bnd arg with_bnd with_arg pred arms})
+
+| S f #Fan{kind els} st = 
+  let (st, els) = (map_list S f els st)
+  (st, #Fan{kind els})
+
+| S f #Lst{els} st = 
+  let (st, els) = (map_list S f els st)
+  (st, #Lst{els})
+
+| S f #Use{nam val nxt} st = 
+  let (st, val) = (f val st)
+  let (st, nxt) = (f nxt st)
+  (st, #Use{nam val nxt})
+
+| S f #Let{pat val nxt} st = 
+  let (st, val) = (f val st)
+  let (st, nxt) = (f nxt st)
+  (st, #Let{pat val nxt})
+
+| S f #Opr{opr fst snd} st = 
+  let (st, fst) = (f fst st)
+  let (st, snd) = (f snd st)
+  (st, #Opr{opr fst snd})
+
+| S f #Lam{pat bod} st = 
+  let (st, bod) = (f bod st)
+  (st, #Lam{pat bod})
+
+// These cases should have been removed by now.
+// We can still handle them, but if they occur, it will mess up the calculation of term size.
+| S f #Fld{bnd arg with_bnd with_arg arms} st = 
+  let (st, arg)      = (f arg st)
+  let (st, with_arg) = (map_list S f with_arg st)
+  let (st, arms)     = (map_match S f arms st)
+  (st, #Mat{bnd arg with_bnd with_arg arms})
+
+| S f #Bnd{bnd arg cond step base} st = 
+  let (st, arg)  = (map_list S f arg st)
+  let (st, cond) = (f cond st)
+  let (st, step) = (f step st)
+  let (st, base) = (f base st)
+  (st, #Bnd{bnd arg cond step base})
+
+| S f #Ask{pat val nxt} st = 
+  let (st, val) = (f val st)
+  let (st, nxt) = (f nxt st)
+  (st, #Ask{pat val nxt})
+
+| S f #Opn{typ var bnd bod} st = 
+  let (st, bod) = (f bod st)
+  (st, #Opn{typ var bnd bod})
+
+// These two should have been removed, but disappear during desugar.
+// Therefore, we handle them by deferring to their children.
+| S f #Wth{typ bod} st = 
+  let (st, bod) = (map_float_children S f bod st)
+  (st, #Wth{typ bod})
+
+| S f #Def{def nxt} st = 
+  let (st, nxt) = (map_float_children S f nxt st)
+  (st, #Def{def nxt})
+
+// The remaining cases are terminals.
+| S f #Var{nam} st = (st, #Var{nam})
+| S f #Lnk{nam} st = (st, #Lnk{nam})
+| S f #Era      st = (st, #Era)
+| S f #Num{val} st = (st, #Num{val})
+| S f #Str{val} st = (st, #Str{val})
+| S f #Ref{nam} st = (st, #Ref{nam})
+
+
+map_list : ∀(S: *) (Term -> (State S Term)) -> (List Term) -> (State S (List Term))
+| S f [] st = (st, [])
+| S f x;;xs st = 
+  let (st, x)  = (f x st)
+  let (st, xs) = (map_list S f xs st)
+  (st, x;;xs)
+
+map_match : ∀(S: *) (Term -> (State S Term)) -> (List MatchRule) -> (State S (List MatchRule))
+| S f []                            st = (st, [])
+| S f (#MatchRule{nam bnd bod};;xs) st =
+  let (st, bod) = (f bod st)
+  let (st, xs)  = (map_match S f xs st)
+  (st, (#MatchRule{nam bnd bod};;xs))

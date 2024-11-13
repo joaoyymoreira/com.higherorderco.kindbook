@@ -1,0 +1,7 @@
+use Bend/Fun/FnDef as FnDef
+
+// Converts a list of FnDefs to a list of key-value pairs.
+// - defs: The list of FnDefs to convert.
+// = A list of pairs, where each pair consists of the hashed function name and the FnDef.
+Bend/Fun/FnDef/to_kvs : (List FnDef) -> (List (Pair Bits FnDef))
+| defs = (List/map _ _ defs (λdef ((String/hash (FnDef/get_nam def)), def)))
