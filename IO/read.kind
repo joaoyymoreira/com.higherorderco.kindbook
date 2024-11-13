@@ -1,0 +1,2 @@
+IO/read : String -> (IO (Result String String))
+= ?IO_READ

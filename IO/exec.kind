@@ -1,0 +1,2 @@
+IO/exec : String -> (IO String)
+= ?IO_EXEC
