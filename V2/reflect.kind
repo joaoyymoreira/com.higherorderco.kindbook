@@ -1,0 +1,6 @@
+// Reflects a vector across a normal.
+// - v: Vector to reflect.
+// - n: Normal to reflect across.
+// = Reflected vector.
+V2/reflect : V2 -> V2 -> V2
+| v n = (V2/sub v (V2/mul_scalar n (F64/mul 2.0 (V2/dot v n))))
