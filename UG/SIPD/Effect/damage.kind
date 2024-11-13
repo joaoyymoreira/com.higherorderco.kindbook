@@ -1,0 +1,41 @@
+use UG/SIPD as G
+
+// Applies a damage effect to a hero.
+// - body_id: ID of the body to damage.
+// - damage: Amount of damage to apply.
+// = The damage effect.
+G/Effect/damage : U64 -> U64 -> G/Effect
+| body_id damage state =
+  let #State{next_id tick players hero_states game_map} = state
+  let #GameMap{width height bodies bodies_count} = game_map
+  let bodies_list = (Map/values G/Body bodies bodies_count)
+
+  match (G/GameMap/get_body bodies body_id) {
+    #Some{body}:
+      let #Body{id hitbox body_tick effects collidable} = body
+      let collision_result = (G/Body/find_collision body bodies_list)
+
+      match collision_result {
+        #None: #State{next_id tick players hero_states game_map}
+        #Some{result}:
+          let #Pair{collision_normal colliding_body} = result
+          (damage/handle_collidable damage body colliding_body state)
+      }
+    
+    #None: state
+  }
+
+// Handles damage application based on body collidable type.
+damage/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
+| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with collidable1 :: _
+.| #TakesEffects = 
+  let #State{next_id tick players hero_states game_map} = state
+  match (Map/get G/Hero/HeroState hero_states id1) {
+    #Some{hero_state}:
+      let #HeroState{cooldowns health} = hero_state
+      let new_health = (U64/sub health damage)
+      let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id1 #HeroState{cooldowns new_health})
+      #State{next_id tick players updated_hero_states game_map}
+    #None: state
+  }
+.| _ = state
