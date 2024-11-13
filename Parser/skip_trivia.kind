@@ -1,15 +1,15 @@
 // Skips whitespace and comments in the text.
 // Returns the number of characters skipped.
-Parser/skip_trivia : (Parser Nat)
+Parser/skip_trivia : (Parser U64)
 | state =
   let #State{input index} = state
-  let #Pair{skp rem}      = (Parser/skip_accumulate #0 input)
-  let new_index           = (Nat/add index skp)
+  let #Pair{skp rem}      = (Parser/skip_accumulate 0 input)
+  let new_index           = (+ index skp)
   let new_input           = rem
   #Done{#Reply{#State{new_input new_index} skp}}
 
-#test: (Parser/skip_trivia (#State{"   abc" #0})) == #Done{#Reply{#State{"abc" #3} #3}}
-#test: (Parser/skip_trivia (#State{"// This is a comment\nabc" #0})) == #Done{#Reply{#State{"abc" #21} #21}}
-#test: (Parser/skip_trivia (#State{"  // Comment\n  abc" #0})) == #Done{#Reply{#State{"abc" #15} #15}}
-#test: (Parser/skip_trivia (#State{"abc" #0})) == #Done{#Reply{#State{"abc" #0} #0}}
-#test: (Parser/skip_trivia (#State{"// Comment 1\n// Comment 2\nabc" #0})) == #Done{#Reply{#State{"abc" #26} #26}}
+#test: (Parser/skip_trivia (#State{"   abc" 0}))                          == #Done{#Reply{#State{"abc" 3} 3}}
+#test: (Parser/skip_trivia (#State{"// This is a comment\nabc" 0}))       == #Done{#Reply{#State{"abc" 21} 21}}
+#test: (Parser/skip_trivia (#State{"  // Comment\n  abc" 0}))             == #Done{#Reply{#State{"abc" 15} 15}}
+#test: (Parser/skip_trivia (#State{"abc" 0}))                             == #Done{#Reply{#State{"abc" 0} 0}}
+#test: (Parser/skip_trivia (#State{"// Comment 1\n// Comment 2\nabc" 0})) == #Done{#Reply{#State{"abc" 26} 26}}

@@ -4,7 +4,7 @@
 // = Parser that returns a list of all successfully parsed elements.
 Parser/parse_many : ∀(A: *) (Parser A) -> (Parser (List A))
 | A parser state = 
-  let #Pair{state length} = (Parser/length_got state) 
+  let (state, length) = (Parser/length_got state) 
   (Parser/parse_many/go A parser state length [])
 
 // Accumulates parsed results.
@@ -14,10 +14,10 @@ Parser/parse_many : ∀(A: *) (Parser A) -> (Parser (List A))
 // - length: 
 // - acc: Accumulator list of already parsed elements.
 // = Parser that returns the final list of all parsed elements.
-Parser/parse_many/go : ∀(A: *) (Parser A) -> Parser/State -> Nat ->  (List A) -> (Result (Parser/Reply (List A)) Parser/Error)
-| A parser #State{#Nil index}  length      acc = #Done{#Reply{#State{#Nil index} (List/reverse A acc)}}
-| A parser state               #Zero       acc = #Done{#Reply{state (List/reverse A acc)}}
-| A parser state               #Succ{pred} acc = 
+Parser/parse_many/go : ∀(A: *) (Parser A) -> Parser/State -> U64 ->  (List A) -> (Result (Parser/Reply (List A)) Parser/Error)
+| A parser #State{#Nil index}  length acc = #Done{#Reply{#State{#Nil index} (List/reverse A acc)}}
+| A parser state               0      acc = #Done{#Reply{state (List/reverse A acc)}}
+| A parser state               1+pred acc = 
   match (parser state) {
     #Done{reply}: 
       match reply {

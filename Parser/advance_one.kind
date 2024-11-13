@@ -2,17 +2,10 @@
 // - state: The current parser state.
 // = A Reply containing the updated state and the consumed character (if any).
 Parser/advance_one : (Parser (Maybe Char))
-| state =
-  let #State{input index} = state
-  match (String/uncons input) {
-    #None: 
-      #Done{#Reply{#State{input index} #None}}
-    #Some{pair}:
-      let head = (Pair/get_fst _ _ pair)
-      let tail = (Pair/get_snd _ _ pair)
-      #Done{#Reply{#State{tail #Succ{index}} #Some{head}}}
-  }
+| #State{input index} with (String/uncons input)
+. | #None               = #Done{#Reply{#State{input index}      #None}}
+. | #Some{(head, tail)} = #Done{#Reply{#State{tail (+ index 1)} #Some{head}}}
 
-#test: (Parser/advance_one #State{"abc" #0}) == (#Done{#Reply{#State{"bc" #1} #Some{97}}})
-#test: (Parser/advance_one #State{"" #0}) == (#Done{#Reply{#State{"" #0} #None}})
-#test: (Parser/advance_one #State{"!@#" #0}) == (#Done{#Reply{#State{"@#" #1} #Some{33}}})
+#test: (Parser/advance_one #State{"abc" 0}) == (#Done{#Reply{#State{"bc" 1} #Some{97}}})
+#test: (Parser/advance_one #State{""    0}) == (#Done{#Reply{#State{""   0} #None}})
+#test: (Parser/advance_one #State{"!@#" 0}) == (#Done{#Reply{#State{"@#" 1} #Some{33}}})

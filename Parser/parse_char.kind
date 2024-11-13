@@ -13,7 +13,7 @@ Parser/parse_char : (Parser Char)
   }
 }
 
-#test: (Parser/parse_char #State{"abc" #0}) == #Done{#Reply{#State{"bc" #1} 'a'}}
-#test: (Parser/parse_char #State{"bc" #0}) == #Done{#Reply{#State{"c" #1} 'b'}}
-#test: (Parser/parse_char #State{"\\nabc" #0}) == #Done{#Reply{#State{"abc" #2} '\n'}}
-#test: (Parser/parse_char #State{"\\xabc" #0}) == #Fail{#Error{#2 "invalid_escape_char:x"}}
+#test: (Parser/parse_char #State{"abc"    0}) == #Done{#Reply{#State{"bc"  1} 'a'}}
+#test: (Parser/parse_char #State{"bc"     0}) == #Done{#Reply{#State{"c"   1} 'b'}}
+#test: (Parser/parse_char #State{"\\nabc" 0}) == #Done{#Reply{#State{"abc" 2} '\n'}}
+#test: (Parser/parse_char #State{"\\xabc" 0}) == #Fail{#Error{2 "invalid_escape_char:x"}}

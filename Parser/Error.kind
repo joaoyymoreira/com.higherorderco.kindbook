@@ -3,7 +3,7 @@
 // - error: Error description.
 data Parser/Error {
   #Error {
-    index: Nat
+    index: U64
     error: String
   }
 }

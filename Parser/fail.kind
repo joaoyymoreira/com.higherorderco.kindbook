@@ -11,6 +11,6 @@ Parser/fail : ∀(A: *) String -> (Parser A)
     }
   }
 
-#test: ((Parser/fail String "Test error") #State{"abcdef" #0}) == (#Fail{#Error{#0 "Test error"}})
-#test: ((Parser/fail Nat "Empty input") #State{"" #0}) == (#Fail{#Error{#0 "Empty input"}})
-#test: ((Parser/fail Bool "Error at index 5") #State{"hello world" #5}) == (#Fail{#Error{#5 "Error at index 5"}})
+#test: ((Parser/fail String "Test error") #State{"abcdef" 0}) == (#Fail{#Error{0 "Test error"}})
+#test: ((Parser/fail Nat "Empty input") #State{"" 0}) == (#Fail{#Error{0 "Empty input"}})
+#test: ((Parser/fail Bool "Error at index 5") #State{"hello world" 5}) == (#Fail{#Error{5 "Error at index 5"}})

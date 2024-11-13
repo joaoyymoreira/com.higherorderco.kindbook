@@ -1,0 +1,8 @@
+// Computes the length of a string.
+// - str: Input string.
+// = Number of characters.
+String/length_u64 : String -> U64
+| str = (List/length_u64 U64 (String/to_list str))
+
+#test: (String/length_u64 "Hello") == 5
+#test: (String/length_u64 "") == 0

@@ -2,18 +2,18 @@
 // - acc: Accumulated skipped characters
 // - cs: Input string
 // = Pair of skipped count and remaining input
-Parser/skip_accumulate : Nat -> String -> (Pair Nat String)
-| acc #Nil        = #Pair{acc #Nil}
-| acc #Cons{c cs} = 
+Parser/skip_accumulate : U64 -> String -> (Pair U64 String)
+| acc []      = (acc, [])
+| acc (c;;cs) = 
   if (Char/is_space c) {
-    (Parser/skip_accumulate (#Succ{acc}) cs)
-  } else if (Parser/is_comment (#Cons{c cs})) {
+    (Parser/skip_accumulate (+ acc 1) cs)
+  } else if (Parser/is_comment (c;;cs)) {
     (Parser/skip_comment acc cs)
   } else {
-    #Pair{acc (#Cons{c cs})}
+    #Pair{acc (c;;cs)}
   }
 
-#test: (Parser/skip_accumulate #0 "   abc") == #Pair{#3 "abc"}
-#test: (Parser/skip_accumulate #0 "abc") == #Pair{#0 "abc"}
-#test: (Parser/skip_accumulate #0 "  // comment\nabc") == #Pair{#13 "abc"}
-#test: (Parser/skip_accumulate #0 "") == #Pair{#0 ""}
+#test: (Parser/skip_accumulate 0 "   abc")            == #Pair{3 "abc"}
+#test: (Parser/skip_accumulate 0 "abc")               == #Pair{0 "abc"}
+#test: (Parser/skip_accumulate 0 "  // comment\nabc") == #Pair{13 "abc"}
+#test: (Parser/skip_accumulate 0 "")                  == #Pair{0 ""}

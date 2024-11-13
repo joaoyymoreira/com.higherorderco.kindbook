@@ -1,0 +1,11 @@
+// Calculates the sum of a list of U64 numbers.
+// - xs: Input list of U64 numbers.
+// = Sum of all numbers in the list.
+List/sum_u64 : (List U64) -> U64
+| []    = 0
+| n;;ns = (+ n (List/sum_u64 ns))
+
+#test: (List/sum_u64 [])      == 0
+#test: (List/sum_u64 [1 2 3]) == 6
+#test: (List/sum_u64 [0 0 0]) == 0
+#test: (List/sum_u64 [5])     == 5

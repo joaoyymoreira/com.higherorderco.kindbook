@@ -4,6 +4,6 @@
 data Parser/State {
   #State {
     input: String
-    index: Nat
+    index: U64
   }
 }

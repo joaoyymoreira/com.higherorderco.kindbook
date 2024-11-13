@@ -10,9 +10,9 @@ Parser/starts_with : String -> (Parser Bool)
   }
 }
 
-#test: (Parser/starts_with "hello" (#State{"hello world" #0}))
-    == #Done{#Reply{state: (#State{"hello world" #0}) value: #True}}
-#test: (Parser/starts_with "hello" (#State{"goodbye world" #0}))
-    == #Done{#Reply{state: (#State{"goodbye world" #0}) value: #False}}
-#test: (Parser/starts_with "" (#State{"any string" #0}))
-    == #Done{#Reply{state: (#State{"any string" #0}) value: #True}}
+#test: (Parser/starts_with "hello" (#State{"hello world" 0}))
+    == #Done{#Reply{state: (#State{"hello world" 0}) value: #True}}
+#test: (Parser/starts_with "hello" (#State{"goodbye world" 0}))
+    == #Done{#Reply{state: (#State{"goodbye world" 0}) value: #False}}
+#test: (Parser/starts_with "" (#State{"any string" 0}))
+    == #Done{#Reply{state: (#State{"any string" 0}) value: #True}}

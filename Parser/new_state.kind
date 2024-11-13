@@ -2,6 +2,6 @@
 // - input: Input string to be parsed.
 // = New State with given input and index zero.
 Parser/new_state : String -> Parser/State
-| input = #State{ input #Zero }
+| input = #State{ input 0 }
 
-#test: (Parser/new_state "hello") == #State{ input: "hello" index: #Zero }
+#test: (Parser/new_state "hello") == #State{ input: "hello" index: 0 }

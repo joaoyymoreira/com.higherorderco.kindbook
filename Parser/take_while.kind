@@ -2,14 +2,13 @@
 // - pred: Function that takes a Char and returns a Bool, used as the predicate.
 // = Parser that returns a String containing the consumed characters.
 Parser/take_while : (Char -> Bool) -> (Parser String)
-| pred state = 
-  let #State{inp idx} = state
-  let consumed        = (List/take_while Char inp pred)
-  let #Pair{cs count} = (String/length_got consumed)
-  let new_idx         = (Nat/add idx count)
-  let new_inp         = (String/drop inp count)
+| pred #State{inp idx} = 
+  let consumed    = (List/take_while Char inp pred)
+  let (cs, count) = (String/length_got_u64 consumed)
+  let new_idx     = (+ idx count)
+  let new_inp     = (String/drop inp (U64/to_nat count))
   #Done{#Reply{#State{new_inp new_idx} cs}}
 
-#test: (Parser/take_while Char/is_alpha (#State{"abcDEF123" #0})) == #Done{#Reply{#State{"123" #6} "abcDEF"}}
-#test: (Parser/take_while Char/is_alpha (#State{"" #0})) == #Done{#Reply{#State{"" #0} ""}}
-#test: (Parser/take_while Char/is_alpha (#State{"k123abc" #0})) == #Done{#Reply{#State{"123abc" #1} "k"}}
+#test: (Parser/take_while Char/is_alpha (#State{"abcDEF123" 0})) == #Done{#Reply{#State{"123" 6} "abcDEF"}}
+#test: (Parser/take_while Char/is_alpha (#State{"" 0}))          == #Done{#Reply{#State{"" 0} ""}}
+#test: (Parser/take_while Char/is_alpha (#State{"k123abc" 0}))   == #Done{#Reply{#State{"123abc" 1} "k"}}

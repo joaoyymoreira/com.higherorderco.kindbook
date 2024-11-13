@@ -5,11 +5,9 @@
 // - f: A function that takes the result of the first parser and returns a new parser
 // = A new parser that combines the results of both parsers
 Parser/bind : ∀(A: *) ∀(B: *) (Parser A) -> (A -> (Parser B)) -> (Parser B)
-| A B p f state = match (p state) {
-  #Done: λ{ #Reply{new_state value}: (f value new_state) }
-  #Fail: λe #Fail{e}
-}
-
+| A B p f state with (p state)
+. | #Done{#Reply{new_state value}} = (f value new_state)
+. | #Fail{e}                       = #Fail{e}
 
 parser1 : (Parser Nat)
 | state = #Done{#Reply{state #5}}

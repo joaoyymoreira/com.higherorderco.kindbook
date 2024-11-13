@@ -2,5 +2,5 @@
 Parser/pure : ∀(A: *) A -> (Parser A)
 | A value state = #Done{#Reply{state value}}
 
-#test: (Parser/pure Nat #2 #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #2}})
-#test: (Parser/pure String "hello" #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} "hello"}})
+#test: (Parser/pure Nat #2 #State{"abc" 0}) == (#Done{#Reply{#State{"abc" 0} #2}})
+#test: (Parser/pure String "hello" #State{"abc" 0}) == (#Done{#Reply{#State{"abc" 0} "hello"}})

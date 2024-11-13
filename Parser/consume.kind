@@ -7,10 +7,10 @@ Parser/consume : String -> (Parser Unit)
     #Done{
       #Reply{
         state: 
-          let length = (String/length target)
+          let length = (String/length_u64 target)
           #State{
-            input: (String/drop input length)
-            index: (Nat/add index length)
+            input: (String/drop input (U64/to_nat length))
+            index: (+ index length)
           }
         value: #Unit
       }
@@ -24,6 +24,6 @@ Parser/consume : String -> (Parser Unit)
     }
   }
 
-#test: ((Parser/consume "abc") (#State{input: "abcdef" index: #0})) == (#Done{#Reply{#State{input: "def" index: #3} #Unit}})
-#test: ((Parser/consume "abc") (#State{input: "abxdef" index: #0})) == (#Fail{#Error{#0 "Expected abc"}})
-#test: ((Parser/consume "") (#State{input: "abcdef" index: #0})) == (#Done{#Reply{#State{input: "abcdef" index: #0} #Unit}})
+#test: ((Parser/consume "abc") (#State{input: "abcdef" index: 0})) == (#Done{#Reply{#State{input: "def" index: 3} #Unit}})
+#test: ((Parser/consume "abc") (#State{input: "abxdef" index: 0})) == (#Fail{#Error{0 "Expected abc"}})
+#test: ((Parser/consume "")    (#State{input: "abcdef" index: 0})) == (#Done{#Reply{#State{input: "abcdef" index: 0} #Unit}})

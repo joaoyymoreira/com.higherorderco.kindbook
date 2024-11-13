@@ -9,5 +9,5 @@ Parser/is_eof : (Parser Bool)
     }
   }
 
-#test: (Parser/is_eof #State{"" #0}) == (#Done{ #Reply{#State{"" #0} #True}})
-#test: (Parser/is_eof #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #False}})
+#test: (Parser/is_eof #State{""    0}) == (#Done{#Reply{#State{""    0} #True}})
+#test: (Parser/is_eof #State{"abc" 0}) == (#Done{#Reply{#State{"abc" 0} #False}})
