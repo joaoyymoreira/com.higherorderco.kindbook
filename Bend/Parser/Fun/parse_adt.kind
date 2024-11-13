@@ -1,19 +1,20 @@
+use Bend/Parser/Fun/parse_adt as .
 use Bend/Fun/Adt as Adt
 use Bend/Fun/Ctr as Ctr
 use Bend/Fun/CtrField as CtrField
 use Bend/Fun/Type as Type
-use Bend/Parser as BParser
+use Bend/Parser as BP
 use Bend/Source as Source
 
 // Parses a Fun syntax ADT definition.
 // = The parsed ADT and the list of ADT constructors.
-BParser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
+Bend/Parser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
 | = do Parser {
-  ask _           = BParser/skip_trivia
+  ask _           = BP/skip_trivia
   ask ini_idx     = Parser/get_index
-  ask _           = (BParser/parse_keyword "type")
-  ask (nam, vars) = parse_name_and_vars
-  ask ctrs        = (parse_ctrs nam vars)
+  ask _           = (BP/parse_keyword "type")
+  ask (nam, vars) = ./parse_name_and_vars
+  ask ctrs        = (./parse_ctrs nam vars)
   ask end_idx     = Parser/get_index
   let src         = (Source/from_file_span ini_idx end_idx)
   let adt         = #Adt{nam vars (List/map _ _ ctrs Ctr/get_nam) src} :: Adt
@@ -22,63 +23,63 @@ BParser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
 
 // Parses the name and type vars part of the ADT definition.
 // = The ADT name and type variables.
-parse_name_and_vars : (Parser (Pair String (List String)))
+./parse_name_and_vars : (Parser (Pair String (List String)))
 | = do Parser {
-  ask has_parens = (BParser/try_consume "(")
+  ask has_parens = (BP/try_consume "(")
   if has_parens do Parser {
-    ask _    = (BParser/skip_trivia)
-    ask name = (BParser/parse_name "datatype")
-    ask vars = (BParser/list_like (BParser/parse_name "type variable") "" ")" "" #False 0)
-    ask _    = (BParser/consume "=")
+    ask _    = (BP/skip_trivia)
+    ask name = (BP/parse_name "datatype")
+    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" ")" "" #False 0)
+    ask _    = (BP/consume "=")
     ret (name, vars)
   } else do Parser {
-    ask name = (BParser/parse_name "datatype")
-    ask vars = (BParser/list_like (BParser/parse_name "type variable") "" "=" "" #False 0)
+    ask name = (BP/parse_name "datatype")
+    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" "=" "" #False 0)
     ret (name, vars)
   }
 }
 
 // Parses a single field in a constructor definition.
-parse_field : (Parser CtrField)
+./parse_field : (Parser CtrField)
 | = do Parser {
-  ask _           = (BParser/skip_trivia)
-  ask rec         = (BParser/try_consume "~")
-  ask has_parens  = (BParser/try_consume "(")
+  ask _           = (BP/skip_trivia)
+  ask rec         = (BP/try_consume "~")
+  ask has_parens  = (BP/try_consume "(")
   if has_parens do Parser {
-    ask nam       = (BParser/parse_name "datatype constructor field")
-    ask has_type  = (BParser/try_consume ":")
+    ask nam       = (BP/parse_name "datatype constructor field")
+    ask has_type  = (BP/try_consume ":")
     ask typ = if has_type {
-      BParser/Fun/parse_type_term
+      BP/Fun/parse_type_term
     } else do Parser {
       ret #Any
     }
-    ask _   = (BParser/consume ")")
+    ask _   = (BP/consume ")")
     ret #CtrField{nam rec typ}
   } else do Parser {
-    ask nam = (BParser/parse_name "datatype constructor field")
-    ret #CtrField{nam rec #Ant}
+    ask nam = (BP/parse_name "datatype constructor field")
+    ret #CtrField{nam rec #Any}
   }
 }
 
 // Parses a single constructor in an ADT definition.
-parse_ctr : String -> (List String) -> (Parser Ctr)
+./parse_ctr : String -> (List String) -> (Parser Ctr)
 | type_name type_vars = do Parser {
   // TODO: Check for repeated field names
-  ask _          = (BParser/skip_trivia)
-  ask has_parens = (BParser/try_consume "(")
-  ask _          = (BParser/skip_trivia)
+  ask _          = (BP/skip_trivia)
+  ask has_parens = (BP/try_consume "(")
+  ask _          = (BP/skip_trivia)
   if has_parens do Parser {
-    ask name     = (BParser/parse_name "datatype constructor")
+    ask name     = (BP/parse_name "datatype constructor")
     let name     = (String/concat [type_name "/" name])
-    ask fields   = (BParser/list_like parse_field "" ")" "" #False 0)
-    let type     = (List/foldr _ _ _ (List/map _ _ fields Adt/CtrField/typ)
-                    (Type/Ctr type_name (List/map _ _ type_vars Type/Var))
-                    Type/Arr)
+    ask fields   = (BP/list_like _ ./parse_field "" ")" "" #False 0)
+    let type     = (List/foldr _ (List/map _ _ fields CtrField/get_typ) _
+                    #Ctr{type_name (List/map _ Type type_vars λx #Var{x})} :: Type
+                    λl λr #Arr{l r})
     ret #Ctr{name type_name type fields}
   } else do Parser {
-    ask name    = (BParser/parse_name "datatype constructor")
+    ask name    = (BP/parse_name "datatype constructor")
     let name    = (String/concat [type_name "/" name])
-    let type    = (Type/Ctr type_name (List/map _ _ type_vars Type/Var))
+    let type    = #Ctr{type_name (List/map _ _ type_vars λx #Var{x})} :: Type
     ret #Ctr{name type_name type []}
   }
 }
@@ -87,14 +88,14 @@ parse_ctr : String -> (List String) -> (Parser Ctr)
 // - type_name: The name of the ADT being defined.
 // - type_vars: The type variables of the ADT being defined.
 // = A list of constructors.
-parse_ctrs : String -> (List String) -> (Parser (List Ctr))
+./parse_ctrs : String -> (List String) -> (Parser (List Ctr))
 | type_name type_vars = do Parser {
   // TODO: Check that only previously defined vars occur in the constructors.
   //       This probably needs to be done later, after we have the full book.
-  ask head = (parse_ctr type_name type_vars)
-  ask many = (BParser/try_consume "|")
+  ask head = (./parse_ctr type_name type_vars)
+  ask many = (BP/try_consume "|")
   ask tail = if many do Parser {
-    (BParser/sep_by (parse_ctr type_name type_vars) "|" 0)
+    (BP/sep_by _ (./parse_ctr type_name type_vars) "|" 0)
   } else do Parser {
     ret []
   }

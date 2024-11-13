@@ -1,29 +1,32 @@
+use Bend/Fun/Op as Op
+use Bend/Parser as BP
+
 // Parses a Bend numeric operator.
 // = The parsed operator.
-Bend/Parser/parse_oper : (Parser Bend/Fun/Op)
-= (Bend/Parser/first_with_guard Bend/Fun/Op [
-    #Pair{(Bend/Parser/try_consume "+")  (Parser/pure Bend/Fun/Op #Add)}
-    #Pair{(Bend/Parser/try_consume "-")  (Parser/pure Bend/Fun/Op #Sub)}
-    #Pair{(Bend/Parser/try_consume "**") (Parser/pure Bend/Fun/Op #Pow)}
-    #Pair{(Bend/Parser/try_consume "*")  (Parser/pure Bend/Fun/Op #Mul)}
-    #Pair{(Bend/Parser/try_consume "/")  (Parser/pure Bend/Fun/Op #Div)}
-    #Pair{(Bend/Parser/try_consume "%")  (Parser/pure Bend/Fun/Op #Rem)}
-    #Pair{(Bend/Parser/try_consume "<<") (Parser/pure Bend/Fun/Op #Shl)}
-    #Pair{(Bend/Parser/try_consume ">>") (Parser/pure Bend/Fun/Op #Shr)}
-    #Pair{(Bend/Parser/try_consume "<=") (Parser/pure Bend/Fun/Op #Lte)}
-    #Pair{(Bend/Parser/try_consume ">=") (Parser/pure Bend/Fun/Op #Gte)}
-    #Pair{(Bend/Parser/try_consume "<")  (Parser/pure Bend/Fun/Op #Ltn)}
-    #Pair{(Bend/Parser/try_consume ">")  (Parser/pure Bend/Fun/Op #Gtn)}
-    #Pair{(Bend/Parser/try_consume "==") (Parser/pure Bend/Fun/Op #Eql)}
-    #Pair{(Bend/Parser/try_consume "!=") (Parser/pure Bend/Fun/Op #Neq)}
-    #Pair{(Bend/Parser/try_consume "&")  (Parser/pure Bend/Fun/Op #And)}
-    #Pair{(Bend/Parser/try_consume "|")  (Parser/pure Bend/Fun/Op #Or)}
-    #Pair{(Bend/Parser/try_consume "^")  (Parser/pure Bend/Fun/Op #Xor)}
-  ] (Parser/fail Bend/Fun/Op "Expected operator"))
+BP/parse_oper : (Parser Op)
+= (BP/first_with_guard _ [
+    ((BP/try_consume "+") , (Parser/pure _ #Add))
+    ((BP/try_consume "-") , (Parser/pure _ #Sub))
+    ((BP/try_consume "**"), (Parser/pure _ #Pow))
+    ((BP/try_consume "*") , (Parser/pure _ #Mul))
+    ((BP/try_consume "/") , (Parser/pure _ #Div))
+    ((BP/try_consume "%") , (Parser/pure _ #Rem))
+    ((BP/try_consume "<<"), (Parser/pure _ #Shl))
+    ((BP/try_consume ">>"), (Parser/pure _ #Shr))
+    ((BP/try_consume "<="), (Parser/pure _ #Lte))
+    ((BP/try_consume ">="), (Parser/pure _ #Gte))
+    ((BP/try_consume "<") , (Parser/pure _ #Ltn))
+    ((BP/try_consume ">") , (Parser/pure _ #Gtn))
+    ((BP/try_consume "=="), (Parser/pure _ #Eql))
+    ((BP/try_consume "!="), (Parser/pure _ #Neq))
+    ((BP/try_consume "&") , (Parser/pure _ #And))
+    ((BP/try_consume "|") , (Parser/pure _ #Or))
+    ((BP/try_consume "^") , (Parser/pure _ #Xor))
+  ] (Parser/fail _ "Expected operator"))
 
-#test: ((Bend/Parser/parse_oper #State{"+ 1"     0})) == (#Done{#Reply{#State{" 1" 1} #Add}})
-#test: ((Bend/Parser/parse_oper #State{"** 2"    0})) == (#Done{#Reply{#State{" 2" 2} #Pow}})
-#test: ((Bend/Parser/parse_oper #State{"<= 3"    0})) == (#Done{#Reply{#State{" 3" 2} #Lte}})
-#test: ((Bend/Parser/parse_oper #State{"!= 4"    0})) == (#Done{#Reply{#State{" 4" 2} #Neq}})
-#test: ((Bend/Parser/parse_oper #State{"^ 5"     0})) == (#Done{#Reply{#State{" 5" 1} #Xor}})
-#test: ((Bend/Parser/parse_oper #State{"invalid" 0})) == (#Fail{#Error{0 "Expected operator"}})
+#test: ((BP/parse_oper #State{"+ 1"     0})) == (#Done{#Reply{#State{" 1" 1} #Add}})
+#test: ((BP/parse_oper #State{"** 2"    0})) == (#Done{#Reply{#State{" 2" 2} #Pow}})
+#test: ((BP/parse_oper #State{"<= 3"    0})) == (#Done{#Reply{#State{" 3" 2} #Lte}})
+#test: ((BP/parse_oper #State{"!= 4"    0})) == (#Done{#Reply{#State{" 4" 2} #Neq}})
+#test: ((BP/parse_oper #State{"^ 5"     0})) == (#Done{#Reply{#State{" 5" 1} #Xor}})
+#test: ((BP/parse_oper #State{"invalid" 0})) == (#Fail{#Error{0 "Expected operator"}})

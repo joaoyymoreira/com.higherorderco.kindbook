@@ -1,0 +1,333 @@
+use Bend/Parser/Fun/BP/Fun/parse_term as .
+use Bend/Fun/Term as Term
+use Bend/Fun/FnDef as FnDef
+use Bend/Parser as BP
+
+// Parses a Fun syntax term.
+// - parse_fn_def: A parser for function definitions.
+// = The parsed term.
+Bend/Parser/Fun/parse_term : (Parser Term)
+| = do Parser {
+  ask _ = (BP/skip_trivia)
+  let starts_with_lam = do Parser {
+    ask is_lam = (Parser/starts_with "λ")
+    ask is_at  = (Parser/starts_with "@")
+    ret (Bool/or is_lam is_at)
+  }
+  (BP/first_with_guard [
+    ((BP/starts_with_lam)             , ./parse_lam)
+    ((BP/starts_with_keyword "let")   , ./parse_let)
+    ((BP/starts_with_keyword "use")   , ./parse_use)
+    ((BP/starts_with_keyword "ask")   , ./parse_ask)
+    ((BP/starts_with_keyword "match") , ./parse_mat)
+    ((BP/starts_with_keyword "switch"), ./parse_swi)
+    ((BP/starts_with_keyword "fold")  , ./parse_fld)
+    ((BP/starts_with_keyword "bend")  , ./parse_bnd)
+    ((BP/starts_with_keyword "open")  , ./parse_opn)
+    ((BP/starts_with_keyword "def")   , ./parse_def)
+    ((Parser/starts_with "(")         , ./parse_paren)
+    ((Parser/starts_with "{")         , ./parse_sup)
+    ((Parser/starts_with "[")         , ./parse_lst)
+    ((Parser/starts_with "\"")        , ./parse_str)
+    ((Parser/starts_with "$")         , ./parse_lnk)
+    ((Parser/starts_with "*")         , ./parse_era)
+  ] parse_num_or_var)
+}
+
+./parse_name_or_era : (Parser (Maybe String))
+| =
+  if (Parser/starts_with "*") do Parser {
+    ask _ = Parser/advance_one
+    ret #None
+  } else do Parser {
+    ask nam = (parse_var_name)
+    ret (#Some{nam})
+  }
+
+./parse_lam : (Parser Term)
+| = do Parser {
+  if (Bool/or (Parser/starts_with "λ") (Parser/starts_with "@")) do Parser {
+    ask _   = Parser/advance_one
+    ask pat = BP/Fun/parse_pattern
+    ask bod = BP/Fun/parse_term
+    ret #Lam{pat bod}
+  } else {
+    (fail "Expected 'λ' or '@'")
+  }
+}
+
+./parse_tup : Term -> (Parser Term)
+| head = do Parser {
+  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "," #True 1)
+  ret #Fan{#Tup (head;;tail)}
+}
+
+./parse_app : Term -> (Parser Term)
+| head = do Parser {
+  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "" #False 0)
+  ret (List/foldl _ tail _ head λa λb #App{a b})
+}
+
+./parse_parens : (Parser Term)
+| = do Parser {
+  ask _ = (BP/consume "(")
+  ask opr = (Parser/alternative
+    (do Parser {ask opr = BP/parse_oper ret #Some{opr}})
+    (do Parser {ret #None}))
+  ask is_tup = (BP/try_consume ",")
+  match opr {
+    #Some{opr}: if is_tup {
+      match opr {
+        #Op.Mul: (./parse_tup #Era)
+        _      : (Parser/fail _ "Expected term")
+      }
+    } else do Parser {
+      ask fst = BP/Fun/parse_term
+      ask snd = BP/Fun/parse_term
+      ask _   = (BP/consume ")")
+      ret #Opr{opr fst snd}
+    }
+    #None: do Parser {
+      ask head = BP/Fun/parse_term
+      ask is_tup = (BP/try_consume ",")
+      if is_tup {
+        (./parse_tup head)
+      } else {
+        (./parse_app head)
+      }
+    }
+  }
+}
+
+./parse_sup : (Parser Term)
+| = do Parser {
+  ask els = (BP/list_like _ BP/Fun/parse_term "{" "}" "," #False 2)
+  ret #Fan{#Dup els}
+}
+
+./parse_lst : (Parser Term)
+| = do Parser {
+  ask els = (BP/list_like _ BP/Fun/parse_term "[" "]" "," #False 0)
+  ret #Lst{els}
+}
+
+./parse_str : (Parser Term)
+| = do Parser {
+  ask str = ./parse_string
+  ret #Str{str}
+}
+
+./parse_let : (Parser Term)
+| = do Parser {
+  ask _   = (BP/parse_keyword "let")
+  ask pat = (BP/Fun/parse_pattern)
+  ask _   = (BP/consume "=")
+  ask val = (BP/Fun/parse_term)
+  ask _   = (BP/try_consume ";")
+  ask nxt = (BP/Fun/parse_term)
+  ret #Let{pat val nxt}
+}
+
+./parse_use : (Parser Term)
+| = do Parser {
+  ask _   = (BP/parse_keyword "use")
+  ask nam = (parse_var_name)
+  ask _   = (BP/consume "=")
+  ask val = (BP/Fun/parse_term)
+  ask _   = (BP/try_consume ";")
+  ask nxt = (BP/Fun/parse_term)
+  ret #Use{#Some{nam} val nxt}
+}
+
+./parse_ask : (Parser Term)
+| = do Parser {
+  ask _   = (BP/parse_keyword "ask")
+  ask pat = (parse_pattern)
+  ask _   = (BP/consume "=")
+  ask val = BP/Fun/parse_term
+  ask _   = (BP/try_consume ";")
+  ask nxt = BP/Fun/parse_term
+  ret #Ask{pat val nxt}
+}
+
+./parse_mat: (Parser Term)
+| = do Parser {
+  ask _     = (BP/parse_keyword "match")
+  ask pair  = (./parse_match_arg)
+  let bnd   = (Pair/fst pair)
+  let arg   = (Pair/snd pair)
+  ask with = (./parse_match_with)
+  let (with_bnd, with_arg) = (List/unzip _ _ with)
+  ask arms  = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
+  ret #Mat{bnd arg with_bnd with_arg arms}
+}
+
+parse_swi : (Parser Term)
+| = do Parser {
+  ask _            = (BP/parse_keyword "switch")
+  ask (bnd, arg)   = ./parse_match_arg
+  ask with         = ./parse_match_with
+  let (with_bnd, with_arg) = (List/unzip _ _ with)
+  ask _            = (BP/consume "{")
+  ask (pred, arms) = (./parse_switch_arms 0 [])
+  ask _            = (BP/consume "}")
+  let arms         = (List/reverse _ arms)
+  let pred         = (Maybe/map _ _ bnd (λbnd (String/concat [bnd "-" (U64/to_string pred)])))
+  ret #Swt{bnd arg with_bnd with_arg pred arms}
+}
+
+./parse_named_arg : (Parser (Pair (Maybe String) Term))
+| = do Parser {
+  ask nam = (BP/parse_name "argument name")
+  ask has_arg = (BP/try_consume "=")
+  if has_arg do Parser {
+    ask arg = BP/Fun/parse_term
+    ret (#Some{nam}, arg)
+  } else do Parser {
+    ret (#Some{nam}, #Var{nam})
+  }
+}
+
+./parse_match_arg : (Parser (Pair (Maybe String) Term))
+| = do Parser {
+  ask arg     = BP/Fun/parse_term
+  ask has_bnd = (BP/try_consume "=")
+  if has_bnd {
+    match arg {
+      // bnd and arg
+      #Var{bnd}: do Parser {
+        ask arg = BP/Fun/parse_term
+        ret (#Some{bnd}, arg)
+      }
+      // bnd but no arg
+      _: (Parser/fail _ "Expected argument name")
+    }
+  } else {
+    match arg {
+      // no bnd, but arg is var
+      #Var{bnd}: (Parser/pure _ (#Some{bnd}, arg))
+      // no bnd, just arg
+      _        : (Parser/pure _ (#Some{"%arg"}, arg))
+    }
+  }
+}
+
+./parse_match_with : (Parser (List (Pair (Maybe String) Term)))
+| = do Parser {
+  ask has = (BP/try_consume "with")
+  if has do Parser {
+    (sep_by ./parse_named_arg "," 1)
+  } else do Parser {
+    ret []
+  }
+}
+
+./parse_match_arm : (Parser MatchRule)
+| = do Parser {
+  ask _   = (BP/try_consume "|")
+  ask _   = BP/skip_trivia
+  ask nam = ./parse_name_or_era
+  ask _   = (BP/consume ":")
+  ask bod = BP/Fun/parse_term
+  ret #MatchRule{nam [] bod}
+}
+
+./parse_switch_arms : U64 -> (List Term) -> (Parser (Pair U64 (List Term)))
+| n acc = do Parser {
+  ask _    = (BP/try_consume "|")
+  ask pred = (BP/try_consume "_")
+  if pred do Parser {
+    ask _    = (BP/consume ":")
+    ask term = BP/Fun/parse_term
+    ask _    = (BP/try_consume ";")
+    (./parse_switch_arms (+ n 1) (List/cons term acc))
+  } else do Parser {
+    ask num = (BP/parse_number)
+    ask _   = (BP/consume ":")
+    ask term = BP/Fun/parse_term
+    ask _   = (BP/try_consume ";")
+    (./parse_switch_arms (+ n 1) (List/cons term acc))
+  }
+}
+
+./parse_fld : (Parser Term)
+| = do Parser {
+  ask _          = (BP/parse_keyword "fold")
+  ask (bnd, arg) = (./parse_match_arg)
+  ask with       = (./parse_match_with)
+  let (with_bnd, with_arg) = (List/unzip _ _ with)
+  ask arms       = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
+  ret #Fld{bnd arg with_bnd with_arg arms}
+}
+
+./parse_bnd : (Parser Term)
+| = do Parser {
+  ask _    = (BP/parse_keyword "bend")
+  ask args = (BP/list_like _ ./parse_named_arg "" "{" "," #False 1)
+  let (bnd, arg) = (List/unzip _ _ args)
+  ask _    = (BP/skip_trivia)
+  ask _    = (BP/parse_keyword "when")
+  ask cond = (BP/Fun/parse_term)
+  ask _    = (BP/consume ":")
+  ask step = (BP/Fun/parse_term)
+  ask _    = (BP/skip_trivia)
+  ask _    = (BP/parse_keyword "else")
+  ask _    = (BP/consume ":")
+  ask base = (BP/Fun/parse_term)
+  ask _    = (BP/consume "}")
+  ret #Bnd{bnd arg cond step base}
+}
+
+./parse_opn : (Parser Term)
+| = do Parser {
+  ask _   = (BP/parse_keyword "open")
+  ask _   = (BP/skip_trivia)
+  ask typ = (BP/parse_name "type")
+  ask _   = (BP/skip_trivia)
+  ask var = (BP/parse_var_name)
+  ask _   = (BP/try_consume ";")
+  ask bod = (BP/Fun/parse_term)
+  ret #Opn{typ #Some{var} [] bod}
+}
+
+./parse_def : (Parser Term)
+| = do Parser {
+  ask _   = (BP/parse_keyword "def")
+  ask _   = (BP/skip_trivia)
+  ask def = (BP/parse_fn_def)
+  ask _   = (BP/skip_trivia)
+  ask nxt = (BP/Fun/parse_term)
+  ret #Def{def nxt}
+}
+
+parse_lnk : (Parser Term)
+| = do Parser {
+  ask _   = (BP/consume "$")
+  ask nam = (BP/parse_name "unscoped variable")
+  ret #Lnk{nam}
+}
+
+parse_era : (Parser Term)
+| = do Parser {
+  ask _ = (BP/consume "*")
+  ret #Era
+}
+
+parse_num_or_var : (Parser Term)
+| = do Parser {
+  ask head = (Parser/peek_one)
+  (match head {
+    #Some{c}: if (Char/is_digit c) {
+      do Parser {
+        ask num = (parse_number)
+        ret #Num{num}
+      }
+    } else {
+      do Parser {
+        ask var = (parse_var_name)
+        ret #Var{var}
+      }
+    }
+    #None: (fail "Expected term")
+  })
+}

@@ -1,0 +1,5 @@
+// Calculates the two's complement of a U64 number.
+// - x: The U64 number to convert.
+// = The two's complement of x.
+U64/twos_complement : U64 -> U64
+| x = (+ (^ x 0xFFFF_FFFF_FFFF_FFFF) 1)

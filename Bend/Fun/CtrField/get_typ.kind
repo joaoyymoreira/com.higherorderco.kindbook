@@ -1,0 +1,8 @@
+use Bend/Fun/CtrField as CtrField
+use Bend/Fun/Type as Type
+
+// Gets the type of a constructor field.
+// - field: The constructor field.
+// = The type of the field.
+CtrField/get_typ : CtrField -> Type
+| #CtrField{_ _ typ} = typ

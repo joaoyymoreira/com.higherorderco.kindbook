@@ -1,0 +1,39 @@
+// Checks if the input string starts with an operator.
+// = True if the input starts with an operator, False otherwise.
+Bend/Parser/starts_with_oper : (Parser Bool)
+| = do Parser {
+  ask one = (Parser/peek_many #1)
+  let got = match one {
+    #Some{c}: (String/contains "+-*/%&|^" c)
+    #None   : #False
+  } :: Bool
+  if got {
+    (Parser/pure _ #True)
+  } else do Parser {
+    ask two = (Parser/peek_many #2)
+    let got = match two {
+      #Some{c}: if (List/contains _ String/IsEqual ["<<" ">>" "<=" ">=" "==" "!=" "**"] c) { #True } else { #False }
+      #None   : #False
+    } :: Bool
+    (Parser/pure _ got)
+  }
+}
+
+#test: ((Bend/Parser/starts_with_oper #State{"+" 0})) == (#Done{#Reply{#State{"+" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"-" 0})) == (#Done{#Reply{#State{"-" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"*" 0})) == (#Done{#Reply{#State{"*" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"/" 0})) == (#Done{#Reply{#State{"/" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"%" 0})) == (#Done{#Reply{#State{"%" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"<<" 0})) == (#Done{#Reply{#State{"<<" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{">>" 0})) == (#Done{#Reply{#State{">>" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"<=" 0})) == (#Done{#Reply{#State{"<=" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{">=" 0})) == (#Done{#Reply{#State{">=" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"==" 0})) == (#Done{#Reply{#State{"==" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"!=" 0})) == (#Done{#Reply{#State{"!=" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"&" 0})) == (#Done{#Reply{#State{"&" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"|" 0})) == (#Done{#Reply{#State{"|" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"^" 0})) == (#Done{#Reply{#State{"^" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"**" 0})) == (#Done{#Reply{#State{"**" 0} #True}})
+#test: ((Bend/Parser/starts_with_oper #State{"invalid" 0})) == (#Done{#Reply{#State{"invalid" 0} #False}})
+#test: ((Bend/Parser/starts_with_oper #State{"" 0})) == (#Done{#Reply{#State{"" 0} #False}})
+#test: ((Bend/Parser/starts_with_oper #State{" " 0})) == (#Done{#Reply{#State{" " 0} #False}})
