@@ -1,0 +1,40 @@
+
+// Loads a book from a file
+// - path: The path to the file containing the book
+// = An IO action that results in either a Book or an error message
+Bend/Load/load_book : String -> IO (Bend Book)
+| path = do LoadIO {
+  ask txt = (IO/read path)
+  let res = (parse_book ())
+}
+  content <- read-file path
+  let parse-result = parse-book (new-parser-state content)
+  pure (case parse-result of λ
+    { (Done (MkReply _ book)) ->
+        Done (parse-book-to-book book)
+    ; (Fail (MkError idx err)) ->
+        Fail ("Failed to parse book at index " ++ show idx ++ ":\n  " ++ err)
+    })
+
+LoadIO : * -> * = λA (IO (Bend A))
+
+LoadIO/bind : ∀(A: *) ∀(B: *) -> LoadIO A -> (A -> LoadIO B) -> LoadIO B
+| A B ioa f = do IO {
+  ask iob = (ioa)
+  match iob {
+    #Done{a}: do IO {
+      ask iob = (f a)
+      ret iob
+    }
+    #Fail{msg}: do IO {
+      ret #Fail{msg}
+    }
+  }
+}
+
+// Converts a ParseBook to a Book
+// TODO: This is a temporary hack to get the book to compile.
+//       We'll replace this by the actual resolution and import system.
+parse-book-to-book : ParseBook -> Book
+// TODO: Add ctrs and adts
+parse-book-to-book (MkParseBook defs adts ctrs) = MkBook defs adts ctrs

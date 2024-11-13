@@ -1,0 +1,38 @@
+use Bend/Cli/Command as Command
+use Bend/Fun/Book as Book
+
+Bend/main : (IO U64)
+ = do IO {
+  ask args = (IO/args 0)
+  ask (cmd, book) = (load args)
+  (run cmd book)
+}
+
+load : (List String) -> (IO (Pair (Maybe Command) (Bend Book)))
+| [cmd file] = do IO {
+  let cmd  = (Command/from_string cmd)
+  ask book = (Bend/Load/load_book file)
+  ret (cmd, book)
+}
+
+run : (Maybe Command) -> (Bend Book) -> (IO U64)
+| #Some{#GenBend} #Done{book} = do IO {
+  ask (IO/print "Bend book generated")
+  ret 0
+}
+| #Some{#GenCore} #Done{book} = do IO {
+  ask (IO/print "Core book generated")
+  ret 0
+}
+| #Some{#GenHvm} #Done{book} = do IO {
+  ask (IO/print "HVM book generated")
+  ret 0
+}
+| #None #Done{book} = do IO {
+  ask (IO/print "Bend book loaded")
+  ret 0
+}
+| _ #Fail{msg} = do IO {
+  ask (IO/print ("Compile error:\n" msg))
+  ret 1
+}

@@ -1,0 +1,108 @@
+use Bend/Fun/Type as Type
+
+// Parses a Fun syntax type term.
+// = The parsed type term.
+Bend/Parser/Fun/parse_type_term : (Parser Type)
+| = do Parser {
+  ask left   = (parse_type_atom)
+  ask is_arr = (Bend/Parser/try_consume "->")
+  if is_arr do Parser {
+    ask right = (Bend/Parser/Fun/parse_type_term)
+    ret #Arr{left right}
+  } else do Parser {
+    ret left
+  }
+}
+
+parse_type_atom : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/skip_trivia)
+  (Bend/Parser/first_with_guard [
+    ((Bend/Parser/starts_with_keyword "Any") , parse_any)
+    ((Bend/Parser/starts_with_keyword "None"), parse_none)
+    ((Bend/Parser/starts_with_keyword "_")   , parse_hole)
+    ((Bend/Parser/starts_with_keyword "u24") , parse_u24)
+    ((Bend/Parser/starts_with_keyword "i24") , parse_i24)
+    ((Bend/Parser/starts_with_keyword "f24") , parse_f24)
+    ((Bend/Parser/starts_with "(")           , parse_parenthesized)
+  ] parse_var)
+}
+
+parse_any : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "Any")
+  ret #Any
+}
+
+parse_none : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "None")
+  ret #None
+}
+
+parse_hole : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "_")
+  ret #Hole
+}
+
+parse_u24 : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "u24")
+  ret #U24
+}
+
+parse_i24 : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "i24")
+  ret #I24
+}
+
+parse_f24 : (Parser Type)
+| = do Parser {
+  ask _ = (Bend/Parser/parse_keyword "f24")
+  ret #F24
+}
+
+parse_parenthesized : (Parser Type)
+| = do Parser {
+  ask _    = (Bend/Parser/consume "(")
+  ask head = (Bend/Parser/Fun/parse_type_term)
+  ask _    = (Bend/Parser/skip_trivia)
+  ask one  = (Parser/peek_one)
+  match one {
+    #Some{one}:
+      if (U64/eq one ')') do Parser {
+        ask _ = (Bend/Parser/consume ")")
+        ret head
+      } else if (U64/eq one ',') do Parser {
+        ask tail = (Bend/Parser/sep_by Bend/Parser/Fun/parse_type_term "," 1)
+        ask _    = (Bend/Parser/consume ")")
+        ret #Tup{head;;tail}
+      } else {
+        (parse_constructor head)
+      }
+    _: (parse_constructor head)
+  }
+}
+
+parse_tuple : Type -> (Parser Type)
+| head = do Parser {
+  ask _    = (Bend/Parser/consume ",")
+  ask tail = (Bend/Parser/sep_by Bend/Parser/Fun/parse_type_term "," 1)
+  ask _    = (Bend/Parser/consume ")")
+  ret #Tup{head;;tail}
+}
+
+parse_constructor : Type -> (Parser Type)
+| #Var{nam} = do Parser {
+  ask args = (Bend/Parser/list_like _ Bend/Parser/Fun/parse_type_term "" ")" "" #False 1)
+  ret #Ctr{nam args}
+}
+| _ = (Parser/fail "Expected type constructor name")
+
+parse_var : (Parser Type)
+| = do Parser {
+  ask nam = (Bend/Parser/parse_name "type variable")
+  ret #Var{nam}
+}
