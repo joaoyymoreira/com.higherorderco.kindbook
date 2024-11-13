@@ -10,4 +10,4 @@ UG/SIPD/GameMap/initial_map : (Map (Maybe UG/SIPD/Body))
   empty
 
 UG/SIPD/GameMap/init : U64 -> U64 -> UG/SIPD/GameMap
-| width height = #GameMap{width height UG/SIPD/GameMap/initial_map 0}
+| width height = #GameMap{width height UG/SIPD/GameMap/initial_map 10000}

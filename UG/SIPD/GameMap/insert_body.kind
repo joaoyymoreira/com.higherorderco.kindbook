@@ -4,5 +4,10 @@ use UG/SIPD as G
 UG/SIPD/GameMap/insert_body : UG/SIPD/GameMap -> UG/SIPD/Body -> UG/SIPD/GameMap
 | #GameMap{width height bodies bodies_count} #Body{id hitbox tick effects collidable} = 
   let bodies = (Map/insert G/Body bodies id #Body{id hitbox tick effects collidable})
-  let new_body_count = (+ bodies_count 1)
-  #GameMap{width height bodies new_body_count}
+  if (U64/gt id bodies_count) {
+    #GameMap{width height bodies id}
+  } else {
+    #GameMap{width height bodies bodies_count}
+  }
+  //let new_body_count = (+ bodies_count 1)
+  //#GameMap{width height bodies new_body_count}

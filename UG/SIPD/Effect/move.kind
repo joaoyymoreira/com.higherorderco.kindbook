@@ -5,12 +5,13 @@ UG/SIPD/Effect/move : U64 -> U64 -> G/Effect
 .| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{player_id name keys target hero}} #Some{#Body{body_id hitbox body_tick effects collidable}} =
+  let old_bodies_count = bodies_count
   let hitbox_center = (UG/Shape/get_center hitbox)
   let distance_to_target = (V2/sub target hitbox_center)
   let ln = (V2/length distance_to_target)
 
   if (F64/lt ln 0.1) {
-    #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+    #State{next_id tick players hero_states #GameMap{width height bodies old_bodies_count}}
   } else {
     let constant_speed = 3.0
     let direction = (V2/normalize distance_to_target)

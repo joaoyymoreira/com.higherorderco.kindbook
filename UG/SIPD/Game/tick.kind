@@ -28,10 +28,9 @@ update_hero_state : G/State -> U64 -> G/Hero/HeroState -> G/State
 // Updates cooldowns for all hero states.
 // - state: The game state to update.
 // = The updated game state.
-// FIX LIMIT ON FOLD -> ADD A NUMBER OF HERO STATES IN STATE (LENGTH)
 update_cooldowns : G/State -> G/State
-| #State{next_id tick players hero_states game_map} = 
-  (Map/fold G/Hero/HeroState G/State hero_states 100 #State{next_id tick players hero_states game_map} update_hero_state)
+| #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} = 
+  (Map/fold G/Hero/HeroState G/State hero_states bodies_count #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} update_hero_state)
 
 UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
 | #Body{id hitbox tick effects collidable} = tick
@@ -42,9 +41,11 @@ UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
 UG/SIPD/Game/tick : G/State -> G/State
 | #State{next_id tick players hero_states game_map} =
   let #GameMap{width height bodies bodies_count} = game_map
+  log game_map
   let body_values = (Map/values G/Body bodies bodies_count)
+  log body_values
   let updated_gs = (List/fold G/Body body_values G/State #State{next_id tick players hero_states game_map} λbody λacc ((G/Body/tick body) acc))
-  let #State{next_id tick players hero_states game_map} = updated_gs
+  let #State{next_id tick players hero_states new_game_map} = updated_gs
   let updated_tick = (U64/add tick 1)
-  (update_cooldowns #State{next_id updated_tick players hero_states game_map})
+  (update_cooldowns #State{next_id updated_tick players hero_states new_game_map})
 
