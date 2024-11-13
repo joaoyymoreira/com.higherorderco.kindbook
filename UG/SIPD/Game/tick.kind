@@ -41,9 +41,7 @@ UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
 UG/SIPD/Game/tick : G/State -> G/State
 | #State{next_id tick players hero_states game_map} =
   let #GameMap{width height bodies bodies_count} = game_map
-  log game_map
   let body_values = (Map/values G/Body bodies bodies_count)
-  log body_values
   let updated_gs = (List/fold G/Body body_values G/State #State{next_id tick players hero_states game_map} λbody λacc ((G/Body/tick body) acc))
   let #State{next_id tick players hero_states new_game_map} = updated_gs
   let updated_tick = (U64/add tick 1)

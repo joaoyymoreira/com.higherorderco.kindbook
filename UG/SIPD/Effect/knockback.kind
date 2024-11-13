@@ -1,0 +1,41 @@
+use UG/SIPD as G
+
+// Applies a knockback effect to a body.
+// - body_id: ID of the body to knockback.
+// - force: Knockback force vector.
+// = The knockback effect.
+G/Effect/knockback : U64 -> V2 -> G/Effect
+| body_id force state =
+  let #State{next_id tick players hero_states game_map} = state
+  let #GameMap{width height bodies bodies_count} = game_map
+
+  match (G/GameMap/get_body bodies body_id) {
+    #Some{body}:
+      let #Body{id hitbox body_tick effects collidable} = body
+      match collidable {
+        #Hard:
+          let bodies_list = (Map/values G/Body bodies bodies_count)
+          let collision = (G/Body/find_collision body bodies_list)
+          //log collision
+          match collision {
+            #Some{normal}:
+              let reflected_force = (V2/reflect force normal)
+              let new_hitbox = (UG/Shape/move hitbox reflected_force)
+              let updated_map = (G/GameMap/insert_body game_map #Body{id new_hitbox body_tick effects collidable})
+              #State{next_id tick players hero_states updated_map}
+            #None:
+              //let new_hitbox = (UG/Shape/move hitbox force)
+              //let updated_map = (G/GameMap/insert_body game_map #Body{id new_hitbox body_tick effects collidable})
+              #State{next_id tick players hero_states game_map}
+          }
+        #TakesEffects:
+          //let new_hitbox = (UG/Shape/move hitbox force)
+          //let updated_map = (G/GameMap/insert_body game_map #Body{id new_hitbox body_tick effects collidable})
+          //#State{next_id tick players hero_states updated_map}
+          state
+        #Untouchable:
+          state
+      }
+    #None:
+      state
+  }

@@ -4,4 +4,5 @@
 // = Updated game state with the new body.
 UG/SIPD/Effect/spawn_body : UG/SIPD/Body -> UG/SIPD/Effect
 | new_body state =
-  (UG/SIPD/State/insert_body state new_body) 
+  let s = (UG/SIPD/State/insert_body state new_body) 
+  s 

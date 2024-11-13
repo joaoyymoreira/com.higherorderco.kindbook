@@ -1,16 +1,16 @@
 
 use UG/SIPD as G
 
-UG/SIPD/Effect/with_duration : U64 -> U64 -> G/Effect
-| duration body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
+UG/SIPD/Effect/with_duration : U64 -> U64 -> G/Effect -> G/Effect
+| duration body_id effect #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox body_tick effects collidable}} with (U64/gt duration 0)
 ..| #True = 
   let remaining_ticks = (- duration 1) 
-  let new_effect = (G/Effect/with_duration remaining_ticks body_id) 
-  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id hitbox body_tick #Cons{new_effect effects} collidable}) 
+  let new_effect = (G/Effect/with_duration remaining_ticks body_id effect) 
+  let state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id hitbox body_tick #Cons{new_effect effects} collidable}) 
+  (G/Effect/apply effect state)
 ..| #False =
   let updated_bodies = (G/Body/delete_body body_id bodies)
   #State{next_id tick players hero_states #GameMap{width height updated_bodies bodies_count}}
-
 

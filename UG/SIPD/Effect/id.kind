@@ -1,0 +1,8 @@
+use UG/SIPD as G
+
+// Identity effect.
+// - state: Current game state.
+// = The unchanged game state.
+G/Effect/id : G/Effect
+| state = state
+

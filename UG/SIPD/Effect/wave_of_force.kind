@@ -19,7 +19,8 @@ UG/SIPD/Effect/wave_of_force : U64 -> U64 -> F64 -> G/Effect
   let wave_body = (create_wave_body target new_id wave_radius)
   
   let spawn_effect = (G/Effect/spawn_body wave_body)
-  let with_duration_effect = (G/Effect/with_duration duration new_id)
+  //let with_duration_effect = (G/Effect/with_duration duration new_id (G/Effect/knockback player_id #V2{1.0 1.0}))
+  let with_duration_effect = (G/Effect/with_duration duration new_id G/Effect/id )
   let state = (G/Effect/apply spawn_effect state)
   let state = (G/Effect/apply with_duration_effect state)
   state
