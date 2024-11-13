@@ -4,7 +4,7 @@ use UG/SIPD as G
 // - body: The body to check for collisions.
 // - bodies: List of bodies to check against.
 // = The collision normal vector, if a collision is found.
-G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
+G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
 | #Body{id hitbox tick effects collidable} #Nil = #None
 | #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
 
@@ -15,7 +15,7 @@ G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
 
       if (Bool/and diff_ids collides) {
         let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
-        #Some{col_normal}
+        #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
       } else {
         (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
       }
@@ -26,7 +26,7 @@ G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe V2)
 
       if (Bool/and diff_ids collides) {
         let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
-        #Some{col_normal}
+        #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
       } else {
         (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
       }
