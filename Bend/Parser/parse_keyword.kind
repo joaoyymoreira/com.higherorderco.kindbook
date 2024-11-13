@@ -11,5 +11,5 @@ Bend/Parser/parse_keyword : String -> (Parser Unit)
   }
 }
 
-#test: (Bend/Parser/parse_keyword "let" #State{"let x = 5" #0}) == #Done{#Reply{#State{" x = 5" #3} #Unit}}
-#test: (Bend/Parser/parse_keyword "if" #State{"else" #0}) == #Fail{#Error{#0 "Expected keyword 'if'"}}
+#test: (Bend/Parser/parse_keyword "let" #State{"let x = 5" 0}) == #Done{#Reply{#State{" x = 5" 3} #Unit}}
+#test: (Bend/Parser/parse_keyword "if" #State{"else"       0}) == #Fail{#Error{0 "Expected keyword 'if'"}}

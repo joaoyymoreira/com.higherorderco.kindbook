@@ -7,22 +7,22 @@
 // - hard_sep: If the separator is mandatory or optional.
 // - min_els: Minimum number of elements required.
 // = List of parsed elements.
-Bend/Parser/list_like: ∀(A: *) (Parser A) -> String -> String -> String -> Bool -> Nat -> (Parser (List A))
+Bend/Parser/list_like: ∀(A: *) (Parser A) -> String -> String -> String -> Bool -> U64 -> (Parser (List A))
 | A parser start end sep hard_sep min_els = do Parser {
   ask (Bend/Parser/consume start)
   ask (Bend/Parser/skip_trivia)
   ask elements =
     if hard_sep {
-      (Bend/Parser/parse_hard A parser end sep [] min_els)
+      (parse_hard A parser end sep [] min_els)
     } else {
-      (Bend/Parser/parse_soft A parser end sep [] min_els)
+      (parse_soft A parser end sep [] min_els)
     }
   ret (List/reverse A elements)
 }
 
 // Parse elements with optional separators
-Bend/Parser/parse_soft: ∀(A: *) (Parser A) -> String -> String -> (List A) -> Nat -> (Parser (List A))
-| A parser end sep acc #Zero = do Parser {
+parse_soft: ∀(A: *) (Parser A) -> String -> String -> (List A) -> U64 -> (Parser (List A))
+| A parser end sep acc 0 = do Parser {
   (Parser/alternative (List A)
     (do Parser {
       ask (Bend/Parser/consume end)
@@ -33,32 +33,32 @@ Bend/Parser/parse_soft: ∀(A: *) (Parser A) -> String -> String -> (List A) -> 
       ask (Bend/Parser/skip_trivia)
       ask element = parser
       ask (Bend/Parser/try_consume sep)
-      (Bend/Parser/parse_soft A parser end sep (#Cons{element acc}) #0)
+      (parse_soft A parser end sep (#Cons{element acc}) 0)
       }
     )
   )
 }
-| A parser end sep acc #Succ{n} = do Parser {
+| A parser end sep acc 1+n = do Parser {
   ask (Bend/Parser/skip_trivia)
   ask element = parser
   ask (Bend/Parser/try_consume sep)
-  (Bend/Parser/parse_soft A parser end sep (#Cons{element acc}) n)
+  (parse_soft A parser end sep (#Cons{element acc}) n)
 }
 
 // Parse elements with mandatory separators
-Bend/Parser/parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> Nat -> (Parser (List A))
-| A parser end sep acc #Succ{#Succ{n}} = do Parser {
+parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> U64 -> (Parser (List A))
+| A parser end sep acc 2+n = do Parser {
   ask (Bend/Parser/skip_trivia)
   ask element = parser
   ask (Bend/Parser/consume sep)
-  (Bend/Parser/parse_hard A parser end sep (#Cons{element acc}) #Succ{n})
+  (parse_hard A parser end sep (#Cons{element acc}) (+ n 1))
 }
-| A parser end sep acc #Succ{#Zero} = do Parser {
+| A parser end sep acc 1 = do Parser {
   ask (Bend/Parser/skip_trivia)
   ask element = parser
   ask is_sep  = (Bend/Parser/try_consume sep)
   if is_sep {
-    (Bend/Parser/parse_hard A parser end sep (#Cons{element acc}) #0)
+    (parse_hard A parser end sep (#Cons{element acc}) 0)
   } else {
     do Parser {
       ask (Bend/Parser/consume end)
@@ -66,7 +66,7 @@ Bend/Parser/parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> 
     }
   }
 }
-| A parser end sep acc #Zero = do Parser {
+| A parser end sep acc 0 = do Parser {
   (Parser/alternative (List A)
     (do Parser {
       ask (Bend/Parser/consume end)
@@ -78,7 +78,7 @@ Bend/Parser/parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> 
       ask (Bend/Parser/skip_trivia)
       ask is_sep  = (Bend/Parser/try_consume sep)
       if is_sep {
-        (Bend/Parser/parse_hard A parser end sep (#Cons{element acc}) #Zero)
+        (parse_hard A parser end sep (#Cons{element acc}) 0)
       } else {
         do Parser {
           ask (Bend/Parser/consume end)
@@ -90,12 +90,12 @@ Bend/Parser/parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> 
 }
 
 
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #0) #State{"[]" #0}) == (#Done{#Reply{#State{"" #2} []}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #0) #State{"[foo]" #0}) == (#Done{#Reply{#State{"" #5} ["foo"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #0) #State{"[foo,bar,baz]" #0}) == (#Done{#Reply{#State{"" #13} ["foo" "bar" "baz"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #0) #State{"[foo,bar,baz,]" #0}) == (#Done{#Reply{#State{"" #14} ["foo" "bar" "baz"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #2) #State{"[foo,bar]" #0}) == (#Done{#Reply{#State{"" #9} ["foo" "bar"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False #2) #State{"[foo]" #0}) == (#Fail{#Error{#4 "Expected variable name"}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True #0) #State{"(foo,bar,baz)" #0}) == (#Done{#Reply{#State{"" #13} ["foo" "bar" "baz"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True #0) #State{"(foo,bar,baz,)" #0}) == (#Done{#Reply{#State{"" #14} ["foo" "bar" "baz"]}})
-#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True #0) #State{"(foo bar,baz)" #0}) == (#Fail{#Error{#5 "Expected )"}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 0) #State{"[]"             0}) == (#Done{#Reply{#State{"" 2} []}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 0) #State{"[foo]"          0}) == (#Done{#Reply{#State{"" 5} ["foo"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 0) #State{"[foo,bar,baz]"  0}) == (#Done{#Reply{#State{"" 13} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 0) #State{"[foo,bar,baz,]" 0}) == (#Done{#Reply{#State{"" 14} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 2) #State{"[foo,bar]"      0}) == (#Done{#Reply{#State{"" 9} ["foo" "bar"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "[" "]" "," #False 2) #State{"[foo]"          0}) == (#Fail{#Error{4 "Expected variable name"}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True 0)  #State{"(foo,bar,baz)"  0}) == (#Done{#Reply{#State{"" 13} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True 0)  #State{"(foo,bar,baz,)" 0}) == (#Done{#Reply{#State{"" 14} ["foo" "bar" "baz"]}})
+#test: ((Bend/Parser/list_like String (Bend/Parser/parse_var_name) "(" ")" "," #True 0)  #State{"(foo bar,baz)"  0}) == (#Fail{#Error{5 "Expected )"}})

@@ -11,6 +11,6 @@ Bend/Parser/try_consume_exactly : String -> (Parser Bool)
     (Parser/pure Bool #False))
 }
 
-#test: ((Bend/Parser/try_consume_exactly "hello") #State{"hello world" #0}) == (#Done{#Reply{#State{" world" #5} #True}})
-#test: ((Bend/Parser/try_consume_exactly "hello") #State{"goodbye" #0}) == (#Done{#Reply{#State{"goodbye" #0} #False}})
-#test: ((Bend/Parser/try_consume_exactly "") #State{"" #0}) == (#Done{#Reply{#State{"" #0} #True}})
+#test: ((Bend/Parser/try_consume_exactly "hello") #State{"hello world" 0}) == (#Done{#Reply{#State{" world" 5} #True}})
+#test: ((Bend/Parser/try_consume_exactly "hello") #State{"goodbye" 0}) == (#Done{#Reply{#State{"goodbye" 0} #False}})
+#test: ((Bend/Parser/try_consume_exactly "") #State{"" 0}) == (#Done{#Reply{#State{"" 0} #True}})

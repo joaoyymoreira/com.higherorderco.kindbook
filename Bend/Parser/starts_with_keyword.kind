@@ -4,30 +4,28 @@
 Bend/Parser/starts_with_keyword : String -> (Parser Bool)
 | keyword = do Parser {
   ask found = (Parser/peek_many (String/length keyword))
-  if (Maybe/eq String String/IsEqual found #Some{keyword}) {
-    do Parser {
-      ask nxt = (Parser/peek_many #Succ{(String/length keyword)})
-      match nxt {
-        #None: (Parser/pure Bool #True)
-        #Some{val}: do Parser {
-          let last = (String/last val)
-          (Parser/pure Bool (Maybe/fold Char last Bool #True (λc (Bool/not (Bend/Parser/is_name_char c)))))
-        }
+  if (Maybe/eq _ String/IsEqual found #Some{keyword}) do Parser {
+    ask nxt = (Parser/peek_many #Succ{(String/length keyword)})
+    match nxt {
+      #None     : (Parser/pure _ #True)
+      #Some{val}: do Parser {
+        let last = (String/last val)
+        (Parser/pure _ (Maybe/fold _ last _ #True (λc (Bool/not (Bend/Parser/is_name_char c)))))
       }
     }
   } else {
-    (Parser/pure Bool #False)
+    (Parser/pure _ #False)
   }
 }
 
 
-#test: ((Bend/Parser/starts_with_keyword "let") #State{"let x = 5" #0}) == (#Done{#Reply{#State{"let x = 5" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "if") #State{"if\nx > 5" #0}) == (#Done{#Reply{#State{"if\nx > 5" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "match") #State{"match(x)" #0}) == (#Done{#Reply{#State{"match(x)" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "let") #State{"x let y = 5" #0}) == (#Done{#Reply{#State{"x let y = 5" #0} #False}})
-#test: ((Bend/Parser/starts_with_keyword "let") #State{"letter" #0}) == (#Done{#Reply{#State{"letter" #0} #False}})
-#test: ((Bend/Parser/starts_with_keyword "if") #State{"if" #0}) == (#Done{#Reply{#State{"if" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "") #State{"(non-char)" #0}) == (#Done{#Reply{#State{"(non-char)" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "longkeyword") #State{"short" #0}) == (#Done{#Reply{#State{"short" #0} #False}})
-#test: ((Bend/Parser/starts_with_keyword "λ") #State{"λ x.x" #0}) == (#Done{#Reply{#State{"λ x.x" #0} #True}})
-#test: ((Bend/Parser/starts_with_keyword "data type") #State{"data type Foo" #0}) == (#Done{#Reply{#State{"data type Foo" #0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "let")         #State{"let x = 5" 0})     == (#Done{#Reply{#State{"let x = 5" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "if")          #State{"if\nx > 5" 0})     == (#Done{#Reply{#State{"if\nx > 5" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "match")       #State{"match(x)" 0})      == (#Done{#Reply{#State{"match(x)" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "let")         #State{"x let y = 5" 0})   == (#Done{#Reply{#State{"x let y = 5" 0} #False}})
+#test: ((Bend/Parser/starts_with_keyword "let")         #State{"letter" 0})        == (#Done{#Reply{#State{"letter" 0} #False}})
+#test: ((Bend/Parser/starts_with_keyword "if")          #State{"if" 0})            == (#Done{#Reply{#State{"if" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "")            #State{"(non-char)" 0})    == (#Done{#Reply{#State{"(non-char)" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "longkeyword") #State{"short" 0})         == (#Done{#Reply{#State{"short" 0} #False}})
+#test: ((Bend/Parser/starts_with_keyword "λ")           #State{"λ x.x" 0})         == (#Done{#Reply{#State{"λ x.x" 0} #True}})
+#test: ((Bend/Parser/starts_with_keyword "data type")   #State{"data type Foo" 0}) == (#Done{#Reply{#State{"data type Foo" 0} #True}})

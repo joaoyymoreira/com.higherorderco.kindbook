@@ -15,8 +15,8 @@ Bend/Parser/try_parse_keyword : String -> (Parser Bool)
   }
 }
 
-#test: ((Bend/Parser/try_parse_keyword "let") #State{"let x = 5" #0}) == (#Done{#Reply{#State{" x = 5" #3} #True}})
-#test: ((Bend/Parser/try_parse_keyword "if") #State{"ifelse" #0}) == (#Done{#Reply{#State{"ifelse" #0} #False}})
-#test: ((Bend/Parser/try_parse_keyword "while") #State{"while (x > 0) {}" #0}) == (#Done{#Reply{#State{" (x > 0) {}" #5} #True}})
-#test: ((Bend/Parser/try_parse_keyword "for") #State{"forEach" #0}) == (#Done{#Reply{#State{"forEach" #0} #False}})
-#test: ((Bend/Parser/try_parse_keyword "") #State{"abc" #0}) == (#Done{#Reply{#State{"abc" #0} #False}})
+#test: ((Bend/Parser/try_parse_keyword "let")   #State{"let x = 5" 0}) == (#Done{#Reply{#State{" x = 5" 3} #True}})
+#test: ((Bend/Parser/try_parse_keyword "if")    #State{"ifelse" 0}) == (#Done{#Reply{#State{"ifelse" 0} #False}})
+#test: ((Bend/Parser/try_parse_keyword "while") #State{"while (x > 0) {}" 0}) == (#Done{#Reply{#State{" (x > 0) {}" 5} #True}})
+#test: ((Bend/Parser/try_parse_keyword "for")   #State{"forEach" 0}) == (#Done{#Reply{#State{"forEach" 0} #False}})
+#test: ((Bend/Parser/try_parse_keyword "")      #State{"abc" 0}) == (#Done{#Reply{#State{"abc" 0} #False}})
