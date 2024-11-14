@@ -4,33 +4,19 @@ use UG/SIPD as G
 // - body: The body to check for collisions.
 // - bodies: List of bodies to check against.
 // = The collision normal vector, if a collision is found.
-G/Body/find_collision : G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
-| #Body{id hitbox tick effects collidable} #Nil = #None
-| #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
 
-  match collidable {
-    #Hard:
-      let diff_ids = (U64/neq id id1)
-      let collides = (UG/Shape/collide hitbox hitbox1)
+// FIX: this should return a list of collision, not only the first it finds
+// TEMPORARY WORKAROUND: id to ignore, fixed when we have TEAMS (ignore collision with teammates)
+G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
+| to_ignore #Body{id hitbox tick effects collidable} #Nil = #None
+| to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
+    let diff_ids = (U64/neq id id1)
+    let diff_ig = (U64/neq id1 to_ignore)
+    let collides = (UG/Shape/collide hitbox hitbox1)
 
-      if (Bool/and diff_ids collides) {
-        let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
-        #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
-      } else {
-        (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
-      }
-
-    #TakesEffects:
-      let diff_ids = (U64/neq id id1)
-      let collides = (UG/Shape/collide hitbox hitbox1)
-
-      if (Bool/and diff_ids collides) {
-        let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
-        #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
-      } else {
-        (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
-      }
-
-    _:
-      (G/Body/find_collision #Body{id hitbox tick effects collidable} rest)
-  }
+    if (Bool/and (Bool/and diff_ids collides) diff_ig) {
+      let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
+      #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
+    } else {
+      (G/Body/find_collision to_ignore #Body{id hitbox tick effects collidable} rest)
+    }
