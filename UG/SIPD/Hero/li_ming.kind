@@ -66,7 +66,7 @@ UG/SIPD/Hero/li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
 | state owner_id pos =
   let name  = "Li-Ming" 
   let shape = (UG/Shape/circle pos 20.0)
-  let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #Hard})
+  let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #TakesEffects})
   let #Pair{skills state} = (make_skills state owner_id owner_id)
   (#Hero{owner_id name skills owner_id} , state) 
 
