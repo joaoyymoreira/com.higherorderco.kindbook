@@ -4,35 +4,51 @@ use Bend/Fun/Book as Book
 Bend/main : (IO U64)
  = do IO {
   ask args = (IO/args 0)
-  ask (cmd, book) = (load args)
-  (run cmd book)
+  match args {
+    #Cons{cmd args}: match args {
+      #Cons{file args}: match args {
+        #Nil:
+          let cmd  = (Command/from_string cmd)
+          match cmd {
+            #Some{cmd}: do IO {
+              ask book = (Bend/Load/load_book file)
+              match book {
+                #Done{book}: do IO {
+                  (run cmd book)
+                }
+                #Fail{msg}: do IO {
+                  ask (IO/print msg)
+                  ret 1
+                }
+              }
+            }
+            _: usage
+          } 
+        _: usage
+      }
+      _: usage
+    }
+    _: usage
+  }
 }
 
-load : (List String) -> (IO (Pair (Maybe Command) (Bend Book)))
-| [cmd file] = do IO {
-  let cmd  = (Command/from_string cmd)
-  ask book = (Bend/Load/load_book file)
-  ret (cmd, book)
-}
 
-run : (Maybe Command) -> (Bend Book) -> (IO U64)
-| #Some{#GenBend} #Done{book} = do IO {
+run : Command -> Book -> (IO U64)
+| #GenBend book = do IO {
   ask (IO/print "Bend book generated")
   ret 0
 }
-| #Some{#GenCore} #Done{book} = do IO {
+| #GenCore book = do IO {
   ask (IO/print "Core book generated")
   ret 0
 }
-| #Some{#GenHvm} #Done{book} = do IO {
+| #GenHvm book = do IO {
   ask (IO/print "HVM book generated")
   ret 0
 }
-| #None #Done{book} = do IO {
-  ask (IO/print "Bend book loaded")
-  ret 0
-}
-| _ #Fail{msg} = do IO {
-  ask (IO/print ("Compile error:\n" msg))
+
+usage : (IO U64)
+= do IO {
+  ask (IO/print "Usage: bend <gen-bend|gen-core|gen-hvm> <file>")
   ret 1
 }

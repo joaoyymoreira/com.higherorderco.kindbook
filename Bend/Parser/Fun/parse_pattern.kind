@@ -1,0 +1,107 @@
+use Bend/Fun/Pattern as Pattern
+use Bend/Fun/FanKind as FanKind
+use Bend/Parser as BP
+
+// Parses a Fun syntax variable binding / pattern matching pattern.
+// = The parsed pattern.
+Bend/Parser/Fun/parse_pattern : (Parser Pattern)
+| = do Parser {
+  ask _ = Parser/skip_trivia
+  let starts_with_num = do Parser {
+    ask x = (Parser/peek_one)
+    ret (Maybe/fold _ x Bool #False Char/is_digit)
+  }
+  let starts_with_nam = do Parser {
+    ask x = (Parser/peek_one)
+    ret (Maybe/fold _ x Bool #False BP/is_name_char)
+  }
+  (BP/first_with_guard _ [
+    ((Parser/starts_with "(") , parse_pat_ctr_or_tup)
+    ((Parser/starts_with "$") , parse_pat_chn)
+    ((Parser/starts_with "'") , parse_pat_char)
+    ((Parser/starts_with "[") , parse_pat_lst)
+    ((Parser/starts_with "\""), parse_pat_str)
+    ((Parser/starts_with "*") , parse_pat_era)
+    ((Parser/starts_with "{") , parse_pat_dup)
+    ((starts_with_num)        , parse_pat_num)
+    ((starts_with_nam)        , parse_pat_var)
+  ] (Parser/fail _ "Expected pattern"))
+}
+
+parse_pat_var : (Parser Pattern)
+| = do Parser {
+  ask nam = BP/parse_var_name
+  ret #Var{#Some{nam}} :: Pattern
+}
+
+parse_pat_str : (Parser Pattern)
+| = do Parser {
+  ask str = Parser/parse_string
+  ret #Str{str} :: Pattern
+}
+
+parse_pat_num : (Parser Pattern)
+| = do Parser {
+  ask num = BP/parse_number
+  match num {
+    #U24{n}: (Parser/pure _ #Num{n} :: Pattern)
+    #I24{_}: (Parser/fail _ "Only unsigned integers are supported in pattern matching")
+    #F24{_}: (Parser/fail _ "Only unsigned integers are supported in pattern matching")
+  }
+}
+
+parse_pat_lst : (Parser Pattern)
+| = do Parser {
+  ask elements = (BP/list_like _ BP/Fun/parse_pattern "[" "]" "," #False 0)
+  ret #Lst{elements} :: Pattern
+}
+
+parse_pat_era : (Parser Pattern)
+| = do Parser {
+  ask _ = (BP/consume "*")
+  ret #Var{#None} :: Pattern
+}
+
+parse_pat_dup : (Parser Pattern)
+| = do Parser {
+  ask els = (BP/list_like _ BP/Fun/parse_pattern "{" "}" "," #False 2)
+  ret #Fan{#Dup els} :: Pattern
+}
+
+parse_tup : Pattern -> (Parser Pattern)
+| = λhead do Parser {
+  ask tail = (BP/list_like _ BP/Fun/parse_pattern "" ")" "," #True 1)
+  ret #Fan{#Tup (head;;tail)} :: Pattern
+}
+
+parse_ctr : Pattern -> (Parser Pattern)
+| #Var{#Some{name}} = do Parser {
+  ask args = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
+  ret #Ctr{name args} :: Pattern
+}
+| _ = (Parser/fail _ "Expected constructor name")
+
+parse_pat_ctr_or_tup : (Parser Pattern)
+| = do Parser {
+  ask _      = (BP/consume "(")
+  ask head   = (BP/Fun/parse_pattern)
+  ask is_tup = (BP/try_consume ",")
+  if is_tup {
+    (parse_tup head)
+  } else {
+    (parse_ctr head)
+  }
+}
+
+parse_pat_chn : (Parser Pattern)
+| = do Parser {
+  ask _    = (BP/consume "$")
+  ask name = (BP/parse_name "unscoped variable")
+  ret #Chn{name} :: Pattern
+}
+
+parse_pat_char : (Parser Pattern)
+| = do Parser {
+  ask char = Parser/parse_quoted_char
+  ret #Num{char} :: Pattern
+}

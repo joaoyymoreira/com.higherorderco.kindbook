@@ -1,24 +1,28 @@
+use Bend/Parser as BP
+use Bend/Fun/Book as Book
+use Bend/Load/File as File
 
 // Loads a book from a file
 // - path: The path to the file containing the book
 // = An IO action that results in either a Book or an error message
-Bend/Load/load_book : String -> IO (Bend Book)
+Bend/Load/load_book : String -> (IO (Bend Book))
 | path = do LoadIO {
   ask txt = (IO/read path)
-  let res = (parse_book ())
+  let res = (BP/Fun/parse_file (Parser/new_state txt))
+  (IO/pure _ match res {
+    #Done{reply}:
+      let #Reply{_ file}  = reply
+      let book            = (file_to_book file)
+      #Done{book}
+    #Fail{err}:
+      let #Error{idx err} = err
+      #Fail{(String/concat ["Failed to parse book at index " (U64/to_string idx) ":\n  " err])}
+  })
 }
-  content <- read-file path
-  let parse-result = parse-book (new-parser-state content)
-  pure (case parse-result of λ
-    { (Done (MkReply _ book)) ->
-        Done (parse-book-to-book book)
-    ; (Fail (MkError idx err)) ->
-        Fail ("Failed to parse book at index " ++ show idx ++ ":\n  " ++ err)
-    })
 
 LoadIO : * -> * = λA (IO (Bend A))
 
-LoadIO/bind : ∀(A: *) ∀(B: *) -> LoadIO A -> (A -> LoadIO B) -> LoadIO B
+LoadIO/bind : ∀(A: *) ∀(B: *) (LoadIO A) -> (A -> (LoadIO B)) -> (LoadIO B)
 | A B ioa f = do IO {
   ask iob = (ioa)
   match iob {
@@ -32,9 +36,14 @@ LoadIO/bind : ∀(A: *) ∀(B: *) -> LoadIO A -> (A -> LoadIO B) -> LoadIO B
   }
 }
 
-// Converts a ParseBook to a Book
+LoadIO/pure : ∀(A: *) (A -> (LoadIO A))
+| A x = do IO {
+  ret #Done{x}
+}
+
+// Converts a File to a Book
 // TODO: This is a temporary hack to get the book to compile.
 //       We'll replace this by the actual resolution and import system.
-parse-book-to-book : ParseBook -> Book
+file_to_book : File -> Book
 // TODO: Add ctrs and adts
-parse-book-to-book (MkParseBook defs adts ctrs) = MkBook defs adts ctrs
+| #File{defs adts ctrs _} = #Book{defs adts ctrs}

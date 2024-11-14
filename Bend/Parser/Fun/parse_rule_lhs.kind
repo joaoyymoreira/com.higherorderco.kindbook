@@ -1,0 +1,29 @@
+use Bend/Fun/Pattern as Pattern
+use Bend/Parser as BP
+
+// Parses the left-hand side of a pattern-matching rule.
+// - expected: The expected function name, if any.
+// = The name of the function and a list of patterns.
+Bend/Parser/Fun/parse_rule_lhs : (Maybe String) -> (Parser (Pair String (List Pattern)))
+| expected = do Parser {
+  let p_nam = match expected {
+    #Some{name}: do Parser {
+      ask _ = (BP/parse_keyword name)
+      ret name
+    }
+    #None: BP/parse_top_level_name
+  } :: (Parser _)
+  ask has_parens   = (BP/try_consume "(")
+  if has_parens do Parser {
+    ask _    = BP/skip_trivia
+    ask name = p_nam
+    ask pats = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
+    ask _    = (BP/consume "=")
+    ret (name, pats) :: (Pair _ _)
+  } else do Parser {
+    ask _    = BP/skip_trivia
+    ask name = p_nam
+    ask pats = (BP/list_like _ BP/Fun/parse_pattern "" "=" "" #False 0)
+    ret (name, pats) :: (Pair _ _)
+  }
+}

@@ -9,7 +9,7 @@ BP/Fun/parse_type_term : (Parser Type)
   ask is_arr = (BP/try_consume "->")
   if is_arr do Parser {
     ask right = (BP/Fun/parse_type_term)
-    ret #Arr{left right}
+    ret #Arr{left right} :: Type
   } else do Parser {
     ret left
   }
@@ -32,37 +32,37 @@ parse_type_atom : (Parser Type)
 parse_any : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "Any")
-  ret #Any
+  ret #Any :: Type
 }
 
 parse_none : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "None")
-  ret #Non
+  ret #Non :: Type
 }
 
 parse_hole : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "_")
-  ret #Hol
+  ret #Hol :: Type
 }
 
 parse_u24 : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "u24")
-  ret #U24
+  ret #U24 :: Type
 }
 
 parse_i24 : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "i24")
-  ret #I24
+  ret #I24 :: Type
 }
 
 parse_f24 : (Parser Type)
 | = do Parser {
   ask _ = (BP/parse_keyword "f24")
-  ret #F24
+  ret #F24 :: Type
 }
 
 parse_parenthesized : (Parser Type)
@@ -79,7 +79,7 @@ parse_parenthesized : (Parser Type)
       } else if (U64/eq one ',') do Parser {
         ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
         ask _    = (BP/consume ")")
-        ret #Tup{head;;tail}
+        ret #Tup{head;;tail} :: Type
       } else {
         (parse_constructor head)
       }
@@ -92,18 +92,18 @@ parse_tuple : Type -> (Parser Type)
   ask _    = (BP/consume ",")
   ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
   ask _    = (BP/consume ")")
-  ret #Tup{head;;tail}
+  ret #Tup{head;;tail} :: Type
 }
 
 parse_constructor : Type -> (Parser Type)
 | #Var{nam} = do Parser {
   ask args = (BP/list_like _ BP/Fun/parse_type_term "" ")" "" #False 1)
-  ret #Ctr{nam args}
+  ret #Ctr{nam args} :: Type
 }
 | _ = (Parser/fail _ "Expected type constructor name")
 
 parse_var : (Parser Type)
 | = do Parser {
   ask nam = (BP/parse_name "type variable")
-  ret #Var{nam}
+  ret #Var{nam} :: Type
 }

@@ -1,0 +1,12 @@
+
+data Bend/Load/File {
+  #File {
+    fun_defs: (BinMap Bend/Fun/FnDef)
+    // imp_defs: (BinMap Bend/Imp/FnDef)
+    // hvm_defs: (BinMap Bend/HVM/Net)
+    adts    : (BinMap Bend/Fun/Adt)
+    ctrs    : (BinMap Bend/Fun/Ctr)
+    // imports: ImportCtx
+    path    : String
+  }
+}

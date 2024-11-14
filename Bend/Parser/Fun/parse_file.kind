@@ -1,0 +1,71 @@
+use Bend/Fun/Adt as Adt
+use Bend/Fun/Ctr as Ctr
+use Bend/Fun/FnDef as FnDef
+use Bend/Parser as BP
+use Bend/Load/File as File
+
+// Parses a complete book of definitions.
+// Parses top-level definitions until the end of the input is reached.
+// = A new ParseBook with the parsed definitions.
+Bend/Parser/Fun/parse_file : (Parser File)
+// TODO: Store file path
+| = (go #File{(BinMap/empty _) (BinMap/empty _) (BinMap/empty _) ""})
+
+data TopLevel {
+  #FunDef { def: FnDef }
+  #TypeDef{ adt: Adt ctrs: (List Ctr) }
+  // #ImpDef
+  // #HVMDef
+  // #Import
+}
+
+
+// Helper function to iteratively build the ParseBook.
+go : File -> (Parser File)
+| file = do Parser {
+  ask _   = BP/skip_trivia
+  ask eof = Parser/is_eof
+  if eof do Parser {
+    ret file
+  } else do Parser {
+    ask def  = parse_top_level
+    ask file = (add_top_level def file)
+    (go file)
+  }
+}
+
+starts_with_fndef : (Parser Bool)
+| = do Parser {
+  ask c        = Parser/peek_one
+  let is_fndef = (Maybe/fold _ c Bool #False λc (Bool/or (BP/is_name_char c) (Char/eq c '(')))
+  ret is_fndef
+}
+
+// Parses a single top-level definition.
+parse_top_level : (Parser TopLevel)
+| = do Parser {
+  // TODO: Other top-level definitions
+  (BP/first_with_guard _ [
+    ((BP/starts_with_keyword "type")  , (Parser/map _ TopLevel BP/Fun/parse_adt (λx let (adt, ctrs) = x #TypeDef{adt ctrs})))
+    ((BP/starts_with_keyword "object"), (Parser/fail _ "not implemented"))
+    ((BP/starts_with_keyword "hvm")   , (Parser/fail _ "not implemented"))
+    ((starts_with_fndef)              , (Parser/map _ TopLevel BP/Fun/parse_fn_def (λx #FunDef{x})))
+  ] (Parser/fail _ "Expected top-level definition"))
+}
+
+// Adds a parsed top-level definition to the book.
+// Updates the right fields in the book based on the type of the definition.
+// - def: The parsed top-level definition.
+// - book: The current ParseBook.
+// = A new ParseBook with the top-level definition added.
+add_top_level : TopLevel -> File -> (Parser File)
+| #FunDef{def} #File{fun adts ctrs path} = do Parser {
+  // TODO: Check for repeats
+  let fun = (BinMap/set _ fun (String/hash (FnDef/get_nam def)) def)
+  ret #File{fun adts ctrs path} :: File
+}
+| #TypeDef{t_adt t_ctrs} #File{fun adts ctrs path} = do Parser {
+  let adts = (BinMap/set _ adts (String/hash (Adt/get_nam t_adt)) t_adt)
+  let ctrs = (List/foldr _ t_ctrs _ ctrs (λctr λacc (BinMap/set _ acc (String/hash (Ctr/get_nam ctr)) ctr)))
+  ret #File{fun adts ctrs path} :: File
+}

@@ -1,0 +1,44 @@
+use Bend/Fun/Type as Type
+use Bend/Parser as BP
+
+// Parses the type signature of a function definition.
+// = The function name, a list of named arguments and the function type.
+Bend/Parser/Fun/parse_def_sig : (Parser (String & (List String) & Type))
+| = do Parser {
+  ask has_parens = (BP/try_consume "(")
+  ask (name, args, ret) = if has_parens do Parser{
+    ask name = (BP/parse_top_level_name)
+    ask args = (BP/list_like _ parse_def_sig_arg "" ")" "" #False 0)
+    ask _    = (BP/consume ":")
+    ask typ  = (BP/Fun/parse_type_term)
+    ret (name, args, typ) :: (_ & _ & _)
+  } else do Parser {
+    ask name = (BP/parse_top_level_name)
+    ask args = (BP/list_like _ parse_def_sig_arg "" ":" "" #False 0)
+    ask typ  = (BP/Fun/parse_type_term)
+    ret (name, args, typ) :: (_ & _ & _)
+  }
+  let (args, arg_types) = (List/unzip _ _ args)
+  let typ = (List/foldr _ arg_types _ ret (λarg λacc #Arr{arg acc}))
+  ret (name, args, typ) :: (_ & _ & _)
+}
+
+// Parses a single argument in a function signature.
+// = The argument name and its type (Any if no type is specified).
+parse_def_sig_arg : (Parser (Pair String Type))
+| = do Parser {
+  ask has_parens = (BP/try_consume "(")
+  if has_parens {
+    do Parser {
+      ask nam = (BP/parse_name "function argument")
+      ask typ = (BP/first_with_guard _ [((BP/try_consume ":"), (BP/Fun/parse_type_term))] (Parser/pure Type #Any))
+      ask _   = (BP/consume ")")
+      ret (nam, typ) :: (_ & _)
+    }
+  } else {
+    do Parser {
+      ask nam = (BP/parse_name "function argument")
+      ret (nam, #Any) :: (_ & Type)
+    }
+  }
+}

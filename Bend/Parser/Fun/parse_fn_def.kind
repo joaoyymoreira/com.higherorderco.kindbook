@@ -1,0 +1,65 @@
+use Bend/Fun/FnDef as FnDef
+use Bend/Fun/Pattern as Pat
+use Bend/Fun/Rule as Rule
+use Bend/Source as Source
+use Bend/Parser as BP
+
+// Parses a Fun syntax function definition.
+// Handles both single-rule and multi-rule function definitions,
+// with or without type signatures.
+// = A new FnDef with the parsed function definition.
+BP/Fun/parse_fn_def : (Parser FnDef)
+| = do Parser {
+  ask _       = BP/skip_trivia
+  ask ini_idx = Parser/get_index
+  let p_check = (λdflt (BP/first_with_guard _ [
+    ((BP/starts_with_keyword "checked")  , (Parser/pure Bool #True))
+    ((BP/starts_with_keyword "unchecked"), (Parser/pure Bool #False))
+  ] (Parser/pure _ dflt))) :: _ -> _
+  ask sig     = (Parser/alternative _ (Parser/map _ (Maybe _) BP/Fun/parse_def_sig λx #Some{x}) (Parser/pure (Maybe _) #None))
+  match sig {
+    #Some{sig}: do Parser {
+      let (name, args, typ) = sig
+      ask check             = (p_check #True)
+      ask is_single_rule    = (BP/try_consume "=")
+      if is_single_rule do Parser {
+        ask body    = BP/Fun/parse_term
+        let pats    = (List/map _ Pat args λnam #Var{#Some{nam}})
+        let rules   = [#Rule{pats body}] :: (List Rule)
+        ask end_idx = Parser/get_index
+        let source  = (Source/from_file_span ini_idx end_idx)
+        ret #FnDef{name typ check rules source} :: FnDef
+      } else do Parser {
+        ask rules   = (parse_rules name)
+        ask end_idx = Parser/get_index
+        let source  = (Source/from_file_span ini_idx end_idx)
+        ret #FnDef{name typ check rules source} :: FnDef
+      }
+    }
+    #None: do Parser {
+      ask check        = (p_check #False)
+      ask (name, pats) = (BP/Fun/parse_rule_lhs #None)
+      ask body         = BP/Fun/parse_term
+      let rule         = #Rule{pats body} :: Rule
+      ask rules        = (parse_rules name)
+      ask end_idx      = Parser/get_index
+      let source       = (Source/from_file_span ini_idx end_idx)
+      ret #FnDef{name #Any check (rule;;rules) source} :: FnDef
+    }
+  }
+}
+
+// Parses multiple rules for a function.
+// This is used for function definitions with multiple pattern-matching rules.
+// - name: The expected name of the function being defined.
+// = A list of pattern matching rules.
+parse_rules : String -> (Parser (List Rule))
+| name = do Parser {
+  let p_rule = do Parser {
+    ask (name, pats) = (BP/Fun/parse_rule_lhs #Some{name})
+    ask body         = BP/Fun/parse_term
+    ask tail         = (parse_rules name)
+    ret (#Rule{pats body} ;; tail) :: (List Rule)
+  }
+  (Parser/alternative _ p_rule (Parser/pure (List Rule) []))
+}
