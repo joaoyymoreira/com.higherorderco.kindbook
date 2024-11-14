@@ -5,8 +5,9 @@ UG/SIPD/GameMap/b_tick : UG/SIPD/State -> UG/SIPD/State
 UG/SIPD/GameMap/initial_map : (Map (Maybe UG/SIPD/Body))
 = 
   let empty = (Map/empty UG/SIPD/Body)
-  let shap = (UG/Shape/square #V2{250.0 250.0} 200.0)
-  (Map/insert UG/SIPD/Body empty 100 #Body{500 shap UG/SIPD/GameMap/b_tick [] #Hard})
+  //let shap = (UG/Shape/square #V2{250.0 250.0} 200.0)
+  //(Map/insert UG/SIPD/Body empty 100 #Body{500 shap UG/SIPD/GameMap/b_tick [] #Hard})
+  empty
 
 UG/SIPD/GameMap/init : U64 -> U64 -> UG/SIPD/GameMap
 | width height = #GameMap{width height UG/SIPD/GameMap/initial_map 10000}

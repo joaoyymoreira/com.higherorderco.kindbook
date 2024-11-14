@@ -1,0 +1,12 @@
+use UG/SIPD as G
+
+UG/SIPD/GameMap/update_body : UG/SIPD/GameMap -> UG/SIPD/Body -> UG/SIPD/GameMap
+| #GameMap{width height bodies bodies_count} #Body{id hitbox tick effects collidable} = 
+  let new_bodies = (Map/update G/Body bodies id #Body{id hitbox tick effects collidable})
+  
+  if (U64/gt id bodies_count) {
+    #GameMap{width height new_bodies id}
+  } else {
+    #GameMap{width height new_bodies bodies_count}
+  }
+
