@@ -1,3 +1,3 @@
 
-UG/SIPD/Player/get_player : (OrdTree U64 UG/SIPD/Player) -> U64 -> (Maybe UG/SIPD/Player)
-| players player_id = (OrdTree/get U64 UG/SIPD/Player U64/Ord players player_id)
+UG/SIPD/Player/get_player : (Map (Maybe UG/SIPD/Player)) -> U64 -> (Maybe UG/SIPD/Player)
+| players player_id = (Map/get UG/SIPD/Player players player_id)
