@@ -19,7 +19,7 @@ collide_and_slide/go : G/Body -> V2 -> V2 -> (List G/Body) -> Nat -> (Pair V2 V2
 | #Body{id hitbox tick effects collidable} position remaining_movement obstacles #Succ{n} = 
   let new_position = (V2/add position remaining_movement)
   let new_hitbox = (UG/Shape/move hitbox (V2/sub new_position position))
-  let collision = (G/Body/find_collision #Body{id new_hitbox tick effects collidable} obstacles)
+  let collision = (G/Body/find_collision id #Body{id new_hitbox tick effects collidable} obstacles)
 
   match collision {
     #None: #Pair{new_position #V2{0.0 0.0}}
