@@ -1,0 +1,13 @@
+// Update a key-value pair into a Map only if its not none.
+// - A: Value type.
+// - map: The input map.
+// - key: The key to update.
+// - val: The value to update.
+// = The updated map.
+Map/update : ∀(A: *) (Map (Maybe A)) -> U64 -> A -> (Map (Maybe A))
+| A map key val with (Map/get A map key)
+.| #None = map
+.| #Some{other_value} =
+  put x0 = map[key] := #Some{val}
+  map
+
