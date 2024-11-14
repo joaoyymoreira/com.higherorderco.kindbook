@@ -24,13 +24,17 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let hero_pos = (UG/Shape/get_center hitbox)
   let mouse_pos = (G/Player/get_mouse_pos player "W")
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
-  let bullet_pos = hero_pos
+
+  // FIXME not use hardcoded value
+  let offset_distance = (* 20.0 1.5)
+
+  let bullet_pos = (V2/add hero_pos (V2/mul_scalar direction offset_distance))
   let real_target = (V2/add hero_pos (V2/mul_scalar direction range))
-  let bullet_shape = (UG/Shape/circle hero_pos bullet_radius)
+  let bullet_shape = (UG/Shape/circle bullet_pos bullet_radius)
   let #Pair{bullet_id state} = (G/State/generate_id state) 
 
   let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable})
-  let move_effect = (G/Effect/move_range bullet_id real_target range duration)
+  let move_effect = (G/Effect/move_range bullet_id real_target range duration (G/Effect/collide_and_damage id bullet_id 10))
 
   let state_after_spawn = (G/Effect/apply spawn_effect state)
   (G/Effect/apply move_effect state_after_spawn)

@@ -40,13 +40,13 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   let projectile3 = (magic_missiles/create_projectile p3_id hero_pos right_target missile_radius)
 
   let spawn_effect1 = (G/Effect/spawn_body projectile1)
-  let move_effect1 = (G/Effect/move_range p1_id left_target range duration)
+  let move_effect1 = (G/Effect/move_range p1_id left_target range duration (G/Effect/collide_and_damage pid p1_id 10))
 
   let spawn_effect2 = (G/Effect/spawn_body projectile2)
-  let move_effect2 = (G/Effect/move_range p2_id center_target range duration)
+  let move_effect2 = (G/Effect/move_range p2_id center_target range duration (G/Effect/collide_and_damage pid p2_id 10))
 
   let spawn_effect3 = (G/Effect/spawn_body projectile3)
-  let move_effect3 = (G/Effect/move_range p3_id right_target range duration)
+  let move_effect3 = (G/Effect/move_range p3_id right_target range duration (G/Effect/collide_and_damage pid p3_id 10))
 
   let state = (G/Effect/apply spawn_effect1 state)
   let state = (G/Effect/apply spawn_effect2 state)
