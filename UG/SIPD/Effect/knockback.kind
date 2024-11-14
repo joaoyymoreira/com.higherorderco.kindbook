@@ -1,14 +1,36 @@
 use UG/SIPD as G
 
+// for knockback, the first body represents is the one that should suffer the knockback, while the second one should not. 
+// but it should only suffer knockback if its type is #TakesEffects
+// this will cause knockback for every body in the map that that player collides, not only the body we intend to collide with, because find_collision doesnt check collision with another specific body (which should be the case in the knockback and many other effects). Find collision checks every possible collision, which means that if this finds another collision it will knockback when not intended.
+knockback/handle_collidable : G/Player -> V2 -> V2 -> G/Body -> G/Body -> G/State -> G/State
+| player force normal #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with (collidable1 , collidable2) :: (Pair _ _)
+.| #TakesEffects _ = 
+  let #State{next_id tick players hero_states game_map} = state
+  let reflected_force = (V2/reflect force normal)
+  let new_hitbox = (UG/Shape/move hitbox1 reflected_force)
+
+  let new_target = (UG/Shape/get_center new_hitbox)
+
+  let #Player{id name keys target hero} = player 
+  let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
+
+  let updated_map = (G/GameMap/insert_body game_map #Body{id1 new_hitbox b_tick1 effects1 collidable1})
+  #State{next_id tick updated_players hero_states updated_map}
+.| _             _ = state
+
+
 // Applies a knockback effect to a body.
-// - body_id: ID of the body to knockback.
+// - body_id: ID of the body to knockback. Same as player id.
 // - force: Knockback force vector.
 // = The knockback effect.
 G/Effect/knockback : U64 -> V2 -> G/Effect
-| body_id force state =
-  let #State{next_id tick players hero_states game_map} = state
+| body_id force #State{next_id tick players hero_states game_map} with (G/Player/get_player players body_id)
+.| #None = #State{next_id tick players hero_states game_map}
+.| #Some{player} = 
   let #GameMap{width height bodies bodies_count} = game_map
   let bodies_list = (Map/values G/Body bodies bodies_count)
+  let #Player{pid name keys target hero} = player
 
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
@@ -19,23 +41,10 @@ G/Effect/knockback : U64 -> V2 -> G/Effect
         #None: #State{next_id tick players hero_states game_map}
         #Some{result}:
           let #Pair{collision_normal colliding_body} = result
-          (knockback/handle_collidable force collision_normal body colliding_body state)
+          (knockback/handle_collidable player force (V2/normalize target) body colliding_body #State{next_id tick players hero_states game_map})
       }
       
-      #None: state
+      #None: #State{next_id tick players hero_states game_map}
   }
-
-
-// for knockback, the first body represents is the one that should suffer the knockback, while the second one should not. 
-// but it should only suffer knockback if its type is #TakesEffects
-// this will cause knockback for every body in the map that that player collides, not only the body we intend to collide with, because find_collision doesnt check collision with another specific body (which should be the case in the knockback and many other effects). Find collision checks every possible collision, which means that if this finds another collision it will knockback when not intended.
-knockback/handle_collidable : V2 -> V2 -> G/Body -> G/Body -> G/State -> G/State
-| force normal #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with (collidable1 , collidable2) :: (Pair _ _)
-.| #TakesEffects _ = 
-  let #State{next_id tick players hero_states game_map} = state
-  let reflected_force = (V2/reflect force normal)
-  let new_hitbox = (UG/Shape/move hitbox1 reflected_force)
-  let updated_map = (G/GameMap/insert_body game_map #Body{id1 new_hitbox b_tick1 effects1 collidable1})
-  #State{next_id tick players hero_states updated_map}
-.| _             _ = state
+  
 
