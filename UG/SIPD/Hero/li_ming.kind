@@ -7,17 +7,24 @@ insert_skill : (OrdTree String G/Skill) -> String -> G/Skill -> (OrdTree String 
 insert_cooldown : (OrdTree String U64) -> String -> U64 -> (OrdTree String U64)
 | cooldowns key val = (OrdTree/insert String U64 String/Ord cooldowns #Pair{key val})
 
+TPS : U64
+= 30
+
+//FIXME
+time_to_tick : U64 -> U64
+| time = (U64/div (U64/mul time TPS) 100)
+
 make_skills : G/State -> U64 -> U64 -> (Pair (OrdTree String G/Skill) G/State)
 | #State{next_id tick players hero_states game_map} player_id body_id =
   let s = (OrdTree/empty String G/Skill)
   let s = (insert_skill s "RightClick" (G/Skill/move player_id body_id 0))
-  let s = (insert_skill s "E" (G/Skill/teleport player_id body_id 100.0 100))
-  let s = (insert_skill s "Z" (G/Skill/wave_of_force player_id 300 100.0 100))
-  let s = (insert_skill s "W" (G/Skill/shoot player_id 500.0 5.0 20 100))
-  let s = (insert_skill s "Q" (G/Skill/magic_missiles player_id 200.0 10 5.0 100))
-  let s = (insert_skill s "R" (G/Skill/disintegrate player_id 500 30.0 200.0 100))
+  let s = (insert_skill s "E" (G/Skill/teleport player_id body_id (F64/mul G/range_unit 4.0) (time_to_tick 5000)))
+  let s = (insert_skill s "Z" (G/Skill/wave_of_force player_id 100 (F64/mul 4.0 G/unit_scaling) (time_to_tick 30000)))
+  let s = (insert_skill s "W" (G/Skill/shoot player_id (F64/mul G/range_unit 13.5) (F64/mul 0.25 G/unit_scaling) 10000 (time_to_tick 8000)))
+  let s = (insert_skill s "Q" (G/Skill/magic_missiles player_id (F64/mul G/range_unit 12.0) 10000 (F64/mul (F64/mul 0.5 1.6) G/unit_scaling) (time_to_tick 3000)))
+  let s = (insert_skill s "R" (G/Skill/disintegrate player_id (2600) 10.0 (F64/mul G/range_unit 16.0) (time_to_tick 20000)))
 
-  let li_ming_health = 200
+  let li_ming_health = 1270
 
   let s_cooldowns = (OrdTree/empty String U64)
   let s_cooldowns = (insert_cooldown s_cooldowns "RightClick" 0)
@@ -70,7 +77,10 @@ tick : U64 -> G/State -> G/State
 UG/SIPD/Hero/li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
 | state owner_id pos =
   let name  = "Li-Ming" 
-  let shape = (UG/Shape/circle pos 20.0)
+  let collision_radius = 0.625
+  let unit_scaling = UG/SIPD/unit_scaling
+  let shape = (UG/Shape/circle pos (F64/mul collision_radius unit_scaling))
+
   let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #TakesEffects})
   let #Pair{skills state} = (make_skills state owner_id owner_id)
   (#Hero{owner_id name skills owner_id} , state) 

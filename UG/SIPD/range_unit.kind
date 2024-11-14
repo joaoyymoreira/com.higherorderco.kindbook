@@ -1,0 +1,2 @@
+UG/SIPD/range_unit : F64
+= (F64/mul 0.5 UG/SIPD/unit_scaling)

@@ -6,8 +6,8 @@ grow_projectile : G/State -> U64 -> G/State
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
 ..| #Circle{center radius} = 
-  let growth_factor = 1.05
-  let new_radius = (F64/mul radius growth_factor)
+  let growth_factor = 0.01
+  let new_radius = (F64/add radius (F64/mul radius growth_factor))
   let new_hitbox = (UG/Shape/circle center new_radius)
   (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox b_tick effects collidable})
 ..| #Polygon{center vertices} = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
@@ -24,6 +24,7 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let hero_pos = (UG/Shape/get_center hitbox)
   let mouse_pos = (G/Player/get_mouse_pos player "W")
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let speed = 1.9
 
   // FIXME not use hardcoded value
   let offset_distance = (* 20.0 1.5)
@@ -34,7 +35,7 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let #Pair{bullet_id state} = (G/State/generate_id state) 
 
   let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable})
-  let move_effect = (G/Effect/move_range bullet_id real_target range duration (G/Effect/collide_and_damage id bullet_id 10))
+  let move_effect = (G/Effect/move_range bullet_id speed real_target range duration (G/Effect/collide_and_damage id bullet_id 135))
 
   let state_after_spawn = (G/Effect/apply spawn_effect state)
   (G/Effect/apply move_effect state_after_spawn)
