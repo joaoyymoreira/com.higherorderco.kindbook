@@ -62,7 +62,9 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
       let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
       let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range hero_pos line_end)
 
-      let dmg_per_tick = (U64/div 240 2600)
+      // TODO: implement round (floor/ceiling) in kind or health as F64
+      //let dmg_per_tick = (U64/div 240 2600)
+      let dmg_per_tick = 1
   
       let spawn_effect = (G/Effect/spawn_body disintegrate_line)
       let with_duration = (G/Effect/with_duration duration new_id (G/Effect/collide_and_dps body_id new_id dmg_per_tick))
