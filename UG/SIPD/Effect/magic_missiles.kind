@@ -7,7 +7,7 @@ magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
   let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
   let distance = (F64/min (V2/length (V2/sub mouse_pos hero_pos)) range)
   let perpend = (V2/perpendicular direction)
-  let spread = (F64/mul (F64/sub 1.0 (F64/div distance range)) 0.5)
+  let spread = (F64/mul (F64/sub 1.0 (F64/div distance range)) 1.0)
   let side_offset = (V2/mul_scalar perpend (F64/mul spread range))
 
   let left_target = (V2/sub max_target side_offset)
