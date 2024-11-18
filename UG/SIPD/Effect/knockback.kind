@@ -1,11 +1,7 @@
 use UG/SIPD as G
 
-// FIXME
-// for knockback, the first body represents is the one that should suffer the knockback, while the second one should not. 
-// but it should only suffer knockback if its type is #TakesEffects
-// this will cause knockback for every body in the map that that player collides, not only the body we intend to collide with, because find_collision doesnt check collision with another specific body (which should be the case in the knockback and many other effects). Find collision checks every possible collision, which means that if this finds another collision it will knockback when not intended.
-knockback/handle_collidable : V2 -> G/Body -> G/Body -> G/State -> G/State
-| force #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with (collidable1 , collidable2) :: (Pair _ _)
+knockback/handle_collidable : V2 -> U64 -> G/Body -> G/Body -> G/State -> G/State
+| force damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with (collidable1 , collidable2) :: (Pair _ _)
 .| _ #TakesEffects = 
   let #State{next_id tick players hero_states game_map} = state
 
@@ -14,24 +10,31 @@ knockback/handle_collidable : V2 -> G/Body -> G/Body -> G/State -> G/State
     #None: state
     #Some{player}:
       let #Player{id name keys target hero} = player
-      let normal = (V2/normalize target)
-      let reflected_force = (V2/reflect force normal)
-      let new_hitbox = (UG/Shape/move hitbox2 reflected_force)
+      let center1 = (UG/Shape/get_center hitbox1)
+      let center2 = (UG/Shape/get_center hitbox2)
+      let knockback_vector = (V2/normalize (V2/sub center2 center1))
+      let scaled_knockback = (V2/mul knockback_vector force)
+
+      let new_hitbox = (UG/Shape/move hitbox2 scaled_knockback)
       let new_target = (UG/Shape/get_center new_hitbox)
 
-      let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
-      let updated_map = (G/GameMap/insert_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
-      #State{next_id tick updated_players hero_states updated_map}
+      let maybe_hero_state = (Map/get G/Hero/HeroState hero_states id)
+      match maybe_hero_state {
+        #None: state
+        #Some{hero_state}:
+          let #HeroState{cooldowns health} = hero_state
+          let new_hp = (U64/sub health damage)
+          let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id #HeroState{cooldowns new_hp})
+
+          let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
+          let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
+          #State{next_id tick updated_players updated_hero_states updated_map}
+      }
   }
 .| _             _ = state
 
-// Applies a knockback effect to a body.
-// - caster_id: ID of the body of the caster. Same as player id.
-// - body_id: ID of the body of the skill.
-// - force: Knockback force vector.
-// = The knockback effect.
-G/Effect/knockback : U64 -> U64 -> V2 -> G/Effect
-| caster_id body_id force #State{next_id tick players hero_states game_map} =
+G/Effect/knockback : U64 -> U64 -> V2 -> U64 -> G/Effect
+| caster_id body_id force damage #State{next_id tick players hero_states game_map} =
   let #GameMap{width height bodies bodies_count} = game_map
   let bodies_list = (Map/values G/Body bodies bodies_count)
 
@@ -44,8 +47,7 @@ G/Effect/knockback : U64 -> U64 -> V2 -> G/Effect
         #None: #State{next_id tick players hero_states game_map}
         #Some{result}:
           let #Pair{collision_normal colliding_body} = result
-          (knockback/handle_collidable force body colliding_body #State{next_id tick players hero_states game_map})
+          (knockback/handle_collidable force damage body colliding_body #State{next_id tick players hero_states game_map})
       }
-      #None: #State{next_id tick players hero_states game_map}
+    #None: #State{next_id tick players hero_states game_map}
   }
-
