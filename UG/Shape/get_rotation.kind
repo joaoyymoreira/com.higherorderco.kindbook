@@ -1,0 +1,17 @@
+// Gets the rotation angle of a Shape.
+// - shape: The Shape to get the rotation from.
+// = The rotation angle in radians.
+UG/Shape/get_rotation : UG/Shape -> F64
+| #Circle{center radius} = 0.0
+| #Polygon{center vertices} =
+  match vertices {
+    #Nil: 0.0
+    #Cons{first tail}:
+      match tail {
+        #Nil: 0.0
+        #Cons{second _}:
+          let dx = (F64/sub (V2/x second) (V2/x first))
+          let dy = (F64/sub (V2/y second) (V2/y first))
+          (atan2 dy dx)
+      }
+  }
