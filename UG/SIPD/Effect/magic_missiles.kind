@@ -4,16 +4,19 @@ use UG/SIPD as G
 magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
 | hero_pos mouse_pos range =
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
-  let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
-  let distance = (F64/min (V2/length (V2/sub mouse_pos hero_pos)) range)
   let perpend = (V2/perpendicular direction)
-  let spread = (F64/mul (F64/sub 1.0 (F64/div distance range)) 1.0)
+  let distance = (V2/length (V2/sub mouse_pos hero_pos)) 
+  let spread = (F64/mul (F64/sub 1.0 (F64/min 1.0 (F64/div distance range))) 1.0)
   let side_offset = (V2/mul_scalar perpend (F64/mul spread range))
 
-  let left_target = (V2/sub max_target side_offset)
-  let right_target = (V2/add max_target side_offset)
+  let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
+  let adjusted_range = (V2/length (V2/sub max_target side_offset))
+  let corrected_max_target = (V2/add hero_pos (V2/mul_scalar direction adjusted_range))
+  let left_target = (V2/sub corrected_max_target side_offset)
+  let right_target = (V2/add corrected_max_target side_offset)
   
-  #Pair{max_target #Pair{left_target right_target}}
+  #Pair{corrected_max_target #Pair{left_target right_target}}
+
 
 magic_missiles/tick_projectile : U64 -> G/State -> G/State
 | body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
@@ -29,25 +32,33 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   let mouse_pos = (G/Player/get_mouse_pos #Player{pid name keys target hero} "Q")
   let click_pos = target
 
+  let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let perpend = (V2/perpendicular direction)
+  let offset_distance = 40.0
+  let left_missile_pos = (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend (F64/negate 30.0))))
+  let right_missile_pos = (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend 30.0)))
+  let center_missile_pos = (V2/add hero_pos (V2/mul_scalar direction offset_distance))
+
   let #Pair{center_target targets} = (magic_missiles/calculate_targets hero_pos mouse_pos range)
   let #Pair{left_target right_target} = targets
 
   let #Pair{p1_id state} = (G/State/generate_id state)
-  let projectile1 = (magic_missiles/create_projectile p1_id hero_pos center_target missile_radius)
+  let projectile1 = (magic_missiles/create_projectile p1_id center_missile_pos center_target missile_radius)
   let #Pair{p2_id state} = (G/State/generate_id state) 
-  let projectile2 = (magic_missiles/create_projectile p2_id hero_pos left_target missile_radius)
+  let projectile2 = (magic_missiles/create_projectile p2_id left_missile_pos left_target missile_radius)
   let #Pair{p3_id state} = (G/State/generate_id state) 
-  let projectile3 = (magic_missiles/create_projectile p3_id hero_pos right_target missile_radius)
+  let projectile3 = (magic_missiles/create_projectile p3_id right_missile_pos right_target missile_radius)
 
-  let speed = 1.3
+  let speed = 1.0
+  let acceleration = 0.1
   let spawn_effect1 = (G/Effect/spawn_body projectile1)
-  let move_effect1 = (G/Effect/move_range p1_id speed left_target range duration (G/Effect/collide_and_damage pid p1_id 147))
+  let move_effect1 = (G/Effect/accelerated_move_range p1_id speed center_target range acceleration duration (G/Effect/collide_and_damage pid p1_id 147))
 
   let spawn_effect2 = (G/Effect/spawn_body projectile2)
-  let move_effect2 = (G/Effect/move_range p2_id speed center_target range duration (G/Effect/collide_and_damage pid p2_id 147))
+  let move_effect2 = (G/Effect/accelerated_move_range p2_id speed left_target range acceleration duration (G/Effect/collide_and_damage pid p2_id 147))
 
   let spawn_effect3 = (G/Effect/spawn_body projectile3)
-  let move_effect3 = (G/Effect/move_range p3_id speed right_target range duration (G/Effect/collide_and_damage pid p3_id 147))
+  let move_effect3 = (G/Effect/accelerated_move_range p3_id speed right_target range acceleration duration (G/Effect/collide_and_damage pid p3_id 147))
 
   let state = (G/Effect/apply spawn_effect1 state)
   let state = (G/Effect/apply spawn_effect2 state)
