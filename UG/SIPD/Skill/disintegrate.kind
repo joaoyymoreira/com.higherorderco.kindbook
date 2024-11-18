@@ -7,12 +7,12 @@ use UG/SIPD as G
 // - line_range: Range of the disintegrate line.
 // - cooldown: Skill cooldown.
 // = A disintegrate skill.
-G/Skill/disintegrate : U64 -> U64 -> F64 -> F64 -> U64 -> G/Skill
-| player_id duration line_width line_range cooldown = 
+G/Skill/disintegrate : U64 -> U64 -> F64 -> F64 -> F64 -> U64 -> G/Skill
+| player_id duration line_width line_range rotation_speed cooldown = 
   #Skill{
     name: "disintegrate"
-    effects: [(G/Effect/disintegrate player_id duration line_width line_range)]
+    effects: [(G/Effect/disintegrate player_id duration line_width line_range rotation_speed)]
     cooldown: cooldown
   }
 
-#test: (G/Skill/disintegrate 1 100 5.0 200.0 500) == #Skill{name: "disintegrate" effects: [(G/Effect/disintegrate 1 100 5.0 200.0)] cooldown: 500}
+#test: (G/Skill/disintegrate 1 100 5.0 200.0 1.0 500) == #Skill{name: "disintegrate" effects: [(G/Effect/disintegrate 1 100 5.0 200.0 1.0)] cooldown: 500}

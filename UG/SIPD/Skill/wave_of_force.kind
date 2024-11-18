@@ -6,10 +6,10 @@ use UG/SIPD as G
 // - wave_radius: Radius of the wave.
 // - cooldown: Skill cooldown.
 // = A wave of force skill.
-G/Skill/wave_of_force : U64 -> U64 -> F64 -> U64 -> G/Skill
-| pid duration wave_radius cooldown = 
+G/Skill/wave_of_force : U64 -> U64 -> F64 -> U64 -> U64 -> G/Skill
+| pid duration wave_radius damage cooldown = 
   #Skill{
     name: "wave_of_force"
-    effects: [(G/Effect/wave_of_force pid duration wave_radius)]
+    effects: [(G/Effect/wave_of_force pid duration wave_radius damage)]
     cooldown
   }
