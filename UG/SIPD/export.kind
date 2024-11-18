@@ -28,3 +28,6 @@ export_game : UG/SIPD/Game
 
 export_action_eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
 = UG/SIPD/Event/eq
+
+export_time_to_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Time -> UG/SM/Tick
+= UG/SM/Time/time_to_tick
