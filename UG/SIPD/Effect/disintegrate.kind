@@ -5,10 +5,11 @@ use UG/SIPD as G
 // - player_id: ID of the player.
 // - line_width: Width of the line.
 // - line_range: Range of the line.
+// - rotation_speed: Speed of rotation in radians per tick.
 // - state: Current game state.
 // = Updated game state.
-UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G/State
-| line_id player_id line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body line_id bodies)
+UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> G/State -> G/State
+| line_id player_id line_width line_range rotation_speed #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body line_id bodies)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{line} with (G/Body/get_body player_id bodies)
 ..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
@@ -22,19 +23,31 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> G/State -> G
   let #Body{line_id line_hitbox line_tick line_effects line_collidable} = line
   
   let #Player{pid player_name player_keys player_target player_hero} = player
-  let angle = (V2/calculate_angle hero_pos player_target) 
-
-  let new_line_shape = (UG/Shape/rotate def_line angle)
-  let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
+  let target_angle = (V2/calculate_angle hero_pos player_target)
+  let current_angle = (UG/Shape/get_rotation line_hitbox)
   
- (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable} new_state) 
+  let angle_diff = (F64/sub target_angle current_angle)
 
-disintegrate/create_disintegrate_line : U64 -> U64 -> F64 -> F64 -> V2 -> V2 -> G/Body
-| line_id player_id line_width line_range start end =
+  if (F64/gt (F64/abs angle_diff) rotation_speed) {
+    let new_angle = (F64/add current_angle (F64/mul rotation_speed (F64/sign angle_diff)))
+    let new_line_shape = (UG/Shape/rotate def_line new_angle)
+    let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
+    
+    (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable} new_state)
+  } else {
+    let new_angle = target_angle
+    let new_line_shape = (UG/Shape/rotate def_line new_angle)
+    let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{line_id new_line_shape line_tick line_effects line_collidable})
+    
+    (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable} new_state)
+  }
+ 
+disintegrate/create_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> V2 -> V2 -> G/Body
+| line_id player_id line_width line_range rotation_speed start end =
   let direction = (V2/normalize (V2/sub end start))
   let center = start
   let body_shape = (UG/Shape/start_centered_rectangle center line_width line_range)
-  let body_tick = (G/Effect/tick_disintegrate_line line_id player_id line_width line_range)
+  let body_tick = (G/Effect/tick_disintegrate_line line_id player_id line_width line_range rotation_speed)
   #Body{line_id body_shape body_tick [] #Untouchable}
 
 disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
@@ -42,8 +55,8 @@ disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
   let movement_key = "RightClick"
   (G/Hero/HeroState/update_cooldown player_id movement_key state block_time) 
 
-UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
-| player_id duration line_width line_range #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
+UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> F64 -> G/Effect
+| player_id duration line_width line_range rotation_speed #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
 .| #None = 
   #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{id name keys target hero}} =
@@ -60,10 +73,8 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
       let direction = (V2/normalize (V2/sub target hero_pos))
       let line_end = (V2/add hero_pos (V2/mul_scalar direction line_range))
       let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
-      let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range hero_pos line_end)
+      let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range rotation_speed hero_pos line_end)
 
-      // TODO: implement round (floor/ceiling) in kind or health as F64
-      //let dmg_per_tick = (U64/div 240 2600)
       let dmg_per_tick = 1
   
       let spawn_effect = (G/Effect/spawn_body disintegrate_line)
@@ -74,4 +85,3 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> G/Effect
 
       state
   }
-
