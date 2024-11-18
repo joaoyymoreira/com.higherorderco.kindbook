@@ -6,7 +6,7 @@ grow_projectile : G/State -> U64 -> G/State
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
 ..| #Circle{center radius} = 
-  let growth_factor = 0.01
+  let growth_factor = 0.015
   let new_radius = (F64/add radius (F64/mul radius growth_factor))
   let new_hitbox = (UG/Shape/circle center new_radius)
   (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox b_tick effects collidable})
@@ -27,7 +27,7 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let speed = 1.9
 
   // FIXME not use hardcoded value
-  let offset_distance = (* 20.0 1.5)
+  let offset_distance = (* 20.0 2.0)
 
   let bullet_pos = (V2/add hero_pos (V2/mul_scalar direction offset_distance))
   let real_target = (V2/add hero_pos (V2/mul_scalar direction range))
