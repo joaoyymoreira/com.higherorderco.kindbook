@@ -10,7 +10,7 @@ UG/SM/compute : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/Game S A) -> UG/S
   let end_t = (UG/SM/Time/time_to_tick S A mach time)
   let #Pair{state start_tick} = (UG/SM/get_initial_state S A mach game)
   let diff = (U64/sub end_t start_tick)
-  if (U64/gt diff 1000) {
+  if (Bool/or (U64/gt diff 1000) (U64/eq diff 0)) {
     #Pair{state mach}
   } else {
     (UG/SM/compute/go S A mach game state start_tick end_t)
