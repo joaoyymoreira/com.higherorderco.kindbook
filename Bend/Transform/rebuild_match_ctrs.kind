@@ -1,3 +1,4 @@
+use Bend/Transform/rebuild_match_ctrs as .
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
 use Bend/Fun/Rule as Rule
@@ -11,7 +12,7 @@ Bend/Transform/rebuild_match_ctrs : Book -> (Bend Book)
     let rul2 = [] :: (List Rule)
     ask rul2 = for rule in rul {
       let #Rule{pat bod} = rule
-      ask bod = (rebuild_term book bod)
+      ask bod = (./rebuild_term book bod)
       let rule = #Rule{pat bod} :: Rule
       ret (rule;;rul2)
     }
@@ -21,32 +22,32 @@ Bend/Transform/rebuild_match_ctrs : Book -> (Bend Book)
   ret #Book{defs adts ctrs}
 }
 
-rebuild_term : Book -> Term -> (Bend Term)
+./rebuild_term : Book -> Term -> (Bend Term)
 | book term = do Bend {
-  ask term = (Term/mmap_children _ Bend/Monad λ_ (rebuild_term book) term)
+  ask term = (Term/mmap_children _ Bend/Monad λ_ (./rebuild_term book) term)
   match term {
     #Mat{bnd arg with_bnd with_arg arms}: do Bend {
-      ask arms = (List/mmap _ Bend/Monad _ _ arms (rebuild_match_arm book bnd))
+      ask arms = (List/mmap _ Bend/Monad _ _ arms (./rebuild_match_arm book bnd))
       ret #Mat{bnd arg with_bnd with_arg arms}
     }
     #Swt{bnd arg with_bnd with_arg pred arms}: do Bend {
       ask pred         = (Maybe/to_result _ _ pred "Switch with no pred")
       let last_arm     = (- (List/length_u64 _ arms) 1)
-      let rebuilt_arms = (List/map _ _ (List/enumerate_u64 _ arms) (rebuild_switch_arm bnd pred last_arm))
+      let rebuilt_arms = (List/map _ _ (List/enumerate_u64 _ arms) (./rebuild_switch_arm bnd pred last_arm))
       ret #Swt{bnd arg with_bnd with_arg #Some{pred} rebuilt_arms}
     }
     _: #Done{term}
   }
 }
 
-rebuild_match_arm : Book -> (Maybe String) -> Bend/Fun/MatchRule -> (Bend Bend/Fun/MatchRule)
+./rebuild_match_arm : Book -> (Maybe String) -> Bend/Fun/MatchRule -> (Bend Bend/Fun/MatchRule)
 | book bnd #MatchRule{nam fld bod} = do Bend {
   ask nam = (Maybe/to_result _ _ nam "Match with no constructor")
   let bod = #Use{bnd (Term/foldl_app #Ref{nam} (List/map _ _ fld Term/var_or_era)) bod} :: Term
   ret #MatchRule{#Some{nam} fld bod}
 }
 
-rebuild_switch_arm : (Maybe String) -> String -> U64 -> (Pair U64 Term) -> Term
+./rebuild_switch_arm : (Maybe String) -> String -> U64 -> (Pair U64 Term) -> Term
 | bnd pred last_arm #Pair{idx bod} = 
   if (U64/eq idx last_arm) {
     #Use{bnd (Term/add_num #Var{pred} last_arm) bod}

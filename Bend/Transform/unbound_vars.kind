@@ -1,3 +1,4 @@
+use Bend/Transform/unbound_vars as .
 use Bend/Fun/Book as Book
 use Bend/Fun/FnDef as FnDef
 use Bend/Fun/Pattern as Pat
@@ -7,19 +8,19 @@ use Bend/Fun/Term as Term
 Bend/Transform/unbound_vars : Book -> (Bend U64)
 | #Book{defs _ _} = do Bend {
   for def in (BinMap/values _ defs) {
-    (unbound_vars_def def)
+    (./unbound_vars_def def)
   }
   ret 0
 }
 
 // Checks for unbound variables in a function definition
-unbound_vars_def : FnDef -> (Bend U64)
+./unbound_vars_def : FnDef -> (Bend U64)
 | #FnDef{_ _ _ rules _} = do Bend {
   let global = (BinMap/empty _)
   ask global = for rule in rules {
     let #Rule{pats body} = rule
     let scope = (List/concat_map _ _ pats Pat/binds)
-    (unbound_vars_term body scope global)
+    (./unbound_vars_term body scope global)
   }
   let errs = (List/foldr _ (BinMap/values _ global) (List _) [] (λpair λacc
     let (var, declared, used) = pair
@@ -39,47 +40,47 @@ unbound_vars_def : FnDef -> (Bend U64)
 }
 
 // Checks for unbound variables in a term
-unbound_vars_term : Term -> (List String) -> (BinMap (String & U64 & U64)) -> (Bend (BinMap (String & U64 & U64)))
+./unbound_vars_term : Term -> (List String) -> (BinMap (String & U64 & U64)) -> (Bend (BinMap (String & U64 & U64)))
 | #Var{nam} scope global = 
-  if (scope_contains scope nam) {
+  if (./scope_contains scope nam) {
     #Done{global}
   } else {
     #Fail{(String/concat ["Unbound variable '" nam "'"])}
   }
 
 | #Lnk{nam} scope global = 
-  #Done{(use_global global nam)}
+  #Done{(./use_global global nam)}
 
 | term scope global = do Bend {
   let global = match term {
-    #Lam{pat _}  : (bnd_global global (Pat/unscoped_binds pat))
-    #Let{pat _ _}: (bnd_global global (Pat/unscoped_binds pat))
+    #Lam{pat _}  : (./bnd_global global (Pat/unscoped_binds pat))
+    #Let{pat _ _}: (./bnd_global global (Pat/unscoped_binds pat))
     _            : global
   } :: (BinMap _)
   ask global = for c in (Term/children term) {
     let (bnd, child) = c
-    (unbound_vars_term child (List/append _ bnd scope) global)
+    (./unbound_vars_term child (List/append _ bnd scope) global)
   }
   ret global
 }
 
 
 // Adds a list of names to the scope
-add_bnd : (List String) -> (List String) -> (List String)
+./add_bnd : (List String) -> (List String) -> (List String)
 | scope names = (List/append _ names scope)
 
 // Checks if a name is in the scope
-scope_contains : (List String) -> String -> Bool
+./scope_contains : (List String) -> String -> Bool
 | scope nam = (List/contains _ String/IsEqual scope nam)
 
 // Updates the usage count of a global variable
-use_global : (BinMap (String & U64 & U64)) -> String -> (BinMap (String & U64 & U64))
+./use_global : (BinMap (String & U64 & U64)) -> String -> (BinMap (String & U64 & U64))
 | global nam with (BinMap/get _ global (String/hash nam))
 . | #Some{(_, bnd, uses)} = (BinMap/set _ global (String/hash nam) (nam, bnd, (+ uses 1)))
 . | #None                 = (BinMap/set _ global (String/hash nam) (nam, 0, 1))
 
 // Updates the binding count of global variables
-bnd_global : (BinMap (String & U64 & U64)) -> (List String) -> (BinMap (String & U64 & U64))
+./bnd_global : (BinMap (String & U64 & U64)) -> (List String) -> (BinMap (String & U64 & U64))
 | global (nam;;nams) = 
   let global = match (BinMap/get _ global (String/hash nam)) {
     #Some{x}: 
@@ -88,5 +89,5 @@ bnd_global : (BinMap (String & U64 & U64)) -> (List String) -> (BinMap (String &
     #None: 
       (BinMap/set _ global (String/hash nam) #Pair{nam #Pair{1 0}})
   } :: (BinMap _)
-  (bnd_global global nams)
+  (./bnd_global global nams)
 | global [] = global

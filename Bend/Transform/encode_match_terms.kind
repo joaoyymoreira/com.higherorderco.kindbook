@@ -1,3 +1,4 @@
+use Bend/Transform/encode_match_terms as .
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
 use Bend/Fun/FnDef as FnDef
@@ -12,30 +13,29 @@ Bend/Transform/encode_match_terms : Bend/Run/AdtEncoding -> Book -> (Bend Book)
 | encoding book =
   (Book/mmap_rules _ Bend/Monad λr do Bend {
     let #Rule{pats body} = r
-    ask body = (encode_term encoding body)
+    ask body = (./encode_term encoding body)
     ret #Rule{pats body}
   } book)
 
-encode_term : Bend/Run/AdtEncoding -> Term -> (Bend Term)
+./encode_term : Bend/Run/AdtEncoding -> Term -> (Bend Term)
 | encoding term = do Bend {
-  ask term = (Term/mmap_children _ Bend/Monad (λ_ (encode_term encoding)) term)
+  ask term = (Term/mmap_children _ Bend/Monad (λ_ (./encode_term encoding)) term)
   match term {
     #Mat{bnd arg with_bnd with_arg arms}: do Bend {
       ask if (List/is_nil _ with_bnd) { #Done{0} } else { #Fail{"with-bnd not empty"} }
       ask if (List/is_nil _ with_arg) { #Done{0} } else { #Fail{"with-arg not empty"} }
-      (encode_match encoding arg arms)
+      (./encode_match encoding arg arms)
     }
     #Swt{bnd arg with_bnd with_arg pred arms}: do Bend {
       ask if (List/is_nil _ with_bnd) { #Done{0} } else { #Fail{"with-bnd not empty"} }
       ask if (List/is_nil _ with_arg) { #Done{0} } else { #Fail{"with-arg not empty"} }
-      (encode_switch arg pred arms)
+      (./encode_switch arg pred arms)
     }
     _: #Done{term}
   }
 }
-  
 
-encode_match : Bend/Run/AdtEncoding -> Term -> (List Bend/Fun/MatchRule) -> (Bend Term) 
+./encode_match : Bend/Run/AdtEncoding -> Term -> (List Bend/Fun/MatchRule) -> (Bend Term) 
 | Scott arg arms = do Bend {
   let arms = (List/map _ _ arms (λrule 
     let #MatchRule{_ bnd bod} = rule
@@ -53,15 +53,14 @@ encode_match : Bend/Run/AdtEncoding -> Term -> (List Bend/Fun/MatchRule) -> (Ben
         let bod = #Swt{#None #Var{"%tag"} #Nil #Nil #None #Cons{arm #Cons{#Era #Nil}}}
         ret #Lam{#Var{#Some{"%tag"}} bod}
       }
-      _: (make_num_scott_swt arms)
+      _: (./make_num_scott_swt arms)
     }
-    _: (make_num_scott_swt arms)
+    _: (./make_num_scott_swt arms)
   }
   ret #App{arg match}
 }
 
-
-make_num_scott_swt : (List Term) -> (Bend Term)
+./make_num_scott_swt : (List Term) -> (Bend Term)
 | #Nil            = #Fail{"No match arms"}
 | #Cons{arm #Nil} = #Done{#Lam{#Var{#None} arm}}
 | #Cons{arm arms} = do Bend {
@@ -73,7 +72,7 @@ make_num_scott_swt : (List Term) -> (Bend Term)
 // `switch n {0: A; 1: B; _ n-2   : (C n-2)}`
 // is converted to
 // `switch n {0: A; _: λ%x match %x {0: B; _: λn-2 (C n-2)}}`
-encode_switch : Term -> (Maybe String) -> (List Term) -> (Bend Term)
+./encode_switch : Term -> (Maybe String) -> (List Term) -> (Bend Term)
 | arg pred arms = do Bend {
   let (nums, succ) = (List/unsnoc _ arms)
   ask succ         = (Maybe/to_result _ _ succ "Switch with only 1 arms")

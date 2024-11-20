@@ -1,3 +1,4 @@
+use Bend/Transform/desugar_fold as .
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
 use Bend/Fun/FnDef as FnDef
@@ -10,7 +11,7 @@ use Bend/Fun/MatchRule as MatchRule
 Bend/Transform/desugar_fold : Book -> (Bend Book)
 | book = do Bend {
   let defs = (BinMap/values _ (Book/get_defs book))
-  ask defs = (desugar_defs book defs)
+  ask defs = (./desugar_defs book defs)
   let defs = (List/map _ (Pair _ _) defs (λdef ((String/hash (FnDef/get_nam def)), def)))
   ret (Book/set_defs book (BinMap/from_list _ defs))
 }
@@ -18,12 +19,12 @@ Bend/Transform/desugar_fold : Book -> (Bend Book)
 // Desugars 'fold' expressions in a list of function definitions.
 // - defs: The list of function definitions to desugar.
 // = A new list of function definitions with all 'fold' expressions desugared.
-desugar_defs : Book -> (List FnDef) -> (Bend (List FnDef))
+./desugar_defs : Book -> (List FnDef) -> (Bend (List FnDef))
 | book []       = #Done{[]}
 | book def;;defs = do Bend {
-  ask (rules, new_defs, _) = (desugar_rules book def 0 (FnDef/get_rul def))
+  ask (rules, new_defs, _) = (./desugar_rules book def 0 (FnDef/get_rul def))
   let def  = (FnDef/set_rul def rules)
-  ask defs = (desugar_defs book (List/append _ new_defs defs))
+  ask defs = (./desugar_defs book (List/append _ new_defs defs))
   ret def;;defs
 }
 
@@ -32,13 +33,13 @@ desugar_defs : Book -> (List FnDef) -> (Bend (List FnDef))
 // - fresh: The fresh name count.
 // - rules: The list of rules to desugar.
 // = The desugared rules, the lifted folds, and the updated fresh name count.
-desugar_rules : Book -> FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
+./desugar_rules : Book -> FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
 | book def fresh [] = do Bend {
   ret ([], [], fresh)
 }
 | book def fresh (#Rule{pats body} ;; rules) = do Bend {
-  ask (rules, defs,     fresh) = (desugar_rules book def fresh rules)
-  ask (body,  new_defs, fresh) = (desugar_term  book def fresh body)
+  ask (rules, defs,     fresh) = (./desugar_rules book def fresh rules)
+  ask (body,  new_defs, fresh) = (./desugar_term  book def fresh body)
   ret (#Cons{#Rule{pats body} rules}, (List/append _ new_defs defs), fresh)
 }
 
@@ -48,7 +49,7 @@ desugar_rules : Book -> FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (Lis
 // - term: The term to desugar.
 // = The desugared term, the lifted folds and the fresh name count.
 //   Doesn't desugar inside the folds themselves.
-desugar_term : Book -> FnDef -> U64 -> Term -> (Bend (Term & (List FnDef) & U64))
+./desugar_term : Book -> FnDef -> U64 -> Term -> (Bend (Term & (List FnDef) & U64))
 | book #FnDef{nam typ chk rul src} fresh term@#Fld{bnd arg with_bnd with_arg arms} = do Bend {
   ask if (Term/has_unscoped_diff term) {
     #Fail{"Can't have non self-contained unscoped variables in a 'fold'"}
@@ -99,7 +100,7 @@ desugar_term : Book -> FnDef -> U64 -> Term -> (Bend (Term & (List FnDef) & U64)
   (Term/mmap_children_with _ _ Bend/Monad
     (λ_ λchild λs do Bend {
       let (defs, fresh) = s
-      ask (child, new_defs, fresh) = (desugar_term book def fresh child)
+      ask (child, new_defs, fresh) = (./desugar_term book def fresh child)
       ret (child, (List/append _ new_defs defs), fresh)
     })
     term ([], fresh))

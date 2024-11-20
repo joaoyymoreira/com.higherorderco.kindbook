@@ -68,13 +68,13 @@ parse_pat_dup : (Parser Pattern)
   ret #Fan{#Dup els} :: Pattern
 }
 
-parse_tup : Pattern -> (Parser Pattern)
+parse_pat_tup : Pattern -> (Parser Pattern)
 | = λhead do Parser {
   ask tail = (BP/list_like _ BP/Fun/parse_pattern "" ")" "," #True 1)
   ret #Fan{#Tup (head;;tail)} :: Pattern
 }
 
-parse_ctr : Pattern -> (Parser Pattern)
+parse_pat_ctr : Pattern -> (Parser Pattern)
 | #Var{#Some{name}} = do Parser {
   ask args = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
   ret #Ctr{name args} :: Pattern
@@ -87,9 +87,9 @@ parse_pat_ctr_or_tup : (Parser Pattern)
   ask head   = (BP/Fun/parse_pattern)
   ask is_tup = (BP/try_consume ",")
   if is_tup {
-    (parse_tup head)
+    (parse_pat_tup head)
   } else {
-    (parse_ctr head)
+    (parse_pat_ctr head)
   }
 }
 

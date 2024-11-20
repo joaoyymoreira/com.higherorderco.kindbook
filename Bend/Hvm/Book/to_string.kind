@@ -1,0 +1,23 @@
+Bend/Hvm/Book/to_string : Bend/Hvm/Book -> String
+| #Book{defs} = (String/join "\n\n" (List/map _ _ (BinMap/values _ defs) net_to_string))
+
+net_to_string : Bend/Hvm/Net -> String
+| #Net{name root rbag} = (String/concat [
+  "@" name " = " (term_to_string root) "\n  "
+  (String/join "\n  " (List/map _ _ rbag redex_to_string))
+])
+
+redex_to_string : Bend/Hvm/Redex -> String
+| #Redex{a b} = (String/concat [
+  "&" (term_to_string a) " ~ " (term_to_string b)
+])
+
+term_to_string : Bend/Hvm/Term -> String
+| #Var{nam}     = nam
+| #Ref{nam}     = (String/concat ["+" nam])
+| #Num{num}     = (U64/to_string num) // TODO: Implement the actual number display
+| #Con{fst snd} = (String/concat ["("  (term_to_string fst) " " (term_to_string snd) ")"])
+| #Dup{fst snd} = (String/concat ["{"  (term_to_string fst) " " (term_to_string snd) "}"])
+| #Opr{fst snd} = (String/concat ["$(" (term_to_string fst) " " (term_to_string snd) ")"])
+| #Swi{fst snd} = (String/concat ["?(" (term_to_string fst) " " (term_to_string snd) ")"])
+| #Era          = "*"

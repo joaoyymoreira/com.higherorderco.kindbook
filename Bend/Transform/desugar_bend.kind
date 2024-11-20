@@ -1,3 +1,4 @@
+use Bend/Transform/desugar_bend as .
 use Bend/Fun/Book as Book
 use Bend/Fun/FnDef as FnDef
 use Bend/Fun/Rule as Rule
@@ -15,32 +16,32 @@ NEW_FN_SEP : String
 Bend/Transform/desugar_bend : Book -> (Bend Book)
 | #Book{defs adts ctrs} = do Bend {
   let defs = (BinMap/values _ defs)
-  ask defs = (desugar_defs defs)
+  ask defs = (./desugar_defs defs)
   let defs = (List/map _ (Pair _ _) defs (λdef ((String/hash (FnDef/get_nam def)), def)))
   ret #Book{(BinMap/from_list _ defs) adts ctrs}
 }
 
-desugar_defs : (List FnDef) -> (Bend (List FnDef))
+./desugar_defs : (List FnDef) -> (Bend (List FnDef))
 | [] = do Bend {
   ret []
 }
 | def;;defs = do Bend {
-  ask (rules, new_defs, _) = (desugar_rules def 0 (FnDef/get_rul def))
-  ask defs = (desugar_defs (List/append _ new_defs defs))
+  ask (rules, new_defs, _) = (./desugar_rules def 0 (FnDef/get_rul def))
+  ask defs = (./desugar_defs (List/append _ new_defs defs))
   ret (FnDef/set_rul def rules) ;; defs
 }
 
-desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
+./desugar_rules : FnDef -> U64 -> (List Rule) -> (Bend ((List Rule) & (List FnDef) & U64))
 | def fresh [] = do Bend {
   ret ([], [], fresh)
 }
 | def fresh (#Rule{pats body} ;; rules) = do Bend {
-  ask (rules, defs, fresh)    = (desugar_rules def fresh rules)
-  ask (body, new_defs, fresh) = (desugar_term def 0 body)
+  ask (rules, defs, fresh)    = (./desugar_rules def fresh rules)
+  ask (body, new_defs, fresh) = (./desugar_term def 0 body)
   ret ((#Rule{pats body} ;; rules), (List/append _ new_defs defs), fresh)
 }
 
-desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
+./desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64)))
 | #FnDef{nam typ chk rul src} fresh term@#Bnd{bnd arg cond step base} = do Bend {
   ask if (Term/has_unscoped_diff term) {
     #Fail{"Can't have non self-contained unscoped variables in a 'bend'"}
@@ -81,7 +82,7 @@ desugar_term : FnDef -> U64 -> Term -> (Bend (Pair Term (Pair (List FnDef) U64))
 | def@#FnDef{_ _ _ _ _} fresh term =
   (Term/mmap_children_with _ _ Bend/Monad
     (λ_ λchild λ{#Pair{defs fresh}: do Bend {
-      ask (child, new_defs, fresh) = (desugar_term def fresh child)
+      ask (child, new_defs, fresh) = (./desugar_term def fresh child)
       ret (child, (List/append _ new_defs defs), fresh)
     }})
     term

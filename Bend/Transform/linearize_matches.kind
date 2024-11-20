@@ -1,3 +1,4 @@
+use Bend/Transform/linearize_matches as .
 use Bend/Fun/Book as Book
 use Bend/Fun/FnDef as FnDef
 use Bend/Fun/Rule as Rule
@@ -6,21 +7,21 @@ use Bend/Fun/MatchRule as MatchRule
 
 // Linearizes all variables used in a matches' arms.
 Bend/Transform/linearize_matches : Book -> Book
-| book = (Book/map_rules λ{#Rule{pats bod}: #Rule{pats (linearize_term bod)}} book)
+| book = (Book/map_rules λ{#Rule{pats bod}: #Rule{pats (./linearize_term bod)}} book)
 
-update_with : (List (Maybe String)) -> (List Term) -> (List String) -> (Pair (List (Maybe String)) (List Term))
+./update_with : (List (Maybe String)) -> (List Term) -> (List String) -> (Pair (List (Maybe String)) (List Term))
 | (#Some{nam} ;; with_bnd) (arg ;; with_arg) free_vars =
   if (List/contains _ String/IsEqual free_vars nam) {
-    let (with_bnd, with_arg) = (update_with with_bnd with_arg free_vars)
+    let (with_bnd, with_arg) = (./update_with with_bnd with_arg free_vars)
     ((#Some{nam} ;; with_bnd), (arg ;; with_arg))
   } else {
-    (update_with with_bnd with_arg free_vars)
+    (./update_with with_bnd with_arg free_vars)
   }
 | _ _ free_vars = ([], [])
 
 
 // Lifts free variables in match arms to lambdas
-lift_match_vars : 
+./lift_match_vars : 
   (List (Maybe String)) ->
   (List Term) ->
   (List (Pair (List String) Term)) ->
@@ -30,7 +31,7 @@ lift_match_vars :
     let (bnd, arm) = pair
     (List/difference _ String/IsEqual (Term/free_vars arm) bnd)))
   let free_vars            = (List/dedup _ String/Ord free_vars)
-  let (with_bnd, with_arg) = (update_with with_bnd with_arg free_vars)
+  let (with_bnd, with_arg) = (./update_with with_bnd with_arg free_vars)
   let free_vars            = (List/map _ (Maybe _) free_vars λx #Some{x})
   let arms                 = (List/map _ _ arms (λpair 
     let (_, arm) = pair
@@ -38,15 +39,15 @@ lift_match_vars :
   (with_bnd, with_arg, arms)
 
 // Linearizes matches in a term
-linearize_term : Term -> Term
+./linearize_term : Term -> Term
 | term = 
-  let term = (Term/map_children (λ_ linearize_term) term)
+  let term = (Term/map_children (λ_ ./linearize_term) term)
   match term {
     #Mat{bnd arg with_bnd with_arg arms}: 
       let armsA = (List/map _ (Pair _ _) arms (λrule 
         let #MatchRule{nam bnds bod} = rule
         ((List/concat_maybes _ bnds), bod)))
-      let (with_bnd, with_arg, bods) = (lift_match_vars with_bnd with_arg armsA)
+      let (with_bnd, with_arg, bods) = (./lift_match_vars with_bnd with_arg armsA)
       let arms = (List/map _ _ (List/zip _ _ bods arms) (λpair
         let (bod, arm)             = pair
         let #MatchRule{nam bnds _} = arm
@@ -59,7 +60,7 @@ linearize_term : Term -> Term
       let arms = (List/append _ 
         (List/map _ (Pair (List _) _) nums (λarm ([], arm)))
         [((Maybe/to_list _ pred), succ)])
-      let (with_bnd, with_arg, bods) = (lift_match_vars with_bnd with_arg arms)
+      let (with_bnd, with_arg, bods) = (./lift_match_vars with_bnd with_arg arms)
       #Swt{bnd arg with_bnd with_arg pred bods}
 
     _: term

@@ -1,12 +1,13 @@
 use Bend/Fun/Term as Term
+use Bend/Fun/Term/free_vars as .
 
 // Collects all the free variables that a term has
 // - term: The term to analyze
 // = A list of all the free variables in the term, in the order they appear
 Term/free_vars : Term -> (List String)
-| term = (List/dedup _ String/Ord (go term (BinMap/empty _)))
+| term = (List/dedup _ String/Ord (./go term (BinMap/empty _)))
 
-go : Term -> (BinMap Unit) -> (List String)
+./go : Term -> (BinMap Unit) -> (List String)
 | #Var{nam} scope with (BinMap/contains _ scope (String/hash nam))
 . | #True  = []
 . | #False = [nam]
@@ -14,7 +15,7 @@ go : Term -> (BinMap Unit) -> (List String)
   let cs = (Term/children term)
   (List/concat_map _ _
     cs
-    λ{#Pair{bnd child}: (go child (add_scope bnd scope))})
+    λ{#Pair{bnd child}: (./go child (add_scope bnd scope))})
 
 add_scope : (List String) -> (BinMap Unit) -> (BinMap Unit)
 | bnd scope =

@@ -1,29 +1,11 @@
 use Bend/Fun/Term as Term
 
 Term/map_children_with :
-  ∀(S: *) ((List String) -> Term -> S -> (Pair Term S)) -> Term -> (S -> (Pair Term S))
+  ∀(S: *) ((List String) -> Term -> (State S Term)) -> Term -> (State S Term)
 | S f t = λs
   let r = (Term/mmap_children
-            λA S -> (Pair A S)
-            (monad S)
+            λA (State S A)
+            (State/Monad S)
             f
-            t) :: S -> (Pair Term S)
+            t) :: (State S Term)
   (r s)
-
-
-State : ∀(S: *) * -> *
-| S = λA S -> (Pair A S)
-
-monad: ∀(S: *) (Monad (State S))
-| S = #Monad {
-  pure: (pure S)
-  bind: (bind S)
-}
-
-pure : ∀(S: *) ∀(A: *) A -> (State S A)
-| S A x s = #Pair{x s}
-
-bind : ∀(S: *) ∀(A: *) ∀(B: *) (State S A) -> (A -> (State S B)) -> (State S B)
-| S A B m f s =
-  let #Pair{a s} = (m s)
-  (f a s)

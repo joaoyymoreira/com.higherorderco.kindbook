@@ -1,3 +1,4 @@
+use Bend/Transform/desugar_use as .
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
 use Bend/Fun/FnDef as FnDef
@@ -7,17 +8,17 @@ use Bend/Fun/Rule as Rule
 // - book: The Book to desugar.
 // = A new Book with all 'use' expressions desugared.
 Bend/Transform/desugar_use : Book -> Book
-| book = (Book/map_rules λrule (Rule/set_bod rule (desugar_term (Rule/get_bod rule))) book)
+| book = (Book/map_rules λrule (Rule/set_bod rule (./desugar_term (Rule/get_bod rule))) book)
 
 // Desugars 'use' expressions in a term.
 // - term: The term to desugar.
 // = A new term with all 'use' expressions desugared.
-desugar_term : Term -> Term
+./desugar_term : Term -> Term
 | #Use{#Some{nam} val nxt} = 
-  let val = (desugar_term val)
-  let nxt = (desugar_term nxt)
+  let val = (./desugar_term val)
+  let nxt = (./desugar_term nxt)
   (Bend/Transform/subst nam val nxt)
 | #Use{#None val nxt} = 
-  (desugar_term nxt)
+  (./desugar_term nxt)
 | term = 
-  (Term/map_children λ_ desugar_term term)
+  (Term/map_children λ_ ./desugar_term term)

@@ -1,3 +1,4 @@
+use Bend/Transform/desugar_match_defs as .
 use Bend/Fun/Book as Book
 use Bend/Fun/Term as Term
 use Bend/Fun/Rule as Rule
@@ -11,36 +12,36 @@ use Bend/Fun/MatchRule as MatchRule
 Bend/Transform/desugar_match_defs : Book -> (Bend Book)
 | book = do Bend {
   let (keys, defs) = (List/unzip _ _ (BinMap/to_list _ (Book/get_defs book)))
-  ask defs = (List/mmap _ Bend/Monad _ _ defs (desugar_def book))
+  ask defs = (List/mmap _ Bend/Monad _ _ defs (./desugar_def book))
   ret (Book/set_defs book (BinMap/from_list _ (List/zip _ _ keys defs)))
 }
 
-desugar_def : Book -> FnDef -> (Bend FnDef)
+./desugar_def : Book -> FnDef -> (Bend FnDef)
 | book def = do Bend {
   // Desugar the Def terms inside of this function
   ask rules = (List/mmap _ Bend/Monad _ _ (FnDef/get_rul def) (λr do Bend {
-    ask body = (desugar_def_term book (Rule/get_bod r))
+    ask body = (./desugar_def_term book (Rule/get_bod r))
     ret (Rule/set_bod r body)
   }))
   // TODO: Show warning on repeated bind.
-  ask rules    = (List/mmap _ Bend/Monad _ _ rules fix_repeated_binds)
+  ask rules    = (List/mmap _ Bend/Monad _ _ rules ./fix_repeated_binds)
   ask rule     = (Maybe/to_result _ _ (List/head _ rules) "No rule")
   let ari      = (List/length_u64 _ (Rule/get_pat rule))
   let args     = (List/map _ _ (U64/range 0 ari) (λi (String/concat ["%arg" (U64/to_string i)])))
-  ask body     = (simplify_rule_match book args rules [])
+  ask body     = (./simplify_rule_match book args rules [])
   let body     = (Term/foldr_lam body (List/map _ _ args λx #Some{x}))
   ret (FnDef/set_rul def [#Rule{[] body}])
 }
 
 // Recursively desugars the pattern-matching def terms.
-desugar_def_term : Book -> Term -> (Bend Term)
+./desugar_def_term : Book -> Term -> (Bend Term)
 | book #Def{def nxt} = do Bend {
-  ask def = (desugar_def book def)
-  ask nxt = (desugar_def_term book nxt)
+  ask def = (./desugar_def book def)
+  ask nxt = (./desugar_def_term book nxt)
   ret #Def{def nxt}
 }
 | book term = 
-  (Term/mmap_children _ Bend/Monad (λ_ (desugar_def_term book)) term)
+  (Term/mmap_children _ Bend/Monad (λ_ (./desugar_def_term book)) term)
 
 // Creates the match tree for a given pattern matching function definition.
 // For each constructor, a match case is created.
@@ -56,24 +57,24 @@ desugar_def_term : Book -> Term -> (Bend Term)
 // expression, together with the remaining match arguments.
 //
 // Linearizes all the arguments that are used in at least one of the bodies.
-simplify_rule_match : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+./simplify_rule_match : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 // All arguments have been processed, all the remaining rules match, so we pick the first one.
 | book [] (rule ;; _) with_ = 
   #Done{(Rule/get_bod rule)}
 // The first rule matches all patterns, so we just return it as an optimization.
 | book args (rule ;; rules) with_ = 
   if (List/all _ (Rule/get_pat rule) Pat/is_wildcard) {
-    (irrefutable_fst_row_rule args rule)
+    (./irrefutable_fst_row_rule args rule)
   } else {
     do Bend {
       // Process the first column of the remaining rules.
       let rules = (rule ;; rules) :: (List _)
-      ask typ = (infer_typ_fst_col book rules)
+      ask typ = (./infer_typ_fst_col book rules)
       (match typ {
-        #Any:        (var_rule book       args rules with_)
-        #Adt{nam}:   (adt_rule book nam   args rules with_)
-        #Fan{fan n}: (fan_rule book fan n args rules with_)
-        #Num:        (num_rule book       args rules with_)
+        #Any:        (./var_rule book       args rules with_)
+        #Adt{nam}:   (./adt_rule book nam   args rules with_)
+        #Fan{fan n}: (./fan_rule book fan n args rules with_)
+        #Num:        (./num_rule book       args rules with_)
       })
     }
   }
@@ -84,7 +85,7 @@ simplify_rule_match : Book -> (List String) -> (List Rule) -> (List String) -> (
 // Irrefutable first row rule.
 // Short-circuits the encoding in case the first rule always matches.
 // This is useful to avoid unnecessary pattern matching.
-irrefutable_fst_row_rule : (List String) -> Rule -> (Bend Term)
+./irrefutable_fst_row_rule : (List String) -> Rule -> (Bend Term)
 | args #Rule{pats body} = 
   (List/mfoldl _ Bend/Monad _ (List/zip _ _ args pats) _ body (λterm λp
     let (arg, pat) = p
@@ -148,8 +149,8 @@ irrefutable_fst_row_rule : (List String) -> Rule -> (Bend Term)
 //   ...
 // }
 // ```
-// Where `case` represents a call of the [`simplify_rule_match`] function.
-adt_rule : Book -> String -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+// Where `case` represents a call of the [`./simplify_rule_match`] function.
+./adt_rule : Book -> String -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 | book adt_nam [] rules with_ = 
   #Fail{"Adt rule with no args"}
 | book adt_nam (arg ;; args) rules with_ = do Bend {
@@ -195,7 +196,7 @@ adt_rule : Book -> String -> (List String) -> (List Rule) -> (List String) -> (B
     } else {
       #Done{0}
     }
-    ask body = (simplify_rule_match book args rules with_)
+    ask body = (./simplify_rule_match book args rules with_)
     let arm  = #MatchRule{#Some{ctr_nam} (List/map _ _ args λx #Some{x}) body} :: MatchRule
     #Done{arm}
   }))
@@ -220,7 +221,7 @@ adt_rule : Book -> String -> (List String) -> (List Rule) -> (List String) -> (B
 //     (Body p0_0 ... p0_M p1 ... pN)
 // }
 // ```
-fan_rule : Book -> FanKind -> U64 -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+./fan_rule : Book -> FanKind -> U64 -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 | book fan len [] rules with_ = 
   #Fail{"Fan rule with no args"}
 | book fan len (arg ;; args) rules with_ = do Bend {
@@ -247,7 +248,7 @@ fan_rule : Book -> FanKind -> U64 -> (List String) -> (List Rule) -> (List Strin
   }))
   let bnd  = (List/map _ Pat new_args (λnam #Var{#Some{nam}}))
   let args = (List/append _ new_args args)
-  ask nxt  = (simplify_rule_match book args rules with_)
+  ask nxt  = (./simplify_rule_match book args rules with_)
   ret #Let{#Fan{fan bnd} #Var{arg} nxt}
 }
 
@@ -255,7 +256,7 @@ fan_rule : Book -> FanKind -> U64 -> (List String) -> (List Rule) -> (List Strin
 // `case x0 ... xN { var p1 ... pN: (Body var p1 ... pN) }`
 // becomesTerm as Term
 // `case x1 ... xN { p1 ... pN: use var = x0; (Body var p1 ... pN) }`
-var_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+./var_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 | book [] rules with_ = 
   #Fail{"Var rule with no args"}
 | book (arg ;; args) rules with_ = do Bend {
@@ -272,7 +273,7 @@ var_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
     } :: Term
     #Done{#Rule{pats body} :: Rule}
   }))
-  (simplify_rule_match book args rules (arg ;; with_))
+  (./simplify_rule_match book args rules (arg ;; with_))
 }
 
 // Desugars number pattern matching rules into switch expressions
@@ -281,7 +282,7 @@ var_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 // - rules   : The list of rules to desugar
 // - with_   : The list of variables in scope
 // = A term representing the desugared match, or an error message
-num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
+./num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 | book [] rules with_ = 
   #Fail{"Num rule with no args"}
 
@@ -325,7 +326,7 @@ num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
         _        : #Done{acc}
       }
     }))
-    ask term = (simplify_rule_match book args rules with_)
+    ask term = (./simplify_rule_match book args rules with_)
     ret term
   }))
 
@@ -340,7 +341,7 @@ num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
           let num = (+ last_num 1)
           let val = (Term/add_num #Var{var} num)
           let bod = #Use{#Some{var} val body} :: Term
-          let bod = (fast_pred_access num var pred bod)
+          let bod = (./fast_pred_access num var pred bod)
           #Done{(#Rule{pats bod} ;; acc)}
         _: #Done{acc}
       }
@@ -349,7 +350,7 @@ num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
   }))
 
   let dflt_with = (List/append _ with_ [pred])
-  ask dflt_body = (simplify_rule_match book args rules dflt_with)
+  ask dflt_body = (./simplify_rule_match book args rules dflt_with)
 
   // Linearize previously matched vars and current args.
   let with_     = (List/append _ with_ args)
@@ -382,46 +383,46 @@ num_rule : Book -> (List String) -> (List Rule) -> (List String) -> (Bend Term)
 // - pred: The name of the predecessor variable
 // - term: The term to process
 // = The processed term
-fast_pred_access : U64 -> String -> String -> Term -> Term
+./fast_pred_access : U64 -> String -> String -> Term -> Term
 | num var pred #Opr{#Sub #Var{fst} #Num{#U24{snd}}} =
   if (Bool/and (String/eq fst var) (U64/eq snd num)) {
     #Var{pred}
   } else {
     #Opr{#Sub #Var{fst} #Num{#U24{snd}}}
   }
-| num var pred term = (Term/map_children (λ_ λchild (fast_pred_access num var pred child)) term)
+| num var pred term = (Term/map_children (λ_ λchild (./fast_pred_access num var pred child)) term)
 
-infer_typ_fst_col : Book -> (List Rule) -> (Bend MatchType)
+./infer_typ_fst_col : Book -> (List Rule) -> (Bend ./MatchType)
 | book rules = do Bend {
   let fst_col = (List/map _ _ rules (λr (List/head _ (Rule/get_pat r))))
   ask fst_col = (Maybe/to_result _ _ (List/mmap _ Maybe/Monad _ _ fst_col λx x) "wrong arity in rule")
   (List/mfoldl _ Bend/Monad _ fst_col _ #Any (λexp λpat
-    let got = (Pat/to_match_type pat)
-    if (MatchType/eq #Any got) {
+    let got = (./Pat/to_match_type pat)
+    if (./MatchType/eq #Any got) {
       #Done{got}
-    } else { if (MatchType/eq exp #Any) {
+    } else { if (./MatchType/eq exp #Any) {
       #Done{exp}
-    } else { if (MatchType/eq exp got) {
+    } else { if (./MatchType/eq exp got) {
       #Done{exp}
     } else {
       #Fail{(String/concat [
         "Type mismatch in pattern matching rule. Expected a constructor of type '"
-        (MatchType/to_string exp) "', got '" (Pat/to_string pat)
-        "' with type '" (MatchType/to_string got) "'."
+        (./MatchType/to_string exp) "', got '" (Pat/to_string pat)
+        "' with type '" (./MatchType/to_string got) "'."
       ])}
     }}}
   ))
 }
 
-data MatchType {
+data Bend/Transform/desugar_match_defs/MatchType {
   #Any
   #Fan {kind: FanKind arity: U64}
   #Num
   #Adt {name: String}
 }
 
-// Equality comparison for MatchType
-MatchType/eq : MatchType -> MatchType -> Bool
+// Equality comparison for ./MatchType
+./MatchType/eq : ./MatchType -> ./MatchType -> Bool
 | #Any          #Any          = #True
 | #Fan{#Tup n1} #Fan{#Tup n2} = (U64/eq n1 n2)
 | #Fan{#Dup n1} #Fan{#Dup n2} = (U64/eq n1 n2)
@@ -429,14 +430,14 @@ MatchType/eq : MatchType -> MatchType -> Bool
 | #Adt{s1}      #Adt{s2}      = (String/eq s1 s2)
 | _             _             = #False
 
-MatchType/to_string : MatchType -> String
+./MatchType/to_string : ./MatchType -> String
 | #Any         = "any"
 | #Adt{nam}    = nam
 | #Fan{#Tup n} = (String/concat [(U64/to_string n) "-tuple"])
 | #Fan{#Dup n} = (String/concat [(U64/to_string n) "-dup"])
 | #Num         = "number"
 
-Pat/to_match_type : Pat -> MatchType
+./Pat/to_match_type : Pat -> ./MatchType
 | #Var{_}        = #Any
 | #Chn{_}        = #Any
 | #Num{_}        = #Num
@@ -455,7 +456,7 @@ Pat/to_match_type : Pat -> MatchType
 // // After this transformation, becomes:
 // (Foo * (Succ *) (Cons a)) = (a a)
 // ```
-fix_repeated_binds : Rule -> (Bend Rule)
+./fix_repeated_binds : Rule -> (Bend Rule)
 | rule = do Bend {
   let (_, pats) = (List/mmap (State _) (State/Monad (List _)) _ _ (Rule/get_pat rule) (λpat λfound
     (Pat/mmap_binds (State _) (State/Monad _) (λbnd λfound

@@ -4,6 +4,7 @@ use Bend/Fun/Book as Book
 Bend/main : (IO U64)
  = do IO {
   ask args = (IO/args 0)
+  ask _    = (IO/print (String/join " " args))
   match args {
     #Cons{cmd args}: match args {
       #Cons{file args}: match args {
@@ -22,33 +23,46 @@ Bend/main : (IO U64)
                 }
               }
             }
-            _: usage
+            _: (usage 0)
           } 
-        _: usage
+        _: (usage 0)
       }
-      _: usage
+      _: (usage 0)
     }
-    _: usage
+    _: (usage 0)
   }
 }
 
 
 run : Command -> Book -> (IO U64)
 | #GenBend book = do IO {
-  ask (IO/print "Bend book generated")
-  ret 0
-}
-| #GenCore book = do IO {
-  ask (IO/print "Core book generated")
-  ret 0
-}
-| #GenHvm book = do IO {
-  ask (IO/print "HVM book generated")
+  ask (IO/print (Bend/Fun/Book/to_string book))
   ret 0
 }
 
-usage : (IO U64)
-= do IO {
-  ask (IO/print "Usage: bend <gen-bend|gen-core|gen-hvm> <file>")
+| #GenCore book with (Bend/Run/to_bend_core book) 
+. | #Done{book} = do IO {
+  ask (IO/print (Bend/Fun/Book/to_string book))
+  ret 0
+}
+. | #Fail{msg} = (print_fail msg)
+
+| #GenHvm book with (Bend/Run/to_bend_core book)
+. | #Done{book} with (Bend/Run/to_hvm book)
+. . | #Done{book} = do IO {
+  ask (IO/print (Bend/Hvm/Book/to_string book))
+  ret 0
+}
+. . | #Fail{msg} = (print_fail msg)
+. | #Fail{msg} = (print_fail msg)
+
+print_fail : String -> (IO U64)
+| msg = do IO {
+  ask (IO/print msg)
   ret 1
 }
+
+usage : U64 -> (IO U64)
+| _ = 
+  let msg = "Usage: bend <gen-bend|gen-core|gen-hvm> <file>"
+  (print_fail msg)
