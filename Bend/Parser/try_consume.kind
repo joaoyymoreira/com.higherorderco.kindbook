@@ -6,7 +6,7 @@ Bend/Parser/try_consume : String -> (Parser Bool)
   ask (Parser/skip_trivia)
   (Parser/alternative Bool 
     (do Parser {
-      ask (Bend/Parser/consume_exactly target)
+      ask (Parser/consume target)
       (Parser/pure Bool #True)
     })
     (Parser/pure Bool #False)

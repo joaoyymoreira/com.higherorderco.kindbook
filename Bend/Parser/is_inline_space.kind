@@ -1,0 +1,7 @@
+Bend/Parser/is_inline_space : Char -> Bool
+| char = (U64/to_bool 
+  (| (== char 32)  // space
+  (| (== char 9)   // tab
+  (| (== char 13)  // carriage return
+  (| (== char 11)  // vertical tab
+  (== char 12))))))  // form feed

@@ -1,0 +1,30 @@
+use Bend/Parser/skip_trivia_inline as .
+
+// Skips all trivia (whitespace and comments).
+Bend/Parser/skip_trivia_inline : (Parser U64)
+| = (./go 0)
+
+./go : U64 -> (Parser U64)
+| n = do Parser {
+  ask c = (Parser/peek_one)
+  match c {
+    #Some{v}:
+      if (Char/eq v '\t') {
+        (Parser/fail _ "Tabs are not accepted for indentation.")
+      } else if (Bend/Parser/is_inline_space v) {
+        do Parser {
+          ask z = (Parser/advance_one)
+          (./go (+ n 1))
+        }
+      } else if (Char/eq v '#') {
+        do Parser {
+          ask _ = (Bend/Parser/skip_multi_line_comment 0)
+          ask _ = (Bend/Parser/skip_single_line_comment)
+          (./go n)
+        }
+      } else {
+        (Parser/pure _ n)
+      }
+    #None: (Parser/pure _ n)
+  }
+} 

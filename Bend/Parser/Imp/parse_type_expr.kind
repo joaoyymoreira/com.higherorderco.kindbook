@@ -1,0 +1,116 @@
+use Bend/Parser/Imp/parse_type_expr as .
+use Bend/Parser as BP
+use Bend/Fun/Type as Type
+
+// Parses a type expression, returning the type and the type variables.
+Bend/Parser/Imp/parse_type_expr : Bool -> (Parser Type)
+| inline = do Parser {
+  ask if inline { BP/skip_trivia_inline } else { BP/skip_trivia }
+  ask ini_idx = Parser/get_index
+  ask parens  = (Parser/starts_with "(")
+  ask typ     = if parens do Parser {
+    ask _   = (Parser/advance_one)
+    ask BP/skip_trivia
+    ask typ = (BP/Imp/parse_type_expr #False)
+    ask BP/skip_trivia
+    ask _   = (Parser/consume ")")
+    ret typ
+  } else {
+    ./parse_primary
+  }
+  ask typ     = (./parse_suffix inline typ)
+  ask end_idx = Parser/get_index
+  ret typ
+}
+
+./parse_primary : (Parser Type)
+| =
+  let starts_with_name = do Parser {
+    ask c = (Parser/peek_one)
+    ret (Maybe/fold _ c Bool #False Char/is_alpha)
+  }
+  (BP/first_with_guard _ [
+    ((BP/starts_with_keyword "Any") , ./parse_any)
+    ((BP/starts_with_keyword "None"), ./parse_none)
+    ((BP/starts_with_keyword "_")   , ./parse_hole)
+    ((BP/starts_with_keyword "u24") , ./parse_u24)
+    ((BP/starts_with_keyword "i24") , ./parse_i24)
+    ((BP/starts_with_keyword "f24") , ./parse_f24)
+    ((starts_with_name)             , ./parse_var_or_ctr)
+  ] (Parser/fail _ "Expected type expression"))
+
+./parse_suffix : Bool -> Type -> (Parser Type)
+| inline head = do Parser {
+  ask if inline { BP/skip_trivia_inline } else { BP/skip_trivia }
+  (BP/first_with_guard _ [
+    ((Parser/starts_with ",") , (./parse_tup inline head))
+    ((Parser/starts_with "->"), (./parse_arr inline head))
+  ] (Parser/pure _ head))
+}
+
+./parse_any : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "Any")
+  ret #Any
+}
+
+./parse_none : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "None")
+  ret #Non
+}
+
+./parse_hole : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "_")
+  ret #Hol
+}
+
+./parse_u24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "u24")
+  ret #U24
+}
+
+./parse_i24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "i24")
+  ret #I24
+}
+
+./parse_f24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "f24")
+  ret #F24
+}
+
+./parse_var_or_ctr : (Parser Type)
+| = do Parser {
+  ask name  = (BP/parse_var_name)
+  ask BP/skip_trivia_inline
+  ask paren = (BP/try_consume_exactly "(")
+  if paren do Parser {
+    ask BP/skip_trivia
+    ask args = (BP/list_like _ (BP/Imp/parse_type_expr #False) "" ")" "," #True 0)
+    ret #Ctr{name args}
+  } else do Parser {
+    ret #Var{name}
+  }
+}
+
+./parse_arr : Bool -> Type -> (Parser Type)
+| inline fst = do Parser {
+  ask _   = (Parser/consume "->")
+  ask snd = (BP/Imp/parse_type_expr inline)
+  ret #Arr{fst snd}
+}
+
+./parse_tup : Bool -> Type -> (Parser Type)
+| inline head = do Parser {
+  ask _    = (Parser/consume ",")
+  ask tail = (BP/Imp/parse_type_expr inline)
+  match tail {
+    #Tup{tail}: (Parser/pure _ #Tup{head;;tail})
+    _         : (Parser/pure _ #Tup{[head tail]})
+  }
+}

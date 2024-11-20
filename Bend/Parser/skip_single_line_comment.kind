@@ -1,0 +1,15 @@
+// Skips a single_line comment.
+Bend/Parser/skip_single_line_comment : (Parser Unit)
+= do Parser {
+  ask is_comment = (Parser/starts_with "#")
+  if is_comment {
+    do Parser {
+      ask x = (Parser/advance_one)
+      ask x = (Parser/take_while (λc (Char/neq c '\n')))
+      ask x = (Parser/advance_one)
+      ret #Unit
+    }
+  } else {
+    (Parser/pure Unit #Unit)
+  }
+}

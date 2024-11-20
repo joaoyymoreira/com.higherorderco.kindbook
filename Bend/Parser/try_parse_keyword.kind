@@ -7,7 +7,7 @@ Bend/Parser/try_parse_keyword : String -> (Parser Bool)
   ask is_kw = (Bend/Parser/starts_with_keyword keyword)
   if is_kw {
     do Parser {
-      ask (Bend/Parser/consume_exactly keyword)
+      ask (Parser/consume keyword)
       (Parser/pure Bool #True)
     }
   } else {

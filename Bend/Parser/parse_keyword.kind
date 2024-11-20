@@ -5,7 +5,7 @@ Bend/Parser/parse_keyword : String -> (Parser Unit)
 | keyword = do Parser {
   ask is_kw = (Bend/Parser/starts_with_keyword keyword)
   if is_kw {
-    (Bend/Parser/consume keyword)
+    (Parser/consume keyword)
   } else {
     (Parser/fail Unit (String/append "Expected keyword '" (String/append keyword "'")))
   }

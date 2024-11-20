@@ -1,0 +1,34 @@
+// Skips a multi_line comment.
+Bend/Parser/skip_multi_line_comment : U64 -> (Parser Unit)
+| depth = do Parser {
+  ask is_comment = (Parser/starts_with "#{")
+  if is_comment {
+    do Parser {
+      ask y = (Parser/advance_many 2)
+      (Bend/Parser/skip_to_comment_end (+ depth 1))
+    }
+  } else {
+    (Parser/pure Unit #Unit)
+  }
+} 
+
+// Auxiliary function for skip_multi_line_comment.
+Bend/Parser/skip_to_comment_end : U64 -> (Parser Unit)
+| 0     = (Parser/pure Unit #Unit)
+| depth = do Parser {
+  ask is_start = (Parser/starts_with "#{")
+  ask is_end   = (Parser/starts_with "#}")
+  if (is_start) {
+    (Bend/Parser/skip_multi_line_comment depth)
+  } else if (is_end) {
+    do Parser {
+      ask w = (Parser/advance_many 2)
+      (Bend/Parser/skip_to_comment_end (- depth 1))
+    }
+  } else {
+    do Parser {
+      ask w = (Parser/advance_one)
+      (Bend/Parser/skip_to_comment_end depth)
+    }
+  }
+}

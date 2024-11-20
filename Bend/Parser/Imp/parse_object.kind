@@ -1,0 +1,61 @@
+use Bend/Parser as BP
+use Bend/Fun/Adt as Adt
+use Bend/Fun/Ctr as Ctr
+use Bend/Source as Source
+use Bend/Fun/Type as Type
+
+// Parses an object definition.
+// -: The parser.
+// - indent: The current indentation level.
+// = A ParseResult containing the parsed Adt and the next indentation level.
+Bend/Parser/Imp/parse_object : U64 -> (Parser (U64 & Adt & Ctr))
+| indent = do Parser {
+  ask if (U64/eq indent 0) {
+    (Parser/fail _ (String/concat
+      ["Indentation error. Types defined with 'object' must be at the start of the line."]))
+  } else do Parser { ret 0 }
+
+  ask ini_idx = (Parser/get_index)
+
+  ask _      = (BP/parse_keyword "object")
+  ask (BP/skip_trivia_inline)
+
+  ask name   = (BP/parse_top_level_name)
+  ask BP/skip_trivia_inline
+
+  // Parse type variables
+  ask paren  = (Parser/starts_with "(")
+  ask vars   = if paren {
+    (BP/list_like _ (BP/parse_name "type variable") "(" ")" "," #True 0)
+  } else do Parser {
+    ret []
+  }
+  ask BP/skip_trivia_inline
+
+  // Parse fields
+  ask fields = (Parser/starts_with "{")
+  ask fields = if fields {
+    (BP/list_like _ BP/Imp/parse_ctr_field "{" "}" "," #True 0)
+  } else do Parser {
+    ret []
+  }
+  let field_types = (List/map _ _ fields Bend/Fun/CtrField/get_typ)
+
+  ask end_idx = (Parser/get_index)
+  ask (BP/check_repeated_ctr_fields fields name ini_idx end_idx)
+
+  // Handle end of input or new line
+  ask eof = (Parser/is_eof)
+  ask if (Bool/not eof) {
+    (BP/consume_new_line)
+  } else do Parser { ret 0 }
+  ask nxt_indent = (BP/skip_newlines)
+
+  // Create Adt
+  let typ  = (BP/make_ctr_type name field_types vars)
+  let ctr  = #Ctr{name name typ fields} :: Ctr
+  let src  = (Source/from_file_span ini_idx end_idx)
+  let adt  = #Adt{name vars [name] src} :: Adt
+
+  ret (nxt_indent, adt, ctr)
+}

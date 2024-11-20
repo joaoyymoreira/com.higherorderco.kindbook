@@ -58,7 +58,7 @@ parse_pat_lst : (Parser Pattern)
 
 parse_pat_era : (Parser Pattern)
 | = do Parser {
-  ask _ = (BP/consume "*")
+  ask _ = (Parser/consume "*")
   ret #Var{#None} :: Pattern
 }
 
@@ -83,7 +83,7 @@ parse_pat_ctr : Pattern -> (Parser Pattern)
 
 parse_pat_ctr_or_tup : (Parser Pattern)
 | = do Parser {
-  ask _      = (BP/consume "(")
+  ask _      = (Parser/consume "(")
   ask head   = (BP/Fun/parse_pattern)
   ask is_tup = (BP/try_consume ",")
   if is_tup {
@@ -95,7 +95,7 @@ parse_pat_ctr_or_tup : (Parser Pattern)
 
 parse_pat_chn : (Parser Pattern)
 | = do Parser {
-  ask _    = (BP/consume "$")
+  ask _    = (Parser/consume "$")
   ask name = (BP/parse_name "unscoped variable")
   ret #Chn{name} :: Pattern
 }

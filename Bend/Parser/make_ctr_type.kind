@@ -1,0 +1,7 @@
+use Bend/Fun/Type as Type
+
+Bend/Parser/make_ctr_type : String -> (List Type) -> (List String) -> Type
+| name fields vars =
+  let type = #Ctr{name (List/map _ Type vars λx #Var{x})} :: Type
+  let type = (List/foldr _ fields _ type (λfield λacc #Arr{field acc}))
+  type

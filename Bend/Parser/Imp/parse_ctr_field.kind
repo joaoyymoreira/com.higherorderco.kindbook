@@ -1,0 +1,19 @@
+use Bend/Parser as BP
+use Bend/Fun/CtrField as CtrField
+
+// Parses a constructor field.
+BP/Imp/parse_ctr_field : (Parser CtrField)
+| = do Parser {
+  ask rec = (BP/try_consume_exactly "~")
+  ask BP/skip_trivia_inline
+  ask nam = (BP/parse_var_name)
+  ask BP/skip_trivia_inline
+  ask typ = (Parser/starts_with ":")
+  ask typ = if typ {
+    (BP/Imp/parse_type_expr #True)
+  } else do Parser {
+    ret #Any
+  }
+
+  ret #CtrField{nam rec typ}
+}

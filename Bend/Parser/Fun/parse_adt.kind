@@ -29,7 +29,7 @@ parse_name_and_vars : (Parser (Pair String (List String)))
     ask _    = (BP/skip_trivia)
     ask name = (BP/parse_name "datatype")
     ask vars = (BP/list_like _ (BP/parse_name "type variable") "" ")" "" #False 0)
-    ask _    = (BP/consume "=")
+    ask _    = (Parser/consume "=")
     ret (name, vars) :: (_ & _)
   } else do Parser {
     ask name = (BP/parse_name "datatype")
@@ -52,7 +52,7 @@ parse_field : (Parser CtrField)
     } else do Parser {
       ret #Any :: Type
     }
-    ask _   = (BP/consume ")")
+    ask _   = (Parser/consume ")")
     ret #CtrField{nam rec typ} :: CtrField
   } else do Parser {
     ask nam = (BP/parse_name "datatype constructor field")

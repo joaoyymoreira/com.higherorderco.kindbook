@@ -1,9 +1,12 @@
 // Consumes exactly the given string from the input.
 // - target: String to consume.
 // = Parser that returns Unit if successful, fails otherwise.
-Bend/Parser/consume_exactly : String -> (Parser Unit)
-| target state = (Parser/consume target state)
+Parser/consume : String -> (Parser U64)
+| target = do Parser {
+  ask (Parser/consume target)
+  ret 0
+}
 
-#test: (Bend/Parser/consume_exactly "hello" #State{"hello world" 0}) == #Done{#Reply{#State{" world" 5} #Unit}}
-#test: (Bend/Parser/consume_exactly "hello" #State{"world"       0}) == #Fail{#Error{0 "Expected hello"}}
-#test: (Bend/Parser/consume_exactly ""      #State{"hello"       0}) == #Done{#Reply{#State{"hello" 0} #Unit}}
+#test: (Parser/consume "hello" #State{"hello world" 0}) == #Done{#Reply{#State{" world" 5} 0}}
+#test: (Parser/consume "hello" #State{"world"       0}) == #Fail{#Error{0 "Expected hello"}}
+#test: (Parser/consume ""      #State{"hello"       0}) == #Done{#Reply{#State{"hello" 0} 0}}

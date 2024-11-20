@@ -1,0 +1,20 @@
+use Bend/Parser/check_repeated_ctr_fields as .
+use Bend/Fun/CtrField as CtrField
+use Bend/Parser as BP
+
+// Checks if a list of constructor fields contains repeated fields.
+// - fields: The list of fields to check.
+// - name: The name of the constructor being defined.
+// - ini_idx: The index of the start of the constructor definition.
+// - end_idx: The index of the end of the constructor definition.
+// = Returns 0 if no repeated fields are found, or an error message otherwise.
+Bend/Parser/check_repeated_ctr_fields : (List CtrField) -> String -> U64 -> U64 -> (Parser U64)
+| fields name ini_idx end_idx with (./go (List/map _ _ fields CtrField/get_nam))
+. | #Done{_}  = (Parser/pure _ 0)
+. | #Fail{field} = (Parser/fail _ (String/concat ["Found repeated field '" field "' in constructor '" name "'."]))
+
+./go : (List String) -> (Result U64 String)
+| (field;;fields) with (List/contains _ String/IsEqual fields field)
+. | #True = #Fail{field}
+. | #False = (./go fields)
+| [] = #Done{0}

@@ -18,7 +18,7 @@ Bend/Parser/Fun/parse_rule_lhs : (Maybe String) -> (Parser (Pair String (List Pa
     ask _    = BP/skip_trivia
     ask name = p_nam
     ask pats = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
-    ask _    = (BP/consume "=")
+    ask _    = (Parser/consume "=")
     ret (name, pats) :: (Pair _ _)
   } else do Parser {
     ask _    = BP/skip_trivia
