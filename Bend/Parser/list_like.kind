@@ -11,8 +11,7 @@ use Bend/Parser as BP
 // = List of parsed elements.
 Bend/Parser/list_like: ∀(A: *) (Parser A) -> String -> String -> String -> Bool -> U64 -> (Parser (List A))
 | A parser start end sep hard_sep min_els = do Parser {
-  ask (BP/skip_trivia)
-  ask (Parser/consume start)
+  ask (BP/consume start)
   ask (BP/skip_trivia)
   ask elements =
     if hard_sep {
@@ -26,27 +25,23 @@ Bend/Parser/list_like: ∀(A: *) (Parser A) -> String -> String -> String -> Boo
 // Parse elements with optional separators
 parse_soft: ∀(A: *) (Parser A) -> String -> String -> (List A) -> U64 -> (Parser (List A))
 | A parser end sep acc 0 = do Parser {
-  (Parser/alternative (List A)
-    (do Parser {
-      ask (BP/skip_trivia)
-      ask (Parser/consume end)
-      ret acc
-    })
-    (do Parser {
-      ask (BP/skip_trivia)
-      ask el = parser
-      ask (BP/skip_trivia)
-      ask (BP/try_consume_exactly sep)
-      (parse_soft A parser end sep (el;;acc) 0)
-      }
-    )
-  )
+  ask (BP/skip_trivia)
+  ask is_end = (Parser/starts_with end)
+  if is_end do Parser {
+    ask (BP/consume end)
+    ret acc
+  } else do Parser {
+    ask el = parser
+    ask (BP/skip_trivia)
+    ask (BP/try_consume sep)
+    (parse_soft A parser end sep (el;;acc) 0)
+  }
 }
 | A parser end sep acc 1+n = do Parser {
   ask (BP/skip_trivia)
   ask el = parser
   ask (BP/skip_trivia)
-  ask (BP/try_consume_exactly sep)
+  ask (BP/try_consume sep)
   (parse_soft A parser end sep (el;;acc) n)
 }
 
@@ -56,47 +51,41 @@ parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> U64 -> (Pars
   ask (BP/skip_trivia)
   ask el = parser
   ask (BP/skip_trivia)
-  ask (Parser/consume sep)
+  ask (BP/consume sep)
   (parse_hard A parser end sep (el;;acc) (+ n 1))
 }
 | A parser end sep acc 1 = do Parser {
   ask (BP/skip_trivia)
   ask el = parser
   ask (BP/skip_trivia)
-  ask is_sep  = (BP/try_consume_exactly sep)
+  ask is_sep  = (BP/try_consume sep)
   if is_sep {
     (parse_hard A parser end sep (el;;acc) 0)
   } else {
     do Parser {
       ask (BP/skip_trivia)
-      ask (Parser/consume end)
+      ask (BP/consume end)
       ret (el;;acc)
     }
   }
 }
 | A parser end sep acc 0 = do Parser {
-  (Parser/alternative (List A)
-    (do Parser {
-      ask (BP/skip_trivia)
-      ask (Parser/consume end)
-      ret acc 
-      }
-    )
-    (do Parser {
-      ask el     = parser
-      ask (BP/skip_trivia)
-      ask is_sep = (BP/try_consume_exactly sep)
-      if is_sep {
-        (parse_hard A parser end sep (el;;acc) 0)
-      } else {
-        do Parser {
-          ask (BP/skip_trivia)
-          ask (Parser/consume end)
-          ret (el;;acc)
-        }
-      }}
-    )
-  )
+  ask _      = (BP/skip_trivia)
+  ask is_end = (Parser/starts_with end)
+  if is_end do Parser {
+    ask (BP/consume end)
+    ret acc
+  } else do Parser {
+    ask el     = parser
+    ask _      = (BP/skip_trivia)
+    ask is_sep = (BP/try_consume sep)
+    if is_sep {
+      (parse_hard A parser end sep (el;;acc) 0)
+    } else do Parser {
+      ask (BP/consume end)
+      ret (el;;acc)
+    }
+  }
 }
 
 
@@ -109,3 +98,9 @@ parse_hard: ∀(A: *) (Parser A) -> String -> String -> (List A) -> U64 -> (Pars
 #test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 0)  #State{"(foo,bar,baz)"  0}) == (#Done{#Reply{#State{"" 13} ["foo" "bar" "baz"]}})
 #test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 0)  #State{"(foo,bar,baz,)" 0}) == (#Done{#Reply{#State{"" 14} ["foo" "bar" "baz"]}})
 #test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 0)  #State{"(foo bar,baz)"  0}) == (#Fail{#Error{5 "Expected )"}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 0)  #State{"(foo)"          0}) == (#Done{#Reply{#State{"" 5} ["foo"]}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 0)  #State{"(foo,)"         0}) == (#Done{#Reply{#State{"" 6} ["foo"]}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 1)  #State{"(foo)"          0}) == (#Done{#Reply{#State{"" 5} ["foo"]}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 1)  #State{"(foo,)"         0}) == (#Done{#Reply{#State{"" 6} ["foo"]}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 2)  #State{"(foo,bar)"      0}) == (#Done{#Reply{#State{"" 9} ["foo" "bar"]}})
+#test: ((BP/list_like String (BP/parse_var_name) "(" ")" "," #True 2)  #State{"(foo,bar,)"     0}) == (#Done{#Reply{#State{"" 10} ["foo" "bar"]}})

@@ -1,0 +1,22 @@
+use Bend/Parser as BP
+
+Bend/Parser/Imp/parse_hvm : (Parser Bend/Hvm/Net)
+| = do Parser {
+  ask ini_idx = (Parser/get_index)
+  
+  ask (BP/parse_keyword "hvm")
+  ask (BP/skip_trivia_inline)
+
+  ask name    = (BP/parse_top_level_name)
+  ask (BP/skip_trivia_inline)
+
+  ask typ     = (BP/Imp/parse_return_type)
+  let typ     = (Maybe/run _ typ #Any)
+  ask _       = (BP/skip_trivia_inline)
+
+  ask _       = (BP/consume ":")
+  ask _       = (BP/consume_new_line)
+
+  // TODO: implement HVM parser
+  (Parser/fail _ "HVM definitions not implemented")
+}

@@ -6,7 +6,6 @@ use Bend/Parser as BP
 // = The parsed pattern.
 Bend/Parser/Fun/parse_pattern : (Parser Pattern)
 | = do Parser {
-  ask _ = Parser/skip_trivia
   let starts_with_num = do Parser {
     ask x = (Parser/peek_one)
     ret (Maybe/fold _ x Bool #False Char/is_digit)
@@ -15,6 +14,7 @@ Bend/Parser/Fun/parse_pattern : (Parser Pattern)
     ask x = (Parser/peek_one)
     ret (Maybe/fold _ x Bool #False BP/is_name_char)
   }
+  ask BP/skip_trivia
   (BP/first_with_guard _ [
     ((Parser/starts_with "(") , parse_pat_ctr_or_tup)
     ((Parser/starts_with "$") , parse_pat_chn)
@@ -84,8 +84,11 @@ parse_pat_ctr : Pattern -> (Parser Pattern)
 parse_pat_ctr_or_tup : (Parser Pattern)
 | = do Parser {
   ask _      = (Parser/consume "(")
+  ask _      = (BP/skip_trivia)
   ask head   = (BP/Fun/parse_pattern)
+  ask _      = (BP/skip_trivia)
   ask is_tup = (BP/try_consume ",")
+  ask _      = (BP/skip_trivia)
   if is_tup {
     (parse_pat_tup head)
   } else {
@@ -96,6 +99,7 @@ parse_pat_ctr_or_tup : (Parser Pattern)
 parse_pat_chn : (Parser Pattern)
 | = do Parser {
   ask _    = (Parser/consume "$")
+  ask _    = (BP/skip_trivia)
   ask name = (BP/parse_name "unscoped variable")
   ret #Chn{name} :: Pattern
 }

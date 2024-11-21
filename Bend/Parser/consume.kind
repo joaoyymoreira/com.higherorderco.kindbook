@@ -1,0 +1,13 @@
+// Consumes exactly the given string from the input.
+// - target: String to consume.
+// = Parser that returns 0 if successful, fails otherwise.
+Bend/Parser/consume : String -> (Parser U64)
+| target = do Parser {
+  ask _ = (Parser/consume target)
+  ret 0
+}
+
+#test: (Bend/Parser/consume "hello" #State{"hello world" 0}) == #Done{#Reply{#State{" world" 5} 0}}
+#test: (Bend/Parser/consume "hello" #State{" hello"      0}) == #Fail{#Error{0 "Expected hello"}}
+#test: (Bend/Parser/consume "hello" #State{"world"       0}) == #Fail{#Error{0 "Expected hello"}}
+#test: (Bend/Parser/consume ""      #State{"hello"       0}) == #Done{#Reply{#State{"hello" 0} 0}}

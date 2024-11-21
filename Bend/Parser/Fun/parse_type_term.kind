@@ -6,19 +6,21 @@ use Bend/Parser as BP
 // = The parsed type term.
 BP/Fun/parse_type_term : (Parser Type)
 | = do Parser {
-  ask left   = (./parse_type_atom)
+  ask _      = (BP/skip_trivia)
+  ask lft    = (./parse_type_atom)
+  ask _      = (BP/skip_trivia)
   ask is_arr = (BP/try_consume "->")
   if is_arr do Parser {
-    ask right = (BP/Fun/parse_type_term)
-    ret #Arr{left right} :: Type
+    ask _   = (BP/skip_trivia)
+    ask rgt = (BP/Fun/parse_type_term)
+    ret #Arr{lft rgt} :: Type
   } else do Parser {
-    ret left
+    ret lft
   }
 }
 
 ./parse_type_atom : (Parser Type)
 | = do Parser {
-  ask _ = (BP/skip_trivia)
   (BP/first_with_guard _ [
     ((BP/starts_with_keyword "Any") , ./parse_any)
     ((BP/starts_with_keyword "None"), ./parse_none)
@@ -68,18 +70,22 @@ BP/Fun/parse_type_term : (Parser Type)
 
 ./parse_parenthesized : (Parser Type)
 | = do Parser {
-  ask _    = (Parser/consume "(")
+  ask _    = (BP/consume "(")
+  ask _    = (BP/skip_trivia)
   ask head = (BP/Fun/parse_type_term)
   ask _    = (BP/skip_trivia)
   ask one  = (Parser/peek_one)
   match one {
     #Some{one}:
       if (U64/eq one ')') do Parser {
-        ask _ = (Parser/consume ")")
+        ask _    = (BP/consume ")")
         ret head
       } else if (U64/eq one ',') do Parser {
+        ask _    = (BP/consume ",")
+        ask _    = (BP/skip_trivia)
         ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
-        ask _    = (Parser/consume ")")
+        ask _    = (BP/skip_trivia)
+        ask _    = (BP/consume ")")
         ret #Tup{head;;tail} :: Type
       } else {
         (parse_constructor head)
@@ -90,9 +96,11 @@ BP/Fun/parse_type_term : (Parser Type)
 
 parse_tuple : Type -> (Parser Type)
 | head = do Parser {
-  ask _    = (Parser/consume ",")
+  ask _    = (BP/consume ",")
+  ask _    = (BP/skip_trivia)
   ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
-  ask _    = (Parser/consume ")")
+  ask _    = (BP/skip_trivia)
+  ask _    = (BP/consume ")")
   ret #Tup{head;;tail} :: Type
 }
 

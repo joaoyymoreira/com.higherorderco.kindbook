@@ -1,3 +1,4 @@
+use Bend/Parser/Fun/parse_file as .
 use Bend/Fun/Adt as Adt
 use Bend/Fun/Ctr as Ctr
 use Bend/Fun/FnDef as FnDef
@@ -9,9 +10,9 @@ use Bend/Load/File as File
 // = A new ParseBook with the parsed definitions.
 Bend/Parser/Fun/parse_file : (Parser File)
 // TODO: Store file path
-| = (go #File{(BinMap/empty _) (BinMap/empty _) (BinMap/empty _) ""})
+| = (./go #File{(BinMap/empty _) (BinMap/empty _) (BinMap/empty _) ""})
 
-data TopLevel {
+data Bend/Parser/Fun/parse_file/TopLevel {
   #FunDef { def: FnDef }
   #TypeDef{ adt: Adt ctrs: (List Ctr) }
   // #ImpDef
@@ -19,37 +20,33 @@ data TopLevel {
   // #Import
 }
 
-
 // Helper function to iteratively build the ParseBook.
-go : File -> (Parser File)
+./go : File -> (Parser File)
 | file = do Parser {
   ask _   = BP/skip_trivia
   ask eof = Parser/is_eof
   if eof do Parser {
     ret file
   } else do Parser {
-    ask def  = parse_top_level
-    ask file = (add_top_level def file)
-    (go file)
+    ask def  = ./parse_top_level
+    ask file = (./add_top_level def file)
+    (./go file)
   }
 }
 
-starts_with_fndef : (Parser Bool)
-| = do Parser {
-  ask c        = Parser/peek_one
-  let is_fndef = (Maybe/fold _ c Bool #False λc (Bool/or (BP/is_name_char c) (Char/eq c '(')))
-  ret is_fndef
-}
-
 // Parses a single top-level definition.
-parse_top_level : (Parser TopLevel)
+./parse_top_level : (Parser ./TopLevel)
 | = do Parser {
-  // TODO: Other top-level definitions
+  let starts_with_fndef = do Parser {
+    ask c        = Parser/peek_one
+    let is_fndef = (Maybe/fold _ c Bool #False λc (Bool/or (BP/is_name_char c) (Char/eq c '(')))
+    ret is_fndef
+  }
   (BP/first_with_guard _ [
-    ((BP/starts_with_keyword "type")  , (Parser/map _ TopLevel BP/Fun/parse_adt (λx let (adt, ctrs) = x #TypeDef{adt ctrs})))
+    ((BP/starts_with_keyword "type")  , (Parser/map _ ./TopLevel BP/Fun/parse_adt (λx let (adt, ctrs) = x #TypeDef{adt ctrs})))
     ((BP/starts_with_keyword "object"), (Parser/fail _ "not implemented"))
     ((BP/starts_with_keyword "hvm")   , (Parser/fail _ "not implemented"))
-    ((starts_with_fndef)              , (Parser/map _ TopLevel BP/Fun/parse_fn_def (λx #FunDef{x})))
+    ((starts_with_fndef)              , (Parser/map _ ./TopLevel BP/Fun/parse_fn_def (λx #FunDef{x})))
   ] (Parser/fail _ "Expected top-level definition"))
 }
 
@@ -58,7 +55,7 @@ parse_top_level : (Parser TopLevel)
 // - def: The parsed top-level definition.
 // - book: The current ParseBook.
 // = A new ParseBook with the top-level definition added.
-add_top_level : TopLevel -> File -> (Parser File)
+./add_top_level : ./TopLevel -> File -> (Parser File)
 | #FunDef{def} #File{fun adts ctrs path} = do Parser {
   // TODO: Check for repeats
   let fun = (BinMap/set _ fun (String/hash (FnDef/get_nam def)) def)

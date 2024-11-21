@@ -92,7 +92,7 @@ parse_num_radix : U64 -> (Parser U64)
 // Parses the fractional part of the number in the given radix.
 parse_frac_part : U64 -> (Parser (Maybe F64))
 | radix = do Parser {
-  ask has_frac = (BP/try_consume_exactly ".")
+  ask has_frac = (BP/try_consume ".")
   if has_frac do Parser {
     ask digits = (Parser/take_while (is_digit_radix radix))
     let digits = (String/filter digits (λc (Bool/not (Char/eq c '_'))))

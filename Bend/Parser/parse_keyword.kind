@@ -1,15 +1,14 @@
 // Parses a Bend keyword: a name followed by a non-name character.
 // - keyword: The keyword to parse.
-// = Parser that returns Unit if successful, or fails if not found.
-Bend/Parser/parse_keyword : String -> (Parser Unit)
+// = Parser that returns 0 if successful, or fails if not found.
+Bend/Parser/parse_keyword : String -> (Parser U64)
 | keyword = do Parser {
   ask is_kw = (Bend/Parser/starts_with_keyword keyword)
   if is_kw {
-    (Parser/consume keyword)
+    (Bend/Parser/consume keyword)
   } else {
-    (Parser/fail Unit (String/append "Expected keyword '" (String/append keyword "'")))
-  }
+    (Parser/fail _ (String/append "Expected keyword '" (String/append keyword "'")))  }
 }
 
-#test: (Bend/Parser/parse_keyword "let" #State{"let x = 5" 0}) == #Done{#Reply{#State{" x = 5" 3} #Unit}}
+#test: (Bend/Parser/parse_keyword "let" #State{"let x = 5" 0}) == #Done{#Reply{#State{" x = 5" 3} 0}}
 #test: (Bend/Parser/parse_keyword "if" #State{"else"       0}) == #Fail{#Error{0 "Expected keyword 'if'"}}

@@ -17,12 +17,15 @@ Bend/Parser/Fun/parse_rule_lhs : (Maybe String) -> (Parser (Pair String (List Pa
   if has_parens do Parser {
     ask _    = BP/skip_trivia
     ask name = p_nam
+    ask _    = BP/skip_trivia
     ask pats = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
-    ask _    = (Parser/consume "=")
+    ask _    = BP/skip_trivia
+    ask _    = (BP/consume "=")
     ret (name, pats) :: (Pair _ _)
   } else do Parser {
     ask _    = BP/skip_trivia
     ask name = p_nam
+    ask _    = BP/skip_trivia
     ask pats = (BP/list_like _ BP/Fun/parse_pattern "" "=" "" #False 0)
     ret (name, pats) :: (Pair _ _)
   }

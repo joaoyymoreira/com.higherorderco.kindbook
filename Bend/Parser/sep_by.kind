@@ -33,7 +33,7 @@ BP/sep_by/go : ∀(A: *) (Parser A) -> String -> U64 -> (List A) -> (Parser (Lis
     })
     (do Parser {
       ask (BP/skip_trivia)
-      ask (BP/try_consume_exactly sep)
+      ask (BP/try_consume sep)
       ret #Cons{val acc}
     }))
   ret res
@@ -51,7 +51,7 @@ BP/sep_by/go : ∀(A: *) (Parser A) -> String -> U64 -> (List A) -> (Parser (Lis
         })
         (do Parser {
           ask (BP/skip_trivia)
-          ask consumed = (BP/try_consume_exactly sep)
+          ask consumed = (BP/try_consume sep)
           ret #Cons{val acc}
         }))
       ret res

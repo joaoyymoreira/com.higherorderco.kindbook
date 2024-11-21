@@ -4,7 +4,7 @@ use Bend/Fun/CtrField as CtrField
 // Parses a constructor field.
 BP/Imp/parse_ctr_field : (Parser CtrField)
 | = do Parser {
-  ask rec = (BP/try_consume_exactly "~")
+  ask rec = (BP/try_consume "~")
   ask BP/skip_trivia_inline
   ask nam = (BP/parse_var_name)
   ask BP/skip_trivia_inline
