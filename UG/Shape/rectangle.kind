@@ -11,5 +11,4 @@ UG/Shape/rectangle : V2 -> F64 -> F64 -> UG/Shape
   let top_r    = (V2/new half_w (- 0.0 half_h))
   let bottom_r = (V2/new half_w half_h)
   let bottom_l = (V2/new (- 0.0 half_w) half_h)
- 
   #Polygon {center [top_l top_r bottom_r bottom_l]}

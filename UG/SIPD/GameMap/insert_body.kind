@@ -10,5 +10,4 @@ UG/SIPD/GameMap/insert_body : UG/SIPD/GameMap -> UG/SIPD/Body -> UG/SIPD/GameMap
   } else {
     #GameMap{width height new_bodies bodies_count}
   }
-  //let new_body_count = (+ bodies_count 1)
-  //#GameMap{width height bodies new_body_count}
+

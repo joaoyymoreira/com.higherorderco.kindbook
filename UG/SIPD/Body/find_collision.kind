@@ -8,7 +8,7 @@ use UG/SIPD as G
 // FIX: this should return a list of collision, not only the first it finds
 // TEMPORARY WORKAROUND: id to ignore, fixed when we have TEAMS (ignore collision with teammates)
 G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
-| to_ignore #Body{id hitbox tick effects collidable} #Nil = #None
+| to_ignore #Body{id hitbox tick effects collidable} #Nil                                                      = #None
 | to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
     let diff_ids = (U64/neq id id1)
     let diff_ig = (U64/neq id1 to_ignore)
@@ -20,3 +20,4 @@ G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body
     } else {
       (G/Body/find_collision to_ignore #Body{id hitbox tick effects collidable} rest)
     }
+

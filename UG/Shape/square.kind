@@ -10,5 +10,5 @@ UG/Shape/square : V2 -> F64 -> UG/Shape
   let top_right    = (V2/new half_side half_side)
   let bottom_right = (V2/new half_side neg_half)
   let bottom_left  = (V2/new neg_half neg_half)
-
   #Polygon{center [top_left top_right bottom_right bottom_left]}
+

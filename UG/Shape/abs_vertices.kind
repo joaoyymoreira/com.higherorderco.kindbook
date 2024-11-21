@@ -2,7 +2,7 @@
 // - shape: Shape to calculate vertices for.
 // = List of V2 points representing absolute vertices.
 UG/Shape/abs_vertices : UG/Shape -> (List V2)
-| #Circle{center radius} = #Nil
+| #Circle{center radius}    = #Nil
 | #Polygon{center vertices} =
   (List/map V2 V2 vertices (UG/Shape/abs_vertices/go center))
 

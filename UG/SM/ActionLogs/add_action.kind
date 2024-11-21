@@ -6,6 +6,6 @@
 // = New ActionLogs with action added.
 UG/SM/ActionLogs/add_action : ∀(A: *) (UG/SM/ActionLogs A) -> UG/SM/Tick -> A -> (UG/SM/ActionLogs A)
 | A map tick action with (BinMap/get (List A) map (U64/to_bits tick))
-. | #None = (BinMap/set (List A) map (U64/to_bits tick) [action])
+. | #None          = (BinMap/set (List A) map (U64/to_bits tick) [action])
 . | #Some{actions} = (BinMap/set (List A) map (U64/to_bits tick) (List/append A actions [action]))
 

@@ -5,7 +5,7 @@ grow_projectile : G/State -> U64 -> G/State
 | #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} body_id with (G/Body/get_body body_id bodies)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
-..| #Circle{center radius} = 
+..| #Circle{center radius}    = 
   let growth_factor = 0.015
   let new_radius = (F64/add radius (F64/mul radius growth_factor))
   let new_hitbox = (UG/Shape/circle center new_radius)
@@ -14,7 +14,7 @@ grow_projectile : G/State -> U64 -> G/State
 
 tick_projectile : U64 -> G/State -> G/State
 | body_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+.| #None       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{body} = 
   let state = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
   (grow_projectile state body_id)
@@ -24,9 +24,8 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let hero_pos = (UG/Shape/get_center hitbox)
   let mouse_pos = (G/Player/get_mouse_pos player "W")
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
-  let speed = 1.9
 
-  // FIXME not use hardcoded value
+  let speed = 1.9
   let offset_distance = (* 20.0 2.0)
 
   let bullet_pos = (V2/add hero_pos (V2/mul_scalar direction offset_distance))
@@ -44,6 +43,6 @@ UG/SIPD/Effect/shoot : U64 -> F64 -> F64 -> U64 -> G/Effect
 | player_id range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (Map/get G/Player players player_id)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Player{id name keys target #Hero{owner_id hname skills body_id}}} with (G/Body/get_body body_id bodies)
-..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+..| #None            = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 ..| #Some{hero_body} = (shoot/go hero_body #Player{id name keys target #Hero{owner_id hname skills body_id}} range bullet_radius duration #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 

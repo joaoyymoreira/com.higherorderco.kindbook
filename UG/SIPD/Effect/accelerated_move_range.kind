@@ -2,7 +2,7 @@ use UG/SIPD as G
 
 UG/SIPD/Effect/accelerated_move_range : U64 -> F64 -> V2 -> F64 -> F64 -> U64 -> G/Effect -> G/Effect
 | body_id initial_speed target range acceleration duration effect #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with (G/Body/get_body body_id bodies)
-.| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+.| #None                                                = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{#Body{id hitbox body_tick effects collidable}} =
   let hitbox_center = (UG/Shape/get_center hitbox)
   let distance_to_target = (V2/sub target hitbox_center)

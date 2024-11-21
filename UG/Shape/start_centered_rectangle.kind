@@ -11,5 +11,5 @@ UG/Shape/start_centered_rectangle : V2 -> F64 -> F64 -> UG/Shape
   let top_right    = (V2/new half_width height)
   let bottom_right = (V2/new half_width 0.0)
   let bottom_left  = (V2/new (F64/sub 0.0 half_width) 0.0)
-  
   #Polygon{start [top_left top_right bottom_right bottom_left]}
+

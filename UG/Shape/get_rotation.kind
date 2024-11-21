@@ -2,7 +2,7 @@
 // - shape: The Shape to get the rotation from.
 // = The rotation angle in radians.
 UG/Shape/get_rotation : UG/Shape -> F64
-| #Circle{center radius} = 0.0
+| #Circle{center radius}    = 0.0
 | #Polygon{center vertices} =
   match vertices {
     #Nil: 0.0

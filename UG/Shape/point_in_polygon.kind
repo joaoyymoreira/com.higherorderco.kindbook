@@ -33,9 +33,8 @@ process_edge : V2 -> Bool -> (Pair V2 V2) -> Bool
 // - vertices: List of polygon vertices.
 // = True if point is inside polygon, False otherwise.
 UG/Shape/point_in_polygon : V2 -> (List V2) -> Bool
-| point #Nil = #False
-| point #Cons{v vs} =
-  (point_in_polygon/go point #False (List/append V2 (#Cons{v vs}) #Cons{v #Nil}))
+| point #Nil        = #False
+| point #Cons{v vs} = (point_in_polygon/go point #False (List/append V2 (#Cons{v vs}) #Cons{v #Nil}))
 
 // Helper function for point_in_polygon.
 // - point: Point to check.
@@ -43,7 +42,7 @@ UG/Shape/point_in_polygon : V2 -> (List V2) -> Bool
 // - vertices: Remaining vertices to process.
 // = Final inside/outside state.
 point_in_polygon/go : V2 -> Bool -> (List V2) -> Bool
-| point inside #Nil = inside
-| point inside #Cons{v1 #Cons{v2 vs}} = 
-  (point_in_polygon/go point (process_edge point inside #Pair{v1 v2}) #Cons{v2 vs})
-| point inside #Cons{v #Nil} = inside
+| point inside #Nil                   = inside
+| point inside #Cons{v1 #Cons{v2 vs}} = (point_in_polygon/go point (process_edge point inside #Pair{v1 v2}) #Cons{v2 vs})
+| point inside #Cons{v #Nil}          = inside
+

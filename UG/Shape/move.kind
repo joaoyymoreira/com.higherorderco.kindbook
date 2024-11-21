@@ -3,7 +3,7 @@
 // - v: The vector to move the Shape by.
 // = A new Shape moved by the given vector.
 UG/Shape/move : UG/Shape -> V2 -> UG/Shape
-| #Circle{center radius} v = 
+| #Circle{center radius}    v = 
   #Circle{
     center: (V2/add center v)
     radius: radius

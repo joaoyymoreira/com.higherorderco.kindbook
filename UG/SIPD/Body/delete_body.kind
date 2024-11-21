@@ -6,3 +6,4 @@ use UG/SIPD as G
 // = The updated OrdTree with the body removed.
 UG/SIPD/Body/delete_body : U64 -> (Map (Maybe G/Body)) -> (Map (Maybe G/Body))
 | body_id bodies = (Map/delete G/Body bodies body_id)
+

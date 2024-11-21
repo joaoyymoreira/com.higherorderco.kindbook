@@ -9,7 +9,7 @@ use UG/SIPD as G
 // - state: Current game state
 // = Updated game state after applying pressed skills
 G/Hero/apply_pressed_skills : (List String) -> U64 -> (OrdTree String G/Skill) -> (OrdTree String (Pair Bool V2)) -> (OrdTree String U64) -> G/State -> G/State
-| #Nil player_id skills player_keys cooldowns state = state
+| #Nil            player_id skills player_keys cooldowns state = state
 | #Cons{key keys} player_id skills player_keys cooldowns state =
   let new_state = (G/Hero/apply_skill_if_pressed key player_id skills player_keys cooldowns state)
   (G/Hero/apply_pressed_skills keys player_id skills player_keys cooldowns new_state)

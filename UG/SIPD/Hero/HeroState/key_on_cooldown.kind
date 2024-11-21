@@ -1,5 +1,5 @@
 
 UG/SIPD/Hero/HeroState/key_on_cooldown : String -> (OrdTree String U64) -> Bool
 | key cooldowns with (OrdTree/get String U64 String/Ord cooldowns key)
-.| #None = #True
+.| #None           = #True
 .| #Some{cooldown} = (U64/neq cooldown 0)

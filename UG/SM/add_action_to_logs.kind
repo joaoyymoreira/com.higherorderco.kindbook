@@ -8,13 +8,5 @@
 UG/SM/add_action_to_logs : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> A -> (UG/SM/Mach S A)
 | S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} tick action =
   let new_logs = (UG/SM/ActionLogs/add_action A action_logs tick action)
-  #Mach{
-    ticks_per_second: ticks_per_second
-    genesis_tick:     genesis_tick
-    cached_tick:      cached_tick
-    state_logs:       state_logs
-    action_logs:      new_logs
-    action_eq:        action_eq
-  }
-
+  #Mach{ ticks_per_second genesis_tick cached_tick state_logs new_logs action_eq}
 

@@ -40,7 +40,7 @@ make_skills : G/State -> U64 -> U64 -> (Pair (OrdTree String G/Skill) G/State)
 
 get_body_effects_state : (Maybe G/Body) -> G/State -> G/State
 | #Some{body} state = (G/Body/apply_effects body state)
-| #None state       = state
+| #None       state = state
 
 apply_skill_if_not_on_cooldown : G/Skill -> U64 -> G/State -> G/State
 | skill cooldown state =

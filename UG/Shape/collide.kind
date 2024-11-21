@@ -5,8 +5,8 @@
 // - original: Original vertices (for wrapping).
 // = True if any edge intersects, False otherwise.
 UG/Shape/check_edges : V2 -> F64 -> (List V2) -> (List V2) -> Bool
-| center radius #Nil                    original = #False
-| center radius #Cons{head #Nil}        original = #False
+| center radius #Nil                     original = #False
+| center radius #Cons{head #Nil}         original = #False
 | center radius #Cons{head #Cons{v2 vs}} original =
   if (UG/Shape/line_circle_intersection head v2 center radius) {
     #True
@@ -29,8 +29,8 @@ UG/Shape/any_vertex_inside : (List V2) -> (List V2) -> Bool
 // - original: Original list of vertices.
 // = True if there's an intersection, False otherwise.
 UG/Shape/check_against_all : V2 -> V2 -> (List V2) -> (List V2) -> Bool
-| p1 p2 #Nil original = #False
-| p1 p2 #Cons{w1 #Nil} original = #False
+| p1 p2 #Nil                   original = #False
+| p1 p2 #Cons{w1 #Nil}         original = #False
 | p1 p2 #Cons{w1 #Cons{w2 ws}} original = (Bool/or (UG/Shape/line_line_intersection p1 p2 w1 w2) (UG/Shape/check_against_all p1 p2 #Cons{w2 ws} original))
 
 // Checks if any edge of the first polygon intersects with any edge of the second polygon.
@@ -38,8 +38,8 @@ UG/Shape/check_against_all : V2 -> V2 -> (List V2) -> (List V2) -> Bool
 // - poly2: Vertices of the second polygon.
 // = True if there's an intersection, False otherwise.
 UG/Shape/any_edges_intersect : (List V2) -> (List V2) -> Bool
-| #Nil poly2 = #False
-| #Cons{v1 #Nil} poly2 = #False
+| #Nil                   poly2 = #False
+| #Cons{v1 #Nil}         poly2 = #False
 | #Cons{v1 #Cons{v2 vs}} poly2 = (Bool/or (UG/Shape/check_against_all v1 v2 poly2 poly2) (UG/Shape/any_edges_intersect #Cons{v2 vs} poly2))
 
 // Checks if two shapes collide.
@@ -66,3 +66,4 @@ UG/Shape/collide : UG/Shape -> UG/Shape -> Bool
   let p2_in_p1 = (UG/Shape/any_vertex_inside abs_p2 abs_p1)
   let edges_intersect = (UG/Shape/any_edges_intersect abs_p1 abs_p2)
   (Bool/or (Bool/or p1_in_p2 p2_in_p1) edges_intersect)
+

@@ -9,13 +9,6 @@ UG/SM/update_mach : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Tick -> S -> (
 | S A #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} t s
 = let new_cached_tick = (U64/max cached_tick t)
   let new_state_logs  = (UG/SM/StateLogs/push S s state_logs t)
-  #Mach{
-    ticks_per_second
-    genesis_tick
-    cached_tick: new_cached_tick
-    state_logs: new_state_logs
-    action_logs
-    action_eq
-  }
+  #Mach{ticks_per_second genesis_tick new_cached_tick new_state_logs action_logs action_eq}
 
 #test: (UG/SM/Mach/cached_tick U64 U64 (UG/SM/update_mach U64 U64 (UG/SM/new_mach U64 U64 10 U64/eq) 5 3)) == 5

@@ -14,7 +14,7 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> G/Sta
 .| #Some{line} with (G/Body/get_body player_id bodies)
 ..| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 ..| #Some{hero} with (Map/get G/Player players player_id)
-...| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
+...| #None         = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 ...| #Some{player} =
   let #Body{hero_id hero_hitbox hero_tick hero_effects hero_collidable} = hero
   let hero_pos = (UG/Shape/get_center hero_hitbox)

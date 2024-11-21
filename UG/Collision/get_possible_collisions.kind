@@ -4,7 +4,7 @@
 // - acc: Accumulator for collision pairs.
 // = List of possible collision pairs.
 UG/Collision/get_possible_collisions/go : (QuadTree UG/Shape) -> (List (QuadTree/Object UG/Shape)) -> (List (Pair UG/Shape UG/Shape)) -> (List (Pair UG/Shape UG/Shape))
-| qt #Nil acc = acc
+| qt #Nil                            acc = acc
 | qt #Cons{#Object{bounds value} os} acc = 
   let potential = (QuadTree/query UG/Shape qt bounds)
   let new_collisions = (UG/Collision/filter_potential_collisions #Object{bounds value} potential)

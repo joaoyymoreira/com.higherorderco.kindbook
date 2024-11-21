@@ -20,7 +20,4 @@ UG/Shape/triangle : V2 -> V2 -> V2 -> UG/Shape
   let rv1 = (V2/sub v1 c)
   let rv2 = (V2/sub v2 c)
   let rv3 = (V2/sub v3 c)
-  #Polygon{
-    center: c
-    vertices: [rv1 rv2 rv3]
-  }
+  #Polygon{center: c vertices: [rv1 rv2 rv3]}

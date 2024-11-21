@@ -14,7 +14,7 @@ UG/SIPD/Body/apply_effects : UG/SIPD/Body -> UG/SIPD/State -> UG/SIPD/State
 // - effects: List of effects to apply.
 // = Updated state after applying effects.
 UG/SIPD/Body/apply_effects/go : UG/SIPD/Body -> UG/SIPD/State -> (List UG/SIPD/Effect) -> UG/SIPD/State
-| body state #Nil                = state
+| body state #Nil             = state
 | body state #Cons{head tail} = 
   let updated_body = (UG/SIPD/Body/set_effects body tail)
   let #Body{id hitbox tick effects collidable} = updated_body
@@ -29,6 +29,5 @@ UG/SIPD/Body/apply_effects/go : UG/SIPD/Body -> UG/SIPD/State -> (List UG/SIPD/E
 // - effects: New effects list.
 // = Updated body with new effects.
 UG/SIPD/Body/set_effects : UG/SIPD/Body -> (List UG/SIPD/Effect) -> UG/SIPD/Body
-| #Body{id hitbox tick effects collidable} new_effects = 
-  #Body{id hitbox tick new_effects collidable}
+| #Body{id hitbox tick effects collidable} new_effects = #Body{id hitbox tick new_effects collidable}
 

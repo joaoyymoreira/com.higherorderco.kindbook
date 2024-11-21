@@ -2,5 +2,5 @@
 // - shape: The Shape to get the center from.
 // = The center point of the Shape as a V2.
 UG/Shape/get_center : UG/Shape -> V2
-| #Circle{center radius}   = center
+| #Circle{center radius}  = center
 | #Polygon{center points} = center

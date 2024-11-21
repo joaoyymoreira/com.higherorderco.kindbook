@@ -18,7 +18,7 @@ dps/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
       }
     #None: state
   }
-.| _ = state
+.| _            = state
 
 // Applies a damage effect to the body it collides if its a hero.
 // - body_id: the body that does the damage
