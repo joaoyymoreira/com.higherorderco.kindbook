@@ -1,0 +1,14 @@
+// Takes the first n elements from a list.
+// - A: Element type.
+// - xs: Input list.
+// - n: Number of elements to take.
+// = List with first n elements of xs, or all of xs if n > length xs.
+List/take_u64 : ∀(A: *) (List A) -> U64 -> (List A)
+| A []    _   = []
+| A _;;_  0   = []
+| A x;;xs 1+n = x ;; (List/take_u64 A xs n)
+
+#test: (List/take_u64 U64 [1 2 3 4 5] 3) == [1 2 3]
+#test: (List/take_u64 U64 [1 2 3] 5)     == [1 2 3]
+#test: (List/take_u64 U64 [] 3)          == []
+#test: (List/take_u64 U64 [1 2 3] 0)     == []

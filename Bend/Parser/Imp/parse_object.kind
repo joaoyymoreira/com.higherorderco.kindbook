@@ -10,52 +10,74 @@ use Bend/Fun/Type as Type
 // = A ParseResult containing the parsed Adt and the next indentation level.
 Bend/Parser/Imp/parse_object : U64 -> (Parser (U64 & Adt & Ctr))
 | indent = do Parser {
-  ask if (U64/eq indent 0) {
-    (Parser/fail _ (String/concat
-      ["Indentation error. Types defined with 'object' must be at the start of the line."]))
-  } else do Parser { ret 0 }
-
+  ask if (U64/neq indent 0) {
+    (Parser/fail _ "Indentation error. Types defined with 'object' must be at the start of the line.")
+  } else do Parser {
+    ret 0
+  }
   ask ini_idx = (Parser/get_index)
+  ask _       = (BP/parse_keyword "object")
+  ask (BP/skp_inline)
 
-  ask _      = (BP/parse_keyword "object")
-  ask (BP/skip_trivia_inline)
-
-  ask name   = (BP/parse_top_level_name)
-  ask BP/skip_trivia_inline
+  ask name    = (BP/parse_top_level_name)
+  ask BP/skp_inline
 
   // Parse type variables
-  ask paren  = (Parser/starts_with "(")
-  ask vars   = if paren {
+  ask paren   = (Parser/starts_with "(")
+  ask vars    = if paren {
     (BP/list_like _ (BP/parse_name "type variable") "(" ")" "," #True 0)
   } else do Parser {
     ret []
   }
-  ask BP/skip_trivia_inline
+  ask BP/skp_inline
 
   // Parse fields
-  ask fields = (Parser/starts_with "{")
-  ask fields = if fields {
+  ask fields  = (Parser/starts_with "{")
+  ask fields  = if fields {
     (BP/list_like _ BP/Imp/parse_ctr_field "{" "}" "," #True 0)
   } else do Parser {
     ret []
   }
-  let field_types = (List/map _ _ fields Bend/Fun/CtrField/get_typ)
+  let fld_typ = (List/map _ _ fields Bend/Fun/CtrField/get_typ)
 
   ask end_idx = (Parser/get_index)
-  ask (BP/check_repeated_ctr_fields fields name ini_idx end_idx)
+  ask _       = (BP/check_repeated_ctr_fields fields name ini_idx end_idx)
 
   // Handle end of input or new line
-  ask eof = (Parser/is_eof)
+  ask eof     = (Parser/is_eof)
   ask if (Bool/not eof) {
     (BP/consume_new_line)
   } else do Parser { ret 0 }
-  ask nxt_indent = (BP/skip_newlines)
+  ask indent  = (BP/skp_newlines)
 
   // Create Adt
-  let typ  = (BP/make_ctr_type name field_types vars)
-  let ctr  = #Ctr{name name typ fields} :: Ctr
-  let src  = (Source/from_file_span ini_idx end_idx)
-  let adt  = #Adt{name vars [name] src} :: Adt
+  let typ     = #Ctr{name (List/map _ Type vars λx #Var{x})} :: Type
+  let typ     = (List/foldr _ fld_typ _ typ (λfield λacc #Arr{field acc}))
+  let ctr     = #Ctr{name name typ fields} :: Ctr
+  let src     = (Source/from_file_span ini_idx end_idx)
+  let adt     = #Adt{name vars [name] src} :: Adt
 
-  ret (nxt_indent, adt, ctr)
+  ret (indent, adt, ctr)
 }
+
+#test: (Bend/Parser/Imp/parse_object 0 #State{"object A" 0}) == #Done{#Reply{#State{"" 8} (0, 
+  #Adt{"A" [] ["A"] (Source/from_file_span 0 1)}, #Ctr{"A" "A" #Ctr{"A" []} []})}}
+
+#test: (Bend/Parser/Imp/parse_object 0 #State{"object Box { a }" 0}) == #Done{#Reply{#State{"" 16} (0, 
+  #Adt{"Box" [] ["Box"] (Source/from_file_span 0 1)},
+  #Ctr{"Box" "Box" #Arr{#Any #Ctr{"Box" []}} [#CtrField{"a" #False #Any}]})}}
+
+
+#test: (Bend/Parser/Imp/parse_object 0 #State{"object V2 { x: f24, y: f24 }" 0}) ==
+  #Done{#Reply{#State{"" 28} (0,
+    #Adt{"V2" [] ["V2"] (Source/from_file_span 0 28)},
+    #Ctr{"V2" "V2"
+      #Arr{#F24 #Arr{#F24 #Ctr{"V2" []}}}
+      [#CtrField{"x" #False #F24} #CtrField{"y" #False #F24}]})}}
+
+#test: (Bend/Parser/Imp/parse_object 0 #State{"object Pair(A, B) { x: A, y: B }" 0}) ==
+  #Done{#Reply{#State{"" 32} (0,
+    #Adt{"Pair" ["A" "B"] ["Pair"] (Source/from_file_span 0 32)},
+    #Ctr{"Pair" "Pair"
+      #Arr{#Var{"A"} #Arr{#Var{"B"} #Ctr{"Pair" [#Var{"A"} #Var{"B"}]}}}
+      [#CtrField{"x" #False #Var{"A"}} #CtrField{"y" #False #Var{"B"}}]})}}

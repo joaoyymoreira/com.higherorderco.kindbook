@@ -23,7 +23,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
     ret (Maybe/fold _ x Bool #False BP/is_name_char)
   }
   
-  ask _ = (BP/skip_trivia)
+  ask _ = (BP/skp)
   (BP/first_with_guard _ [
     (starts_with_lam                  , ./parse_lam)
     ((BP/starts_with_keyword "let")   , ./parse_let)
@@ -80,35 +80,35 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_parens : (Parser Term)
 | = do Parser {
   ask _      = (BP/consume "(")
-  ask _      = (BP/skip_trivia)
+  ask _      = (BP/skp)
   ask opr    = (Parser/alternative _
     (do Parser {ask opr = BP/parse_oper ret #Some{opr} :: (Maybe _)})
     (do Parser {ret #None}))
-  ask _      = (BP/skip_trivia)
+  ask _      = (BP/skp)
   ask is_tup = (BP/try_consume ",")
   match opr {
     #Some{opr}: if is_tup {
       match opr {
         #Mul: do Parser {
-          ask (BP/skip_trivia)
+          ask (BP/skp)
           (./parse_tup #Era)
         }
         _   : (Parser/fail _ "Expected term")
       }
     } else do Parser {
       ask fst = (BP/Fun/parse_term)
-      ask _   = (BP/skip_trivia)
+      ask _   = (BP/skp)
       ask snd = (BP/Fun/parse_term)
-      ask _   = (BP/skip_trivia)
+      ask _   = (BP/skp)
       ask _   = (BP/consume ")")
       ret #Opr{opr fst snd} :: Term
     }
     #None: do Parser {
       ask head   = (BP/Fun/parse_term)
-      ask _      = (BP/skip_trivia)
+      ask _      = (BP/skp)
       ask is_tup = (BP/try_consume ",")
       if is_tup do Parser {
-        ask (BP/skip_trivia)
+        ask (BP/skp)
         (./parse_tup head)
       } else {
         (./parse_app head)
@@ -191,15 +191,15 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_let : (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "let")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask pat = (BP/Fun/parse_pattern)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume "=")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask val = (BP/Fun/parse_term)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/try_consume ";")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nxt = (BP/Fun/parse_term)
   ret #Let{pat val nxt} :: Term
 }
@@ -207,15 +207,15 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_use : (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "use")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nam = (BP/parse_var_name)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume "=")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask val = (BP/Fun/parse_term)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/try_consume ";")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nxt = (BP/Fun/parse_term)
   ret #Use{#Some{nam} val nxt} :: Term
 }
@@ -223,15 +223,15 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_ask : (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "ask")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask pat = (BP/Fun/parse_pattern)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume "=")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask val = BP/Fun/parse_term
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/try_consume ";")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nxt = BP/Fun/parse_term
   ret #Ask{pat val nxt} :: Term
 }
@@ -239,26 +239,26 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_wth: (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "with")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask typ = (BP/parse_name "type")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume "{")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask bod = BP/Fun/parse_term
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/try_consume "}")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ret #Wth{typ bod} :: Term
 }
 
 ./parse_mat: (Parser Term)
 | = do Parser {
   ask _            = (BP/parse_keyword "match")
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask (bnd, arg)   = (./parse_match_arg)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask with         = (./parse_match_with)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   let (wbnd, warg) = (List/unzip _ _ with)
   ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
   ret #Mat{bnd arg wbnd warg arms} :: Term
@@ -267,18 +267,18 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_swi : (Parser Term)
 | = do Parser {
   ask _            = (BP/parse_keyword "switch")
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask (bnd, arg)   = (./parse_match_arg)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask with         = (./parse_match_with)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   let (wbnd, warg) = (List/unzip _ _ with)
   ask _            = (BP/consume "{")
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask (pred, arms) = (./parse_switch_arms 0 [])
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask _            = (BP/consume "}")
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   let arms         = (List/reverse _ arms)
   let pred         = (Maybe/map _ _ bnd (λbnd (String/concat [bnd "-" (U64/to_string pred)])))
   ret #Swt{bnd arg wbnd warg pred arms} :: Term
@@ -287,10 +287,10 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_named_arg : (Parser ((Maybe String) & Term))
 | = do Parser {
   ask nam     = (BP/parse_name "argument name")
-  ask _       = (BP/skip_trivia)
+  ask _       = (BP/skp)
   ask has_arg = (BP/try_consume "=")
   if has_arg do Parser {
-    ask _   = BP/skip_trivia
+    ask _   = BP/skp
     ask arg = BP/Fun/parse_term
     ret (#Some{nam}, arg) :: ((Maybe _) & Term)
   } else do Parser {
@@ -301,13 +301,13 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_match_arg : (Parser ((Maybe String) & Term))
 | = do Parser {
   ask arg     = (BP/Fun/parse_term)
-  ask _       = (BP/skip_trivia)
+  ask _       = (BP/skp)
   ask has_bnd = (BP/try_consume "=")
   if has_bnd {
     match arg {
       // bnd and arg
       #Var{bnd}: do Parser {
-        ask _   = (BP/skip_trivia)
+        ask _   = (BP/skp)
         ask arg = BP/Fun/parse_term
         ret (#Some{bnd}, arg) :: ((Maybe _) & Term)
       }
@@ -328,7 +328,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 | = do Parser {
   ask has = (BP/try_consume "with")
   if has do Parser {
-    ask (BP/skip_trivia)
+    ask (BP/skp)
     (BP/sep_by _ ./parse_named_arg "," 1)
   } else do Parser {
     ret [] :: (List _)
@@ -338,11 +338,11 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_match_arm : (Parser MatchRule)
 | = do Parser {
   ask _   = (BP/try_consume "|")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nam = (./parse_name_or_era)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume ":")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask bod = (BP/Fun/parse_term)
   ret #MatchRule{nam [] bod} :: MatchRule
 }
@@ -350,26 +350,26 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_switch_arms : U64 -> (List Term) -> (Parser (Pair U64 (List Term)))
 | n acc = do Parser {
   ask _    = (BP/try_consume "|")
-  ask _    = (BP/skip_trivia)
+  ask _    = (BP/skp)
   ask pred = (BP/try_consume "_")
-  ask _    = (BP/skip_trivia)
+  ask _    = (BP/skp)
   if pred do Parser {
     ask _    = (BP/consume ":")
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     ask term = (BP/Fun/parse_term)
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     ask _    = (BP/try_consume ";")
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     (./parse_switch_arms (+ n 1) (term;;acc))
   } else do Parser {
     ask num  = (BP/parse_number)
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     ask _    = (BP/consume ":")
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     ask term = (BP/Fun/parse_term)
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     ask _    = (BP/try_consume ";")
-    ask _    = (BP/skip_trivia)
+    ask _    = (BP/skp)
     (./parse_switch_arms (+ n 1) (term;;acc))
   }
 }
@@ -377,11 +377,11 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_fld : (Parser Term)
 | = do Parser {
   ask _            = (BP/parse_keyword "fold")
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask (bnd, arg)   = (./parse_match_arg)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   ask with         = (./parse_match_with)
-  ask _            = (BP/skip_trivia)
+  ask _            = (BP/skp)
   let (wbnd, warg) = (List/unzip _ _ with)
   ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
   ret #Fld{bnd arg wbnd warg arms} :: Term
@@ -390,24 +390,24 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_bnd : (Parser Term)
 | = do Parser {
   ask _          = (BP/parse_keyword "bend")
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask args       = (BP/list_like _ ./parse_named_arg "" "{" "," #False 1)
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   let (bnd, arg) = (List/unzip _ _ args)
   ask _          = (BP/parse_keyword "when")
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask cond       = (BP/Fun/parse_term)
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask _          = (BP/consume ":")
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask step       = (BP/Fun/parse_term)
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask _          = (BP/parse_keyword "else")
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask _          = (BP/consume ":")
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask base       = (BP/Fun/parse_term)
-  ask _          = (BP/skip_trivia)
+  ask _          = (BP/skp)
   ask _          = (BP/consume "}")
   ret #Bnd{bnd arg cond step base} :: Term
 }
@@ -415,13 +415,13 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_opn : (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "open")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask typ = (BP/parse_name "type")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask var = (BP/parse_var_name)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/try_consume ";")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask bod = (BP/Fun/parse_term)
   ret #Opn{typ #Some{var} [] bod} :: Term
 }
@@ -429,11 +429,11 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_tree_node : (Parser Term)
 | = do Parser {
   ask _   = (BP/consume "![")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask lft = (BP/Fun/parse_term)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask rgt = (BP/Fun/parse_term)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask _   = (BP/consume "]")
   ret #App{#App{#Ref{"Tree/Node"} lft} rgt} :: Term
 }
@@ -441,7 +441,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_tree_leaf : (Parser Term)
 | = do Parser {
   ask _   = (BP/consume "!")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask val = (BP/Fun/parse_term)
   ret #App{#Ref{"Tree/Leaf"} val} :: Term
 }
@@ -449,9 +449,9 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_def : (Parser Term)
 | = do Parser {
   ask _   = (BP/parse_keyword "def")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask def = (BP/Fun/parse_fn_def)
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nxt = (BP/Fun/parse_term)
   ret #Def{def nxt} :: Term
 }
@@ -459,7 +459,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 ./parse_lnk : (Parser Term)
 | = do Parser {
   ask _   = (BP/consume "$")
-  ask _   = (BP/skip_trivia)
+  ask _   = (BP/skp)
   ask nam = (BP/parse_name "unscoped variable")
   ret #Lnk{nam} :: Term
 }

@@ -1,7 +1,7 @@
-use Bend/Parser/skip_trivia_inline as .
+use Bend/Parser/skp_inline as .
 
-// Skips all trivia (whitespace and comments).
-Bend/Parser/skip_trivia_inline : (Parser U64)
+// Skips all trivia (whitespace and comments) except for newlines.
+Bend/Parser/skp_inline : (Parser U64)
 | = (./go 0)
 
 ./go : U64 -> (Parser U64)
@@ -9,9 +9,7 @@ Bend/Parser/skip_trivia_inline : (Parser U64)
   ask c = (Parser/peek_one)
   match c {
     #Some{v}:
-      if (Char/eq v '\t') {
-        (Parser/fail _ "Tabs are not accepted for indentation.")
-      } else if (Bend/Parser/is_inline_space v) {
+      if (Bend/Parser/is_inline_space v) {
         do Parser {
           ask z = (Parser/advance_one)
           (./go (+ n 1))

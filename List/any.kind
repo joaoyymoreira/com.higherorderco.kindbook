@@ -3,7 +3,7 @@
 // - x: Input list.
 // - cond: Condition function.
 // = True if any element satisfies, False otherwise.
-List/any : ∀(A: *)  (List A) -> (A -> Bool) -> Bool
+List/any : ∀(A: *) (List A) -> (A -> Bool) -> Bool
 | A #Nil             cond = #False
 | A #Cons{head tail} cond = (Bool/or (cond head) (List/any A tail cond))
 

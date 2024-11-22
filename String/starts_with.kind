@@ -3,15 +3,16 @@
 // - prefix: Prefix to look for.
 // = True if str starts with prefix, False otherwise.
 String/starts_with : String -> String -> Bool
-| str prefix =
-  let #Pair{prefix_list prefix_length} = (List/length_got U64 prefix)
-  let str_prefix = (List/take U64 str prefix_length)
-  let str_length = (List/length U64 str_prefix)
+| str pfx =
+  let (pfx, pfx_len) = (List/length_got_u64 _ pfx)
+  let str_pfx        = (List/take_u64 _ str pfx_len)
+  let str_len        = (List/length_u64 _ str_pfx)
   (Bool/and
-    (String/eq str_prefix prefix_list)
-    (Nat/eq str_length prefix_length))
+    (String/eq str_pfx pfx)
+    (U64/eq str_len pfx_len))
 
 #test: (String/starts_with "Hello, World!" "Hello") == #True
 #test: (String/starts_with "Hello, World!" "World") == #False
 #test: (String/starts_with "" "") == #True
 #test: (String/starts_with "A" "AB") == #False
+#test: (String/starts_with "" "AB") == #False

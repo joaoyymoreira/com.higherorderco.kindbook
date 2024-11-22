@@ -5,7 +5,7 @@ Bend/Parser/Imp/parse_return_type : (Parser (Maybe Type))
 | = do Parser {
   ask typ = (BP/try_consume "->")
   if typ do Parser {
-    ask _   = (BP/skip_trivia_inline)
+    ask _   = (BP/skp_inline)
     ask typ = (BP/Imp/parse_type_expr #True)
     ret #Some{typ}
   } else do Parser {
@@ -16,17 +16,3 @@ Bend/Parser/Imp/parse_return_type : (Parser (Maybe Type))
 #test: (BP/Imp/parse_return_type (Parser/new_state "-> Nat")) == #Done{#Reply{#State{"" 6} #Some{#Var{"Nat"}}}}
 #test: (BP/Imp/parse_return_type (Parser/new_state "not ret")) == #Done{#Reply{#State{"not ret" 0} #None}} 
 #test: (BP/Imp/parse_return_type (Parser/new_state "-> List(Pair(Nat, String))")) == #Done{#Reply{#State{"" 26} #Some{#Ctr{"List" [#Ctr{"Pair" [#Var{"Nat"} #Var{"String"}]}]}}}} 
-
-
-//#test "parse_return_type_with_spaces" {
-//  let input = "->    Bool   "
-//  let result = (BP/run Bend/Parser/Imp/parse_return_type input)
-//  (Equal _ result #Done{#Some{#Ref{#None "Bool"}}})
-//}
-//
-//#test "parse_return_type_function" {
-//  let input = "-> (Nat -> Bool)"
-//  let expected = #Some{#All{#None "Nat" #Ref{#None "Bool"}}}
-//  let result = (BP/run Bend/Parser/Imp/parse_return_type input)
-//  (Equal _ result #Done{expected})
-//}

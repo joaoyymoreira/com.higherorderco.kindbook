@@ -6,10 +6,10 @@ Nat/add : Nat -> Nat -> Nat
 | #Zero    n = n
 | #Succ{m} n = #Succ{(Nat/add m n)}
 
-#test: (Nat/add #Zero #Zero) == #Zero
-#test: (Nat/add #Zero #5) == #5
-#test: (Nat/add #5 #Zero) == #5
-#test: (Nat/add #3 #2) == #5
-#test: (Nat/add #7 #8 ) == #15
-#test: (Nat/add #3 #4) == (Nat/add #4 #3)
+#test: (Nat/add #Zero #Zero)        == #Zero
+#test: (Nat/add #Zero #5)           == #5
+#test: (Nat/add #5 #Zero)           == #5
+#test: (Nat/add #3 #2)              == #5
+#test: (Nat/add #7 #8 )             == #15
+#test: (Nat/add #3 #4)              == (Nat/add #4 #3)
 #test: (Nat/add (Nat/add #2 #3) #4) == (Nat/add #2 (Nat/add #3 #4))

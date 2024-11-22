@@ -23,7 +23,7 @@ data Bend/Parser/Fun/parse_file/TopLevel {
 // Helper function to iteratively build the ParseBook.
 ./go : File -> (Parser File)
 | file = do Parser {
-  ask _   = BP/skip_trivia
+  ask _   = BP/skp
   ask eof = Parser/is_eof
   if eof do Parser {
     ret file

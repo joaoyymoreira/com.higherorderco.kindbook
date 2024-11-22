@@ -3,7 +3,7 @@
 // = 0 if successful, or an error message otherwise.
 Bend/Parser/consume_indent : U64 -> (Parser U64)
 | exp = do Parser {
-  ask got = (Bend/Parser/skip_newlines)
+  ask got = (Bend/Parser/skp_newlines)
   if (U64/eq exp got) {
     (Parser/pure _ 0)
   } else {

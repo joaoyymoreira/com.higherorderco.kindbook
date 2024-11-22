@@ -1,3 +1,4 @@
+use Bend/Parser/Fun/parse_pattern as .
 use Bend/Fun/Pattern as Pattern
 use Bend/Fun/FanKind as FanKind
 use Bend/Parser as BP
@@ -14,33 +15,33 @@ Bend/Parser/Fun/parse_pattern : (Parser Pattern)
     ask x = (Parser/peek_one)
     ret (Maybe/fold _ x Bool #False BP/is_name_char)
   }
-  ask BP/skip_trivia
+  ask BP/skp
   (BP/first_with_guard _ [
-    ((Parser/starts_with "(") , parse_pat_ctr_or_tup)
-    ((Parser/starts_with "$") , parse_pat_chn)
-    ((Parser/starts_with "'") , parse_pat_char)
-    ((Parser/starts_with "[") , parse_pat_lst)
-    ((Parser/starts_with "\""), parse_pat_str)
-    ((Parser/starts_with "*") , parse_pat_era)
-    ((Parser/starts_with "{") , parse_pat_dup)
-    ((starts_with_num)        , parse_pat_num)
-    ((starts_with_nam)        , parse_pat_var)
+    ((Parser/starts_with "(") , ./parse_pat_ctr_or_tup)
+    ((Parser/starts_with "$") , ./parse_pat_chn)
+    ((Parser/starts_with "'") , ./parse_pat_char)
+    ((Parser/starts_with "[") , ./parse_pat_lst)
+    ((Parser/starts_with "\""), ./parse_pat_str)
+    ((Parser/starts_with "*") , ./parse_pat_era)
+    ((Parser/starts_with "{") , ./parse_pat_dup)
+    ((starts_with_num)        , ./parse_pat_num)
+    ((starts_with_nam)        , ./parse_pat_var)
   ] (Parser/fail _ "Expected pattern"))
 }
 
-parse_pat_var : (Parser Pattern)
+./parse_pat_var : (Parser Pattern)
 | = do Parser {
   ask nam = BP/parse_var_name
   ret #Var{#Some{nam}} :: Pattern
 }
 
-parse_pat_str : (Parser Pattern)
+./parse_pat_str : (Parser Pattern)
 | = do Parser {
   ask str = Parser/parse_string
   ret #Str{str} :: Pattern
 }
 
-parse_pat_num : (Parser Pattern)
+./parse_pat_num : (Parser Pattern)
 | = do Parser {
   ask num = BP/parse_number
   match num {
@@ -50,19 +51,19 @@ parse_pat_num : (Parser Pattern)
   }
 }
 
-parse_pat_lst : (Parser Pattern)
+./parse_pat_lst : (Parser Pattern)
 | = do Parser {
   ask elements = (BP/list_like _ BP/Fun/parse_pattern "[" "]" "," #False 0)
   ret #Lst{elements} :: Pattern
 }
 
-parse_pat_era : (Parser Pattern)
+./parse_pat_era : (Parser Pattern)
 | = do Parser {
   ask _ = (Parser/consume "*")
   ret #Var{#None} :: Pattern
 }
 
-parse_pat_dup : (Parser Pattern)
+./parse_pat_dup : (Parser Pattern)
 | = do Parser {
   ask els = (BP/list_like _ BP/Fun/parse_pattern "{" "}" "," #False 2)
   ret #Fan{#Dup els} :: Pattern
@@ -81,14 +82,14 @@ parse_pat_ctr : Pattern -> (Parser Pattern)
 }
 | _ = (Parser/fail _ "Expected constructor name")
 
-parse_pat_ctr_or_tup : (Parser Pattern)
+./parse_pat_ctr_or_tup : (Parser Pattern)
 | = do Parser {
   ask _      = (Parser/consume "(")
-  ask _      = (BP/skip_trivia)
+  ask _      = (BP/skp)
   ask head   = (BP/Fun/parse_pattern)
-  ask _      = (BP/skip_trivia)
+  ask _      = (BP/skp)
   ask is_tup = (BP/try_consume ",")
-  ask _      = (BP/skip_trivia)
+  ask _      = (BP/skp)
   if is_tup {
     (parse_pat_tup head)
   } else {
@@ -96,15 +97,15 @@ parse_pat_ctr_or_tup : (Parser Pattern)
   }
 }
 
-parse_pat_chn : (Parser Pattern)
+./parse_pat_chn : (Parser Pattern)
 | = do Parser {
   ask _    = (Parser/consume "$")
-  ask _    = (BP/skip_trivia)
+  ask _    = (BP/skp)
   ask name = (BP/parse_name "unscoped variable")
   ret #Chn{name} :: Pattern
 }
 
-parse_pat_char : (Parser Pattern)
+./parse_pat_char : (Parser Pattern)
 | = do Parser {
   ask char = Parser/parse_quoted_char
   ret #Num{char} :: Pattern

@@ -1,0 +1,140 @@
+use Bend/Parser/Imp/parse_type as .
+use Bend/Parser as BP
+use Bend/Fun/Type as Type
+
+// Parses a type expression, returning the type and the type variables.
+Bend/Parser/Imp/parse_type : Bool -> Bool -> (Parser Type)
+| inline tup = do Parser {
+  ask if inline { BP/skp_inline } else { BP/skp }
+  ask ini_idx = (Parser/get_index)
+  ask typ     = (./parse_primary)
+  ask typ     = (./parse_suffix inline tup typ)
+  ask end_idx = Parser/get_index
+  ret typ
+}
+
+./parse_primary : (Parser Type)
+| =
+  let starts_with_name = do Parser {
+    ask c = (Parser/peek_one)
+    ret (Maybe/fold _ c Bool #False BP/is_name_char)
+  }
+  (BP/first_with_guard _ [
+    ((BP/starts_with_keyword "Any") , ./parse_any)
+    ((BP/starts_with_keyword "None"), ./parse_none)
+    ((BP/starts_with_keyword "_")   , ./parse_hole)
+    ((BP/starts_with_keyword "u24") , ./parse_u24)
+    ((BP/starts_with_keyword "i24") , ./parse_i24)
+    ((BP/starts_with_keyword "f24") , ./parse_f24)
+    ((Parser/starts_with "(")       , ./parse_parens)
+    ((starts_with_name)             , ./parse_var_or_ctr)
+  ] (Parser/fail _ "Expected type expression"))
+
+./parse_suffix : Bool -> Bool -> Type -> (Parser Type)
+| inline tup head = do Parser {
+  ask if inline { BP/skp_inline } else { BP/skp }
+  let g_tup = if tup { (Parser/starts_with ",") } else { (Parser/pure _ #False) } :: (Parser Bool)
+  (BP/first_with_guard _ [
+    (g_tup                    , (./parse_tup inline tup head))
+    ((Parser/starts_with "->"), (./parse_arr inline tup head))
+  ] (Parser/pure _ head))
+}
+
+./parse_parens : (Parser Type)
+| = do Parser {
+  ask _   = (BP/consume "(")
+  ask typ = (BP/Imp/parse_type #False #True)
+  ask _   = (BP/consume ")")
+  ret typ
+}
+
+./parse_any : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "Any")
+  ret #Any
+}
+
+./parse_none : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "None")
+  ret #Non
+}
+
+./parse_hole : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "_")
+  ret #Hol
+}
+
+./parse_u24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "u24")
+  ret #U24
+}
+
+./parse_i24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "i24")
+  ret #I24
+}
+
+./parse_f24 : (Parser Type)
+| = do Parser {
+  ask _ = (BP/parse_keyword "f24")
+  ret #F24
+}
+
+./parse_var_or_ctr : (Parser Type)
+| = do Parser {
+  ask name  = (BP/parse_var_name)
+  ask _     = (BP/skp_inline)
+  ask paren = (Parser/starts_with "(")
+  if paren do Parser {
+    ask args = (BP/list_like _ (BP/Imp/parse_type #False #False) "(" ")" "," #True 0)
+    ret #Ctr{name args}
+  } else do Parser {
+    ret #Var{name}
+  }
+}
+
+./parse_arr : Bool -> Bool -> Type -> (Parser Type)
+| inline tup fst = do Parser {
+  ask _   = (BP/consume "->")
+  ask snd = (BP/Imp/parse_type inline tup)
+  ret #Arr{fst snd}
+}
+
+./parse_tup : Bool -> Bool -> Type -> (Parser Type)
+| inline tup head = do Parser {
+  ask _    = (BP/consume ",")
+  ask tail = (BP/Imp/parse_type inline tup)
+  match tail {
+    #Tup{tail}: (Parser/pure _ #Tup{head;;tail})
+    _         : (Parser/pure _ #Tup{[head tail]})
+  }
+}
+
+#test: (. #True  #False (Parser/new_state "Nat"))        == #Done{#Reply{#State{"" 3} #Var{"Nat"}}}
+#test: (. #True  #False (Parser/new_state "(Nat)"))      == #Done{#Reply{#State{"" 5} #Var{"Nat"}}}
+#test: (. #True  #False (Parser/new_state "(\nNat )"))   == #Done{#Reply{#State{"" 7} #Var{"Nat"}}}
+#test: (. #True  #False (Parser/new_state "\nNat"))      == #Fail{#Error{0 "Expected type expression"}}
+#test: (. #False #False (Parser/new_state "\nNat"))      == #Done{#Reply{#State{"" 4} #Var{"Nat"}}}
+#test: (. #True  #True  (Parser/new_state "Nat,Nat"))    == #Done{#Reply{#State{"" 7} #Tup{[#Var{"Nat"} #Var{"Nat"}]}}}
+#test: (. #True  #False (Parser/new_state "Nat,Nat"))    == #Done{#Reply{#State{",Nat" 3} #Var{"Nat"}}}
+#test: (. #True  #True  (Parser/new_state "Nat,\nNat"))  == #Fail{#Error{4 "Expected type expression"}}
+#test: (. #False #True  (Parser/new_state "Nat,\nNat"))  == #Done{#Reply{#State{"" 8} #Tup{[#Var{"Nat"} #Var{"Nat"}]}}}
+#test: (. #True  #True  (Parser/new_state "(Nat,Nat)"))  == #Done{#Reply{#State{"" 9} #Tup{[#Var{"Nat"} #Var{"Nat"}]}}}
+#test: (. #True  #True  (Parser/new_state "(Nat,\nNat)"))== #Done{#Reply{#State{"" 10} #Tup{[#Var{"Nat"} #Var{"Nat"}]}}}
+#test: (. #True  #False (Parser/new_state "Pair(\nNat, \nBool)")) == #Done{#Reply{#State{"" 17} #Ctr{"Pair" [#Var{"Nat"} #Var{"Bool"}]}}}
+#test: (. #True  #False (Parser/new_state "A -> B"))     == #Done{#Reply{#State{"" 6} #Arr{#Var{"A"} #Var{"B"}}}}
+#test: (. #False #False (Parser/new_state "A\n ->\n B")) == #Done{#Reply{#State{"" 8} #Arr{#Var{"A"} #Var{"B"}}}}
+#test: (. #True  #False (Parser/new_state "A\n ->\n B")) == #Done{#Reply{#State{"\n ->\n B" 1} #Var{"A"}}}
+#test: (. #True  #False (Parser/new_state "A -> B -> C"))== #Done{#Reply{#State{"" 11} #Arr{#Var{"A"} #Arr{#Var{"B"} #Var{"C"}}}}}
+#test: (. #True  #False (Parser/new_state "u24"))        == #Done{#Reply{#State{"" 3} #U24}}
+#test: (. #True  #False (Parser/new_state "u24a"))       == #Done{#Reply{#State{"" 4} #Var{"u24a"}}}
+#test: (. #True  #False (Parser/new_state "i24"))        == #Done{#Reply{#State{"" 3} #I24}}
+#test: (. #True  #False (Parser/new_state "f24"))        == #Done{#Reply{#State{"" 3} #F24}}
+#test: (. #True  #False (Parser/new_state "_"))          == #Done{#Reply{#State{"" 1} #Hol}}
+#test: (. #True  #False (Parser/new_state "_a"))         == #Done{#Reply{#State{"" 2} #Var{"_a"}}}
+#test: (. #True  #False (Parser/new_state "Any"))        == #Done{#Reply{#State{"" 3} #Any}}
+#test: (. #True  #False (Parser/new_state "None"))       == #Done{#Reply{#State{"" 4} #Non}}

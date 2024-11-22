@@ -4,9 +4,9 @@
 // - n: Number of elements to take.
 // = List with first n elements of xs, or all of xs if n > length xs.
 List/take : ∀(A: *) (List A) -> Nat -> (List A)
-| A xs               #Zero    = #Nil
-| A #Nil             n        = #Nil
-| A #Cons{head tail} #Succ{n} = #Cons{head (List/take A tail n)}
+| A xs      #Zero    = []
+| A []      _        = []
+| A (x;;xs) #Succ{n} = x ;; (List/take A xs n)
 
 #test: (List/take U64 [1 2 3] #0) == []
 #test: (List/take U64 [1 2 3] #2) == [1 2]

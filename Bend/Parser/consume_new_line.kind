@@ -1,6 +1,6 @@
 Bend/Parser/consume_new_line : (Parser U64)
 | = do Parser {
-  ask Bend/Parser/skip_trivia_inline
+  ask Bend/Parser/skp_inline
   ask (Parser/consume "\n")
   ret 0
 }
