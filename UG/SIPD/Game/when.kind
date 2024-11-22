@@ -38,17 +38,17 @@ handle_event : G/Event -> G/State -> G/State
 
 | #MouseClick{time pid #LeftButton x y} #State{next_id tick players hero_states game_map}  =
   let action_player = (Map/get G/Player players pid)
-  let updated_players = (update_player_target action_player x y pid players)
+  let updated_players = (update_player_target action_player (round x) (round y) pid players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #MouseClick{time pid #RightButton x y} #State{next_id tick players hero_states game_map} = 
   let action_player = (Map/get G/Player players pid)
-  let updated_players = (update_player_target action_player x y pid players)
+  let updated_players = (update_player_target action_player (round x) (round y) pid players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #KeyMouse{time pid key pressed x y} #State{next_id tick players hero_states game_map}    =
   let action_player = (Map/get G/Player players pid)
-  let updated_players = (update_player_key action_player key pressed pid #V2{x y} players)
+  let updated_players = (update_player_key action_player key pressed pid (V2/round #V2{x y}) players)
   #State{next_id tick updated_players hero_states game_map}
 
 | #MouseMove{time pid x y} #State{next_id tick players hero_states game_map}               =

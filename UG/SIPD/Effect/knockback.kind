@@ -25,10 +25,14 @@ knockback/handle_collidable : V2 -> U64 -> G/Body -> G/Body -> G/State -> G/Stat
           let #HeroState{cooldowns health} = hero_state
           let new_hp = (U64/sub health damage)
           let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id #HeroState{cooldowns new_hp})
-
           let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
           let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
-          #State{next_id tick updated_players updated_hero_states updated_map}
+          
+          if (Bool/or (U64/lte new_hp 0) (U64/gte damage health)) {
+            (G/State/delete_body #State{next_id tick updated_players updated_hero_states updated_map} id2)
+          } else {
+            #State{next_id tick updated_players updated_hero_states updated_map}
+          }
       }
   }
 .| _             _ = state

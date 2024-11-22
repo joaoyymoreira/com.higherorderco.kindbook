@@ -1,0 +1,7 @@
+// Rounds a V2 vector to the nearest integer coordinates.
+// - v: The input vector.
+// = A new V2 vector with rounded coordinates to 2 decimal cases.
+V2/round : V2 -> V2
+| #V2{x y} = #V2{(round x) (round y)}
+
+#test: (V2/round (V2/new 3.711 2.111)) == (V2/new 3.71 2.11)

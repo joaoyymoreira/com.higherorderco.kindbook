@@ -15,7 +15,7 @@ UG/SIPD/Effect/accelerated_move_range : U64 -> F64 -> V2 -> F64 -> F64 -> U64 ->
 
     let move_distance = (F64/min accelerated_speed range)
     let direction = (V2/normalize distance_to_target)
-    let movement = (V2/mul_scalar direction move_distance)
+    let movement = (V2/round (V2/mul_scalar direction move_distance))
     let new_hitbox = (UG/Shape/move hitbox movement)
 
     let updated_state = (UG/SIPD/State/update_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox body_tick effects collidable})
