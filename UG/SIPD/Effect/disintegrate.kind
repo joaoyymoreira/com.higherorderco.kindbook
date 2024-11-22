@@ -28,15 +28,11 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> G/Sta
   let #Body{line_id line_hitbox line_tick line_effects line_collidable} = line
   
   let #Player{pid player_name player_keys player_target player_hero} = player
-  log player_target
-  //log hero_pos
   let target_angle = (round (V2/calculate_angle hero_pos player_target))
-  //log target_angle
   let current_angle = (round (UG/Shape/get_rotation line_hitbox))
   
   let raw_diff = (round (F64/sub target_angle current_angle))
   let angle_diff = (round (calculate_angle_diff raw_diff))
-  //log angle_diff
 
   if (F64/gt (F64/abs angle_diff) rotation_speed) {
     let new_angle = (F64/add current_angle (F64/mul rotation_speed (F64/sign angle_diff)))
