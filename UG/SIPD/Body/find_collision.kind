@@ -12,14 +12,14 @@ G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body)
 | to_ignore body bodies = (G/Body/find_collision/go to_ignore body bodies #Nil)
 
 G/Body/find_collision/go : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body)) -> (List (Pair V2 G/Body))
-| to_ignore #Body{id hitbox tick effects collidable} #Nil                                                      acc = acc
-| to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} acc =
+| to_ignore #Body{id hitbox tick effects collidable side} #Nil                                                      acc = acc
+| to_ignore #Body{id hitbox tick effects collidable side} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1 side1} rest} acc =
     let diff_ids = (U64/neq id id1)
     let diff_ig  = (U64/neq id1 to_ignore)
     let collides = (UG/Shape/collide hitbox hitbox1)
     if (Bool/and (Bool/and diff_ids diff_ig) collides) {
       let col_normal = (V2/round (UG/Collision/calculate_collision_normal hitbox hitbox1)) 
-      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable} rest #Cons{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}} acc})
+      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable side} rest #Cons{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1 side1}} acc})
     } else {
-      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable} rest acc)
+      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable side} rest acc)
     }

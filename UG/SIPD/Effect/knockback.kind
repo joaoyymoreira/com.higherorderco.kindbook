@@ -1,7 +1,7 @@
 use UG/SIPD as G
 
 knockback/handle_collidable : V2 -> U64 -> G/Body -> G/Body -> G/State -> G/State
-| force damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state
+| force damage #Body{id1 hitbox1 b_tick1 effects1 collidable1 side1} #Body{id2 hitbox2 b_tick2 effects2 collidable2 side2} state
 = match collidable2 {
   #TakesEffects: 
     let #State{next_id tick players hero_states game_map} = state
@@ -26,7 +26,7 @@ knockback/handle_collidable : V2 -> U64 -> G/Body -> G/Body -> G/State -> G/Stat
             let new_hp = (U64/sub health damage)
             let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id #HeroState{cooldowns new_hp})
             let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
-            let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
+            let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2 side2})
             
             if (Bool/or (U64/lte new_hp 0) (U64/gte damage health)) {
               (G/State/delete_body #State{next_id tick updated_players updated_hero_states updated_map} id2)
@@ -46,7 +46,7 @@ G/Effect/knockback : U64 -> U64 -> V2 -> U64 -> G/Effect
 
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
-      let #Body{id hitbox body_tick effects collidable} = body
+      let #Body{id hitbox body_tick effects collidable side} = body
       let collision_results = (G/Body/find_collision caster_id body bodies_list)
       (G/Effect/knockback/go caster_id force damage body collision_results state)
     #None: state
@@ -56,7 +56,7 @@ G/Effect/knockback : U64 -> U64 -> V2 -> U64 -> G/Effect
 G/Effect/knockback/go : U64 -> V2 -> U64 -> G/Body -> (List (Pair V2 G/Body)) -> G/State -> G/State
 | caster_id force damage body #Nil                   state = state
 | caster_id force damage body #Cons{#Pair{_ colliding_body} rest} state
-= let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
+= let #Body{cid chitbox cbody_tick ceffects ccollidable cside} = colliding_body
   if (U64/eq caster_id cid) {
     let new_state = state
     (G/Effect/knockback/go caster_id force damage body rest new_state)

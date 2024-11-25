@@ -23,11 +23,12 @@ magic_missiles/tick_projectile : U64 -> G/State -> G/State
 .| #None       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 
+// FIXME RED
 magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Body
-| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #Untouchable}
+| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #Untouchable #Red}
 
 magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/State
-| #Body{id hitbox b_tick effects collidable} #Player{pid name keys target hero} range duration missile_radius state =
+| #Body{id hitbox b_tick effects collidable side} #Player{pid name keys target hero} range duration missile_radius state =
   let hero_pos = (UG/Shape/get_center hitbox)
   let mouse_pos = (G/Player/get_mouse_pos #Player{pid name keys target hero} "Q")
   let click_pos = target

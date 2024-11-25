@@ -2,7 +2,7 @@ use UG/SIPD as G
 
 // Handles damage application based on body collidable type.
 dps/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
-| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state
+| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1 side1} #Body{id2 hitbox2 b_tick2 effects2 collidable2 side2} state
 = match collidable2 {
   #TakesEffects: 
     let #State{next_id tick players hero_states game_map} = state
@@ -35,8 +35,8 @@ G/Effect/collide_and_dps : U64 -> U64 -> U64 -> G/Effect
 
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
-      let #Body{id hitbox body_tick effects collidable} = body
-      let collision_results = (G/Body/find_collision caster_id #Body{id hitbox body_tick effects collidable} bodies_list)
+      let #Body{id hitbox body_tick effects collidable side} = body
+      let collision_results = (G/Body/find_collision caster_id #Body{id hitbox body_tick effects collidable side} bodies_list)
       (G/Effect/collide_and_dps/go caster_id damage collision_results state)
     #None: state
   }
@@ -45,11 +45,11 @@ G/Effect/collide_and_dps : U64 -> U64 -> U64 -> G/Effect
 G/Effect/collide_and_dps/go : U64 -> U64 -> (List (Pair V2 G/Body)) -> G/State -> G/State
 | caster_id damage #Nil                   state = state
 | caster_id damage #Cons{#Pair{_ colliding_body} rest} state
-= let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
+= let #Body{cid chitbox cbody_tick ceffects ccollidable cside} = colliding_body
   if (U64/eq caster_id cid) {
     let new_state = state
     (G/Effect/collide_and_dps/go caster_id damage rest new_state)
   } else {
-    let new_state = (dps/handle_collidable damage #Body{cid chitbox cbody_tick ceffects ccollidable} colliding_body state)
+    let new_state = (dps/handle_collidable damage #Body{cid chitbox cbody_tick ceffects ccollidable cside} colliding_body state)
     (G/Effect/collide_and_dps/go caster_id damage rest new_state)
   }

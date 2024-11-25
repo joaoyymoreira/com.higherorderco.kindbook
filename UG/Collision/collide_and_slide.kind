@@ -1,7 +1,7 @@
 use UG/SIPD as G
 
 collide_and_slide/handle_collidable : G/Body -> UG/Collision/Collidable -> V2 -> V2 -> V2 -> (List G/Body) -> Nat -> (Pair V2 V2)
-| #Body{id hitbox tick effects collidable1} collidable2 position collision_normal remaining_movement obstacles n with (collidable1 , collidable2) :: (Pair _ _)
+| #Body{id hitbox tick effects collidable1 side} collidable2 position collision_normal remaining_movement obstacles n with (collidable1 , collidable2) :: (Pair _ _)
 .| #Untouchable _            = #Pair{(V2/add position remaining_movement) collision_normal}
 .| _            #Untouchable = #Pair{(V2/add position remaining_movement) collision_normal}
 .| _            _            = 
@@ -10,25 +10,25 @@ collide_and_slide/handle_collidable : G/Body -> UG/Collision/Collidable -> V2 ->
 
     let slide_plane = (V2/normalize collision_normal)
     let slide_movement = (V2/sub remaining_movement (V2/mul_scalar slide_plane (V2/dot remaining_movement slide_plane)))
-    (collide_and_slide/go #Body{id new_hitbox tick effects collidable1} position slide_movement obstacles n)
+    (collide_and_slide/go #Body{id new_hitbox tick effects collidable1 side} position slide_movement obstacles n)
 
 collide_and_slide/handle_collisions : G/Body -> V2 -> V2 -> (List G/Body) -> Nat -> (List (Pair V2 G/Body)) -> (Pair V2 V2)
 | body position remaining_movement obstacles n #Nil = #Pair{position remaining_movement}
-| #Body{id hitbox tick effects collidable} position remaining_movement obstacles n #Cons{#Pair{collision_normal col_body} tail} =
-    let #Body{id1 hitbox1 tick1 effects1 collidable1} = col_body
-    let #Pair{new_position new_remaining} = (collide_and_slide/handle_collidable #Body{id hitbox tick effects collidable} collidable1 position collision_normal remaining_movement obstacles n)
-    (collide_and_slide/handle_collisions #Body{id hitbox tick effects collidable} new_position new_remaining obstacles n tail)
+| #Body{id hitbox tick effects collidable side} position remaining_movement obstacles n #Cons{#Pair{collision_normal col_body} tail} =
+    let #Body{id1 hitbox1 tick1 effects1 collidable1 side1} = col_body
+    let #Pair{new_position new_remaining} = (collide_and_slide/handle_collidable #Body{id hitbox tick effects collidable side} collidable1 position collision_normal remaining_movement obstacles n)
+    (collide_and_slide/handle_collisions #Body{id hitbox tick effects collidable side} new_position new_remaining obstacles n tail)
 
 collide_and_slide/go : G/Body -> V2 -> V2 -> (List G/Body) -> Nat -> (Pair V2 V2)
-| #Body{id hitbox tick effects collidable} position remaining_movement obstacles #Zero    = #Pair{position remaining_movement}
-| #Body{id hitbox tick effects collidable} position remaining_movement obstacles #Succ{n} = 
+| #Body{id hitbox tick effects collidable side} position remaining_movement obstacles #Zero    = #Pair{position remaining_movement}
+| #Body{id hitbox tick effects collidable side} position remaining_movement obstacles #Succ{n} = 
   let new_position = (V2/add position remaining_movement)
   let new_hitbox = (UG/Shape/move hitbox (V2/sub new_position position))
-  let collisions = (G/Body/find_collision id #Body{id new_hitbox tick effects collidable} obstacles)
+  let collisions = (G/Body/find_collision id #Body{id new_hitbox tick effects collidable side} obstacles)
 
   match collisions {
     #Nil: #Pair{new_position #V2{x: 0.0 y: 0.0}}
-    _: (collide_and_slide/handle_collisions #Body{id hitbox tick effects collidable} position remaining_movement obstacles n collisions)
+    _: (collide_and_slide/handle_collisions #Body{id hitbox tick effects collidable side} position remaining_movement obstacles n collisions)
   }
 
 // Collides and slides a body against obstacles.
@@ -37,6 +37,6 @@ collide_and_slide/go : G/Body -> V2 -> V2 -> (List G/Body) -> Nat -> (Pair V2 V2
 // - obstacles: List of obstacle bodies.
 // = The final position and remaining movement.
 UG/Collision/collide_and_slide : G/Body -> V2 -> (List G/Body) -> (Pair V2 V2)
-| #Body{id hitbox tick effects collidable} movement obstacles =
+| #Body{id hitbox tick effects collidable side} movement obstacles =
   let initial_position = (UG/Shape/get_center hitbox)
-  (collide_and_slide/go #Body{id hitbox tick effects collidable} initial_position movement obstacles #3)
+  (collide_and_slide/go #Body{id hitbox tick effects collidable side} initial_position movement obstacles #3)

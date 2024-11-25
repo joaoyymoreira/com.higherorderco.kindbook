@@ -4,12 +4,12 @@ use UG/SIPD as G
 grow_projectile : G/State -> U64 -> G/State
 | #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} body_id with (G/Body/get_body body_id bodies)
 .| #None = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
-.| #Some{#Body{id hitbox b_tick effects collidable}} with hitbox
+.| #Some{#Body{id hitbox b_tick effects collidable side}} with hitbox
 ..| #Circle{center radius}    = 
   let growth_factor = 0.015
   let new_radius = (round (F64/add radius (F64/mul radius growth_factor)))
   let new_hitbox = (UG/Shape/circle center new_radius)
-  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox b_tick effects collidable})
+  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox b_tick effects collidable side})
 ..| #Polygon{center vertices} = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 
 tick_projectile : U64 -> G/State -> G/State
@@ -20,7 +20,7 @@ tick_projectile : U64 -> G/State -> G/State
   (grow_projectile state body_id)
 
 shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
-| #Body{id hitbox b_tick effects collidable} player range bullet_radius duration state = 
+| #Body{id hitbox b_tick effects collidable side} player range bullet_radius duration state = 
   let hero_pos = (UG/Shape/get_center hitbox)
   let mouse_pos = (G/Player/get_mouse_pos player "W")
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
@@ -33,7 +33,8 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let bullet_shape = (UG/Shape/circle bullet_pos bullet_radius)
   let #Pair{bullet_id state} = (G/State/generate_id state) 
 
-  let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable})
+  // FIXME RED
+  let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable #Red})
   let move_effect = (G/Effect/move_range bullet_id speed real_target range duration (G/Effect/collide_and_damage id bullet_id 135))
 
   let state_after_spawn = (G/Effect/apply spawn_effect state)

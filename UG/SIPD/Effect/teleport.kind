@@ -10,7 +10,7 @@ G/Effect/teleport : U64 -> U64 -> F64 -> G/Effect
 | pid body_id range #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} with ((Map/get G/Player players pid) , (G/GameMap/get_body bodies body_id)) :: (Pair _ _)
 .| #None   _       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| _       #None   = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
-.| #Some{#Player{id name keys target hero}} #Some{#Body{id hitbox body_tick effects collidable}} =
+.| #Some{#Player{id name keys target hero}} #Some{#Body{id hitbox body_tick effects collidable side}} =
   let hitbox_center = (UG/Shape/get_center hitbox)
   let direction     = (V2/normalize (V2/sub target hitbox_center))
   let distance      = (V2/length (V2/sub target hitbox_center))
@@ -18,4 +18,4 @@ G/Effect/teleport : U64 -> U64 -> F64 -> G/Effect
   let movement      = (V2/mul_scalar direction teleport_dist)
   let new_center    = (V2/add hitbox_center movement)
   let new_hitbox    = (UG/Shape/move hitbox movement)
-  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox body_tick effects collidable})
+  (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{id new_hitbox body_tick effects collidable side})

@@ -33,7 +33,7 @@ update_cooldowns : G/State -> G/State
   (Map/fold G/Hero/HeroState G/State hero_states bodies_count #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} update_hero_state)
 
 UG/SIPD/Body/tick : G/Body -> (G/State -> G/State)
-| #Body{id hitbox tick effects collidable} = tick
+| #Body{id hitbox tick effects collidable side} = tick
 
 // Updates the game state for one tick.
 // - state: The current game state.

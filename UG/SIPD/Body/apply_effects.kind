@@ -6,7 +6,7 @@ use UG/SIPD as G
 // - state: Current game state.
 // = Updated state after applying effects.
 UG/SIPD/Body/apply_effects : UG/SIPD/Body -> UG/SIPD/State -> UG/SIPD/State
-| #Body{id hitbox tick effects collidable} state = (UG/SIPD/Body/apply_effects/go #Body{id hitbox tick effects collidable} state effects)
+| #Body{id hitbox tick effects collidable side} state = (UG/SIPD/Body/apply_effects/go #Body{id hitbox tick effects collidable side} state effects)
 
 // Auxiliary function for apply_effects.
 // - body: The body with effects.
@@ -17,7 +17,7 @@ UG/SIPD/Body/apply_effects/go : UG/SIPD/Body -> UG/SIPD/State -> (List UG/SIPD/E
 | body state #Nil             = state
 | body state #Cons{head tail} = 
   let updated_body = (UG/SIPD/Body/set_effects body tail)
-  let #Body{id hitbox tick effects collidable} = updated_body
+  let #Body{id hitbox tick effects collidable side} = updated_body
   let #State{next_id state_tick players hero_states game_map} = state
   let #GameMap{width height bodies bodies_count} = game_map
   let updated_bodies = (Map/insert G/Body bodies id updated_body)
@@ -29,5 +29,5 @@ UG/SIPD/Body/apply_effects/go : UG/SIPD/Body -> UG/SIPD/State -> (List UG/SIPD/E
 // - effects: New effects list.
 // = Updated body with new effects.
 UG/SIPD/Body/set_effects : UG/SIPD/Body -> (List UG/SIPD/Effect) -> UG/SIPD/Body
-| #Body{id hitbox tick effects collidable} new_effects = #Body{id hitbox tick new_effects collidable}
+| #Body{id hitbox tick effects collidable side} new_effects = #Body{id hitbox tick new_effects collidable side}
 

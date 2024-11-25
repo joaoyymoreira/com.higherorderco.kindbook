@@ -1,0 +1,6 @@
+
+data UG/SIPD/Side {
+  #Red
+  #Blue
+  #Neutral
+}

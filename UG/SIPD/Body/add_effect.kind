@@ -3,12 +3,13 @@
 // - effect: The effect to add.
 // = A new body with the added effect.
 UG/SIPD/Body/add_effect : UG/SIPD/Body -> UG/SIPD/Effect -> UG/SIPD/Body
-| #Body{id hitbox tick effects collidable} effect =
+| #Body{id hitbox tick effects collidable side} effect =
   #Body{
     id: id
     hitbox: hitbox
     tick: tick
     effects: (List/append UG/SIPD/Effect effects [effect])
     collidable: collidable
+    side: side
   }
 
