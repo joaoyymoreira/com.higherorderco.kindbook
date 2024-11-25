@@ -1,8 +1,5 @@
 use UG/SIPD as G
 
-// FIX: this should return a list of collision, not only the first it finds
-// TEMPORARY WORKAROUND: id to ignore, fixed when we have TEAMS (ignore collision with teammates)
-
 // Finds collisions between a body and a list of bodies.
 // - to_ignore: ID of the body to ignore.
 // - body: The body to check for collisions.

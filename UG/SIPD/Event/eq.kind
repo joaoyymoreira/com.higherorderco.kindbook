@@ -43,4 +43,4 @@ UG/SIPD/Event/eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
 #test: (UG/SIPD/Event/eq (#KeyEvent{1 1 "a" #True}) (#KeyEvent{2 1 "a" #True})) == #False
 #test: (UG/SIPD/Event/eq (#MouseClick{1 1 #LeftButton 0.0 0.0}) (#MouseClick{1 1 #LeftButton 0.0 0.0})) == #True
 #test: (UG/SIPD/Event/eq (#MouseMove{1 1 0.0 0.0}) (#MouseMove{1 1 0.0 0.0})) == #True
-#test: (UG/SIPD/Event/eq (#ActionEvent{#SetNick{1 1 "alice"}}) (#ActionEvent{#SetNick{1 1 "alice"}})) == #True
+#test: (UG/SIPD/Event/eq (#ActionEvent{#SetNick{1 1 #Red "alice"}}) (#ActionEvent{#SetNick{1 1 #Red "alice"}})) == #True

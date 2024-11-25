@@ -54,21 +54,34 @@ handle_event : G/Event -> G/State -> G/State
 | #MouseMove{time pid x y} #State{next_id tick players hero_states game_map}               =
   #State{next_id tick players hero_states game_map}
 
-| #ActionEvent{#SetNick{time pid nick}} #State{next_id tick players hero_states game_map}  =
+| #ActionEvent{#SetNick{time pid side nick}} #State{next_id tick players hero_states game_map}  =
   let action_player = (Map/get G/Player players pid)
   let updated_players = (update_player_name action_player nick pid players)
-  #State{next_id tick updated_players hero_states game_map}
+  let #GameMap{width height bodies bodies_count} = game_map
 
+  let action_player_body = (Map/get G/Body bodies pid)
+  match action_player_body {
+    #None: #State{next_id tick updated_players hero_states game_map}
+    #Some{body}:
+      let #Body{id hitbox body_tick effects collidable old_side} = body
+      (UG/SIPD/State/update_body #State{next_id tick updated_players hero_states game_map} #Body{id hitbox body_tick effects collidable side})
+  }
+ 
 get_player_name : G/Event -> String
-| #ActionEvent{#SetNick{time pid nick}} = nick
-| event                                 = "Anon"
+| #ActionEvent{#SetNick{time pid side nick}} = nick
+| event                                      = "Anon"
+
+get_player_side : G/Event -> UG/SIPD/Side
+| #ActionEvent{#SetNick{time pid side nick}} = side
+| event                                      = #Neutral
 
 handle_new_player : U64 -> G/Event -> G/State -> G/State
 | pid event #State{next_id tick players hero_states game_map} with (Map/get G/Player players pid)
 .| #Some{#Player{pid name keys target s}} = #State{next_id tick players hero_states game_map}
 .| #None                                  = 
   let initial_name = (get_player_name event) 
-  let #Pair{new_player new_state} = (G/Player/init pid #State{next_id tick players hero_states game_map})
+  let initial_side = (get_player_side event)
+  let #Pair{new_player new_state} = (G/Player/init pid initial_name initial_side #State{next_id tick players hero_states game_map})
   let #State{next_id tick players hero_states game_map} = new_state
   let updated_players = (Map/insert G/Player players pid new_player)
   #State{next_id tick updated_players hero_states game_map}

@@ -33,8 +33,7 @@ shoot/go : G/Body -> G/Player -> F64 -> F64 -> U64 -> G/State -> G/State
   let bullet_shape = (UG/Shape/circle bullet_pos bullet_radius)
   let #Pair{bullet_id state} = (G/State/generate_id state) 
 
-  // FIXME RED
-  let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable #Red})
+  let spawn_effect = (G/Effect/spawn_body #Body{bullet_id bullet_shape (tick_projectile bullet_id) [] #Untouchable side})
   let move_effect = (G/Effect/move_range bullet_id speed real_target range duration (G/Effect/collide_and_damage id bullet_id 135))
 
   let state_after_spawn = (G/Effect/apply spawn_effect state)

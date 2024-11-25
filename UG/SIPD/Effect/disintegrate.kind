@@ -48,14 +48,13 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> G/Sta
     (G/Body/apply_effects #Body{line_id new_line_shape line_tick line_effects line_collidable line_side} new_state)
   }
  
-disintegrate/create_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> V2 -> V2 -> G/Body
-| line_id player_id line_width line_range rotation_speed start end =
+disintegrate/create_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> V2 -> V2 -> G/Side -> G/Body
+| line_id player_id line_width line_range rotation_speed start end side =
   let direction = (V2/normalize (V2/sub end start))
   let center = start
   let body_shape = (UG/Shape/start_centered_rectangle center line_width line_range)
   let body_tick = (G/Effect/tick_disintegrate_line line_id player_id line_width line_range rotation_speed)
-  // FIXME RED
-  #Body{line_id body_shape body_tick [] #Untouchable #Red}
+  #Body{line_id body_shape body_tick [] #Untouchable side}
 
 disintegrate/block_player_movement : U64 -> U64 -> G/State -> G/State
 | block_time player_id state =
@@ -80,7 +79,7 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> F64 -> G/Effect
       let direction = (V2/normalize (V2/sub target hero_pos))
       let line_end = (V2/add hero_pos (V2/mul_scalar direction line_range))
       let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
-      let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range rotation_speed hero_pos line_end)
+      let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range rotation_speed hero_pos line_end side)
 
       let dmg_per_tick = 1
   

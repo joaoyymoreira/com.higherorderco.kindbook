@@ -23,9 +23,8 @@ magic_missiles/tick_projectile : U64 -> G/State -> G/State
 .| #None       = #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}}
 .| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 
-// FIXME RED
-magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Body
-| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #Untouchable #Red}
+magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Side -> G/Body
+| id start_pos target_pos missile_radius side = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #Untouchable side}
 
 magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/State
 | #Body{id hitbox b_tick effects collidable side} #Player{pid name keys target hero} range duration missile_radius state =
@@ -44,11 +43,11 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   let #Pair{left_target right_target} = targets
 
   let #Pair{p1_id state} = (G/State/generate_id state)
-  let projectile1 = (magic_missiles/create_projectile p1_id center_missile_pos center_target missile_radius)
+  let projectile1 = (magic_missiles/create_projectile p1_id center_missile_pos center_target missile_radius side)
   let #Pair{p2_id state} = (G/State/generate_id state) 
-  let projectile2 = (magic_missiles/create_projectile p2_id left_missile_pos left_target missile_radius)
+  let projectile2 = (magic_missiles/create_projectile p2_id left_missile_pos left_target missile_radius side)
   let #Pair{p3_id state} = (G/State/generate_id state) 
-  let projectile3 = (magic_missiles/create_projectile p3_id right_missile_pos right_target missile_radius)
+  let projectile3 = (magic_missiles/create_projectile p3_id right_missile_pos right_target missile_radius side)
 
   let speed = 1.0
   let acceleration = 0.1

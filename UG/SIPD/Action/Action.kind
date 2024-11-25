@@ -8,6 +8,7 @@ data UG/SIPD/Action {
   #SetNick {
     time: U64
     pid: U64
+    side: UG/SIPD/Side
     nick: String
   }
 }

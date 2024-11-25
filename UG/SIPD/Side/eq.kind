@@ -1,0 +1,16 @@
+// Checks if two sides are equal.
+// - a: The first side.
+// - b: The second side.
+// = True if sides are equal, False otherwise.
+UG/SIPD/Side/eq : UG/SIPD/Side -> UG/SIPD/Side -> Bool
+| #Red     #Red     = #True
+| #Blue    #Blue    = #True
+| #Neutral #Neutral = #True
+| a        b        = #False
+
+#test: (UG/SIPD/Side/eq #Red #Red) == #True
+#test: (UG/SIPD/Side/eq #Blue #Blue) == #True
+#test: (UG/SIPD/Side/eq #Neutral #Neutral) == #True
+#test: (UG/SIPD/Side/eq #Red #Blue) == #False
+#test: (UG/SIPD/Side/eq #Blue #Neutral) == #False
+#test: (UG/SIPD/Side/eq #Neutral #Red) == #False

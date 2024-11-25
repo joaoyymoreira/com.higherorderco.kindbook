@@ -2,14 +2,13 @@
 initial_keys : (OrdTree String (Pair Bool V2))
 = (OrdTree/empty String (Pair Bool V2))
 
-p_hero : UG/SIPD/State -> U64 -> (Pair UG/SIPD/Hero UG/SIPD/State)
-| state player_id = (UG/SIPD/Hero/li_ming state player_id #V2{0.0 0.0})
+p_hero : UG/SIPD/State -> U64 -> UG/SIPD/Side -> (Pair UG/SIPD/Hero UG/SIPD/State)
+| state player_id side = (UG/SIPD/Hero/li_ming state player_id side #V2{0.0 0.0})
 
 // Initializes a player.
 // = A new player with default values.
-UG/SIPD/Player/init : U64 -> UG/SIPD/State -> (Pair UG/SIPD/Player UG/SIPD/State)
-| pid state = 
-  //let #Pair{player_id new_state} = (UG/SIPD/State/generate_id state)
-  let #Pair{hero new_state}        = (p_hero state pid)
-  #Pair{#Player{id: pid name: "Anon" keys: initial_keys target: #V2{x: 0.0 y: 0.0} hero: hero } new_state}
+UG/SIPD/Player/init : U64 -> String -> UG/SIPD/Side -> UG/SIPD/State -> (Pair UG/SIPD/Player UG/SIPD/State)
+| pid name side state = 
+  let #Pair{hero new_state}        = (p_hero state pid side)
+  #Pair{#Player{id: pid name: name keys: initial_keys target: #V2{x: 0.0 y: 0.0} hero: hero } new_state}
 

@@ -74,15 +74,14 @@ tick : U64 -> G/State -> G/State
       }
   }
 
-UG/SIPD/Hero/li_ming : G/State -> U64 -> V2 -> (Pair G/Hero G/State)
-| state owner_id pos =
+UG/SIPD/Hero/li_ming : G/State -> U64 -> G/Side -> V2 -> (Pair G/Hero G/State)
+| state owner_id side pos =
   let name  = "Li-Ming" 
   let collision_radius = 0.625
   let unit_scaling = UG/SIPD/unit_scaling
   let shape = (UG/Shape/circle pos (F64/mul collision_radius unit_scaling))
 
-  // FIXME RED
-  let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #TakesEffects #Red})
+  let state = (G/State/insert_body state #Body{owner_id shape (tick owner_id) [] #TakesEffects side})
   let #Pair{skills state} = (make_skills state owner_id owner_id)
   (#Hero{owner_id name skills owner_id} , state) 
 
