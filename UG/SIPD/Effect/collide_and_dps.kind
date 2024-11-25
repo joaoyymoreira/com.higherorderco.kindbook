@@ -2,50 +2,54 @@ use UG/SIPD as G
 
 // Handles damage application based on body collidable type.
 dps/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
-| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with collidable2 :: _
-.| #TakesEffects = 
-  let #State{next_id tick players hero_states game_map} = state
-  match (Map/get G/Hero/HeroState hero_states id2) {
-    #Some{hero_state}:
-      let #HeroState{cooldowns health} = hero_state
-      let new_health = (U64/sub health damage)
-      let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id2 #HeroState{cooldowns new_health})
+| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state
+= match collidable2 {
+  #TakesEffects: 
+    let #State{next_id tick players hero_states game_map} = state
+    match (Map/get G/Hero/HeroState hero_states id2) {
+      #Some{hero_state}:
+        let #HeroState{cooldowns health} = hero_state
+        let new_health = (U64/sub health damage)
+        let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id2 #HeroState{cooldowns new_health})
+    
+        if (Bool/or (U64/lte new_health 0) (U64/gte damage health)) {
+          (G/State/delete_body #State{next_id tick players updated_hero_states game_map} id2)
+        } else {
+          #State{next_id tick players updated_hero_states game_map}
+        }
+      #None: state
+    }
+  _: state
+}
 
-      if (Bool/or (U64/lte new_health 0) (U64/gte damage health)) {
-        (G/State/delete_body #State{next_id tick players updated_hero_states game_map} id2)
-      } else {
-        state
-      }
-    #None: state
-  }
-.| _            = state
-
-// Applies a damage effect to the body it collides if its a hero.
-// - body_id: the body that does the damage
-// - damage: Amount of damage to per tick.
+// Applies a damage effect to the bodies it collides with if they are heroes.
+// - caster_id: ID of the body causing the damage.
+// - body_id: ID of the body to check for collisions.
+// - damage: Amount of damage to apply per tick.
 // = The damage effect.
 G/Effect/collide_and_dps : U64 -> U64 -> U64 -> G/Effect
-| caster_id body_id damage state =
-  let #State{next_id tick players hero_states game_map} = state
+| caster_id body_id damage state
+= let #State{next_id tick players hero_states game_map} = state
   let #GameMap{width height bodies bodies_count} = game_map
   let bodies_list = (Map/values G/Body bodies bodies_count)
 
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
       let #Body{id hitbox body_tick effects collidable} = body
-      let collision_result = (G/Body/find_collision caster_id body bodies_list)
-      match collision_result {
-        #None: #State{next_id tick players hero_states game_map}
-        #Some{result}:
-          let #Pair{collision_normal colliding_body} = result
-          let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
-          if (U64/eq caster_id cid) {
-            state
-          } else {
-            (dps/handle_collidable damage body colliding_body state)
-          }
-      }
-    
+      let collision_results = (G/Body/find_collision caster_id #Body{id hitbox body_tick effects collidable} bodies_list)
+      (G/Effect/collide_and_dps/go caster_id damage collision_results state)
     #None: state
   }
 
+// Helper function to process all collisions
+G/Effect/collide_and_dps/go : U64 -> U64 -> (List (Pair V2 G/Body)) -> G/State -> G/State
+| caster_id damage #Nil                   state = state
+| caster_id damage #Cons{#Pair{_ colliding_body} rest} state
+= let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
+  if (U64/eq caster_id cid) {
+    let new_state = state
+    (G/Effect/collide_and_dps/go caster_id damage rest new_state)
+  } else {
+    let new_state = (dps/handle_collidable damage #Body{cid chitbox cbody_tick ceffects ccollidable} colliding_body state)
+    (G/Effect/collide_and_dps/go caster_id damage rest new_state)
+  }

@@ -1,57 +1,66 @@
 use UG/SIPD as G
 
 knockback/handle_collidable : V2 -> U64 -> G/Body -> G/Body -> G/State -> G/State
-| force damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with (collidable1 , collidable2) :: (Pair _ _)
-.| _ #TakesEffects = 
-  let #State{next_id tick players hero_states game_map} = state
+| force damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state
+= match collidable2 {
+  #TakesEffects: 
+    let #State{next_id tick players hero_states game_map} = state
+    let maybe_player = (Map/get G/Player players id2)
+    match maybe_player {
+      #None: state
+      #Some{player}:
+        let #Player{id name keys target hero} = player
+        let center1 = (UG/Shape/get_center hitbox1)
+        let center2 = (UG/Shape/get_center hitbox2)
+        let knockback_vector = (V2/normalize (V2/sub center2 center1))
+        let scaled_knockback = (V2/mul knockback_vector force)
 
-  let maybe_player = (Map/get G/Player players id2)
-  match maybe_player {
-    #None: state
-    #Some{player}:
-      let #Player{id name keys target hero} = player
-      let center1 = (UG/Shape/get_center hitbox1)
-      let center2 = (UG/Shape/get_center hitbox2)
-      let knockback_vector = (V2/normalize (V2/sub center2 center1))
-      let scaled_knockback = (V2/mul knockback_vector force)
+        let new_hitbox = (UG/Shape/move hitbox2 scaled_knockback)
+        let new_target = (UG/Shape/get_center new_hitbox)
 
-      let new_hitbox = (UG/Shape/move hitbox2 scaled_knockback)
-      let new_target = (UG/Shape/get_center new_hitbox)
-
-      let maybe_hero_state = (Map/get G/Hero/HeroState hero_states id)
-      match maybe_hero_state {
-        #None: state
-        #Some{hero_state}:
-          let #HeroState{cooldowns health} = hero_state
-          let new_hp = (U64/sub health damage)
-          let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id #HeroState{cooldowns new_hp})
-          let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
-          let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
-          
-          if (Bool/or (U64/lte new_hp 0) (U64/gte damage health)) {
-            (G/State/delete_body #State{next_id tick updated_players updated_hero_states updated_map} id2)
-          } else {
-            #State{next_id tick updated_players updated_hero_states updated_map}
-          }
-      }
-  }
-.| _             _ = state
+        let maybe_hero_state = (Map/get G/Hero/HeroState hero_states id)
+        match maybe_hero_state {
+          #None: state
+          #Some{hero_state}:
+            let #HeroState{cooldowns health} = hero_state
+            let new_hp = (U64/sub health damage)
+            let updated_hero_states = (Map/insert G/Hero/HeroState hero_states id #HeroState{cooldowns new_hp})
+            let updated_players = (Map/insert G/Player players id #Player{id name keys new_target hero})
+            let updated_map = (G/GameMap/update_body game_map #Body{id2 new_hitbox b_tick2 effects2 collidable2})
+            
+            if (Bool/or (U64/lte new_hp 0) (U64/gte damage health)) {
+              (G/State/delete_body #State{next_id tick updated_players updated_hero_states updated_map} id2)
+            } else {
+              #State{next_id tick updated_players updated_hero_states updated_map}
+            }
+        }
+    }
+  _: state
+}
 
 G/Effect/knockback : U64 -> U64 -> V2 -> U64 -> G/Effect
-| caster_id body_id force damage #State{next_id tick players hero_states game_map} =
+| caster_id body_id force damage state
+= let #State{next_id tick players hero_states game_map} = state
   let #GameMap{width height bodies bodies_count} = game_map
   let bodies_list = (Map/values G/Body bodies bodies_count)
 
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
       let #Body{id hitbox body_tick effects collidable} = body
-      let collision_result = (G/Body/find_collision caster_id body bodies_list)
+      let collision_results = (G/Body/find_collision caster_id body bodies_list)
+      (G/Effect/knockback/go caster_id force damage body collision_results state)
+    #None: state
+  }
 
-      match collision_result {
-        #None: #State{next_id tick players hero_states game_map}
-        #Some{result}:
-          let #Pair{collision_normal colliding_body} = result
-          (knockback/handle_collidable force damage body colliding_body #State{next_id tick players hero_states game_map})
-      }
-    #None: #State{next_id tick players hero_states game_map}
+// Helper function to process all collisions
+G/Effect/knockback/go : U64 -> V2 -> U64 -> G/Body -> (List (Pair V2 G/Body)) -> G/State -> G/State
+| caster_id force damage body #Nil                   state = state
+| caster_id force damage body #Cons{#Pair{_ colliding_body} rest} state
+= let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
+  if (U64/eq caster_id cid) {
+    let new_state = state
+    (G/Effect/knockback/go caster_id force damage body rest new_state)
+  } else {
+    let new_state = (knockback/handle_collidable force damage body colliding_body state)
+    (G/Effect/knockback/go caster_id force damage body rest new_state)
   }

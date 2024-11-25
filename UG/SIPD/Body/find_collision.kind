@@ -1,26 +1,25 @@
 use UG/SIPD as G
 
-// Finds collision between a body and a list of bodies.
-// - body: The body to check for collisions.
-// - bodies: List of bodies to check against.
-// = The collision normal vector, if a collision is found.
-
 // FIX: this should return a list of collision, not only the first it finds
 // TEMPORARY WORKAROUND: id to ignore, fixed when we have TEAMS (ignore collision with teammates)
 
+// Finds collisions between a body and a list of bodies.
+// - to_ignore: ID of the body to ignore.
+// - body: The body to check for collisions.
+// - bodies: List of bodies to check against.
+// = List of collision normals and colliding bodies.
+G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body))
+| to_ignore body bodies = (G/Body/find_collision/go to_ignore body bodies #Nil)
 
-G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
-| to_ignore #Body{id hitbox tick effects collidable} #Nil                                                      = #None
-| to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
+G/Body/find_collision/go : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body)) -> (List (Pair V2 G/Body))
+| to_ignore #Body{id hitbox tick effects collidable} #Nil                                                      acc = acc
+| to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} acc =
     let diff_ids = (U64/neq id id1)
-    let diff_ig = (U64/neq id1 to_ignore)
+    let diff_ig  = (U64/neq id1 to_ignore)
     let collides = (UG/Shape/collide hitbox hitbox1)
-
-    if (Bool/and (Bool/and diff_ids collides) diff_ig) {
-      let col_normal = (V2/round (UG/Collision/calculate_collision_normal hitbox hitbox1))
-      #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
+    if (Bool/and (Bool/and diff_ids diff_ig) collides) {
+      let col_normal = (V2/round (UG/Collision/calculate_collision_normal hitbox hitbox1)) 
+      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable} rest #Cons{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}} acc})
     } else {
-      
-      (G/Body/find_collision to_ignore #Body{id hitbox tick effects collidable} rest)
+      (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable} rest acc)
     }
-

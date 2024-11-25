@@ -2,7 +2,7 @@ use UG/SIPD as G
 
 // Handles damage application based on body collidable type.
 damage/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
-| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with collidable2 :: _
+| damage #Body{id1 hitbox1 b_tick1 effects1 collidable1} #Body{id2 hitbox2 b_tick2 effects2 collidable2} state with collidable2
 .| #TakesEffects = 
   let #State{next_id tick players hero_states game_map} = state
   match (Map/get G/Hero/HeroState hero_states id2) {
@@ -23,10 +23,23 @@ damage/handle_collidable : U64 -> G/Body -> G/Body -> G/State -> G/State
   }
 .| _            = state
 
-// Applies a damage effect to the body it collides if its a hero.
-// - body_id: the body that does the damage
-// - damage: Amount of damage to apply.
-// = The damage effect.
+// Helper function to handle multiple collisions
+G/Effect/collide_and_damage/go : U64 -> U64 -> U64 -> G/Body -> (List (Pair V2 G/Body)) -> G/State -> G/State
+| caster_id body_id damage body #Nil                                state = state
+| caster_id body_id damage body #Cons{#Pair{collision_normal colliding_body} rest} state =
+  let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
+  if (U64/eq caster_id cid) {
+    (G/Effect/collide_and_damage/go caster_id body_id damage body rest state)
+  } else {
+    let new_state = (damage/handle_collidable damage body colliding_body state)
+    (G/Effect/collide_and_damage/go caster_id body_id damage body rest new_state)
+  }
+
+// Applies a damage effect to the bodies it collides with if they are heroes.
+// - caster_id: ID of the body causing the damage
+// - body_id: ID of the body to check for collisions
+// - damage: Amount of damage to apply
+// = The damage effect
 G/Effect/collide_and_damage : U64 -> U64 -> U64 -> G/Effect
 | caster_id body_id damage state =
   let #State{next_id tick players hero_states game_map} = state
@@ -36,19 +49,7 @@ G/Effect/collide_and_damage : U64 -> U64 -> U64 -> G/Effect
   match (G/GameMap/get_body bodies body_id) {
     #Some{body}:
       let #Body{id hitbox body_tick effects collidable} = body
-      let collision_result = (G/Body/find_collision caster_id body bodies_list)
-      match collision_result {
-        #None: #State{next_id tick players hero_states game_map}
-        #Some{result}:
-          let #Pair{collision_normal colliding_body} = result
-          let #Body{cid chitbox cbody_tick ceffects ccollidable} = colliding_body
-          if (U64/eq caster_id cid) {
-            state
-          } else {
-            (damage/handle_collidable damage body colliding_body state)
-          }
-      }
-    
+      let collision_results = (G/Body/find_collision caster_id body bodies_list)
+      (G/Effect/collide_and_damage/go caster_id body_id damage body collision_results state)
     #None: state
   }
-
