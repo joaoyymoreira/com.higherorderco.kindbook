@@ -11,9 +11,9 @@ magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
 
   let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
   let adjusted_range = (V2/length (V2/sub max_target side_offset))
-  let corrected_max_target = (V2/add hero_pos (V2/mul_scalar direction adjusted_range))
-  let left_target = (V2/sub corrected_max_target side_offset)
-  let right_target = (V2/add corrected_max_target side_offset)
+  let corrected_max_target = (V2/round (V2/add hero_pos (V2/mul_scalar direction adjusted_range)))
+  let left_target = (V2/round (V2/sub corrected_max_target side_offset))
+  let right_target = (V2/round (V2/add corrected_max_target side_offset))
   
   #Pair{corrected_max_target #Pair{left_target right_target}}
 
@@ -24,7 +24,7 @@ magic_missiles/tick_projectile : U64 -> G/State -> G/State
 .| #Some{body} = (G/Body/apply_effects body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
 
 magic_missiles/create_projectile : U64 -> V2 -> V2 -> F64 -> G/Body
-| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #TakesEffects}
+| id start_pos target_pos missile_radius = #Body{id (UG/Shape/circle start_pos missile_radius) (magic_missiles/tick_projectile id) [] #Untouchable}
 
 magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/State
 | #Body{id hitbox b_tick effects collidable} #Player{pid name keys target hero} range duration missile_radius state =
@@ -35,9 +35,9 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
   let perpend = (V2/perpendicular direction)
   let offset_distance = 40.0
-  let left_missile_pos = (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend (F64/negate 30.0))))
-  let right_missile_pos = (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend 30.0)))
-  let center_missile_pos = (V2/add hero_pos (V2/mul_scalar direction offset_distance))
+  let left_missile_pos = (V2/round (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend (F64/negate 30.0)))))
+  let right_missile_pos = (V2/round (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend 30.0))))
+  let center_missile_pos = (V2/round (V2/add hero_pos (V2/mul_scalar direction offset_distance)))
 
   let #Pair{center_target targets} = (magic_missiles/calculate_targets hero_pos mouse_pos range)
   let #Pair{left_target right_target} = targets

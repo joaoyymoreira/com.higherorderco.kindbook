@@ -5,22 +5,26 @@
 // = New state logs after rolling back.
 UG/SM/StateLogs/rollback : ∀(S: *) U64 -> (UG/SM/StateLogs S) -> (UG/SM/StateLogs S)
 | S amount states =
-  match states {
-    #None: #None
-    #Some{state}:
-      let pair = (UG/SM/StateLogs/rollback/go S 0 amount states 0)
-      match pair {
-        #Pair{rolled_states cut}:
-          match rolled_states {
-            #None: #None
-            #Some{node}:
-              let tick  = (UG/SM/StateLogs/StateNode/tick S node)
-              let life  = (U64/add (UG/SM/StateLogs/StateNode/life S node) cut)
-              let state = (UG/SM/StateLogs/StateNode/state S node)
-              let older = (UG/SM/StateLogs/StateNode/older S node)
-              #Some{#StateNode{tick 0 life state older}}
-          }
-      }
+  if (U64/eq amount 0) {
+    states
+  } else {
+    match states {
+      #None: #None
+      #Some{state}:
+        let pair = (UG/SM/StateLogs/rollback/go S 0 amount states 0)
+        match pair {
+          #Pair{rolled_states cut}:
+            match rolled_states {
+              #None: #None
+              #Some{node}:
+                let tick  = (UG/SM/StateLogs/StateNode/tick S node)
+                let life  = (U64/add (UG/SM/StateLogs/StateNode/life S node) cut)
+                let state = (UG/SM/StateLogs/StateNode/state S node)
+                let older = (UG/SM/StateLogs/StateNode/older S node)
+                #Some{#StateNode{tick 0 life state older}}
+            }
+        }
+    }
   }
 
 // Auxiliary function for rollback operation.

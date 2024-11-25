@@ -48,16 +48,16 @@ UG/Shape/any_edges_intersect : (List V2) -> (List V2) -> Bool
 // = True if shapes collide, False otherwise.
 UG/Shape/collide : UG/Shape -> UG/Shape -> Bool
 | #Circle{c1 r1} #Circle{c2 r2} =
-  let center_dist = (V2/dist c1 c2)
-  let rsum = (F64/add r1 r2) 
+  let center_dist = (round (V2/dist c1 c2))
+  let rsum = (round (F64/add r1 r2))
   (F64/lte center_dist rsum)
 | #Circle{c1 r1} #Polygon{c2 vertices} =
   let closest = (UG/Shape/closest_point_on_polygon c1 (UG/Shape/abs_vertices #Polygon{c2 vertices}))
-  let dst     = (V2/dist c1 closest)
+  let dst     = (round (V2/dist c1 closest))
   (F64/lte dst r1)
 | #Polygon{c2 v2} #Circle{c1 radius} =
   let closest = (UG/Shape/closest_point_on_polygon c1 (UG/Shape/abs_vertices #Polygon{c2 v2}))
-  let dst = (V2/dist c1 closest)
+  let dst = (round (V2/dist c1 closest))
   (F64/lte dst radius)
 | #Polygon{c2 v2} #Polygon{c1 v1} =
   let abs_p1 = (UG/Shape/abs_vertices #Polygon{c1 v1})

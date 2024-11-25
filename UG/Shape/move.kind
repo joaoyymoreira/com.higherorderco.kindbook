@@ -5,12 +5,12 @@
 UG/Shape/move : UG/Shape -> V2 -> UG/Shape
 | #Circle{center radius}    v = 
   #Circle{
-    center: (V2/add center v)
+    center: (V2/round (V2/add center v))
     radius: radius
   }
 | #Polygon{center vertices} v = 
   #Polygon{
-    center: (V2/add center v)
+    center: (V2/round (V2/add center v))
     vertices: vertices
   }
 

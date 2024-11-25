@@ -7,7 +7,7 @@ V2/point_to_segment_distance : V2 -> V2 -> V2 -> V2
 | #V2{px py} #V2{ax ay} #V2{bx by} =
   let ab = (#V2{ (F64/sub bx ax) (F64/sub by ay) }) :: V2
   let ap = (#V2{ (F64/sub px ax) (F64/sub py ay) }) :: V2
-  let projection = (F64/div (V2/dot ap ab) (V2/dot ab ab))
+  let projection = (round (F64/div (V2/dot ap ab) (V2/dot ab ab)))
   if (F64/lt projection 0.0) {
     #V2{ax ay}
   } else {
@@ -15,8 +15,8 @@ V2/point_to_segment_distance : V2 -> V2 -> V2 -> V2
       #V2{bx by}
     } else {
       #V2{
-        x: (F64/add ax (F64/mul (F64/sub bx ax) projection))
-        y: (F64/add ay (F64/mul (F64/sub by ay) projection))
+        x: (round (F64/add ax (F64/mul (F64/sub bx ax) projection)))
+        y: (round (F64/add ay (F64/mul (F64/sub by ay) projection)))
       }
     }
   }

@@ -7,6 +7,8 @@ use UG/SIPD as G
 
 // FIX: this should return a list of collision, not only the first it finds
 // TEMPORARY WORKAROUND: id to ignore, fixed when we have TEAMS (ignore collision with teammates)
+
+
 G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body))
 | to_ignore #Body{id hitbox tick effects collidable} #Nil                                                      = #None
 | to_ignore #Body{id hitbox tick effects collidable} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1} rest} =
@@ -15,9 +17,10 @@ G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (Maybe (Pair V2 G/Body
     let collides = (UG/Shape/collide hitbox hitbox1)
 
     if (Bool/and (Bool/and diff_ids collides) diff_ig) {
-      let col_normal = (UG/Collision/calculate_collision_normal hitbox hitbox1)
+      let col_normal = (V2/round (UG/Collision/calculate_collision_normal hitbox hitbox1))
       #Some{#Pair{col_normal #Body{id1 hitbox1 tick1 effects1 collidable1}}}
     } else {
+      
       (G/Body/find_collision to_ignore #Body{id hitbox tick effects collidable} rest)
     }
 

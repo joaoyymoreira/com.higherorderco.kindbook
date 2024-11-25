@@ -1,11 +1,19 @@
 // Inserts a key-value pair into a Map.
 // - A: Value type.
-// - map: The input map.
-// - key: The key to insert.
-// - val: The value to insert.
-// = The updated map.
+// - map: Input map.
+// - key: Key to insert.
+// - val: Value to insert.
+// = Updated map.
 Map/insert : ∀(A: *) (Map (Maybe A)) -> U64 -> A -> (Map (Maybe A))
 | A map key val =
   put x0 = map[key] := #Some{val}
   map
 
+// Test map for insert function
+Map/insert/test_map : (Map (Maybe U64))
+= { 0: #Some{42} 1: #None 2: #Some{10} | #None }
+
+#test: (Map/get U64 (Map/insert U64 Map/insert/test_map 3 15) 3) == #Some{15}
+#test: (Map/get U64 (Map/insert U64 Map/insert/test_map 0 100) 0) == #Some{100}
+#test: (Map/get U64 (Map/insert U64 Map/insert/test_map 1 5) 1) == #Some{5}
+#test: (Map/get U64 (Map/insert U64 Map/insert/test_map 4 20) 2) == #Some{10}

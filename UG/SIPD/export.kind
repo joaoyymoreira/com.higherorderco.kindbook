@@ -31,3 +31,6 @@ export_action_eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
 
 export_time_to_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Time -> UG/SM/Tick
 = UG/SM/Time/time_to_tick
+
+export_map_insert : ∀(A: *) (Map (Maybe A)) -> U64 -> A -> (Map (Maybe A))
+= Map/insert 

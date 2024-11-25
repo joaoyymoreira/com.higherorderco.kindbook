@@ -11,7 +11,7 @@ UG/SIPD/Effect/accelerated_move_range : U64 -> F64 -> V2 -> F64 -> F64 -> U64 ->
   if (Bool/or (F64/lt ln 20.0) (F64/lte range 0.0)) {
     (G/State/delete_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} body_id)
   } else {
-    let accelerated_speed = (F64/add initial_speed acceleration)
+    let accelerated_speed = (round (F64/add initial_speed acceleration))
 
     let move_distance = (F64/min accelerated_speed range)
     let direction = (V2/normalize distance_to_target)

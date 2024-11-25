@@ -3,7 +3,7 @@
 // - segment: A pair of V2 points representing a line segment.
 // = The closest point on the segment to the reference point.
 UG/Shape/closest_point_on_polygon/go : V2 -> (Pair V2 V2) -> V2
-| point #Pair{v1 v2} = (V2/point_to_segment_distance point v1 v2)
+| point #Pair{v1 v2} = (V2/round (V2/point_to_segment_distance point v1 v2))
 
 // Finds the closest point on a polygon to a given point.
 // - point: The reference point.
@@ -16,7 +16,7 @@ UG/Shape/closest_point_on_polygon : V2 -> (List V2) -> V2
   let sorted   = (List/sort V2 points (λp1 λp2 (F64/lt (V2/length (V2/sub point p1)) (V2/length (V2/sub point p2)))))
   match (List/head V2 sorted) {
     #None:     #V2{x: 10000.0 y: 10000.0}
-    #Some{p}: p
+    #Some{p}: (V2/round p)
   }
 
 #test: (UG/Shape/closest_point_on_polygon #V2{x: 0.0 y: 0.0} [#V2{x: 1.0 y: 1.0} #V2{x: 2.0 y: 2.0} #V2{x: 1.0 y: 2.0}]) == #V2{x: 1.0 y: 1.0}

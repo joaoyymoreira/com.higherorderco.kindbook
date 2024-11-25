@@ -16,12 +16,12 @@ UG/SIPD/Effect/move : U64 -> U64 -> G/Effect
     let constant_speed = 1.15
     let direction = (V2/normalize distance_to_target)
     
-    let movement = (V2/mul_scalar direction (F64/min constant_speed ln))
+    let movement = (V2/round (V2/mul_scalar direction (F64/min constant_speed ln)))
 
     let bodies_list = (Map/values G/Body bodies bodies_count)
     let #Pair{final_movement collision_rest} = (UG/Collision/collide_and_slide #Body{body_id hitbox body_tick effects collidable} movement bodies_list)
 
-    let new_hitbox = (UG/Shape/move hitbox (V2/sub final_movement hitbox_center))
+    let new_hitbox = (UG/Shape/move hitbox (V2/sub (V2/round final_movement) hitbox_center))
 
     let updated_map = (G/GameMap/insert_body #GameMap{width height bodies bodies_count} #Body{body_id new_hitbox body_tick effects collidable})
 
