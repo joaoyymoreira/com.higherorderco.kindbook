@@ -10,11 +10,7 @@ G/Body/find_collision : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body)
 
 G/Body/find_collision/go : U64 -> G/Body -> (List G/Body) -> (List (Pair V2 G/Body)) -> (List (Pair V2 G/Body))
 | to_ignore #Body{id hitbox tick effects collidable side} #Nil                                                      acc = acc
-| to_ignore #Body{id hitbox tick effects collidable side} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1 side1} rest} acc with (side , side1) :: (Pair G/Side G/Side)
-.| #Red     #Red     = (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable side} rest acc)
-.| #Blue    #Blue    = (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable side} rest acc)
-.| #Neutral #Neutral = (G/Body/find_collision/go to_ignore #Body{id hitbox tick effects collidable side} rest acc)
-.| a        b        =
+| to_ignore #Body{id hitbox tick effects collidable side} #Cons{#Body{id1 hitbox1 tick1 effects1 collidable1 side1} rest} acc =
     let diff_ids = (U64/neq id id1)
     let diff_ig  = (U64/neq id1 to_ignore)
     let collides = (UG/Shape/collide hitbox hitbox1)
