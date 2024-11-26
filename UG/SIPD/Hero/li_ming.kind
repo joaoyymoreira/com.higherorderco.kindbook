@@ -22,7 +22,7 @@ make_skills : G/State -> U64 -> U64 -> (Pair (OrdTree String G/Skill) G/State)
   let s = (insert_skill s "Z" (G/Skill/wave_of_force player_id 100 (F64/mul 2.0 G/unit_scaling) 160 (time_to_tick 1)))
   let s = (insert_skill s "W" (G/Skill/shoot player_id (F64/mul G/range_unit 19.0) (F64/mul 0.25 G/unit_scaling) 10000 (time_to_tick 1)))
   let s = (insert_skill s "Q" (G/Skill/magic_missiles player_id (F64/mul G/range_unit 12.0) 10000 (F64/mul (F64/mul 0.5 0.475) G/unit_scaling) (time_to_tick 1)))
-  let s = (insert_skill s "R" (G/Skill/disintegrate player_id (time_to_tick 3) 10.0 (F64/mul G/range_unit 16.0) 0.1 (time_to_tick 1)))
+  let s = (insert_skill s "R" (G/Skill/disintegrate player_id (time_to_tick 5) 10.0 (F64/mul G/range_unit 16.0) 0.1 (time_to_tick 1)))
 
   let li_ming_health = 1270
 
