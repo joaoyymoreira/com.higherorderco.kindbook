@@ -18,10 +18,10 @@ UG/SIPD/Event/eq : UG/SIPD/Event -> UG/SIPD/Event -> Bool
   let y_eq = (F64/eq y1 y2)
   (Bool/and time_eq (Bool/and pid_eq (Bool/and click_eq (Bool/and x_eq y_eq))))
 
-| #KeyMouse{t1 p1 key1 pressed1 x1 y1} #KeyMouse{t2 p2 key2 pressed2 x2 y2} =
+| #KeyMouse{t1 p1 #Cons{key1 rest} pressed1 x1 y1} #KeyMouse{t2 p2 #Cons{key2 rest} pressed2 x2 y2} =
   let time_eq = (U64/eq t1 t2)
   let pid_eq = (U64/eq p1 p2)
-  let key_eq = (String/eq key1 key2)
+  let key_eq = (Char/eq key1 key2)
   let pressed_eq = (Bool/eq pressed1 pressed2)
   let x_eq = (F64/eq x1 x2)
   let y_eq = (F64/eq y1 y2)
