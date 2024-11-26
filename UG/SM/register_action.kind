@@ -7,14 +7,7 @@
 UG/SM/register_action : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> (UG/SM/TimedAction A) -> (UG/SM/Mach S A)
 | S A mach #TimedAction{action time} =
   let tick = (UG/SM/Time/time_to_tick S A mach time)
-
-  let #Mach{ticks_per_second genesis_tick cached_tick state_logs action_logs action_eq} = mach
-  let tick_actions = (UG/SM/ActionLogs/get_actions A action_logs tick)
-  if (Bool/eq (UG/SM/action_in_list S A mach action tick_actions) #True) {
-    mach
-  } else {
-    let mach = (UG/SM/update_genesis_tick S A mach tick)
-    let mach = (UG/SM/update_cached_tick S A mach tick)
-    let mach = (UG/SM/remove_future_states S A mach tick)
-    (UG/SM/add_action_to_logs S A mach tick action)
-  }
+  let mach = (UG/SM/update_genesis_tick S A mach tick)
+  let mach = (UG/SM/update_cached_tick S A mach tick)
+  let mach = (UG/SM/remove_future_states S A mach tick)
+  (UG/SM/add_action_to_logs S A mach tick action)
