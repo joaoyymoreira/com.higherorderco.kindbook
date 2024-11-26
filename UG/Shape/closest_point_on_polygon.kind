@@ -13,7 +13,7 @@ UG/Shape/closest_point_on_polygon : V2 -> (List V2) -> V2
 | point vertices = 
   let segments = (UG/Shape/segments vertices)
   let points   = (List/map (Pair V2 V2) V2 segments (UG/Shape/closest_point_on_polygon/go point))
-  let sorted   = (List/sort V2 points (λp1 λp2 (F64/lt (V2/length (V2/sub point p1)) (V2/length (V2/sub point p2)))))
+  let sorted   = (List/sort V2 points (λp1 λp2 (F64/lt (round (V2/length (V2/sub point p1))) (round (V2/length (V2/sub point p2))))))
   match (List/head V2 sorted) {
     #None:     #V2{x: 10000.0 y: 10000.0}
     #Some{p}: (V2/round p)
