@@ -18,3 +18,4 @@ String/eq : String -> String -> Bool
 #test: (String/eq "hello" "world") == #False
 #test: (String/eq "a" "A") == #False
 #test: (String/eq "abc" "ab") == #False
+#test: (String/eq "W" "W") == #True
