@@ -1,9 +1,17 @@
 use UG/SIPD as G
 
 calculate_angle_diff : F64 -> F64
-| raw_diff with (F64/gt (F64/abs raw_diff)  3.1415)
-.| #True  = (F64/sub raw_diff (F64/sign (F64/mul (F64/mul raw_diff 2.0) 3.1415)))
-.| #False = raw_diff
+| raw_diff = 
+  if (F64/gt (F64/abs raw_diff) 3.1415) {
+    // If the difference is more than π, adjust to the shorter path
+    if (F64/gt raw_diff 0.0) {
+      (F64/sub raw_diff (F64/mul 2.0 3.1415))
+    } else {
+      (F64/add raw_diff (F64/mul 2.0 3.1415))
+    }
+  } else {
+    raw_diff
+  }
 
 // Updates the disintegrate line effect.
 // - line_id: ID of the line body.
@@ -35,7 +43,7 @@ UG/SIPD/Effect/tick_disintegrate_line : U64 -> U64 -> F64 -> F64 -> F64 -> G/Sta
   let angle_diff = (round (calculate_angle_diff raw_diff))
 
   if (F64/gt (F64/abs angle_diff) rotation_speed) {
-    let new_angle = (F64/add current_angle (F64/mul rotation_speed (F64/sign angle_diff)))
+    let new_angle = (round (F64/add current_angle (round (F64/mul rotation_speed (F64/sign angle_diff)))))
     let new_line_shape = (UG/Shape/rotate def_line new_angle)
     let new_state = (G/State/insert_body #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}} #Body{line_id new_line_shape line_tick line_effects line_collidable line_side})
     
@@ -76,8 +84,8 @@ UG/SIPD/Effect/disintegrate : U64 -> U64 -> F64 -> F64 -> F64 -> G/Effect
       let #Body{body_id hitbox body_tick effects collidable side} = body
       let hero_pos = (UG/Shape/get_center hitbox)    
       let target = (G/Player/get_mouse_pos #Player{id name keys target hero} "R")
-      let direction = (V2/normalize (V2/sub target hero_pos))
-      let line_end = (V2/add hero_pos (V2/mul_scalar direction line_range))
+      let direction = (V2/round (V2/normalize (V2/sub target hero_pos)))
+      let line_end = (V2/round (V2/add hero_pos (V2/mul_scalar direction line_range)))
       let #Pair{new_id new_state} = (G/State/generate_id #State{next_id tick players hero_states #GameMap{width height bodies bodies_count}})
       let disintegrate_line = (disintegrate/create_disintegrate_line new_id player_id line_width line_range rotation_speed hero_pos line_end side)
 
