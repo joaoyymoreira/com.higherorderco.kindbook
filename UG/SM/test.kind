@@ -1,0 +1,43 @@
+// Simple game state
+data GameState {
+  #GameState { score: U64 }
+}
+
+// Simple game action
+data GameAction {
+  #AddScore { points: U64 }
+}
+
+// Action equality function
+GameAction/eq : GameAction -> GameAction -> Bool
+| #AddScore{p1} #AddScore{p2} = (U64/to_bool (== p1 p2))
+| _                     _                     = #False
+
+when : GameAction -> GameState -> GameState
+| #AddScore{points} #GameState{score} = 
+  let new_score = (+ score points)
+  #GameState{new_score}
+
+// Game rules
+game : (UG/SM/Game GameState GameAction)
+= #Game{
+  init: #GameState{0}
+  when: when
+  tick: λstate state
+}
+
+// Test the state machine
+t : (Pair GameState (UG/SM/Mach GameState GameAction))
+= 
+  let mach = (UG/SM/new_mach GameState GameAction 10 GameAction/eq) // 10 ticks per second
+  let mach = (UG/SM/register_action GameState GameAction mach #TimedAction{action: #AddScore{points: 5} time: 10})
+  let mach = (UG/SM/register_action GameState GameAction mach #TimedAction{action: #AddScore{points: 3} time: 20})
+  let mach = (UG/SM/register_action GameState GameAction mach #TimedAction{action: #AddScore{points: 2} time: 15})
+  let result = (UG/SM/compute GameState GameAction mach game 25)
+  result
+
+main : GameState
+= (Pair/get_fst GameState (UG/SM/Mach GameState GameAction) t)
+
+
+
