@@ -14,7 +14,7 @@ UG/SIPD/Effect/move_range : U64 -> F64 -> V2 -> F64 -> U64 -> G/Effect -> G/Effe
   } else {
     let constant_speed = speed
     let move_distance = (F64/min constant_speed range)
-    let direction = (V2/normalize distance_to_target)
+    let direction = (V2/round (V2/normalize distance_to_target))
     let movement = (V2/round (V2/mul_scalar direction move_distance))
     let new_hitbox = (UG/Shape/move hitbox movement)
 

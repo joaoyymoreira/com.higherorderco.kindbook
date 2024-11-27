@@ -3,14 +3,14 @@ use UG/SIPD as G
 
 magic_missiles/calculate_targets : V2 -> V2 -> F64 -> (Pair V2 (Pair V2 V2))
 | hero_pos mouse_pos range =
-  let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let direction = (V2/round (V2/normalize (V2/sub mouse_pos hero_pos)))
   let perpend = (V2/perpendicular direction)
-  let distance = (V2/length (V2/sub mouse_pos hero_pos)) 
-  let spread = (F64/mul (F64/sub 1.0 (F64/min 1.0 (F64/div distance range))) 1.0)
-  let side_offset = (V2/mul_scalar perpend (F64/mul spread range))
+  let distance = (round (V2/length (V2/sub mouse_pos hero_pos)))
+  let spread = (round (F64/mul (F64/sub 1.0 (F64/min 1.0 (F64/div distance range))) 1.0))
+  let side_offset = (V2/round (V2/mul_scalar perpend (F64/mul spread range)))
 
   let max_target = (V2/add hero_pos (V2/mul_scalar direction range))
-  let adjusted_range = (V2/length (V2/sub max_target side_offset))
+  let adjusted_range = (round (V2/length (V2/sub max_target side_offset)))
   let corrected_max_target = (V2/round (V2/add hero_pos (V2/mul_scalar direction adjusted_range)))
   let left_target = (V2/round (V2/sub corrected_max_target side_offset))
   let right_target = (V2/round (V2/add corrected_max_target side_offset))
@@ -32,7 +32,7 @@ magic_missiles/go : G/Body -> G/Player -> F64 -> U64 -> F64 -> G/State -> G/Stat
   let mouse_pos = (G/Player/get_mouse_pos #Player{pid name keys target hero} "Q")
   let click_pos = target
 
-  let direction = (V2/normalize (V2/sub mouse_pos hero_pos))
+  let direction = (V2/round (V2/normalize (V2/sub mouse_pos hero_pos)))
   let perpend = (V2/perpendicular direction)
   let offset_distance = 40.0
   let left_missile_pos = (V2/round (V2/add hero_pos (V2/add (V2/mul_scalar direction offset_distance) (V2/mul_scalar perpend (F64/negate 30.0)))))

@@ -12,6 +12,6 @@ UG/Shape/get_rotation : UG/Shape -> F64
         #Cons{second _}:
           let dx = (F64/sub (V2/x second) (V2/x first))
           let dy = (F64/sub (V2/y second) (V2/y first))
-          (atan2 dy dx)
+          (round (atan2 dy dx))
       }
   }

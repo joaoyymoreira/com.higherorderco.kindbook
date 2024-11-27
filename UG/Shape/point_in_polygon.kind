@@ -10,8 +10,8 @@ is_right_side : V2 -> V2 -> V2 -> Bool
   } else {
     let dx = (F64/sub (V2/x v2) (V2/x v1))
     let dy = (F64/sub (V2/y v2) (V2/y v1))
-    let t  = (F64/div (F64/sub (V2/y point) (V2/y v1)) dy)
-    let intersect_x = (F64/add (V2/x v1) (F64/mul t dx))
+    let t  = (round (F64/div (F64/sub (V2/y point) (V2/y v1)) dy))
+    let intersect_x = (round (F64/add (V2/x v1) (F64/mul t dx)))
     (F64/lt (V2/x point) intersect_x)
   }
 
