@@ -1,0 +1,6 @@
+// Creates a parser that always succeeds with the given value without consuming any input
+Bend/Parser/pure : ∀(A: *) A -> (Bend/Parser A)
+| A value state = #Done{#Reply{state value}}
+
+#test: (Bend/Parser/pure Nat #2 #State{"abc" 0 0 ""})         == (#Done{#Reply{#State{"abc" 0 0 ""} #2}})
+#test: (Bend/Parser/pure String "hello" #State{"abc" 0 0 ""}) == (#Done{#Reply{#State{"abc" 0 0 ""} "hello"}})

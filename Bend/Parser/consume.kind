@@ -1,13 +1,33 @@
-// Consumes exactly the given string from the input.
-// - target: String to consume.
-// = Parser that returns 0 if successful, fails otherwise.
-Bend/Parser/consume : String -> (Parser U64)
-| target = do Parser {
-  ask _ = (Parser/consume target)
-  ret 0
-}
+use Bend/Parser as BP
 
-#test: (Bend/Parser/consume "hello" #State{"hello world" 0}) == #Done{#Reply{#State{" world" 5} 0}}
-#test: (Bend/Parser/consume "hello" #State{" hello"      0}) == #Fail{#Error{0 "Expected hello"}}
-#test: (Bend/Parser/consume "hello" #State{"world"       0}) == #Fail{#Error{0 "Expected hello"}}
-#test: (Bend/Parser/consume ""      #State{"hello"       0}) == #Done{#Reply{#State{"hello" 0} 0}}
+// Consumes a specific string from the input.
+// - target: String to consume.
+// = Parser that returns unit if successful, or fails if not found.
+BP/consume : String -> (BP U64)
+| target #State{input index indent file} =
+  if (String/starts_with input target) {
+    #Done{
+      #Reply{
+        state: 
+          let length = (String/length_u64 target)
+          #State{
+            (String/drop input (U64/to_nat length))
+            index: (+ index length)
+            indent: indent
+            file: file
+          }
+        value: 0
+      }
+    }
+  } else {
+    #Fail{
+      #Error{
+        index: index
+        error: (String/append "Expected " target)
+      }
+    }
+  }
+
+#test: ((BP/consume "abc") (#State{"abcdef" 0 0 ""})) == (#Done{#Reply{#State{"def" 3 0 ""} 0}})
+#test: ((BP/consume "abc") (#State{"abxdef" 0 0 ""})) == (#Fail{#Error{0 "Expected abc"}})
+#test: ((BP/consume "")    (#State{"abcdef" 0 0 ""})) == (#Done{#Reply{#State{"abcdef" 0 0 ""} 0}})

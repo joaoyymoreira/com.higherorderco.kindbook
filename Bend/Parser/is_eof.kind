@@ -1,0 +1,13 @@
+// Checks if the parser has reached the end of the input.
+// = A Reply containing a Bool: True if at the end of input, False otherwise.
+Bend/Parser/is_eof : (Bend/Parser Bool)
+| #State{inp idx idn fil} =
+  #Done{
+    #Reply{
+      state: #State{inp idx idn fil}
+      value: (String/is_empty inp)
+    }
+  }
+
+#test: (Bend/Parser/is_eof #State{""    0 0 ""}) == (#Done{#Reply{#State{""    0 0 ""} #True}})
+#test: (Bend/Parser/is_eof #State{"abc" 0 0 ""}) == (#Done{#Reply{#State{"abc" 0 0 ""} #False}})

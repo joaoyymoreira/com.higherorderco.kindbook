@@ -1,39 +1,41 @@
+use Bend/Parser as BP
+
 // Checks if the input string starts with an operator.
 // = True if the input starts with an operator, False otherwise.
-Bend/Parser/starts_with_oper : (Parser Bool)
-| = do Parser {
-  ask one = (Parser/peek_many #1)
+BP/starts_with_oper : (BP Bool)
+| = do BP {
+  ask one = (BP/peek_many #1)
   let got = match one {
     #Some{c}: (String/contains "+-*/%&|^" c)
     #None   : #False
   } :: Bool
-  if got {
-    (Parser/pure _ #True)
-  } else do Parser {
-    ask two = (Parser/peek_many #2)
+  if got do BP {
+    ret #True
+  } else do BP {
+    ask two = (BP/peek_many #2)
     let got = match two {
       #Some{c}: if (List/contains _ String/IsEqual ["<<" ">>" "<=" ">=" "==" "!=" "**"] c) { #True } else { #False }
       #None   : #False
     } :: Bool
-    (Parser/pure _ got)
+    ret got
   }
 }
 
-#test: ((Bend/Parser/starts_with_oper #State{"+" 0})) == (#Done{#Reply{#State{"+" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"-" 0})) == (#Done{#Reply{#State{"-" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"*" 0})) == (#Done{#Reply{#State{"*" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"/" 0})) == (#Done{#Reply{#State{"/" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"%" 0})) == (#Done{#Reply{#State{"%" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"<<" 0})) == (#Done{#Reply{#State{"<<" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{">>" 0})) == (#Done{#Reply{#State{">>" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"<=" 0})) == (#Done{#Reply{#State{"<=" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{">=" 0})) == (#Done{#Reply{#State{">=" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"==" 0})) == (#Done{#Reply{#State{"==" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"!=" 0})) == (#Done{#Reply{#State{"!=" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"&" 0})) == (#Done{#Reply{#State{"&" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"|" 0})) == (#Done{#Reply{#State{"|" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"^" 0})) == (#Done{#Reply{#State{"^" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"**" 0})) == (#Done{#Reply{#State{"**" 0} #True}})
-#test: ((Bend/Parser/starts_with_oper #State{"invalid" 0})) == (#Done{#Reply{#State{"invalid" 0} #False}})
-#test: ((Bend/Parser/starts_with_oper #State{"" 0})) == (#Done{#Reply{#State{"" 0} #False}})
-#test: ((Bend/Parser/starts_with_oper #State{" " 0})) == (#Done{#Reply{#State{" " 0} #False}})
+#test: (BP/run Bool BP/starts_with_oper "+")   == #Done{"+"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "-")   == #Done{"-"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "*")   == #Done{"*"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "/")   == #Done{"/"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "%")   == #Done{"%"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "<<")  == #Done{"<<" , #True}
+#test: (BP/run Bool BP/starts_with_oper ">>")  == #Done{">>" , #True}
+#test: (BP/run Bool BP/starts_with_oper "<=")  == #Done{"<=" , #True}
+#test: (BP/run Bool BP/starts_with_oper ">=")  == #Done{">=" , #True}
+#test: (BP/run Bool BP/starts_with_oper "==")  == #Done{"==" , #True}
+#test: (BP/run Bool BP/starts_with_oper "!=")  == #Done{"!=" , #True}
+#test: (BP/run Bool BP/starts_with_oper "&")   == #Done{"&"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "|")   == #Done{"|"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "^")   == #Done{"^"  , #True}
+#test: (BP/run Bool BP/starts_with_oper "**")  == #Done{"**" , #True}
+#test: (BP/run Bool BP/starts_with_oper "err") == #Done{"err", #False}
+#test: (BP/run Bool BP/starts_with_oper "")    == #Done{""   , #False}
+#test: (BP/run Bool BP/starts_with_oper " ")   == #Done{" "  , #False}

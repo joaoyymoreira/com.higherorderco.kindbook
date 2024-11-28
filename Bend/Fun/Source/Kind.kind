@@ -1,5 +1,5 @@
 // Origin of a source code element
-data Bend/Source/Kind {
+data Bend/Fun/Source/Kind {
   #Builtin
   #Generated
   #User

@@ -1,28 +1,31 @@
 use Bend/Parser/skp_inline as .
+use Bend/Parser as BP
 
 // Skips all trivia (whitespace and comments) except for newlines.
-Bend/Parser/skp_inline : (Parser U64)
-| = (./go 0)
+BP/skp_inline : Bool -> (BP U64)
+| #True  = (./go 0)
+| #False = BP/skp
 
-./go : U64 -> (Parser U64)
-| n = do Parser {
-  ask c = (Parser/peek_one)
+./go : U64 -> (BP U64)
+| n = do BP {
+  ask c = (BP/peek_one)
   match c {
     #Some{v}:
-      if (Bend/Parser/is_inline_space v) {
-        do Parser {
-          ask z = (Parser/advance_one)
-          (./go (+ n 1))
-        }
-      } else if (Char/eq v '#') {
-        do Parser {
-          ask _ = (Bend/Parser/skip_multi_line_comment 0)
-          ask _ = (Bend/Parser/skip_single_line_comment)
-          (./go n)
-        }
+      if (BP/is_inline_space v) do BP {
+        ask z = (BP/advance_one)
+        (./go (+ n 1))
+      } else if (Char/eq v '#') do BP {
+        ask _ = (BP/skip_multi_line_comment 0)
+        ask _ = (BP/skip_single_line_comment)
+        (./go n)
       } else {
-        (Parser/pure _ n)
+        (BP/pure _ 0)
       }
-    #None: (Parser/pure _ n)
+    #None: (BP/pure _ 0)
   }
-} 
+}
+
+#test: (BP/run U64 (. #True)  "  # This is a comment\n  abc")         == #Done{"\n  abc", 0}
+#test: (BP/run U64 (. #False) "  # This is a comment\n  abc")         == #Done{"abc", 0}
+#test: (BP/run U64 (. #True)  "  #{ This is a comment\n #}  \n  abc") == #Done{"\n  abc", 0}
+#test: (BP/run U64 (. #False) "  #{ This is a comment\n #}  \n  abc") == #Done{"abc", 0}

@@ -1,0 +1,13 @@
+use Bend/Parser as BP
+
+// Advances the parser by one character, consuming it.
+// - state: The current parser state.
+// = A Reply containing the updated state and the consumed character (if any).
+BP/advance_one : (BP (Maybe Char))
+| #State{input index indent file} with (String/uncons input)
+. | #None               = #Done{#Reply{#State{input index      indent file} #None}}
+. | #Some{(head, tail)} = #Done{#Reply{#State{tail (+ index 1) indent file} #Some{head}}}
+
+#test: (BP/advance_one #State{"abc" 0 0 ""}) == #Done{#Reply{#State{"bc" 1 0 ""} #Some{'a'}}}
+#test: (BP/advance_one #State{""    0 0 ""}) == #Done{#Reply{#State{""   0 0 ""} #None}}
+#test: (BP/advance_one #State{"!@#" 0 0 ""}) == #Done{#Reply{#State{"@#" 1 0 ""} #Some{'!'}}}

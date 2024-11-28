@@ -1,0 +1,10 @@
+data Bend/Imp/FnDef {
+  #FnDef {
+    nam: String
+    arg: (List String)
+    typ: Bend/Fun/Type
+    chk: Bool
+    bod: Bend/Imp/Stmt
+    src: Bend/Fun/Source
+  }
+}

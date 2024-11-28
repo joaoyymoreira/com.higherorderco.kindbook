@@ -1,0 +1,6 @@
+data Bend/Imp/MatchRule {
+  #MatchRule {
+    nam: (Maybe String)
+    bod: Bend/Imp/Stmt
+  }
+}

@@ -1,22 +1,22 @@
+use Bend/Parser as BP
+
 // Tries to parse a Bend keyword: a name followed by a non-name character.
 // - keyword: The keyword to parse.
 // = True if the keyword was parsed, False otherwise.
 //   Does not consume any input in the case of failure.
-Bend/Parser/try_parse_keyword : String -> (Parser Bool)
-| keyword = do Parser {
-  ask is_kw = (Bend/Parser/starts_with_keyword keyword)
-  if is_kw {
-    do Parser {
-      ask (Parser/consume keyword)
-      (Parser/pure Bool #True)
-    }
-  } else {
-    (Parser/pure Bool #False)
+BP/try_parse_keyword : String -> (BP Bool)
+| keyword = do BP {
+  ask is_kw = (BP/starts_with_keyword keyword)
+  if is_kw do BP {
+    ask (BP/consume keyword)
+    ret #True
+  } else do BP {
+    ret #False
   }
 }
 
-#test: ((Bend/Parser/try_parse_keyword "let")   #State{"let x = 5" 0}) == (#Done{#Reply{#State{" x = 5" 3} #True}})
-#test: ((Bend/Parser/try_parse_keyword "if")    #State{"ifelse" 0}) == (#Done{#Reply{#State{"ifelse" 0} #False}})
-#test: ((Bend/Parser/try_parse_keyword "while") #State{"while (x > 0) {}" 0}) == (#Done{#Reply{#State{" (x > 0) {}" 5} #True}})
-#test: ((Bend/Parser/try_parse_keyword "for")   #State{"forEach" 0}) == (#Done{#Reply{#State{"forEach" 0} #False}})
-#test: ((Bend/Parser/try_parse_keyword "")      #State{"abc" 0}) == (#Done{#Reply{#State{"abc" 0} #False}})
+#test: (BP/run Bool (BP/try_parse_keyword "let")   "let x = 5")        == #Done{" x = 5",      #True}
+#test: (BP/run Bool (BP/try_parse_keyword "if")    "ifelse")           == #Done{"ifelse",      #False}
+#test: (BP/run Bool (BP/try_parse_keyword "while") "while (x > 0) {}") == #Done{" (x > 0) {}", #True}
+#test: (BP/run Bool (BP/try_parse_keyword "for")   "forEach")          == #Done{"forEach",     #False}
+#test: (BP/run Bool (BP/try_parse_keyword "")      "abc")              == #Done{"abc",         #False}

@@ -5,14 +5,35 @@ Bend/Parser/Imp/parse_return_type : (Parser (Maybe Type))
 | = do Parser {
   ask typ = (BP/try_consume "->")
   if typ do Parser {
-    ask _   = (BP/skp_inline)
-    ask typ = (BP/Imp/parse_type_expr #True)
+    ask _   = (BP/skp_inline #True)
+    ask typ = (BP/Imp/parse_type #True #True)
     ret #Some{typ}
   } else do Parser {
     ret #None
   }
 }
 
-#test: (BP/Imp/parse_return_type (Parser/new_state "-> Nat")) == #Done{#Reply{#State{"" 6} #Some{#Var{"Nat"}}}}
-#test: (BP/Imp/parse_return_type (Parser/new_state "not ret")) == #Done{#Reply{#State{"not ret" 0} #None}} 
-#test: (BP/Imp/parse_return_type (Parser/new_state "-> List(Pair(Nat, String))")) == #Done{#Reply{#State{"" 26} #Some{#Ctr{"List" [#Ctr{"Pair" [#Var{"Nat"} #Var{"String"}]}]}}}} 
+main : (IO U64)
+| with (BP/Imp/parse_return_type (Parser/new_state "-> Nat"))
+. | #Done{#Reply{#State{input index} #Some{t}}} = do IO {
+  ask (IO/print (String/concat ["type: " (Type/to_string t)]))
+  ask (IO/print (String/concat ["index: " (U64/to_string index)]))
+  ask (IO/print input)
+  ret 0
+}
+. | #Done{#Reply{#State{input index} #None}} = do IO {
+  ask (IO/print (String/concat ["type: err"]))
+  ask (IO/print (String/concat ["index: " (U64/to_string index)]))
+  ask (IO/print input)
+  ret 1
+}
+. | #Fail{#Error{index msg}} = do IO {
+  ask (IO/print msg)
+  ask (IO/print (U64/to_string index))
+  ret 2
+}
+
+//#test: (BP/Imp/parse_return_type (Parser/new_state "-> Nat")) == #Done{#Reply{#State{"" 6} #Some{#Var{"Nat"}}}}
+//#test: (BP/Imp/parse_return_type (Parser/new_state "not ret")) == #Done{#Reply{#State{"not ret" 0} #None}}
+//#test: (BP/Imp/parse_return_type (Parser/new_state "-> List(Pair(Nat, String))")) == #Done{#Reply{#State{"" 26} #Some{#Ctr{"List" [#Ctr{"Pair" [#Var{"Nat"} #Var{"String"}]}]}}}} 
+//#test: (BP/Imp/parse_return_type (Parser/new_state "-> A,B")) == #Done{#Reply{#State{"" 6} #Some{#Tup{[#Var{"A"} #Var{"B"}]}}}}

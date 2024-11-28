@@ -1,0 +1,16 @@
+use Bend/Parser as BP
+
+// Consumes characters from the input as long as they satisfy the given predicate.
+// - pred: Function that takes a Char and returns a Bool, used as the predicate.
+// = Parser that returns a String containing the consumed characters.
+BP/take_while : (Char -> Bool) -> (BP String)
+| pred #State{inp idx ind fil} = 
+  let consumed    = (List/take_while Char inp pred)
+  let (cs, count) = (String/length_got_u64 consumed)
+  let ind         = (+ idx count)
+  let inp         = (List/drop_u64 _ inp count)
+  #Done{#Reply{#State{inp idx ind fil} cs}}
+
+#test: (BP/run String (BP/take_while Char/is_alpha) "abcDEF123") == #Done{"123", "abcDEF"}
+#test: (BP/run String (BP/take_while Char/is_alpha) "")          == #Done{"", ""}
+#test: (BP/run String (BP/take_while Char/is_alpha) "k123abc")   == #Done{"123abc", "k"}

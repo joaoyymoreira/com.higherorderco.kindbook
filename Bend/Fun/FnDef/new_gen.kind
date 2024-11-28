@@ -1,8 +1,8 @@
 // Creates a new function definition with generated source.
-Bend/Fun/FnDef/new_gen : String -> (List Bend/Fun/Rule) -> Bend/Source -> Bool -> Bend/Fun/FnDef
+Bend/Fun/FnDef/new_gen : String -> (List Bend/Fun/Rule) -> Bend/Fun/Source -> Bool -> Bend/Fun/FnDef
 | nam rul #Source{file span kind} chk =
   let kind = match kind {
     #Builtin: #Builtin
     #_{_}   : #Generated
-  } :: Bend/Source/Kind
+  } :: Bend/Fun/Source/Kind
   #FnDef{nam #Hol chk rul #Source{file span kind}}

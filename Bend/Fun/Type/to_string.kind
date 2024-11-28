@@ -5,13 +5,14 @@ Type/to_string : Type -> String
 | #Any          = "Any"
 | #Hol          = "_"
 | #Var{name}    = name
-| #Arr{dom cod} = (String/concat ["(" (Type/to_string dom) " -> " (Type/show_arr cod) ")"])
+| #Arr{dom cod} = (String/concat ["(" (Type/to_string dom) " -> " (Type/to_string/arr cod) ")"])
+| #Ctr{nam []}  = nam
 | #Ctr{nam arg} =
   let arg = (String/join " " (List/map _ _ arg Type/to_string))
   (String/concat ["(" nam " " arg ")"])
 | #Tup{els}     =
-  let els_str = (String/join ", " (List/map _ _ els Type/to_string))
-  (String/concat ["(" els_str ")"])
+  let els = (String/join ", " (List/map _ _ els Type/to_string))
+  (String/concat ["(" els ")"])
 | #U24          = "u24"
 | #I24          = "i24"
 | #F24          = "f24"
@@ -21,6 +22,10 @@ Type/to_string : Type -> String
 
 
 // Convert a sequence of arrow types to a non_parenthesized sequence of arrow strings.
-Type/show_arr : Type -> String
-| #Arr{dom cod} = (String/concat [(Type/to_string dom) " -> " (Type/show_arr cod)])
+Type/to_string/arr : Type -> String
+| #Arr{dom cod} = (String/concat [(Type/to_string dom) " -> " (Type/to_string/arr cod)])
 | t             = (Type/to_string t)
+
+#test: (Type/to_string #Ctr{"A" []}) == "A"
+#test: (Type/to_string #Ctr{"A" [#U24 #F24 #I24 #Non #Any #Hol]}) == "(A u24 f24 i24 None Any _)"
+#test: (Type/to_string #Arr{#Var{"A"} #Arr{#Var{"B"} #Arr{#Var{"C"} #Var{"D"}}}}) == "(A -> B -> C -> D)"

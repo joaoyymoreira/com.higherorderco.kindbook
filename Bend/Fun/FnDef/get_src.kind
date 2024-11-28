@@ -3,5 +3,5 @@ use Bend/Fun/FnDef as FnDef
 // Gets the source of a function definition.
 // - def: The function definition.
 // = The source of the function definition.
-FnDef/get_src : FnDef -> Bend/Source
+FnDef/get_src : FnDef -> Bend/Fun/Source
 | #FnDef{nam typ chk rul src} = src

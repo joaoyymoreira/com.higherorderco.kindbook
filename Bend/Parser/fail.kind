@@ -1,0 +1,16 @@
+// Creates a failing parser with the given error message.
+// - A: Value type.
+// - msg: Error message.
+// = A Parser that always fails with the specified error message.
+Bend/Parser/fail : ∀(A: *) String -> (Bend/Parser A)
+| A msg #State{input index indent file} =
+  #Fail{
+    #Error{
+      index: index
+      error: msg
+    }
+  }
+
+#test: ((Bend/Parser/fail String "Test error")     #State{"abcdef"      0 0 ""}) == (#Fail{#Error{0 "Test error"}})
+#test: ((Bend/Parser/fail Nat "Empty input")       #State{""            0 0 ""}) == (#Fail{#Error{0 "Empty input"}})
+#test: ((Bend/Parser/fail Bool "Error at index 5") #State{"hello world" 5 0 ""}) == (#Fail{#Error{5 "Error at index 5"}})

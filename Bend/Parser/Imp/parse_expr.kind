@@ -1,0 +1,380 @@
+use Bend/Parser/Imp/parse_expr as .
+use Bend/Imp/Expr as Expr
+use Bend/Fun/Op as Op
+use Bend/Parser as BP
+
+Bend/Parser/Imp/parse_expr : Bool -> Bool -> (Parser Expr)
+| inline tup = do Parser {
+  ask (BP/skp_inline inline)
+  ask term = (./parse_infix 0 inline)
+  if tup {
+    (./parse_tup inline tup term)
+  } else{
+    (Parser/pure _ term)
+  }
+}
+
+./parse_tup : Bool -> Bool -> Expr -> (Parser Expr)
+| inline tup head = do Parser {
+  ask (BP/skp_inline inline)
+  ask cma = (BP/try_consume ",")
+  if cma do Parser {
+    ask (BP/skp_inline inline)
+    ask end1 = (Parser/starts_with ")")
+    ask end2 = (Parser/starts_with ":")
+    if (Bool/or end1 end2) do Parser {
+      ret head
+    } else do Parser {
+      ask tail = (BP/Imp/parse_expr inline tup)
+      match tail {
+        #Tup{tail}: (Parser/pure _ #Tup{head ;; tail})
+        _         : (Parser/pure _ #Tup{[head tail]})
+      }
+    }
+  } else {
+    (Parser/pure _ head)
+  }
+}
+
+./max_precedence : U64
+| = 8
+
+./parse_infix : U64 -> Bool -> (Parser Expr)
+| prec inline =
+  if (U64/gt prec ./max_precedence) {
+    (./parse_single inline)
+  } else do Parser {
+    ask lhs = (./parse_infix (+ 1 prec) inline)
+    ask _   = (BP/skp_inline inline)
+    (./parse_infix/rhs lhs prec inline)
+  }
+./parse_infix/rhs : Expr -> U64 -> Bool -> (Parser Expr)
+| lhs prec inline = do Parser {
+  ask op  = (./peek_op)
+  match op {
+    #Some{op}:
+      if (U64/eq (./prec op) prec) do Parser {
+        ask _   = (./advance_op op)
+        ask rhs = (./parse_infix (+ 1 prec) inline)
+        ask _   = (BP/skp_inline inline)
+        let lhs = #Opr{op lhs rhs} :: Expr
+        (./parse_infix/rhs lhs prec inline)
+      } else {
+        (Parser/pure _ lhs)
+      }
+    #None: (Parser/pure _ lhs)
+  }
+}
+
+./prec : Op -> U64
+| #Or  = 0
+| #Xor = 1
+| #And = 2
+| #Eql = 3
+| #Neq = 3
+| #Ltn = 4
+| #Gtn = 4
+| #Lte = 4
+| #Gte = 4
+| #Shl = 5
+| #Shr = 5
+| #Add = 6
+| #Sub = 6
+| #Mul = 7
+| #Div = 7
+| #Rem = 7
+| #Pow = 8
+
+./peek_op : (Parser (Maybe Op))
+| = (BP/first_with_guard _ [
+  ((Parser/starts_with "+") , (Parser/pure _ #Some{#Add}))
+  ((Parser/starts_with "-") , (Parser/pure _ #Some{#Sub}))
+  ((Parser/starts_with "*") , (Parser/pure _ #Some{#Mul}))
+  ((Parser/starts_with "/") , (Parser/pure _ #Some{#Div}))
+  ((Parser/starts_with "%") , (Parser/pure _ #Some{#Rem}))
+  ((Parser/starts_with "=="), (Parser/pure _ #Some{#Eql}))
+  ((Parser/starts_with "!="), (Parser/pure _ #Some{#Neq}))
+  ((Parser/starts_with "<<"), (Parser/pure _ #Some{#Shl}))
+  ((Parser/starts_with ">>"), (Parser/pure _ #Some{#Shr}))
+  ((Parser/starts_with "<="), (Parser/pure _ #Some{#Lte}))
+  ((Parser/starts_with ">="), (Parser/pure _ #Some{#Gte}))
+  ((Parser/starts_with "<") , (Parser/pure _ #Some{#Ltn}))
+  ((Parser/starts_with ">") , (Parser/pure _ #Some{#Gtn}))
+  ((Parser/starts_with "&") , (Parser/pure _ #Some{#And}))
+  ((Parser/starts_with "|") , (Parser/pure _ #Some{#Or}))
+  ((Parser/starts_with "^") , (Parser/pure _ #Some{#Xor}))
+  ((Parser/starts_with "**"), (Parser/pure _ #Some{#Pow}))
+] (Parser/pure _ #None))
+
+./advance_op : Op -> (Parser (Maybe String))
+| #Or  = (Parser/advance_many 1)
+| #Xor = (Parser/advance_many 1)
+| #And = (Parser/advance_many 1)
+| #Eql = (Parser/advance_many 2)
+| #Neq = (Parser/advance_many 2)
+| #Ltn = (Parser/advance_many 1)
+| #Gtn = (Parser/advance_many 1)
+| #Lte = (Parser/advance_many 2)
+| #Gte = (Parser/advance_many 2)
+| #Shl = (Parser/advance_many 2)
+| #Shr = (Parser/advance_many 2)
+| #Add = (Parser/advance_many 1)
+| #Sub = (Parser/advance_many 1)
+| #Mul = (Parser/advance_many 1)
+| #Div = (Parser/advance_many 1)
+| #Rem = (Parser/advance_many 1)
+| #Pow = (Parser/advance_many 2)
+
+// Parses a term without any infix operators, commas, etc.
+./parse_single : Bool -> (Parser Expr)
+| inline = do Parser {
+  ask term = (./parse_primary inline)
+  ask (BP/skp_inline inline)
+  (./parse_postfix term inline)
+}
+
+./parse_primary : Bool -> (Parser Expr)
+| inline = do Parser {
+  let starts_with_num = do Parser {
+    ask x = (Parser/peek_one)
+    ret (Maybe/fold _ x Bool #False BP/is_num_char)
+  }
+  let starts_with_lam = do Parser {
+    ask is_lam = (Parser/starts_with "λ")
+    ask is_kw  = (BP/starts_with_keyword "lambda")
+    ret (Bool/or is_lam is_kw)
+  }
+  let starts_with_nam = do Parser {
+    ask x = (Parser/peek_one)
+    ret (Maybe/fold _ x Bool #False BP/is_name_char)
+  }
+
+  ask (BP/skp_inline inline)
+  (BP/first_with_guard _ [
+    ((Parser/starts_with "*") , (./parse_era))
+    ((Parser/starts_with "$") , (./parse_lnk))
+    ((Parser/starts_with "'") , (./parse_chr))
+    ((Parser/starts_with "\""), (./parse_str))
+    ((Parser/starts_with "`") , (./parse_sym))
+    ((Parser/starts_with "[") , (./parse_lst))
+    ((Parser/starts_with "!["), (./parse_tree_node))
+    ((Parser/starts_with "!") , (./parse_tree_leaf inline))
+    ((Parser/starts_with "(") , (./parse_parens))
+    (starts_with_lam          , (./parse_lam inline))
+    (starts_with_num          , (./parse_num))
+    (starts_with_nam          , (./parse_var))
+  ] (Parser/fail _ "Expected expression"))
+}
+
+./parse_era : (Parser Expr)
+= do Parser {
+  ask (BP/consume "*")
+  ret #Era
+}
+
+./parse_lnk : (Parser Expr)
+= do Parser {
+  ask (BP/consume "$")
+  ask nam = (BP/parse_var_name)
+  ret #Lnk{nam}
+}
+
+./parse_chr : (Parser Expr)
+= do Parser {
+  ask (BP/consume "'")
+  ask val = (Parser/parse_char)
+  ask (BP/consume "'")
+  ret #Num{#U24{val}}
+}
+
+./parse_str : (Parser Expr)
+= do Parser {
+  ask val = (Parser/parse_string)
+  ret #Str{val}
+}
+
+./parse_sym : (Parser Expr)
+| = do Parser {
+  ask _   = (BP/consume "`")
+  ask sym = (./parse_sym/go 4 0)
+  ret #Num{#U24{sym}}
+}
+./parse_sym/go : U64 -> U64 -> (Parser U64)
+| 1+n acc = do Parser {
+  ask c = (Parser/advance_one)
+  match c {
+    #Some{c}:
+      if (Bool/and (Char/gte c 'A') (Char/lte c 'Z')) {
+        (./parse_sym/go n (+ (<< acc 6) (- c 'A')))
+      } else if (Bool/and (Char/gte c 'a') (Char/lte c 'z')) {
+        (./parse_sym/go n (+ (<< acc 6) (+ (- c 'A') 26)))
+      } else if (Bool/and (Char/gte c '0') (Char/lte c '9')) {
+        (./parse_sym/go n (+ (<< acc 6) (+ (- c '0') 52)))
+      } else if (Char/eq c '+') {
+        (./parse_sym/go n (+ (<< acc 6) 62))
+      } else if (Char/eq c '/')  {
+        (./parse_sym/go n (+ (<< acc 6) 63))
+      } else if (Char/eq c '`') {
+        (Parser/pure _ acc)
+      } else {
+        (Parser/fail _ (String/concat ["Invalid symbol character '" (String/from_char c) "'"]))
+      }
+    #None: (Parser/fail _ "Expected symbol")
+  }
+}
+| 0   acc = do Parser {
+  ask (BP/consume "`")
+  ret acc
+}
+
+./parse_lst : (Parser Expr)
+| = do Parser {
+  ask els = (BP/list_like _ (BP/Imp/parse_expr #False #False) "[" "]" "," #True #False 0)
+  ret #Lst{els}
+}
+
+./parse_tree_node : (Parser Expr)
+| = do Parser {
+  ask (BP/consume "![")
+  ask (BP/skp)
+  ask lft = (BP/Imp/parse_expr #False #False)
+  ask (BP/skp)
+  ask (BP/consume ",")
+  ask (BP/skp)
+  ask rgt = (BP/Imp/parse_expr #False #False)
+  ask (BP/skp)
+  ask (BP/consume "]")
+  ret #TreNod{lft rgt}
+}
+
+./parse_tree_leaf : Bool -> (Parser Expr)
+| inline = do Parser {
+  ask (BP/consume "!")
+  ask (BP/skp)
+  ask val = (./parse_single inline)
+  ret #TreLea{val}
+}
+
+./parse_parens : (Parser Expr)
+| = do Parser {
+  ask (BP/consume "(")
+  ask (BP/skp)
+  ask val = (BP/Imp/parse_expr #False #True)
+  ask (BP/skp)
+  ask (BP/consume ")")
+  ret val
+}
+
+./parse_lam : Bool -> (Parser Expr)
+| inline = do Parser {
+  let p_var  = do Parser {
+    ask uns = (BP/try_consume "$")
+    ask _   = (BP/skp_inline inline)
+    ask nam = (BP/parse_var_name)
+    ret (nam, uns) :: (_ & _)
+  }
+
+  ask lam = (BP/try_consume "λ")
+  ask if lam {
+    (Parser/pure _ 0)
+  } else do Parser {
+    ask (BP/parse_keyword "lambda")
+    (Parser/pure _ 0)
+  }
+  ask (BP/skp_inline inline)
+  ask nam = (BP/list_like _ p_var "" ":" "," #True inline 0)
+  ask (BP/skp_inline inline)
+  ask bod = (BP/Imp/parse_expr inline #True)
+  ret #Lam{nam bod}
+}
+
+./parse_num : (Parser Expr)
+| = do Parser {
+  ask num = (BP/parse_number)
+  ret #Num{num}
+}
+
+./parse_var : (Parser Expr)
+| = do Parser {
+  ask nam = (BP/parse_var_name)
+  ret #Var{nam}
+}
+
+./parse_postfix : Expr -> Bool -> (Parser Expr)
+| term inline = do Parser {
+  ask (BP/skp_inline inline)
+  (BP/first_with_guard _ [
+    ((Parser/starts_with "("), (./parse_call term inline))
+    ((Parser/starts_with "{"), (./parse_ctr term inline))
+    ((Parser/starts_with "["), (./parse_tree_get term inline))
+  ] (Parser/pure _ term))
+}
+
+./parse_call : Expr -> Bool -> (Parser Expr)
+| term inline = do Parser {
+  ask args = (BP/list_like _ (./parse_call_arg) "(" ")" "," #True #False 0)
+  // TODO: Check if args and kwargs are in the right order
+  let (arg, kwarg) = (List/foldr _ args ((List _) & (List _)) ([], []) λp λacc
+    let (nam, val) = p
+    let (arg, kwarg) = acc
+    match nam {
+      #Some{nam}: (arg         , (((nam, val) :: (_&_)) ;; kwarg))
+      #None     : ((val ;; arg), kwarg)
+    })
+  (./parse_postfix #Cal{term arg kwarg} inline)
+}
+
+./parse_call_arg : (Parser ((Maybe String) & Expr))
+| = do Parser {
+  ask arg = (BP/Imp/parse_expr #False #False)
+  match arg {
+    #Var{nam}: do Parser {
+      ask (BP/skp)
+      ask kwarg = (BP/try_consume "=")
+      if kwarg do Parser {
+        ask (BP/skp)
+        ask val = (BP/Imp/parse_expr #False #False)
+        (Parser/pure _ (#Some{nam}, val))
+      } else {
+        (Parser/pure _ (#None, arg))
+      }
+    }
+    _: (Parser/pure _ (#None, arg))
+  }
+}
+
+./parse_ctr : Expr -> Bool -> (Parser Expr)
+| #Var{nam} inline = do Parser {
+  ask args = (BP/list_like _ (./parse_call_arg) "{" "}" "," #True #False 0)
+  // TODO: Check if args and kwargs are in the right order
+  let (arg, kwarg) = (List/foldr _ args ((List _) & (List (_&_))) ([], []) λp λacc
+    let (nam, val) = p
+    let (arg, kwarg) = acc
+    match nam {
+      #Some{nam}: (arg         , ((nam, val) ;; kwarg))
+      #None     : ((val ;; arg), kwarg)
+    })
+  (./parse_postfix #Ctr{nam arg kwarg} inline)
+}
+| term _ = (Parser/fail _ "Expected constructor name")
+
+./parse_tree_get : Expr -> Bool -> (Parser Expr)
+| term inline = do Parser {
+  ask (BP/consume "[")
+  ask BP/skp
+  ask key = (BP/Imp/parse_expr #False #False)
+  ask BP/skp
+  ask (BP/consume "]")
+  (./parse_postfix #MapGet{term key} inline)
+}
+
+
+#test : (. #True #True #State{"*" 0})                  == #Done{#Reply{#State{"" 1}  #Era}}
+#test : (. #True #True #State{"(*)" 0})                == #Done{#Reply{#State{"" 3}  #Era}}
+#test : (. #True #True #State{"a" 0})                  == #Done{#Reply{#State{"" 1}  #Var{"a"}}}
+#test : (. #True #True #State{"a()" 0})                == #Done{#Reply{#State{"" 3}  #Cal{#Var{"a"} [] []}}}
+#test : (. #True #True #State{"a(b, c=d)" 0})          == #Done{#Reply{#State{"" 9}  #Cal{#Var{"a"} [#Var{"b"}] [("c", #Var{"d"})]}}}
+#test : (. #True #True #State{"a{b, c=d}" 0})          == #Done{#Reply{#State{"" 9}  #Ctr{"a"       [#Var{"b"}] [("c", #Var{"d"})]}}}
+#test : (. #True #True #State{"lambda a,$b,: a,$b" 0}) == #Done{#Reply{#State{"" 18} #Lam{[("a",#False) ("b",#True)] #Tup{[#Var{"a"} #Lnk{"b"}]}}}}
+#test : (. #True #True #State{"![!a, !b]" 0})          == #Done{#Reply{#State{"" 9}  #TreNod{#TreLea{#Var{"a"}} #TreLea{#Var{"b"}}}}}
+#test : (. #True #True #State{"1*2 + 3*4 + 5*6" 0})    == #Done{#Reply{#State{"" 15} #Opr{#Add #Opr{#Add #Opr{#Mul #Num{#U24{1}} #Num{#U24{2}}} #Opr{#Mul #Num{#U24{3}} #Num{#U24{4}}}} #Opr{#Mul #Num{#U24{5}} #Num{#U24{6}}}}}}

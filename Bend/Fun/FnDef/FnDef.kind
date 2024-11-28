@@ -5,6 +5,6 @@ data Bend/Fun/FnDef {
     typ : Bend/Fun/Type         // Type of the function
     chk : Bool                  // Whether to check the function
     rul : (List Bend/Fun/Rule)  // Pattern_matching rules defining the function
-    src : Bend/Source           // Source location of the function
+    src : Bend/Fun/Source           // Source location of the function
   }
 }

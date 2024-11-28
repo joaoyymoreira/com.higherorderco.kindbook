@@ -1,0 +1,21 @@
+use Bend/Parser as BP
+
+// Binds two parsers together
+// - A: The type of the first parser's result
+// - B: The type of the second parser's result
+// - p: The first parser
+// - f: A function that takes the result of the first parser and returns a new parser
+// = A new parser that combines the results of both parsers
+BP/bind : ∀(A: *) ∀(B: *) (BP A) -> (A -> (BP B)) -> (BP B)
+| A B p f state with (p state)
+. | #Done{#Reply{new_state value}} = (f value new_state)
+. | #Fail{e}                       = #Fail{e}
+
+parser1 : (BP Nat)
+| state = #Done{#Reply{state #5}}
+
+parser2 : Nat -> (BP String)
+| n state = #Done{#Reply{state (String/replicate n 'a')}}
+
+//#test: ((BP/bind Nat String parser1 parser2) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "aaaaa"}})
+//#test: ((BP/bind Nat String parser1 (λx (BP/pure String "hello"))) #State{"" #0}) == (#Done{#Reply{#State{"" #0} "hello"}})

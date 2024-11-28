@@ -1,8 +1,8 @@
 // Information about the source location of a code element
-data Bend/Source {
+data Bend/Fun/Source {
   #Source {
     file: (Maybe String)
     span: (Maybe (Pair (Pair U64 U64) (Pair U64 U64)))
-    kind: Bend/Source/Kind
+    kind: Bend/Fun/Source/Kind
   }
 }

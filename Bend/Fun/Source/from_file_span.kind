@@ -1,0 +1,3 @@
+// TODO: Stub
+Bend/Fun/Source/from_file_span : U64 -> U64 -> Bend/Fun/Source
+| ini end = #Source{#None #None #Generated}

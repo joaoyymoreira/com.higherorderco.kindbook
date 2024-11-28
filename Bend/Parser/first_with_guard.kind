@@ -1,20 +1,30 @@
+use Bend/Parser as BP
+
 // Parses with the first parser that has a guard parser that succeeds.
 // - A: Result type.
 // - ps: List of guard-parser pairs.
 // - dflt: Default parser.
 // = First parser whose guard succeeds, or default.
-Bend/Parser/first_with_guard : ∀(A: *) (List (Pair (Parser Bool) (Parser A))) -> (Parser A) -> (Parser A)
-| A #Nil                       dflt = dflt
-| A #Cons{#Pair{guard p} tail} dflt = do Parser {
+BP/first_with_guard : ∀(A: *) (List (Pair (BP Bool) (BP A))) -> (BP A) -> (BP A)
+| A []               dflt = dflt
+| A ((guard, p);;ps) dflt = do BP {
   ask is_guard = guard
   if (is_guard) {
     p
   } else {
-    (Bend/Parser/first_with_guard A tail dflt)
+    (BP/first_with_guard A ps dflt)
   }
 }
 
-#test: (Parser/run U64 (Bend/Parser/first_with_guard U64 #Nil (Parser/pure U64 42)) "") == #Some{42}
-#test: (Parser/run U64 (Bend/Parser/first_with_guard U64 #Cons{#Pair{(Parser/pure Bool #True) (Parser/pure U64 1)} #Nil} (Parser/pure U64 0)) "") == #Some{1}
-#test: (Parser/run U64 (Bend/Parser/first_with_guard U64 #Cons{#Pair{(Parser/pure Bool #False) (Parser/pure U64 1)} #Cons{#Pair{(Parser/pure Bool #True) (Parser/pure U64 2)} #Nil}} (Parser/pure U64 0)) "") == #Some{2}
-#test: (Parser/run U64 (Bend/Parser/first_with_guard U64 #Cons{#Pair{(Parser/pure Bool #False) (Parser/pure U64 1)} #Cons{#Pair{(Parser/pure Bool #False) (Parser/pure U64 2)} #Nil}} (Parser/pure U64 0)) "") == #Some{0}
+#test: (BP/run U64 (BP/first_with_guard U64 [] (BP/pure U64 42)) "") == #Done{"", 42}
+
+#test: (BP/run U64 (BP/first_with_guard U64 [
+  ((BP/pure Bool #True) , (BP/pure U64 1))] (BP/pure U64 0)) "") == #Done{"", 1}
+
+#test: (BP/run U64 (BP/first_with_guard U64 [
+  ((BP/pure Bool #False), (BP/pure U64 1))
+  ((BP/pure Bool #True) , (BP/pure U64 2))] (BP/pure U64 0)) "") == #Done{"", 2}
+
+#test: (BP/run U64 (BP/first_with_guard U64 [
+  ((BP/pure Bool #False), (BP/pure U64 1))
+  ((BP/pure Bool #False), (BP/pure U64 2))] (BP/pure U64 0)) "") == #Done{"", 0}

@@ -5,12 +5,12 @@ use Bend/Fun/CtrField as CtrField
 BP/Imp/parse_ctr_field : (Parser CtrField)
 | = do Parser {
   ask rec = (BP/try_consume "~")
-  ask BP/skp_inline
+  ask (BP/skp_inline #True)
   ask nam = (BP/parse_var_name)
-  ask BP/skp_inline
+  ask (BP/skp_inline #True)
   ask typ = (BP/try_consume ":")
   ask typ = if typ do Parser {
-    ask BP/skp_inline
+    ask (BP/skp_inline #True)
     (BP/Imp/parse_type #True #False) // No ',' since it's used as separator, must have ()
   } else do Parser {
     ret #Any

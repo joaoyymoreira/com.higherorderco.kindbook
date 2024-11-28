@@ -5,17 +5,18 @@ Bend/Parser/Imp/parse_hvm : (Parser Bend/Hvm/Net)
   ask ini_idx = (Parser/get_index)
   
   ask (BP/parse_keyword "hvm")
-  ask (BP/skp_inline)
+  ask (BP/skp_inline #True)
 
   ask name    = (BP/parse_top_level_name)
-  ask (BP/skp_inline)
+  ask (BP/skp_inline #True)
 
   ask typ     = (BP/Imp/parse_return_type)
   let typ     = (Maybe/run _ typ #Any)
-  ask _       = (BP/skp_inline)
+  ask (BP/skp_inline #True)
 
-  ask _       = (BP/consume ":")
-  ask _       = (BP/consume_new_line)
+  ask (BP/consume ":")
+  ask (BP/skp_inline #True)
+  ask (BP/consume "\n")
 
   // TODO: implement HVM parser
   (Parser/fail _ "HVM definitions not implemented")

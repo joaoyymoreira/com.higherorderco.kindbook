@@ -1,14 +1,17 @@
+use Bend/Parser as BP
+
 // Parses a Bend keyword: a name followed by a non-name character.
 // - keyword: The keyword to parse.
 // = Parser that returns 0 if successful, or fails if not found.
-Bend/Parser/parse_keyword : String -> (Parser U64)
-| keyword = do Parser {
-  ask is_kw = (Bend/Parser/starts_with_keyword keyword)
+BP/parse_keyword : String -> (BP U64)
+| keyword = do BP {
+  ask is_kw = (BP/starts_with_keyword keyword)
   if is_kw {
-    (Bend/Parser/consume keyword)
+    (BP/consume keyword)
   } else {
-    (Parser/fail _ (String/append "Expected keyword '" (String/append keyword "'")))  }
+    (BP/fail _ (String/concat ["Expected keyword '" keyword "'"]))
+  }
 }
 
-#test: (Bend/Parser/parse_keyword "let" #State{"let x = 5" 0}) == #Done{#Reply{#State{" x = 5" 3} 0}}
-#test: (Bend/Parser/parse_keyword "if" #State{"else"       0}) == #Fail{#Error{0 "Expected keyword 'if'"}}
+#test: (BP/run U64 (BP/parse_keyword "let") "let x = 5") == #Done{" x = 5", 0}
+#test: (BP/run U64 (BP/parse_keyword "if")   "else")     == #Fail{"Expected keyword 'if'"}

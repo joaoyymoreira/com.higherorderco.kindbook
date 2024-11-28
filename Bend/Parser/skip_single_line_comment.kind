@@ -1,15 +1,17 @@
+use Bend/Parser as BP
+
 // Skips a single_line comment.
-Bend/Parser/skip_single_line_comment : (Parser Unit)
-= do Parser {
-  ask is_comment = (Parser/starts_with "#")
-  if is_comment {
-    do Parser {
-      ask x = (Parser/advance_one)
-      ask x = (Parser/take_while (λc (Char/neq c '\n')))
-      ask x = (Parser/advance_one)
-      ret #Unit
-    }
-  } else {
-    (Parser/pure Unit #Unit)
+BP/skip_single_line_comment : (BP U64)
+= do BP {
+  ask is_comment = (BP/starts_with "#")
+  if is_comment do BP {
+    ask x = (BP/advance_one)
+    ask x = (BP/take_while (λc (Char/neq c '\n')))
+    ret 0
+  } else do BP {
+    ret 0
   }
 }
+
+#test: (BP/run U64 BP/skip_single_line_comment "# This is a comment\nabc")   == #Done{"\nabc", 0}
+#test: (BP/run U64 BP/skip_single_line_comment "  # This is a comment\nabc") == #Done{"  # This is a comment\nabc", 0}

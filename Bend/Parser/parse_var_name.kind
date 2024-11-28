@@ -1,10 +1,12 @@
+use Bend/Parser as BP
+
 // Parses a variable name.
 // = Parser that returns the parsed variable name if successful.
-Bend/Parser/parse_var_name : (Parser String)
-= (Bend/Parser/parse_name "variable")
+BP/parse_var_name : (BP String)
+= (BP/parse_name "variable")
 
-#test: (Parser/run String (Bend/Parser/parse_var_name) "validName") == #Some{"validName"}
-#test: (Parser/run String (Bend/Parser/parse_var_name) "123invalid") == #None
-#test: (Parser/run String (Bend/Parser/parse_var_name) "") == #None
-#test: (Parser/run String (Bend/Parser/parse_var_name) "valid_name") == #Some{"valid_name"}
-#test: (Parser/run String (Bend/Parser/parse_var_name) "Valid_Name_123") == #Some{"Valid_Name_123"}
+#test: (BP/run String (BP/parse_var_name) "validName")      == #Done{"", "validName"}
+#test: (BP/run String (BP/parse_var_name) "123invalid")     == #Fail{"Names are not allowed to start with a number."}
+#test: (BP/run String (BP/parse_var_name) "")               == #Fail{"Expected variable name"}
+#test: (BP/run String (BP/parse_var_name) "valid_name")     == #Done{"", "valid_name"}
+#test: (BP/run String (BP/parse_var_name) "Valid_Name_123") == #Done{"", "Valid_Name_123"}

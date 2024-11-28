@@ -1,0 +1,12 @@
+use Bend/Imp/Expr as Expr
+use Bend/Imp/Pattern as Pat
+
+// An Imp assignment pattern.
+data Bend/Imp/Pattern {
+  #Era
+  #Var{ nam: String }
+  #Chn{ nam: String }
+  #Tup{ els: (List Pat) }
+  #Dup{ els: (List Pat) }
+  #MapSet{ nam: String key: Expr }
+}

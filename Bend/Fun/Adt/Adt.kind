@@ -4,6 +4,6 @@ data Bend/Fun/Adt {
     nam : String        // Name of the ADT
     var : (List String) // Name of type variables
     ctr : (List String) // Name of constructors
-    src : Bend/Source   // Source location of the ADT
+    src : Bend/Fun/Source   // Source location of the ADT
   }
 }

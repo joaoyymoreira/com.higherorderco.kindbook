@@ -1,34 +1,32 @@
+use Bend/Parser as BP
+
 // Skips a multi_line comment.
-Bend/Parser/skip_multi_line_comment : U64 -> (Parser Unit)
-| depth = do Parser {
-  ask is_comment = (Parser/starts_with "#{")
+BP/skip_multi_line_comment : U64 -> (BP U64)
+| depth = do BP {
+  ask is_comment = (BP/starts_with "#{")
   if is_comment {
-    do Parser {
-      ask y = (Parser/advance_many 2)
-      (Bend/Parser/skip_to_comment_end (+ depth 1))
+    do BP {
+      ask y = (BP/advance_many 2)
+      (BP/skip_to_comment_end (+ depth 1))
     }
   } else {
-    (Parser/pure Unit #Unit)
+    (BP/pure _ 0)
   }
 } 
 
 // Auxiliary function for skip_multi_line_comment.
-Bend/Parser/skip_to_comment_end : U64 -> (Parser Unit)
-| 0     = (Parser/pure Unit #Unit)
-| depth = do Parser {
-  ask is_start = (Parser/starts_with "#{")
-  ask is_end   = (Parser/starts_with "#}")
+BP/skip_to_comment_end : U64 -> (BP U64)
+| 0     = (BP/pure _ 0)
+| depth = do BP {
+  ask is_start = (BP/starts_with "#{")
+  ask is_end   = (BP/starts_with "#}")
   if (is_start) {
-    (Bend/Parser/skip_multi_line_comment depth)
-  } else if (is_end) {
-    do Parser {
-      ask w = (Parser/advance_many 2)
-      (Bend/Parser/skip_to_comment_end (- depth 1))
-    }
-  } else {
-    do Parser {
-      ask w = (Parser/advance_one)
-      (Bend/Parser/skip_to_comment_end depth)
-    }
+    (BP/skip_multi_line_comment depth)
+  } else if (is_end) do BP {
+    ask w = (BP/advance_many 2)
+    (BP/skip_to_comment_end (- depth 1))
+  } else do BP {
+    ask w = (BP/advance_one)
+    (BP/skip_to_comment_end depth)
   }
 }

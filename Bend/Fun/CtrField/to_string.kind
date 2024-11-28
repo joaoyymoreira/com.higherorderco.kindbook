@@ -1,0 +1,3 @@
+Bend/Fun/CtrField/to_string : Bend/Fun/CtrField -> String
+| #CtrField{nam rec typ} =
+  (String/concat [if rec { "~" } else { "" } "(" nam ": " (Bend/Fun/Type/to_string typ) ")"])

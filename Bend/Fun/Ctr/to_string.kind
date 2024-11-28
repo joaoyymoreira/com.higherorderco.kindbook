@@ -1,0 +1,3 @@
+Bend/Fun/Ctr/to_string : Bend/Fun/Ctr -> String
+| #Ctr{nam _ _ []}  = nam
+| #Ctr{nam _ _ fld} = (String/concat ["(" nam " " (String/join " " (List/map _ _ fld Bend/Fun/CtrField/to_string))])

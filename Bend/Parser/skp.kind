@@ -1,29 +1,30 @@
+use Bend/Parser as BP
+
 // Skips all trivia (whitespace and comments).
-Bend/Parser/skp : (Parser U64)
-= do Parser {
-  ask c = (Parser/peek_one)
+BP/skp : (BP U64)
+= do BP {
+  ask c = (BP/peek_one)
   match c {
     #Some{v}:
       if (Char/is_space v) {
-        do Parser {
-          ask z = (Parser/advance_one)
-          (Bend/Parser/skp)
+        do BP {
+          ask z = (BP/advance_one)
+          (BP/skp)
         }      
       } else if (Char/eq v '#') {
-        do Parser {
-          ask _ = (Bend/Parser/skip_multi_line_comment 0)
-          ask _ = (Bend/Parser/skip_single_line_comment)
-          (Bend/Parser/skp)
+        do BP {
+          ask _ = (BP/skip_multi_line_comment 0)
+          ask _ = (BP/skip_single_line_comment)
+          (BP/skp)
         }
       } else {
-        (Parser/pure _ 0)
+        (BP/pure _ 0)
       }
-    #None: (Parser/pure _ 0)
+    #None: (BP/pure _ 0)
   }
 } 
 
-#test: (Bend/Parser/skp #State{"code"    0}) == #Done{#Reply{#State{"code" 0} 0}}
-#test: (Bend/Parser/skp #State{"   code" 0}) == #Done{#Reply{#State{"code" 3} 0}}
-#test: (Bend/Parser/skp #State{"   # This is a comment\n  #{This is a\nmulti_line comment#}\n  code" 0}) == #Done{#Reply{#State{"code" 60} 0}} 
-#test: (Bend/Parser/skp #State{"#{Nested #{comments#} are #} handled" 0}) == #Done{#Reply{#State{"handled" 29} 0}} 
-#test: (Bend/Parser/skp #State{"  # Comment\n  code" 0}) == #Done{#Reply{#State{"code" 14} 0}}
+#test: (BP/run U64 BP/skp "code") == #Done{("code", 0)}
+#test: (BP/run U64 BP/skp "   # This is a comment\n  #{This is a\nmulti_line comment#}\n  code") == #Done{"code", 0}
+#test: (BP/run U64 BP/skp "#{Nested #{comments#} are #} handled") == #Done{"handled", 0}
+#test: (BP/run U64 BP/skp "  # Comment\n  code") == #Done{"code", 0}

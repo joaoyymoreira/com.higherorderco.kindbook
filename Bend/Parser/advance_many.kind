@@ -1,0 +1,19 @@
+use Bend/Parser as BP
+
+// Advances the parser by a specified number of characters and returns the consumed characters.
+// - count: The number of characters to advance.
+// = A Parser that returns a Maybe String containing the consumed characters.
+BP/advance_many : U64 -> (BP (Maybe String))
+| count #State{inp idx idn fil} =
+  let (res, inp) = (String/split_at_u64 inp count)
+  let idx       = (+ idx count)
+  #Done{#Reply{#State{inp idx idn fil} #Some{res}}}
+
+#test: (BP/advance_many 3  #State{"abcdef" 0 0 ""}) == (#Done{#Reply{#State{"def"    3 0 ""} #Some{"abc"}}})
+#test: (BP/advance_many 10 #State{"abcdef" 0 0 ""}) == (#Done{#Reply{#State{""       10 0 ""} #Some{"abcdef"}}})
+#test: (BP/advance_many 6  #State{"abcdef" 0 0 ""}) == (#Done{#Reply{#State{""       6 0 ""} #Some{"abcdef"}}})
+#test: (BP/advance_many 3  #State{""       0 0 ""}) == (#Done{#Reply{#State{""       3 0 ""} #Some{""}}})
+#test: (BP/advance_many 3  #State{"abcdef" 2 0 ""}) == (#Done{#Reply{#State{"def"    5 0 ""} #Some{"abc"}}})
+#test: (BP/advance_many 0  #State{"abcdef" 0 0 ""}) == (#Done{#Reply{#State{"abcdef" 0 0 ""} #Some{""}}})
+#test: (BP/advance_many 2  #State{"🌟🌠✨" 0 0 ""}) == (#Done{#Reply{#State{"✨"     2 0 ""} #Some{"🌟🌠"}}})
+#test: (BP/advance_many 8  #State{"abcdef" 2 0 ""}) == (#Done{#Reply{#State{""       10 0 ""} #Some{"abcdef"}}})

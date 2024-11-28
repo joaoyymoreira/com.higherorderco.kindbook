@@ -53,7 +53,7 @@ Bend/Parser/Fun/parse_pattern : (Parser Pattern)
 
 ./parse_pat_lst : (Parser Pattern)
 | = do Parser {
-  ask elements = (BP/list_like _ BP/Fun/parse_pattern "[" "]" "," #False 0)
+  ask elements = (BP/list_like _ BP/Fun/parse_pattern "[" "]" "," #False #False 0)
   ret #Lst{elements} :: Pattern
 }
 
@@ -65,19 +65,19 @@ Bend/Parser/Fun/parse_pattern : (Parser Pattern)
 
 ./parse_pat_dup : (Parser Pattern)
 | = do Parser {
-  ask els = (BP/list_like _ BP/Fun/parse_pattern "{" "}" "," #False 2)
+  ask els = (BP/list_like _ BP/Fun/parse_pattern "{" "}" "," #False #False 2)
   ret #Fan{#Dup els} :: Pattern
 }
 
 parse_pat_tup : Pattern -> (Parser Pattern)
 | = λhead do Parser {
-  ask tail = (BP/list_like _ BP/Fun/parse_pattern "" ")" "," #True 1)
+  ask tail = (BP/list_like _ BP/Fun/parse_pattern "" ")" "," #True #False 1)
   ret #Fan{#Tup (head;;tail)} :: Pattern
 }
 
 parse_pat_ctr : Pattern -> (Parser Pattern)
 | #Var{#Some{name}} = do Parser {
-  ask args = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False 0)
+  ask args = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False #False 0)
   ret #Ctr{name args} :: Pattern
 }
 | _ = (Parser/fail _ "Expected constructor name")

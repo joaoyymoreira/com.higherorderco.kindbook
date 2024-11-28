@@ -5,16 +5,16 @@ use Bend/Fun/Type as Type
 // Parses a type expression, returning the type and the type variables.
 Bend/Parser/Imp/parse_type : Bool -> Bool -> (Parser Type)
 | inline tup = do Parser {
-  ask if inline { BP/skp_inline } else { BP/skp }
+  ask (BP/skp_inline inline)
   ask ini_idx = (Parser/get_index)
-  ask typ     = (./parse_primary)
+  ask typ     = (./parse_primary inline)
   ask typ     = (./parse_suffix inline tup typ)
   ask end_idx = Parser/get_index
   ret typ
 }
 
-./parse_primary : (Parser Type)
-| =
+./parse_primary : Bool -> (Parser Type)
+| inline =
   let starts_with_name = do Parser {
     ask c = (Parser/peek_one)
     ret (Maybe/fold _ c Bool #False BP/is_name_char)
@@ -27,12 +27,12 @@ Bend/Parser/Imp/parse_type : Bool -> Bool -> (Parser Type)
     ((BP/starts_with_keyword "i24") , ./parse_i24)
     ((BP/starts_with_keyword "f24") , ./parse_f24)
     ((Parser/starts_with "(")       , ./parse_parens)
-    ((starts_with_name)             , ./parse_var_or_ctr)
+    ((starts_with_name)             , (./parse_var_or_ctr inline))
   ] (Parser/fail _ "Expected type expression"))
 
 ./parse_suffix : Bool -> Bool -> Type -> (Parser Type)
 | inline tup head = do Parser {
-  ask if inline { BP/skp_inline } else { BP/skp }
+  ask (BP/skp_inline inline)
   let g_tup = if tup { (Parser/starts_with ",") } else { (Parser/pure _ #False) } :: (Parser Bool)
   (BP/first_with_guard _ [
     (g_tup                    , (./parse_tup inline tup head))
@@ -84,16 +84,16 @@ Bend/Parser/Imp/parse_type : Bool -> Bool -> (Parser Type)
   ret #F24
 }
 
-./parse_var_or_ctr : (Parser Type)
-| = do Parser {
-  ask name  = (BP/parse_var_name)
-  ask _     = (BP/skp_inline)
-  ask paren = (Parser/starts_with "(")
-  if paren do Parser {
-    ask args = (BP/list_like _ (BP/Imp/parse_type #False #False) "(" ")" "," #True 0)
-    ret #Ctr{name args}
+./parse_var_or_ctr : Bool -> (Parser Type)
+| inline = do Parser {
+  ask nam = (BP/parse_var_name)
+  ask _   = (BP/skp_inline inline)
+  ask bra = (Parser/starts_with "(")
+  if bra do Parser {
+    ask args = (BP/list_like _ (BP/Imp/parse_type #False #False) "(" ")" "," #True #False 0)
+    ret #Ctr{nam args}
   } else do Parser {
-    ret #Var{name}
+    ret #Var{nam}
   }
 }
 

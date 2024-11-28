@@ -2,14 +2,14 @@ use Bend/Parser as BP
 use Bend/Fun/Num as Num
 
 // Parses a Bend number literal.
-Bend/Parser/parse_number : (Parser Num)
-| = do Parser {
+BP/parse_number : (BP Num)
+| = do BP {
   ask sign      = (parse_sign)
   ask radix     = (parse_radix)
   ask int_part  = (parse_num_radix radix)
   ask frac_part = (parse_frac_part radix)
   match frac_part {
-    #Some{frac}: do Parser {
+    #Some{frac}: do BP {
       // TODO: implement the actual conversion
       //let sign = (Maybe/fold _ sign _ 1.0 F64/from_int)
       //ret #F24{(F64/mul sign (F64/add (F64/from_nat int_part) frac))}
@@ -17,16 +17,16 @@ Bend/Parser/parse_number : (Parser Num)
     }
     #None: match sign {
       #Some{sign}:
-        if (Bool/and sign (U64/lt int_part 0x80_0000)) do Parser {
+        if (Bool/and sign (U64/lt int_part 0x80_0000)) do BP {
           ret #I24{int_part}
-        } else if (U64/lte int_part 0x80_0000) do Parser {
+        } else if (U64/lte int_part 0x80_0000) do BP {
           ret #I24{(U64/twos_complement int_part)}
         } else {
           (fail_range_error "i24")
         }
-      _: do Parser {
+      _: do BP {
         let val = int_part
-        if (U64/lt val 0x100_0000) do Parser {
+        if (U64/lt val 0x100_0000) do BP {
           ret #U24{(& val 0xFF_FF_FF)}
         } else {
           (fail_range_error "u24")
@@ -37,78 +37,78 @@ Bend/Parser/parse_number : (Parser Num)
 }
 
 // Parses an optional sign (+ or -).
-parse_sign : (Parser (Maybe Bool))
-| = do Parser {
-  ask head = (Parser/peek_one)
+parse_sign : (BP (Maybe Bool))
+| = do BP {
+  ask head = (BP/peek_one)
   match head {
     #Some{head}:
-      if (Char/eq head '+') do Parser {
-        ask _ = (Parser/advance_one)
+      if (Char/eq head '+') do BP {
+        ask _ = (BP/advance_one)
         ret #Some{#True}
-      } else if (Char/eq head '-') do Parser {
-        ask _ = (Parser/advance_one)
+      } else if (Char/eq head '-') do BP {
+        ask _ = (BP/advance_one)
         ret #Some{#False}
-      } else do Parser {
+      } else do BP {
         ret #None
       }
-    _: do Parser {
+    _: do BP {
       ret #None
     }
   }
 }
 
 // Parses the radix of the number (10, 16, or 2).
-parse_radix : (Parser U64)
-| = do Parser {
-  ask two = (Parser/peek_many #2)
+parse_radix : (BP U64)
+| = do BP {
+  ask two = (BP/peek_many #2)
   match two {
     #Some{two}:
-      if (String/eq two "0x") do Parser {
-        ask _ = (Parser/advance_many 2)
+      if (String/eq two "0x") do BP {
+        ask _ = (BP/advance_many 2)
         ret 16
-      } else if (String/eq two "0b") do Parser {
-        ask _ = (Parser/advance_many 2)
+      } else if (String/eq two "0b") do BP {
+        ask _ = (BP/advance_many 2)
         ret 2
-      } else do Parser {
+      } else do BP {
         ret 10
       }
-    _: do Parser {
+    _: do BP {
       ret 10
     }
   }
 }
 
 // Parses the integer part of the number in the given radix.
-parse_num_radix : U64 -> (Parser U64)
-| radix = do Parser {
-  ask digits = (Parser/take_while (is_digit_radix radix))
+parse_num_radix : U64 -> (BP U64)
+| radix = do BP {
+  ask digits = (BP/take_while (is_digit_radix radix))
   let digits = (String/filter digits (λc (Bool/not (Char/eq c '_'))))
   match (String/to_u64_base digits radix) {
-    #Some{n}: (Parser/pure _ n)
-    #None   : (Parser/fail _ "Expected number")
+    #Some{n}: (BP/pure _ n)
+    #None   : (BP/fail _ "Expected number")
   }
 }
 
 // Parses the fractional part of the number in the given radix.
-parse_frac_part : U64 -> (Parser (Maybe F64))
-| radix = do Parser {
+parse_frac_part : U64 -> (BP (Maybe F64))
+| radix = do BP {
   ask has_frac = (BP/try_consume ".")
-  if has_frac do Parser {
-    ask digits = (Parser/take_while (is_digit_radix radix))
+  if has_frac do BP {
+    ask digits = (BP/take_while (is_digit_radix radix))
     let digits = (String/filter digits (λc (Bool/not (Char/eq c '_'))))
     let num    = (Maybe/run _ (String/to_u64_base digits radix) 0)
     // TODO: implement the actual conversion
     //let num    = (F64/div (F64/from_u64 num) (F64/pow (F64/from_u64 radix) (String/length_u64 digits)))
     let num = 0.0
     ret #Some{num}
-  } else do Parser {
+  } else do BP {
     ret #None
   }
 }
 
 // Reports a range error for the given number type.
-fail_range_error : String -> (Parser Num)
-| typ = (Parser/fail _ (String/concat ["Number literal outside of range for " typ]))
+fail_range_error : String -> (BP Num)
+| typ = (BP/fail _ (String/concat ["Number literal outside of range for " typ]))
 
 // Checks if a character is a valid digit in the given radix.
 is_digit_radix : U64 -> Char -> Bool

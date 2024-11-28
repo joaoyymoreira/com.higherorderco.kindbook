@@ -1,0 +1,19 @@
+use Bend/Parser as BP
+
+// Checks if the input starts with a given string.
+// - prefix: The prefix string to check for.
+// = A Parser that returns True if the input starts with the given string, False otherwise.
+//   Does not consume any input.
+BP/starts_with : String -> (BP Bool)
+| prefix #State{input index indent file} = #Done{
+  #Reply{
+    state: #State{input index indent file}
+    value: (String/starts_with input prefix)
+  }
+}
+
+#test: (BP/run Bool (BP/starts_with "hello") "hello world")   == #Done{"hello world",   #True}
+#test: (BP/run Bool (BP/starts_with "hello") "goodbye world") == #Done{"goodbye world", #False}
+#test: (BP/run Bool (BP/starts_with "")      "any string")    == #Done{"any string",    #True}
+#test: (BP/run Bool (BP/starts_with "any")   "")              == #Done{"",              #False}
+#test: (BP/run Bool (BP/starts_with "")      "")              == #Done{"",              #True}

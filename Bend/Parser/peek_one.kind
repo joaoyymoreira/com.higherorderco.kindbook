@@ -1,0 +1,13 @@
+use Bend/Parser as BP
+
+// Peeks at the next character in the input without consuming it.
+// - state: The current parser state.
+// = A Reply containing the current state and the next character (if any).
+BP/peek_one : (BP (Maybe Char))
+| #State{input index indent file} =
+  let next_char = (String/head input)
+  #Done{#Reply{#State{input index indent file} next_char}}
+
+#test: (BP/peek_one #State{"abc" 0 0 ""}) == #Done{#Reply{#State{"abc" 0 0 ""} #Some{97}}}
+#test: (BP/peek_one #State{""    0 0 ""}) == #Done{#Reply{#State{""    0 0 ""} #None}}
+#test: (BP/peek_one #State{"!@#" 0 0 ""}) == #Done{#Reply{#State{"!@#" 0 0 ""} #Some{33}}}

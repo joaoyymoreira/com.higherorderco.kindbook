@@ -1,8 +1,8 @@
-use Bend/Source as Source
+use Bend/Fun/Source as Source
 
 // Checks if a Source is of the Builtin kind.
 // - src: The Source to check.
 // = True if the Source is Builtin, False otherwise.
-Bend/Source/is_builtin : Source -> Bool
+Bend/Fun/Source/is_builtin : Source -> Bool
 | #Source{_ _ #Builtin} = #True
 | _                     = #False

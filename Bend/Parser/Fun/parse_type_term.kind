@@ -74,23 +74,11 @@ BP/Fun/parse_type_term : (Parser Type)
   ask _    = (BP/skp)
   ask head = (BP/Fun/parse_type_term)
   ask _    = (BP/skp)
-  ask one  = (Parser/peek_one)
-  match one {
-    #Some{one}:
-      if (U64/eq one ')') do Parser {
-        ask _    = (BP/consume ")")
-        ret head
-      } else if (U64/eq one ',') do Parser {
-        ask _    = (BP/consume ",")
-        ask _    = (BP/skp)
-        ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
-        ask _    = (BP/skp)
-        ask _    = (BP/consume ")")
-        ret #Tup{head;;tail} :: Type
-      } else {
-        (parse_constructor head)
-      }
-    _: (parse_constructor head)
+  ask tup  = (Parser/starts_with ",")
+  if tup {
+    (parse_tuple head)
+  } else {
+    (parse_constructor head)
   }
 }
 
@@ -98,15 +86,13 @@ parse_tuple : Type -> (Parser Type)
 | head = do Parser {
   ask _    = (BP/consume ",")
   ask _    = (BP/skp)
-  ask tail = (BP/sep_by _ BP/Fun/parse_type_term "," 1)
-  ask _    = (BP/skp)
-  ask _    = (BP/consume ")")
+  ask tail = (BP/list_like _ BP/Fun/parse_type_term "" ")" "," #True #False 1)
   ret #Tup{head;;tail} :: Type
 }
 
 parse_constructor : Type -> (Parser Type)
 | #Var{nam} = do Parser {
-  ask args = (BP/list_like _ BP/Fun/parse_type_term "" ")" "" #False 1)
+  ask args = (BP/list_like _ BP/Fun/parse_type_term "" ")" "" #False #False 0)
   ret #Ctr{nam args} :: Type
 }
 | _ = (Parser/fail _ "Expected type constructor name")

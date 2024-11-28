@@ -1,0 +1,49 @@
+use Bend/Imp/Expr as Expr
+use Bend/Fun/Num as Num
+use Bend/Fun/Op as Op
+
+Bend/Imp/Expr/to_string : Expr -> String
+| #Era                = "*"
+| #Var{nam}           = nam
+| #Lnk{nam}           = (String/concat ["$" nam])
+| #Num{val}           = (Num/to_string val)
+| #Cal{fun arg kwarg} = (String/concat [
+  (Expr/to_string fun)
+  "("
+  (String/join ", " (List/append _
+    (List/map _ _ arg Expr/to_string)
+    (List/map _ _ kwarg λp let (nam, val) = p (String/concat [nam ": " (Expr/to_string val)]))))
+  ")"])
+| #Lam{nam bod}       = (String/concat ["lambda " (String/join ", " (List/map _ _ nam λp let (nam, uns) = p (String/append if uns {"$"} else {""} nam))) ": " (Expr/to_string bod)])
+| #Opr{op lft rgt}    = (String/concat ["(" (Expr/to_string lft) " " (Op/to_string op) " " (Expr/to_string rgt) ")"])
+| #Str{val}           = (String/concat ["\"" val "\""])
+| #Tup{els}           = (String/concat ["(" (String/join ", " (List/map _ _ els Expr/to_string)) ")"])
+| #Sup{els}           = (String/concat ["{" (String/join ", " (List/map _ _ els Expr/to_string)) "}"])
+| #Ctr{nam arg kwarg} = (String/concat [
+  nam
+  "{"
+  (String/join ", " (List/append _
+    (List/map _ _ arg Expr/to_string)
+    (List/map _ _ kwarg λp let (nam, val) = p (String/concat [nam ": " (Expr/to_string val)]))))
+  "}"])
+| #Lst{val}                       = (String/concat ["[" (String/join ", " (List/map _ _ val Expr/to_string)) "]"])
+| #LstMap{lst bnd bod #Some{cnd}} = (String/concat ["[" (Expr/to_string bod) " for " bnd " in " (Expr/to_string lst) " if " (Expr/to_string cnd) "]"])
+| #LstMap{lst bnd bod #None}      = (String/concat ["[" (Expr/to_string bod) " for " bnd " in " (Expr/to_string lst) "]"])
+| #Map{els}                       = (String/concat ["{" (String/join ", " (List/map _ _ els λp let (k,v) = p (String/concat [(Expr/to_string k) ": " (Expr/to_string v)])))])
+| #MapGet{map key}                = (String/concat [(Expr/to_string map) "[" (Expr/to_string key) "]"])
+| #TreNod{lft rgt}                = (String/concat ["![" (Expr/to_string lft) ", " (Expr/to_string rgt) "]"])
+| #TreLea{val}                    = (String/concat ["!" (Expr/to_string val)])
+
+#test: (Expr/to_string #Era)                  == "*"
+#test: (Expr/to_string #Num{#U24{10}})        == "10"
+#test: (Expr/to_string #Var{"x"})             == "x"
+#test: (Expr/to_string #Lnk{"x"})             == "$x"
+#test: (Expr/to_string #Str{"hello"})         == "\"hello\""
+#test: (Expr/to_string #Cal{#Var{"x"} [] []}) == "x()"
+#test: (Expr/to_string #Ctr{"x" [] []})       == "x{}"
+#test: (Expr/to_string #Cal{#Var{"x"} [#Var{"y"} #Var{"z"}] [("a", #Var{"b"}) ("c", #Var{"d"})]}) == "x(y, z, a: b, c: d)"
+#test: (Expr/to_string #Ctr{"x"       [#Var{"y"} #Var{"z"}] [("a", #Var{"b"}) ("c", #Var{"d"})]}) == "x{y, z, a: b, c: d}"
+#test: (Expr/to_string #Lam{[("a", #False) ("b", #True) ("c", #False)] #Era})                     == "lambda a, $b, c: *"
+#test: (Expr/to_string #Opr{#Add #Num{#U24{10}} #Num{#U24{20}}})                                  == "(10 + 20)"
+#test: (Expr/to_string #Tup{[#Num{#U24{10}} #Num{#U24{20}}]})                                     == "(10, 20)"
+#test: (Expr/to_string #Sup{[#Num{#U24{10}} #Num{#U24{20}}]})                                     == "{10, 20}"

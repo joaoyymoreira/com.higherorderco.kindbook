@@ -1,0 +1,8 @@
+Bend/Parser/Imp/check_indent : U64 -> U64 -> (Parser U64)
+| exp got =
+  if (U64/eq exp got) {
+    (Parser/pure _ 0)
+  } else {
+    (Parser/fail _ (String/concat [
+      "Expected indentation of " (U64/to_string exp) " spaces, found " (U64/to_string got)]))
+  }

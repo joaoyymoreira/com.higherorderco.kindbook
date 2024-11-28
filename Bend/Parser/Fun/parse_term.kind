@@ -16,7 +16,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
   }
   let starts_with_num = do Parser {
     ask x = (Parser/peek_one)
-    ret (Maybe/fold _ x Bool #False Char/is_digit)
+    ret (Maybe/fold _ x Bool #False BP/is_num_char)
   }
   let starts_with_nam = do Parser {
     ask x = (Parser/peek_one)
@@ -119,25 +119,25 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 
 ./parse_tup : Term -> (Parser Term)
 | head = do Parser {
-  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "," #True 1)
+  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "," #True #False 1)
   ret #Fan{#Tup (head;;tail)} :: Term
 }
 
 ./parse_app : Term -> (Parser Term)
 | head = do Parser {
-  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "" #False 0)
+  ask tail = (BP/list_like _ BP/Fun/parse_term "" ")" "" #False #False 0)
   ret (List/foldl _ tail _ head λa λb #App{a b})
 }
 
 ./parse_sup : (Parser Term)
 | = do Parser {
-  ask els = (BP/list_like _ BP/Fun/parse_term "{" "}" "," #False 2)
+  ask els = (BP/list_like _ BP/Fun/parse_term "{" "}" "," #False #False 2)
   ret #Fan{#Dup els} :: Term
 }
 
 ./parse_lst : (Parser Term)
 | = do Parser {
-  ask els = (BP/list_like _ BP/Fun/parse_term "[" "]" "," #False 0)
+  ask els = (BP/list_like _ BP/Fun/parse_term "[" "]" "," #False #False 0)
   ret #Lst{els} :: Term
 }
 
@@ -185,7 +185,6 @@ Bend/Parser/Fun/parse_term : (Parser Term)
       }
     #None: (Parser/fail _ "Expected symbol")
   }
-
 }
 
 ./parse_let : (Parser Term)
@@ -260,7 +259,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
   ask with         = (./parse_match_with)
   ask _            = (BP/skp)
   let (wbnd, warg) = (List/unzip _ _ with)
-  ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
+  ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False #False 1)
   ret #Mat{bnd arg wbnd warg arms} :: Term
 }
 
@@ -328,8 +327,8 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 | = do Parser {
   ask has = (BP/try_consume "with")
   if has do Parser {
-    ask (BP/skp)
-    (BP/sep_by _ ./parse_named_arg "," 1)
+    ask BP/skp
+    (BP/list_like _ ./parse_named_arg "" "}" "," #False #False 1)
   } else do Parser {
     ret [] :: (List _)
   }
@@ -383,7 +382,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
   ask with         = (./parse_match_with)
   ask _            = (BP/skp)
   let (wbnd, warg) = (List/unzip _ _ with)
-  ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False 1)
+  ask arms         = (BP/list_like _ ./parse_match_arm "{" "}" ";" #False #False 1)
   ret #Fld{bnd arg wbnd warg arms} :: Term
 }
 
@@ -391,7 +390,7 @@ Bend/Parser/Fun/parse_term : (Parser Term)
 | = do Parser {
   ask _          = (BP/parse_keyword "bend")
   ask _          = (BP/skp)
-  ask args       = (BP/list_like _ ./parse_named_arg "" "{" "," #False 1)
+  ask args       = (BP/list_like _ ./parse_named_arg "" "{" "," #False #False 1)
   ask _          = (BP/skp)
   let (bnd, arg) = (List/unzip _ _ args)
   ask _          = (BP/parse_keyword "when")

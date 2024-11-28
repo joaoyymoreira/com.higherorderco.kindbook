@@ -3,55 +3,54 @@ use Bend/Fun/Adt as Adt
 use Bend/Fun/Ctr as Ctr
 use Bend/Fun/CtrField as CtrField
 use Bend/Fun/Type as Type
+use Bend/Fun/Source as Source
 
 Bend/Parser/Imp/parse_adt : U64 -> (Parser (U64 & Adt & (List Ctr)))
 | indent = do Parser {
-  ask if (U64/eq indent 0) {
+  ask if (U64/neq indent 0) {
     (Parser/fail _ (String/concat
       ["Indentation error. Types defined with 'type' must be at the start of the line."]))
   } else do Parser { ret 0 }
   
   ask ini_idx = (Parser/get_index)
   ask _       = (BP/parse_keyword "type")
-  ask (BP/skp_inline)
+  ask (BP/skp_inline #True)
 
-  ask name   = (BP/parse_name "data type")
-  ask BP/skp_inline
+  ask name    = (BP/parse_name "data type")
+  ask (BP/skp_inline #True)
 
   // Parse type variables
-  ask paren  = (Parser/starts_with "(")
-  ask vars   = if paren {
-    (BP/list_like _ (BP/parse_name "type variable") "(" ")" "," #True 0)
+  ask paren   = (Parser/starts_with "(")
+  ask vars    = if paren {
+    (BP/list_like _ (BP/parse_name "type variable") "(" ")" "," #True #False 0)
   } else do Parser {
     ret []
   }
-  ask BP/skp_inline
+  ask (BP/skp_inline #True)
 
-  ask _      = (Parser/consume ":")
-  ask (BP/consume_new_line)
-  let indent = (+ indent 2)
-  ask (BP/consume_indent indent)
+  ask (Parser/consume ":")
+  ask nxt_indent = (BP/parse_newlines)
+  ask (BP/Imp/check_indent (+ 2 indent) nxt_indent)
 
-  ask (nxt_indent, ctrs) = (./parse_ctrs name vars indent indent [])
+  ask head    = (./parse_ctr adt vars)
+  ask (nxt_indent, ctrs) = (./parse_ctrs name vars indent [head])
   ask end_idx = (Parser/get_index)
-  let src     = (Bend/Source/from_file_span ini_idx end_idx)
+  let src     = (Source/from_file_span ini_idx end_idx)
   let adt     = #Adt { name vars (List/map _ _ ctrs Ctr/get_nam) src } :: Adt
   ret (nxt_indent, adt, ctrs)
 }
 
-./parse_ctrs : String -> (List String) -> U64 -> U64 -> (List Ctr) -> (Parser U64 & (List Ctr))
-| adt vars indent nxt_indent acc with (== indent nxt_indent)
-. | 0 = do Parser {
-  ret (nxt_indent, acc)
-}
-. | _ = do Parser {
-  ask ctr = (./parse_ctr adt vars)
-  ask eof = (Parser/is_eof)
-  ask if (Bool/not eof) do Parser {
-    (BP/consume_new_line)
-  } else do Parser { ret 0 }
-  ask nxt_indent = (BP/skp_newlines)
-  (./parse_ctrs adt vars indent nxt_indent (ctr;;acc))
+./parse_ctrs : String -> (List String) -> U64 -> (List Ctr) -> (Parser (List Ctr))
+| adt vars indent acc = do Parser {
+  ask (BP/skp_inline #True)
+  ask ctr = (BP/start_with_indent indent)
+  if ctr do Parser {
+    ask (BP/advance_many (+ 1 indent))
+    ask ctr = (./parse_ctr adt vars)
+    (./parse_ctrs adt vars indent (ctr;;acc))
+  } else do Parser {
+    ret (List/reverse _ acc)
+  }
 }
 
 ./parse_ctr : String -> (List String) -> (Parser Ctr)
@@ -59,18 +58,32 @@ Bend/Parser/Imp/parse_adt : U64 -> (Parser (U64 & Adt & (List Ctr)))
   ask ini_idx = (Parser/get_index)
   ask name    = (BP/parse_top_level_name)
   let name    = (String/concat [adt "/" name])
-  ask BP/skp_inline
+  ask (BP/skp_inline #True)
 
   ask fields  = (Parser/starts_with "{")
   ask fields  = if fields {
-    (BP/list_like _ BP/Imp/parse_ctr_field "{" "}" "," #True 0)
+    (BP/list_like _ BP/Imp/parse_ctr_field "{" "}" "," #True #False 0)
   } else do Parser { ret [] }
   let fld_typ = (List/map _ _ fields CtrField/get_typ)
   ask end_idx = (Parser/get_index)
-  ask (BP/check_repeated_ctr_fields fields name ini_idx end_idx)
+  ask (BP/Fun/check_repeated_ctr_fields fields name ini_idx end_idx)
 
-  let typ     = #Ctr{name (List/map _ _ vars λx #Var{x})} :: Type
+  let typ     = #Ctr{adt (List/map _ _ vars λx #Var{x})} :: Type
   let typ     = (List/foldr _ fld_typ _ typ (λfield λacc #Arr{field acc}))
   let ctr     = #Ctr { name adt typ fields } :: Ctr
   ret ctr
 }
+
+#test: (BP/Imp/parse_adt 0 #State{"type A:\n  A\n  B\n" 0}) == #Done{#Reply{#State{"" 16} (0,
+  #Adt{"A" [] ["A/A" "A/B"] (Source/from_file_span 0 16)},
+  [#Ctr{"A/A" "A" #Ctr{"A" []} []} #Ctr{"A/B" "A" #Ctr{"A" []} []}])}}
+
+#test: (BP/Imp/parse_adt 0 #State{"type List(A):\n  Nil\n  Cons{head: A, ~tail: List(A)}" 0}) == #Done{#Reply{#State{"" 51} (0,
+  #Adt{"List" ["A"] ["List/Nil" "List/Cons"] (Source/from_file_span 0 51)},
+  [ #Ctr{"List/Nil"  "List" #Ctr{"List" [#Var{"A"}]} []}
+    #Ctr{"List/Cons" "List" #Arr{#Var{"A"} #Arr{#Ctr{"List" [#Var{"A"}]} #Ctr{"List" [#Var{"A"}]}}} [#CtrField{"head" #False #Var{"A"}} #CtrField{"tail" #True #Ctr{"List" [#Var{"A"}]}}]}])}}
+
+#test: (BP/Imp/parse_adt 0 #State{"type Result(A, E):\n  Ok{x:A}\n  Err{x:E}" 0}) == #Done{#Reply{#State{"" 39} (0,
+  #Adt{"Result" ["A" "E"] ["Result/Ok" "Result/Err"] (Source/from_file_span 0 39)},
+  [ #Ctr{"Result/Ok"  "Result" #Arr{#Var{"A"} #Ctr{"Result" [#Var{"A"} #Var{"E"}]}} [#CtrField{"x" #False #Var{"A"}}]}
+    #Ctr{"Result/Err" "Result" #Arr{#Var{"E"} #Ctr{"Result" [#Var{"A"} #Var{"E"}]}} [#CtrField{"x" #False #Var{"E"}}]}])}}

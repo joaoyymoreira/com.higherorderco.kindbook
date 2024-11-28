@@ -2,7 +2,7 @@ use Bend/Parser/Fun/parse_fn_def as .
 use Bend/Fun/FnDef as FnDef
 use Bend/Fun/Pattern as Pat
 use Bend/Fun/Rule as Rule
-use Bend/Source as Source
+use Bend/Fun/Source as Source
 use Bend/Parser as BP
 
 // Parses a Fun syntax function definition.

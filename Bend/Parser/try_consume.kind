@@ -1,16 +1,19 @@
+use Bend/Parser as BP
+
 // Tries to consume exactly the given string from the input.
 // - target: String to consume.
 // = True if consumed, False otherwise. No input consumed on failure.
-Bend/Parser/try_consume : String -> (Parser Bool)
-| target = do Parser {
-  (Parser/alternative Bool 
-    (do Parser {
-      ask (Parser/consume target)
-      (Parser/pure Bool #True)
-    })
-    (Parser/pure Bool #False))
+BP/try_consume : String -> (BP Bool)
+| str = do BP {
+  ask go = (BP/starts_with str)
+  if go do BP {
+    ask (BP/consume str)
+    ret #True
+  } else do BP {
+    ret #False
+  }
 }
 
-#test: ((Bend/Parser/try_consume "hello") #State{"hello world" 0}) == (#Done{#Reply{#State{" world" 5} #True}})
-#test: ((Bend/Parser/try_consume "hello") #State{"goodbye" 0}) == (#Done{#Reply{#State{"goodbye" 0} #False}})
-#test: ((Bend/Parser/try_consume "") #State{"" 0}) == (#Done{#Reply{#State{"" 0} #True}})
+#test: (BP/run Bool (BP/try_consume "hello") "hello world") == #Done{" world",  #True}
+#test: (BP/run Bool (BP/try_consume "hello") "goodbye")     == #Done{"goodbye", #False}
+#test: (BP/run Bool (BP/try_consume "")      "")            == #Done{"",        #True}

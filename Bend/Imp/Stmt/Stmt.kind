@@ -1,0 +1,20 @@
+use Bend/Imp/MatchRule as MatchRule
+use Bend/Imp/AssignOp as Op
+use Bend/Imp/Pattern as Pat
+use Bend/Imp/FnDef as FnDef
+use Bend/Imp/Expr as Expr
+use Bend/Imp/Stmt as Stmt
+
+data Bend/Imp/Stmt {
+  #Ass { pat: Pat op: Op val: Expr nxt: (Maybe Stmt) }
+  #If_ { cond: Expr then: Stmt else: Stmt nxt: (Maybe Stmt)}
+  #Mat { bnd: (Maybe String) arg: Expr wbnd: (List (Maybe String)) warg: (List Expr) arm: (List MatchRule) nxt: (Maybe Stmt)}
+  #Swi { bnd: (Maybe String) arg: Expr wbnd: (List (Maybe String)) warg: (List Expr) arm: (List Stmt)      nxt: (Maybe Stmt)}
+  #Fld { bnd: (Maybe String) arg: Expr wbnd: (List (Maybe String)) warg: (List Expr) arm: (List MatchRule) nxt: (Maybe Stmt)}
+  #Bnd { bnd: (List (Maybe String)) arg: (List Expr) cond: Expr step: Stmt base: Stmt nxt: (Maybe Stmt) }
+  #Wth { typ: String bod: Stmt nxt: (Maybe Stmt) }
+  #Opn { typ: String var: (Maybe String) bnd: (List (Maybe String)) bod: Stmt }
+  #Use { bnd: (Maybe String) val: Expr nxt: Stmt }
+  #Def { def: FnDef nxt: Stmt }
+  #Ret { val: Expr }
+}

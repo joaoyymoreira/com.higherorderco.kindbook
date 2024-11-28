@@ -1,0 +1,9 @@
+// Represents a parser error.
+// - index: Error position.
+// - error: Error description.
+data Bend/Parser/Error {
+  #Error {
+    index: U64
+    error: String
+  }
+}

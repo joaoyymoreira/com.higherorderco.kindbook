@@ -1,0 +1,7 @@
+// Represents a parser as a function from State to Result.
+// - A: The type of the value to be parsed.
+// = A function that takes a State and returns a Result which is either:
+//   - Done: a Reply containing the parsed value and new state.
+//   - Fail: an Error containing the index and message.
+Bend/Parser : * -> *
+= λA (Bend/Parser/State -> (Result (Bend/Parser/Reply A) Bend/Parser/Error))

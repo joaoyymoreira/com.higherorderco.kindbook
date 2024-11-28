@@ -1,29 +1,30 @@
+use Bend/Parser as BP
+
 // Parses a restricted name.
 // - kind: Name kind (e.g., "Datatype", "Variable").
 // = Parser that returns the parsed name if successful.
-Bend/Parser/parse_name : String -> (Parser String)
-| kind = do Parser {
-  ask name = (Parser/take_while Bend/Parser/is_name_char)
+BP/parse_name : String -> (BP String)
+| kind = do BP {
+  ask name = (BP/take_while BP/is_name_char)
   if (String/eq name "") {
-    (Parser/fail String (String/append "Expected " (String/append kind " name")))
+    (BP/fail String (String/append "Expected " (String/append kind " name")))
   } else if (String/contains name "__") {
-    (Parser/fail String "Names are not allowed to contain \"__\".")
+    (BP/fail String "Names are not allowed to contain \"__\".")
   } else if (String/starts_with name "//") {
-    (Parser/fail String "Names are not allowed to start with \"//\".")
+    (BP/fail String "Names are not allowed to start with \"//\".")
   } else if (Maybe/fold Char (String/head name) Bool #False (Char/is_digit)) {
-    (Parser/fail String "Names are not allowed to start with a number.")
+    (BP/fail String "Names are not allowed to start with a number.")
   } else {
-    (Parser/pure String name)
+    (BP/pure String name)
   }
 }
-
-#test: (Bend/Parser/parse_name "Variable" #State{"validName"            0}) == #Done{#Reply{#State{"" 9} "validName"}}
-#test: (Bend/Parser/parse_name "Function" #State{"func123"              0}) == #Done{#Reply{#State{"" 7} "func123"}}
-#test: (Bend/Parser/parse_name "Datatype" #State{""                     0}) == #Fail{#Error{0 "Expected Datatype name"}}
-#test: (Bend/Parser/parse_name "Variable" #State{"abcinvalid__name123"  0}) == #Fail{#Error{19 "Names are not allowed to contain \"__\"."}}
-#test: (Bend/Parser/parse_name "Function" #State{"//invalidStart"       0}) == #Fail{#Error{14 "Names are not allowed to start with \"//\"."}}
-#test: (Bend/Parser/parse_name "Function" #State{"123abc"               0}) == #Fail{#Error{6 "Names are not allowed to start with a number."}}
-#test: (Bend/Parser/parse_name "Variable" #State{"valid_-./name"        0}) == #Done{#Reply{#State{"" 13} "valid_-./name"}}
-#test: (Bend/Parser/parse_name "Datatype" #State{"Valid Name"           0}) == #Done{#Reply{#State{" Name" 5} "Valid"}}
-#test: (Bend/Parser/parse_name "Function" #State{"validName"            0}) == #Done{#Reply{#State{"" 9} "validName"}}
-#test: (Bend/Parser/parse_name "Variable" #State{" invalidLeadingSpace" 0}) == #Fail{#Error{0 "Expected Variable name"}}
+#test: (BP/run String (BP/parse_name "Variable") "validName"           ) == #Done{"", "validName"}
+#test: (BP/run String (BP/parse_name "Function") "func123"             ) == #Done{"", "func123"}
+#test: (BP/run String (BP/parse_name "Datatype") ""                    ) == #Fail{"Expected Datatype name"}
+#test: (BP/run String (BP/parse_name "Variable") "abcinvalid__name123" ) == #Fail{"Names are not allowed to contain \"__\"."}
+#test: (BP/run String (BP/parse_name "Function") "//invalidStart"      ) == #Fail{"Names are not allowed to start with \"//\"."}
+#test: (BP/run String (BP/parse_name "Function") "123abc"              ) == #Fail{"Names are not allowed to start with a number."}
+#test: (BP/run String (BP/parse_name "Variable") "valid_-./name"       ) == #Done{"", "valid_-./name"}
+#test: (BP/run String (BP/parse_name "Datatype") "Valid Name"          ) == #Done{" Name", "Valid"}
+#test: (BP/run String (BP/parse_name "Function") "validName"           ) == #Done{"", "validName"}
+#test: (BP/run String (BP/parse_name "Variable") " invalidLeadingSpace") == #Fail{"Expected Variable name"}

@@ -4,19 +4,19 @@ use Bend/Fun/Ctr as Ctr
 use Bend/Fun/CtrField as CtrField
 use Bend/Fun/Type as Type
 use Bend/Parser as BP
-use Bend/Source as Source
+use Bend/Fun/Source as Source
 
 // Parses a Fun syntax ADT definition.
 // = The parsed ADT and the list of ADT constructors.
-Bend/Parser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
-| = do Parser {
+BP/Fun/parse_adt : (BP (Pair Adt (List Ctr)))
+| = do BP {
   ask _           = (BP/skp)
-  ask ini_idx     = (Parser/get_index)
+  ask ini_idx     = (BP/get_index)
   ask _           = (BP/parse_keyword "type")
   ask _           = (BP/skp)
   ask (nam, vars) = (./parse_name_and_vars)
-  ask ctrs        = (./parse_ctrs nam vars)
-  ask end_idx     = (Parser/get_index)
+  ask ctrs        = (./parse_ctrs nam vars [])
+  ask end_idx     = (BP/get_index)
   let src         = (Source/from_file_span ini_idx end_idx)
   let adt         = #Adt{nam vars (List/map _ _ ctrs Ctr/get_nam) src} :: Adt
   ret (adt, ctrs) :: (_ & _)
@@ -24,18 +24,21 @@ Bend/Parser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
 
 // Parses the name and type vars part of the ADT definition.
 // = The ADT name and type variables.
-./parse_name_and_vars : (Parser (Pair String (List String)))
-| = do Parser {
+./parse_name_and_vars : (BP (Pair String (List String)))
+| = do BP {
   ask has_parens = (BP/try_consume "(")
-  if has_parens do Parser {
+  if has_parens do BP {
     ask _    = (BP/skp)
     ask name = (BP/parse_name "datatype")
-    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" ")" "" #False 0)
-    ask _    = (Parser/consume "=")
+    ask _    = (BP/skp)
+    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" ")" "" #False #False 0)
+    ask _    = (BP/skp)
+    ask _    = (BP/consume "=")
     ret (name, vars) :: (_ & _)
-  } else do Parser {
+  } else do BP {
     ask name = (BP/parse_name "datatype")
-    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" "=" "" #False 0)
+    ask _    = (BP/skp)
+    ask vars = (BP/list_like _ (BP/parse_name "type variable") "" "=" "" #False #False 0)
     ret (name, vars) :: (_ & _)
   }
 }
@@ -44,71 +47,93 @@ Bend/Parser/Fun/parse_adt : (Parser (Pair Adt (List Ctr)))
 // - type_name: The name of the ADT being defined.
 // - type_vars: The type variables of the ADT being defined.
 // = A list of constructors.
-./parse_ctrs : String -> (List String) -> (Parser (List Ctr))
-| type_name type_vars = do Parser {
+./parse_ctrs : String -> (List String) -> (List Ctr) -> (BP (List Ctr))
+| type_name type_vars acc = do BP {
   // TODO: Check that only previously defined vars occur in the constructors.
   //       This probably needs to be done later, after we have the full book.
   ask head = (parse_ctr type_name type_vars)
+  ask _    = (BP/skp)
+  let acc  = (head ;; acc) :: (List _)
   ask many = (BP/try_consume "|")
-  ask tail = if many do Parser {
-    (BP/sep_by _ (parse_ctr type_name type_vars) "|" 0)
-  } else do Parser {
-    ret [] :: (List _)
+  if many {
+    (./parse_ctrs type_name type_vars acc)
+  } else {
+    (BP/pure _ (List/reverse _ acc))
   }
-  ret (head ;; tail) :: (List _)
 }
 
 // Parses a single constructor in an ADT definition.
-parse_ctr : String -> (List String) -> (Parser Ctr)
-| type_name type_vars = do Parser {
-  // TODO: Check for repeated field names
-  ask _          = (BP/skp)
-  ask ini_idx    = (Parser/get_index)
-  ask has_parens = (BP/try_consume "(")
-  ask _          = (BP/skp)
-  if has_parens do Parser {
-    ask name    = (BP/parse_name "datatype constructor")
-    let name    = (String/concat [type_name "/" name])
-    ask fields  = (BP/list_like _ ./parse_field "" ")" "" #False 0)
-    let type    = (List/foldr _ (List/map _ _ fields CtrField/get_typ) _
-                    #Ctr{type_name (List/map _ Type type_vars λx #Var{x})} :: Type
+parse_ctr : String -> (List String) -> (BP Ctr)
+| adt_nam adt_var = do BP {
+  ask _       = (BP/skp)
+  ask ini_idx = (BP/get_index)
+  ask parens  = (BP/try_consume "(")
+  ask _       = (BP/skp)
+  if parens do BP {
+    ask nam     = (BP/parse_name "datatype constructor")
+    let nam     = (String/concat [adt_nam "/" nam])
+    ask fld     = (BP/list_like _ ./parse_field "" ")" "" #False #False 0)
+    let typ     = (List/foldr _ (List/map _ _ fld CtrField/get_typ) _
+                    #Ctr{adt_nam (List/map _ _ adt_var λx #Var{x})} :: Type
                     λl λr #Arr{l r})
-    ask end_idx = (Parser/get_index)
-    ask (BP/check_repeated_ctr_fields fields name ini_idx end_idx)
-    ret #Ctr{name type_name type fields} :: Ctr
-  } else do Parser {
-    ask name    = (BP/parse_name "datatype constructor")
-    let name    = (String/concat [type_name "/" name])
-    let type    = #Ctr{type_name (List/map _ Type type_vars λx #Var{x})} :: Type
-    ask end_idx = (Parser/get_index)
-    ask (BP/check_repeated_ctr_fields [] name ini_idx end_idx)
-    ret #Ctr{name type_name type []} :: Ctr
+    ask end_idx = (BP/get_index)
+    ask (BP/Fun/check_repeated_ctr_fields fld nam ini_idx end_idx)
+    ret #Ctr{nam adt_nam typ fld} :: Ctr
+  } else do BP {
+    ask nam     = (BP/parse_name "datatype constructor")
+    let nam     = (String/concat [adt_nam "/" nam])
+    let typ     = #Ctr{adt_nam (List/map _ _ adt_var λx #Var{x})} :: Type
+    ask end_idx = (BP/get_index)
+    ask (BP/Fun/check_repeated_ctr_fields [] nam ini_idx end_idx)
+    ret #Ctr{nam adt_nam typ []} :: Ctr
   }
 }
 
 // Parses a single field in a constructor definition.
-./parse_field : (Parser CtrField)
-| = do Parser {
-  ask _           = (BP/skp)
-  ask rec         = (BP/try_consume "~")
-  ask _           = (BP/skp)
-  ask has_parens  = (BP/try_consume "(")
-  if has_parens do Parser {
-    ask _        = (BP/skp)
-    ask nam      = (BP/parse_name "datatype constructor field")
-    ask _        = (BP/skp)
-    ask has_type = (BP/try_consume ":")
-    ask typ      = if has_type do Parser {
+./parse_field : (BP CtrField)
+| = do BP {
+  ask rec    = (BP/try_consume "~")
+  ask _      = (BP/skp)
+  ask paren  = (BP/try_consume "(")
+  if paren do BP {
+    ask _   = (BP/skp)
+    ask nam = (BP/parse_name "datatype constructor field")
+    ask _   = (BP/skp)
+    ask ann = (BP/try_consume ":")
+    ask typ = if ann do BP {
       ask (BP/skp)
       BP/Fun/parse_type_term
-    } else do Parser {
+    } else do BP {
       ret #Any :: Type
     }
-    ask _        = (BP/skp)
-    ask _        = (BP/consume ")")
+    ask _   = (BP/skp)
+    ask _   = (BP/consume ")")
     ret #CtrField{nam rec typ} :: CtrField
-  } else do Parser {
-    ask nam      = (BP/parse_name "datatype constructor field")
+  } else do BP {
+    ask nam = (BP/parse_name "datatype constructor field")
     ret #CtrField{nam rec #Any} :: CtrField
   }
 }
+
+#test : (BP/run (Adt & (List Ctr)) BP/Fun/parse_adt "type A = A") == #Done{"" (
+  #Adt{"A" [] ["A/A"] (Source/from_file_span 0 10)},
+  [#Ctr{"A/A" "A" #Ctr{"A" []} []}])}
+
+#test : (BP/Fun/parse_adt #State{"type A = A | B | C" 0}) == #Done{#Reply{#State{"" 18} (
+  #Adt{"A" [] ["A/A" "A/B" "A/C"] (Source/from_file_span 0 18)},
+  [#Ctr{"A/A" "A" #Ctr{"A" []} []} #Ctr{"A/B" "A" #Ctr{"A" []} []} #Ctr{"A/C" "A" #Ctr{"A" []} []}])}}
+
+#test : (BP/Fun/parse_adt #State{"type A a = A | B | C" 0}) == #Done{#Reply{#State{"" 20} (
+  #Adt{"A" ["a"] ["A/A" "A/B" "A/C"] (Source/from_file_span 0 20)},
+  [#Ctr{"A/A" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/B" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/C" "A" #Ctr{"A" [#Var{"a"}]} []}])}}
+
+#test : (BP/Fun/parse_adt #State{"type (List T) = Nil | (Cons (head: T) ~(tail: (List T)))" 0}) == #Done{#Reply{#State{"" 56} (
+  #Adt{"List" ["T"] ["List/Nil" "List/Cons"] (Source/from_file_span 0 56)},
+  [ #Ctr{"List/Nil" "List" #Ctr{"List" [#Var{"T"}]} []}
+    #Ctr{"List/Cons" "List" #Arr{#Var{"T"} #Arr{#Ctr{"List" [#Var{"T"}]} #Ctr{"List" [#Var{"T"}]}}} [
+      #CtrField{"head" #False #Var{"T"}} 
+      #CtrField{"tail" #True  #Ctr{"List" [#Var{"T"}]}}]}])}}
+
+#test : (BP/Fun/parse_adt #State{"type Pair = (Pair fst snd)" 0}) == #Done{#Reply{#State{"" 26} (
+  #Adt{"Pair" [] ["Pair/Pair"] (Source/from_file_span 0 26)},
+  [#Ctr{"Pair/Pair" "Pair" #Arr{#Any #Arr{#Any #Ctr{"Pair" []}}} [#CtrField{"fst" #False #Any} #CtrField{"snd" #False #Any}]}])}}

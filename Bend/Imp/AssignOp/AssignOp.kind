@@ -1,0 +1,17 @@
+data Bend/Imp/AssignOp {
+  #Ass
+  #Ask
+  #Map
+
+  #Add
+  #Sub
+  #Mul
+  #Div
+  #Rem
+  #And
+  #Or
+  #Xor
+  #Shl
+  #Shr
+  #Pow
+}

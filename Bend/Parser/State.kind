@@ -1,0 +1,11 @@
+// Represents the state of the bend parser.
+// - input: Remaining input text.
+// - index: Current parsing index.
+data Bend/Parser/State {
+  #State {
+    input : String
+    index : U64
+    indent: U64
+    file  : String
+  }
+}

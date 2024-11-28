@@ -1,11 +1,13 @@
+use Bend/Parser as BP
+
 // Parses a top-level definition name.
 // = The parsed name.
-Bend/Parser/parse_top_level_name : (Parser String)
-= (Bend/Parser/parse_name "top-level")
+BP/parse_top_level_name : (BP String)
+= (BP/parse_name "top-level")
 
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "ValidName") == #Some{"ValidName"}
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "Valid_Name_123") == #Some{"Valid_Name_123"}
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "1InvalidName") == #None
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "__InvalidName") == #None
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "//InvalidName") == #None
-#test: (Parser/run String (Bend/Parser/parse_top_level_name) "") == #None
+#test: (BP/run String (BP/parse_top_level_name) "ValidName")      == #Done{"", "ValidName"}
+#test: (BP/run String (BP/parse_top_level_name) "Valid_Name_123") == #Done{"", "Valid_Name_123"}
+#test: (BP/run String (BP/parse_top_level_name) "1InvalidName")   == #Fail{"Names are not allowed to start with a number."}
+#test: (BP/run String (BP/parse_top_level_name) "__InvalidName")  == #Fail{"Names are not allowed to contain \"__\"."}
+#test: (BP/run String (BP/parse_top_level_name) "//InvalidName")  == #Fail{"Names are not allowed to start with \"//\"."}
+#test: (BP/run String (BP/parse_top_level_name) "")               == #Fail{"Expected top-level name"}

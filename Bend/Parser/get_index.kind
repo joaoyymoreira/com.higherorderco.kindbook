@@ -1,0 +1,8 @@
+// Returns the current index of the parser state.
+// - state: The current parser state.
+// = A Reply containing the current state and index.
+Bend/Parser/get_index : (Bend/Parser U64)
+| #State{inp idx idn fil} = #Done{#Reply{#State{inp idx idn fil} idx}}
+
+#test: (Bend/Parser/run U64 Bend/Parser/get_index "") == #Done{"", 0}
+#test: (Bend/Parser/run U64 Bend/Parser/get_index "abc") == #Done{"abc", 0}

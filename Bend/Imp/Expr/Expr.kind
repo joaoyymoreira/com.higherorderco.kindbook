@@ -1,0 +1,24 @@
+use Bend/Imp/Expr as Expr
+use Bend/Fun/Op as Op
+use Bend/Fun/Num as Num
+
+// Represents expressions in the Imp language.
+data Bend/Imp/Expr {
+  #Era
+  #Var { nam: String }
+  #Lnk { nam: String }
+  #Num { val: Num }
+  #Cal { fun: Expr arg: (List Expr) kwarg: (List (Pair String Expr)) }
+  #Lam { nam: (List (Pair String Bool)) bod: Expr }
+  #Opr { op: Op lft: Expr rgt: Expr }
+  #Str { val: String }
+  #Tup { els: (List Expr) }
+  #Sup { els: (List Expr) }
+  #Ctr { nam: String arg: (List Expr) kwarg: (List (Pair String Expr)) }
+  #Lst { els: (List Expr) }
+  #LstMap { lst: Expr bnd: String bod: Expr cnd: (Maybe Expr) }
+  #Map { els: (List (Pair Expr Expr)) }
+  #MapGet { map: Expr key: Expr }
+  #TreNod { lft: Expr rgt: Expr }
+  #TreLea { val: Expr }
+}

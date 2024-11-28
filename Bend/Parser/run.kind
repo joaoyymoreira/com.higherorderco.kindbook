@@ -1,0 +1,14 @@
+// Test runs a parser on the given input string.
+// - A: Parsed value type.
+// - parser: Parser to run.
+// - input: Input string to parse.
+// = Some remaining input and parsed value if successful, None if failed.
+Bend/Parser/run: ∀(A: *) (Bend/Parser A) -> String  -> (Result (String & A) String)
+| A parser inp with (parser #State{inp 0 0 ""})
+. | #Done{#Reply{#State{inp idx idn fil} val}} = #Done{(inp, val)}
+. | #Fail{#Error{idx error}}                   = #Fail{error}
+
+
+#test: (Bend/Parser/run Char (Bend/Parser/pure Char 'x')    "hello") == #Done{("hello", 'x')}
+#test: (Bend/Parser/run Nat  (Bend/Parser/pure Nat #42)     "hello") == #Done{("hello", #42)}
+#test: (Bend/Parser/run Nat  (Bend/Parser/fail Nat "error") "hello") == #Fail{"error"}
