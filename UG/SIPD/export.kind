@@ -34,3 +34,6 @@ export_time_to_tick : ∀(S: *) ∀(A: *) (UG/SM/Mach S A) -> UG/SM/Time -> UG/S
 
 export_map_insert : ∀(A: *) (Map (Maybe A)) -> U64 -> A -> (Map (Maybe A))
 = Map/insert 
+
+export_new_mach : ∀(S: *) ∀(A: *) U64 -> (A -> A -> Bool) -> (UG/SM/Mach S A)
+= UG/SM/new_mach
