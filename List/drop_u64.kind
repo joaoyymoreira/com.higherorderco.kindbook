@@ -1,0 +1,15 @@
+// Drops the first n elements from a list.
+// - A: Element type.
+// - xs: Input list.
+// - n: Number of elements to drop.
+// = List without its first n elements.
+List/drop_u64 : ∀(A: *) (List A) -> U64 -> (List A)
+| A []    0   = []
+| A []    1+n = []
+| A x;;xs 0   = x;;xs
+| A _;;xs 1+n = (List/drop_u64 A xs n)
+
+#test: (List/drop_u64 U64 [1 2 3] 0) == [1 2 3]
+#test: (List/drop_u64 U64 [1 2 3] 1) == (List/tail U64 [1 2 3])
+#test: (List/drop_u64 U64 [1 2 3] 2) == [3]
+#test: (List/drop_u64 U64 [1 2 3] 4) == []
