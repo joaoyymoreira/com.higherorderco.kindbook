@@ -5,86 +5,86 @@ use Bend/Parser as BP
 
 // Parses a Fun syntax variable binding / pattern matching pattern.
 // = The parsed pattern.
-Bend/Parser/Fun/parse_pattern : (Parser Pattern)
-| = do Parser {
-  let starts_with_num = do Parser {
-    ask x = (Parser/peek_one)
+BP/Fun/parse_pattern : (BP Pattern)
+| = do BP {
+  let starts_with_num = do BP {
+    ask x = (BP/peek_one)
     ret (Maybe/fold _ x Bool #False Char/is_digit)
   }
-  let starts_with_nam = do Parser {
-    ask x = (Parser/peek_one)
+  let starts_with_nam = do BP {
+    ask x = (BP/peek_one)
     ret (Maybe/fold _ x Bool #False BP/is_name_char)
   }
   ask BP/skp
   (BP/first_with_guard _ [
-    ((Parser/starts_with "(") , ./parse_pat_ctr_or_tup)
-    ((Parser/starts_with "$") , ./parse_pat_chn)
-    ((Parser/starts_with "'") , ./parse_pat_char)
-    ((Parser/starts_with "[") , ./parse_pat_lst)
-    ((Parser/starts_with "\""), ./parse_pat_str)
-    ((Parser/starts_with "*") , ./parse_pat_era)
-    ((Parser/starts_with "{") , ./parse_pat_dup)
-    ((starts_with_num)        , ./parse_pat_num)
-    ((starts_with_nam)        , ./parse_pat_var)
-  ] (Parser/fail _ "Expected pattern"))
+    ((BP/starts_with "(") , ./parse_pat_ctr_or_tup)
+    ((BP/starts_with "$") , ./parse_pat_chn)
+    ((BP/starts_with "'") , ./parse_pat_char)
+    ((BP/starts_with "[") , ./parse_pat_lst)
+    ((BP/starts_with "\""), ./parse_pat_str)
+    ((BP/starts_with "*") , ./parse_pat_era)
+    ((BP/starts_with "{") , ./parse_pat_dup)
+    ((starts_with_num)    , ./parse_pat_num)
+    ((starts_with_nam)    , ./parse_pat_var)
+  ] (BP/fail _ "Expected pattern"))
 }
 
-./parse_pat_var : (Parser Pattern)
-| = do Parser {
+./parse_pat_var : (BP Pattern)
+| = do BP {
   ask nam = BP/parse_var_name
   ret #Var{#Some{nam}} :: Pattern
 }
 
-./parse_pat_str : (Parser Pattern)
-| = do Parser {
-  ask str = Parser/parse_string
+./parse_pat_str : (BP Pattern)
+| = do BP {
+  ask str = BP/parse_quoted_string
   ret #Str{str} :: Pattern
 }
 
-./parse_pat_num : (Parser Pattern)
-| = do Parser {
+./parse_pat_num : (BP Pattern)
+| = do BP {
   ask num = BP/parse_number
   match num {
-    #U24{n}: (Parser/pure _ #Num{n} :: Pattern)
-    #I24{_}: (Parser/fail _ "Only unsigned integers are supported in pattern matching")
-    #F24{_}: (Parser/fail _ "Only unsigned integers are supported in pattern matching")
+    #U24{n}: (BP/pure _ #Num{n} :: Pattern)
+    #I24{_}: (BP/fail _ "Only unsigned integers are supported in pattern matching")
+    #F24{_}: (BP/fail _ "Only unsigned integers are supported in pattern matching")
   }
 }
 
-./parse_pat_lst : (Parser Pattern)
-| = do Parser {
+./parse_pat_lst : (BP Pattern)
+| = do BP {
   ask elements = (BP/list_like _ BP/Fun/parse_pattern "[" "]" "," #False #False 0)
   ret #Lst{elements} :: Pattern
 }
 
-./parse_pat_era : (Parser Pattern)
-| = do Parser {
-  ask _ = (Parser/consume "*")
+./parse_pat_era : (BP Pattern)
+| = do BP {
+  ask _ = (BP/consume "*")
   ret #Var{#None} :: Pattern
 }
 
-./parse_pat_dup : (Parser Pattern)
-| = do Parser {
+./parse_pat_dup : (BP Pattern)
+| = do BP {
   ask els = (BP/list_like _ BP/Fun/parse_pattern "{" "}" "," #False #False 2)
   ret #Fan{#Dup els} :: Pattern
 }
 
-parse_pat_tup : Pattern -> (Parser Pattern)
-| = λhead do Parser {
+parse_pat_tup : Pattern -> (BP Pattern)
+| = λhead do BP {
   ask tail = (BP/list_like _ BP/Fun/parse_pattern "" ")" "," #True #False 1)
   ret #Fan{#Tup (head;;tail)} :: Pattern
 }
 
-parse_pat_ctr : Pattern -> (Parser Pattern)
-| #Var{#Some{name}} = do Parser {
+parse_pat_ctr : Pattern -> (BP Pattern)
+| #Var{#Some{name}} = do BP {
   ask args = (BP/list_like _ BP/Fun/parse_pattern "" ")" "" #False #False 0)
   ret #Ctr{name args} :: Pattern
 }
-| _ = (Parser/fail _ "Expected constructor name")
+| _ = (BP/fail _ "Expected constructor name")
 
-./parse_pat_ctr_or_tup : (Parser Pattern)
-| = do Parser {
-  ask _      = (Parser/consume "(")
+./parse_pat_ctr_or_tup : (BP Pattern)
+| = do BP {
+  ask _      = (BP/consume "(")
   ask _      = (BP/skp)
   ask head   = (BP/Fun/parse_pattern)
   ask _      = (BP/skp)
@@ -97,16 +97,16 @@ parse_pat_ctr : Pattern -> (Parser Pattern)
   }
 }
 
-./parse_pat_chn : (Parser Pattern)
-| = do Parser {
-  ask _    = (Parser/consume "$")
+./parse_pat_chn : (BP Pattern)
+| = do BP {
+  ask _    = (BP/consume "$")
   ask _    = (BP/skp)
   ask name = (BP/parse_name "unscoped variable")
   ret #Chn{name} :: Pattern
 }
 
-./parse_pat_char : (Parser Pattern)
-| = do Parser {
-  ask char = Parser/parse_quoted_char
+./parse_pat_char : (BP Pattern)
+| = do BP {
+  ask char = BP/parse_quoted_char
   ret #Num{char} :: Pattern
 }

@@ -4,17 +4,17 @@ use Bend/Parser as BP
 // Parses the left-hand side of a pattern-matching rule.
 // - expected: The expected function name, if any.
 // = The name of the function and a list of patterns.
-Bend/Parser/Fun/parse_rule_lhs : (Maybe String) -> (Parser (Pair String (List Pattern)))
-| expected = do Parser {
+BP/Fun/parse_rule_lhs : (Maybe String) -> (BP (Pair String (List Pattern)))
+| expected = do BP {
   let p_nam = match expected {
-    #Some{name}: do Parser {
+    #Some{name}: do BP {
       ask _ = (BP/parse_keyword name)
       ret name
     }
     #None: BP/parse_top_level_name
-  } :: (Parser _)
-  ask has_parens   = (BP/try_consume "(")
-  if has_parens do Parser {
+  } :: (BP _)
+  ask paren = (BP/try_consume "(")
+  if paren do BP {
     ask _    = BP/skp
     ask name = p_nam
     ask _    = BP/skp
@@ -22,7 +22,7 @@ Bend/Parser/Fun/parse_rule_lhs : (Maybe String) -> (Parser (Pair String (List Pa
     ask _    = BP/skp
     ask _    = (BP/consume "=")
     ret (name, pats) :: (Pair _ _)
-  } else do Parser {
+  } else do BP {
     ask _    = BP/skp
     ask name = p_nam
     ask _    = BP/skp

@@ -6,25 +6,32 @@ BP/skp : (BP U64)
   ask c = (BP/peek_one)
   match c {
     #Some{v}:
-      if (Char/is_space v) {
-        do BP {
-          ask z = (BP/advance_one)
-          (BP/skp)
-        }      
-      } else if (Char/eq v '#') {
-        do BP {
-          ask _ = (BP/skip_multi_line_comment 0)
-          ask _ = (BP/skip_single_line_comment)
-          (BP/skp)
-        }
+      if (Char/eq v ' ') do BP {
+        ask z = (BP/advance_one)
+        ask _ = (BP/add_indent 1)
+        (BP/skp)
+      } else if (Char/eq v '\n') do BP {
+        ask z = (BP/advance_one)
+        ask _ = (BP/set_indent 0)
+        (BP/skp)
+      } else if (Char/eq v '\t') do BP {
+        (BP/fail _ "Tabs are not accepted for indentation.")
+      } else if (Char/is_space v) do BP {
+        ask z = (BP/advance_one)
+        (BP/skp)
+      } else if (Char/eq v '#') do BP {
+        ask _ = (BP/skip_multi_line_comment 0)
+        ask _ = (BP/skip_single_line_comment)
+        (BP/skp)
       } else {
         (BP/pure _ 0)
       }
     #None: (BP/pure _ 0)
   }
-} 
+}
 
 #test: (BP/run U64 BP/skp "code") == #Done{("code", 0)}
 #test: (BP/run U64 BP/skp "   # This is a comment\n  #{This is a\nmulti_line comment#}\n  code") == #Done{"code", 0}
 #test: (BP/run U64 BP/skp "#{Nested #{comments#} are #} handled") == #Done{"handled", 0}
 #test: (BP/run U64 BP/skp "  # Comment\n  code") == #Done{"code", 0}
+#test: (BP/skp #State{"  \n  \n \ra" 0 0 ""}) == #Done{#Reply{#State{"a" 8 1 ""} 0}}

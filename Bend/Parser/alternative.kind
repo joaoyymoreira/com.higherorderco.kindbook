@@ -1,0 +1,16 @@
+use Bend/Parser as BP
+
+// Combines two parsers, trying the second if the first fails.
+// - A: The type of the value to be parsed.
+// - p: The first parser to try.
+// - q: The parser to try if the first fails.
+// = A new parser that succeeds if either of the input parsers succeeds.
+BP/alternative : ∀(A: *) (BP A) -> (BP A) -> (BP A)
+| A p q state with (p state)
+. | #Done{r} = #Done{r}
+. | #Fail{_} = (q state)
+
+
+#test: (BP/run U64 (BP/alternative U64 (BP/pure U64 1) (BP/pure U64 2)) "") == #Done{"", 1}
+#test: (BP/run U64 (BP/alternative U64 (BP/fail U64 "Error") (BP/pure U64 2)) "") == #Done{"", 2}
+#test: (BP/run U64 (BP/alternative U64 (BP/fail U64 "Error 1") (BP/fail U64 "Error 2")) "") == #Fail{"Error 2"}

@@ -1,8 +1,14 @@
-Bend/Parser/Imp/check_indent : U64 -> U64 -> (Parser U64)
-| exp got =
+// Checks if the current indentation level matches the expected indentation.
+// - exp: Expected indentation level.
+// = A Parser that returns 0 if successful,
+//   or fails if the intentation level in the current state does not match the expected.
+Bend/Parser/Imp/check_indent : U64 -> (Bend/Parser U64)
+| exp = do Bend/Parser {
+  ask got = (Bend/Parser/get_indent)
   if (U64/eq exp got) {
-    (Parser/pure _ 0)
+    (Bend/Parser/pure _ 0)
   } else {
-    (Parser/fail _ (String/concat [
+    (Bend/Parser/fail _ (String/concat [
       "Expected indentation of " (U64/to_string exp) " spaces, found " (U64/to_string got)]))
   }
+}

@@ -4,23 +4,23 @@ use Bend/Parser as BP
 
 // Parses a Fun syntax type term.
 // = The parsed type term.
-BP/Fun/parse_type_term : (Parser Type)
-| = do Parser {
+BP/Fun/parse_type_term : (BP Type)
+| = do BP {
   ask _      = (BP/skp)
   ask lft    = (./parse_type_atom)
   ask _      = (BP/skp)
   ask is_arr = (BP/try_consume "->")
-  if is_arr do Parser {
+  if is_arr do BP {
     ask _   = (BP/skp)
     ask rgt = (BP/Fun/parse_type_term)
     ret #Arr{lft rgt} :: Type
-  } else do Parser {
+  } else do BP {
     ret lft
   }
 }
 
-./parse_type_atom : (Parser Type)
-| = do Parser {
+./parse_type_atom : (BP Type)
+| = do BP {
   (BP/first_with_guard _ [
     ((BP/starts_with_keyword "Any") , ./parse_any)
     ((BP/starts_with_keyword "None"), ./parse_none)
@@ -28,53 +28,53 @@ BP/Fun/parse_type_term : (Parser Type)
     ((BP/starts_with_keyword "u24") , ./parse_u24)
     ((BP/starts_with_keyword "i24") , ./parse_i24)
     ((BP/starts_with_keyword "f24") , ./parse_f24)
-    ((Parser/starts_with "(")       , ./parse_parenthesized)
+    ((BP/starts_with "(")       , ./parse_parenthesized)
   ] ./parse_var)
 }
 
-./parse_any : (Parser Type)
-| = do Parser {
+./parse_any : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "Any")
   ret #Any :: Type
 }
 
-./parse_none : (Parser Type)
-| = do Parser {
+./parse_none : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "None")
   ret #Non :: Type
 }
 
-./parse_hole : (Parser Type)
-| = do Parser {
+./parse_hole : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "_")
   ret #Hol :: Type
 }
 
-./parse_u24 : (Parser Type)
-| = do Parser {
+./parse_u24 : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "u24")
   ret #U24 :: Type
 }
 
-./parse_i24 : (Parser Type)
-| = do Parser {
+./parse_i24 : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "i24")
   ret #I24 :: Type
 }
 
-./parse_f24 : (Parser Type)
-| = do Parser {
+./parse_f24 : (BP Type)
+| = do BP {
   ask _ = (BP/parse_keyword "f24")
   ret #F24 :: Type
 }
 
-./parse_parenthesized : (Parser Type)
-| = do Parser {
+./parse_parenthesized : (BP Type)
+| = do BP {
   ask _    = (BP/consume "(")
   ask _    = (BP/skp)
   ask head = (BP/Fun/parse_type_term)
   ask _    = (BP/skp)
-  ask tup  = (Parser/starts_with ",")
+  ask tup  = (BP/starts_with ",")
   if tup {
     (parse_tuple head)
   } else {
@@ -82,23 +82,23 @@ BP/Fun/parse_type_term : (Parser Type)
   }
 }
 
-parse_tuple : Type -> (Parser Type)
-| head = do Parser {
+parse_tuple : Type -> (BP Type)
+| head = do BP {
   ask _    = (BP/consume ",")
   ask _    = (BP/skp)
   ask tail = (BP/list_like _ BP/Fun/parse_type_term "" ")" "," #True #False 1)
   ret #Tup{head;;tail} :: Type
 }
 
-parse_constructor : Type -> (Parser Type)
-| #Var{nam} = do Parser {
+parse_constructor : Type -> (BP Type)
+| #Var{nam} = do BP {
   ask args = (BP/list_like _ BP/Fun/parse_type_term "" ")" "" #False #False 0)
   ret #Ctr{nam args} :: Type
 }
-| _ = (Parser/fail _ "Expected type constructor name")
+| _ = (BP/fail _ "Expected type constructor name")
 
-./parse_var : (Parser Type)
-| = do Parser {
+./parse_var : (BP Type)
+| = do BP {
   ask nam = (BP/parse_name "type variable")
   ret #Var{nam} :: Type
 }

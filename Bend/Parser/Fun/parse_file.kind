@@ -43,10 +43,10 @@ data ./TopLevel {
     ret is_fndef
   }
   (BP/first_with_guard _ [
-    ((BP/starts_with_keyword "type")  , (BP/map _ ./TopLevel BP/Fun/parse_adt (λx let (adt, ctrs) = x #TypeDef{adt ctrs})))
+    ((BP/starts_with_keyword "type")  , do BP { ask (adt, ctrs) = BP/Fun/parse_adt ret #TypeDef{adt ctrs} })
     ((BP/starts_with_keyword "object"), (BP/fail _ "not implemented"))
     ((BP/starts_with_keyword "hvm")   , (BP/fail _ "not implemented"))
-    ((starts_with_fndef)              , (BP/map _ ./TopLevel BP/Fun/parse_fn_def (λx #FunDef{x})))
+    ((starts_with_fndef)              , do BP { ask def = BP/Fun/parse_fn_def ret #FunDef{def} })
   ] (BP/fail _ "Expected top-level definition"))
 }
 

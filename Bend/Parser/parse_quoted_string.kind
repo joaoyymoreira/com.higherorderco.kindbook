@@ -1,0 +1,24 @@
+use Bend/Parser as BP
+
+// Parses a quoted string.
+// = A String value representing the parsed quoted string.
+BP/parse_quoted_string : (BP String)
+= do BP {
+  ask (BP/consume "\"")
+  (BP/parse_quoted_string/go "")
+}
+
+BP/parse_quoted_string/go : String -> (BP String)
+| acc = do BP {
+  ask c = BP/parse_char
+  if (Char/eq c '\"') {
+    (BP/pure _ (List/reverse Char acc))
+  } else {
+    (BP/parse_quoted_string/go (String/cons c acc))
+  }
+}
+
+#test: (BP/run String BP/parse_quoted_string "\"abc\"")     == #Done{"", "abc"}
+#test: (BP/run String BP/parse_quoted_string "\"a\\n\nb\"") == #Done{"", "a\n\nb"}
+#test: (BP/run String BP/parse_quoted_string "\"\"")        == #Done{"", ""}
+#test: (BP/run String BP/parse_quoted_string "\"abc")       == #Fail{"Unexpected end of input"}

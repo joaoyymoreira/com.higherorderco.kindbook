@@ -1,0 +1,10 @@
+use Bend/Parser as BP
+use Bend/Parser/State as State
+
+// Sets the current indentation level of the parser.
+// - new: The new indentation level to set.
+// = The new indentation level as a U64.
+BP/set_indent : U64 -> (BP U64)
+| new #State{inp idx _ fil} = do Parser {
+  #Done{#Reply{#State{inp idx new fil} new}}
+}

@@ -115,25 +115,25 @@ parse_ctr : String -> (List String) -> (BP Ctr)
   }
 }
 
-#test : (BP/run (Adt & (List Ctr)) BP/Fun/parse_adt "type A = A") == #Done{"" (
+#test : (BP/run (Adt & (List Ctr)) BP/Fun/parse_adt "type A = A") == #Done{"", (
   #Adt{"A" [] ["A/A"] (Source/from_file_span 0 10)},
   [#Ctr{"A/A" "A" #Ctr{"A" []} []}])}
 
-#test : (BP/Fun/parse_adt #State{"type A = A | B | C" 0}) == #Done{#Reply{#State{"" 18} (
+#test : (BP/run (Adt & (List Ctr)) BP/Fun/parse_adt "type A = A | B | C") == #Done{"", (
   #Adt{"A" [] ["A/A" "A/B" "A/C"] (Source/from_file_span 0 18)},
-  [#Ctr{"A/A" "A" #Ctr{"A" []} []} #Ctr{"A/B" "A" #Ctr{"A" []} []} #Ctr{"A/C" "A" #Ctr{"A" []} []}])}}
+  [#Ctr{"A/A" "A" #Ctr{"A" []} []} #Ctr{"A/B" "A" #Ctr{"A" []} []} #Ctr{"A/C" "A" #Ctr{"A" []} []}])}
 
-#test : (BP/Fun/parse_adt #State{"type A a = A | B | C" 0}) == #Done{#Reply{#State{"" 20} (
+#test : (BP/run (Adt & (List Ctr))BP/Fun/parse_adt "type A a = A | B | C") == #Done{"", (
   #Adt{"A" ["a"] ["A/A" "A/B" "A/C"] (Source/from_file_span 0 20)},
-  [#Ctr{"A/A" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/B" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/C" "A" #Ctr{"A" [#Var{"a"}]} []}])}}
+  [#Ctr{"A/A" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/B" "A" #Ctr{"A" [#Var{"a"}]} []} #Ctr{"A/C" "A" #Ctr{"A" [#Var{"a"}]} []}])}
 
-#test : (BP/Fun/parse_adt #State{"type (List T) = Nil | (Cons (head: T) ~(tail: (List T)))" 0}) == #Done{#Reply{#State{"" 56} (
+#test : (BP/run (Adt & (List Ctr))BP/Fun/parse_adt "type (List T) = Nil | (Cons (head: T) ~(tail: (List T)))") == #Done{"", (
   #Adt{"List" ["T"] ["List/Nil" "List/Cons"] (Source/from_file_span 0 56)},
   [ #Ctr{"List/Nil" "List" #Ctr{"List" [#Var{"T"}]} []}
     #Ctr{"List/Cons" "List" #Arr{#Var{"T"} #Arr{#Ctr{"List" [#Var{"T"}]} #Ctr{"List" [#Var{"T"}]}}} [
       #CtrField{"head" #False #Var{"T"}} 
-      #CtrField{"tail" #True  #Ctr{"List" [#Var{"T"}]}}]}])}}
+      #CtrField{"tail" #True  #Ctr{"List" [#Var{"T"}]}}]}])}
 
-#test : (BP/Fun/parse_adt #State{"type Pair = (Pair fst snd)" 0}) == #Done{#Reply{#State{"" 26} (
+#test : (BP/run (Adt & (List Ctr))BP/Fun/parse_adt "type Pair = (Pair fst snd)") == #Done{"", (
   #Adt{"Pair" [] ["Pair/Pair"] (Source/from_file_span 0 26)},
-  [#Ctr{"Pair/Pair" "Pair" #Arr{#Any #Arr{#Any #Ctr{"Pair" []}}} [#CtrField{"fst" #False #Any} #CtrField{"snd" #False #Any}]}])}}
+  [#Ctr{"Pair/Pair" "Pair" #Arr{#Any #Arr{#Any #Ctr{"Pair" []}}} [#CtrField{"fst" #False #Any} #CtrField{"snd" #False #Any}]}])}

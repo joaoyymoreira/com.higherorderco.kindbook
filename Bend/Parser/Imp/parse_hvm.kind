@@ -1,8 +1,8 @@
 use Bend/Parser as BP
 
-Bend/Parser/Imp/parse_hvm : (Parser Bend/Hvm/Net)
-| = do Parser {
-  ask ini_idx = (Parser/get_index)
+Bend/Parser/Imp/parse_hvm : (BP Bend/Hvm/Net)
+| = do BP {
+  ask ini_idx = (BP/get_index)
   
   ask (BP/parse_keyword "hvm")
   ask (BP/skp_inline #True)
@@ -15,9 +15,8 @@ Bend/Parser/Imp/parse_hvm : (Parser Bend/Hvm/Net)
   ask (BP/skp_inline #True)
 
   ask (BP/consume ":")
-  ask (BP/skp_inline #True)
-  ask (BP/consume "\n")
+  ask (BP/parse_newline)
 
   // TODO: implement HVM parser
-  (Parser/fail _ "HVM definitions not implemented")
+  (BP/fail _ "HVM definitions not implemented")
 }

@@ -1,0 +1,10 @@
+use Bend/Parser as BP
+use Bend/Parser/State as State
+
+// Adds an increment to the current indentation level of the parser.
+// - inc: The increment to add to the indentation level.
+// = The new indentation level as a U64.
+BP/add_indent : U64 -> (BP U64)
+| inc #State{inp idx idn fil} = do Parser {
+  #Done{#Reply{#State{inp idx (+ inc idn) fil} (+ inc idn)}}
+}

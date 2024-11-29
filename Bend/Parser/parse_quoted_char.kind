@@ -1,0 +1,14 @@
+use Bend/Parser as BP
+// Parses a quoted character.
+// = Returns the parsed character.
+BP/parse_quoted_char : (BP Char)
+= do BP {
+  ask y = (BP/consume "'")
+  ask c = (BP/parse_char)
+  ask x = (BP/consume "'")
+  ret c
+}
+
+#test: (BP/run Char BP/parse_quoted_char "'a'"  ) == #Done{"", 'a'}
+#test: (BP/run Char BP/parse_quoted_char "'\\n'") == #Done{"", '\n'}
+#test: (BP/run Char BP/parse_quoted_char "'ab'" ) == #Fail{"Expected '"}

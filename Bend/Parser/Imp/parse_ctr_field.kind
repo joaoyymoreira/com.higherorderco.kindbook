@@ -2,22 +2,22 @@ use Bend/Parser as BP
 use Bend/Fun/CtrField as CtrField
 
 // Parses a constructor field.
-BP/Imp/parse_ctr_field : (Parser CtrField)
-| = do Parser {
+BP/Imp/parse_ctr_field : (BP CtrField)
+| = do BP {
   ask rec = (BP/try_consume "~")
   ask (BP/skp_inline #True)
   ask nam = (BP/parse_var_name)
   ask (BP/skp_inline #True)
   ask typ = (BP/try_consume ":")
-  ask typ = if typ do Parser {
+  ask typ = if typ do BP {
     ask (BP/skp_inline #True)
     (BP/Imp/parse_type #True #False) // No ',' since it's used as separator, must have ()
-  } else do Parser {
+  } else do BP {
     ret #Any
   }
   ret #CtrField{nam rec typ}
 }
 
-#test: (BP/Imp/parse_ctr_field #State{"x" 0})         == #Done{#Reply{#State{"" 1} #CtrField{"x" #False #Any}}}
-#test: (BP/Imp/parse_ctr_field #State{"x: u24" 0})    == #Done{#Reply{#State{"" 6} #CtrField{"x" #False #U24}}}
-#test: (BP/Imp/parse_ctr_field #State{"~ x : u24" 0}) == #Done{#Reply{#State{"" 9} #CtrField{"x" #True #U24}}}
+#test: (BP/run CtrField BP/Imp/parse_ctr_field "x")         == #Done{"", #CtrField{"x" #False #Any}}
+#test: (BP/run CtrField BP/Imp/parse_ctr_field "x: u24")    == #Done{"", #CtrField{"x" #False #U24}}
+#test: (BP/run CtrField BP/Imp/parse_ctr_field "~ x : u24") == #Done{"", #CtrField{"x" #True #U24}}

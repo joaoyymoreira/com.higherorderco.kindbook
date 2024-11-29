@@ -9,37 +9,37 @@ use Bend/Parser as BP
 // Handles both single-rule and multi-rule function definitions,
 // with or without type signatures.
 // = A new FnDef with the parsed function definition.
-BP/Fun/parse_fn_def : (Parser FnDef)
-| = do Parser {
+BP/Fun/parse_fn_def : (BP FnDef)
+| = do BP {
   ask _       = BP/skp
-  ask ini_idx = Parser/get_index
+  ask ini_idx = BP/get_index
   let p_check = (λdflt (BP/first_with_guard _ [
-    ((BP/try_parse_keyword "checked")  , (Parser/pure Bool #True))
-    ((BP/try_parse_keyword "unchecked"), (Parser/pure Bool #False))
-  ] (Parser/pure _ dflt))) :: _ -> _
-  ask sig     = (Parser/alternative _ (Parser/map _ (Maybe _) BP/Fun/parse_def_sig λx #Some{x}) (Parser/pure _ #None))
+    ((BP/try_parse_keyword "checked")  , (BP/pure Bool #True))
+    ((BP/try_parse_keyword "unchecked"), (BP/pure Bool #False))
+  ] (BP/pure _ dflt))) :: _ -> _
+  ask sig     = (BP/alternative (Maybe _) do BP{ask x = BP/Fun/parse_def_sig ret #Some{x}} (BP/pure _ #None))
   match sig {
-    #Some{sig}: do Parser {
+    #Some{sig}: do BP {
       let (name, args, typ) = sig
       ask check        = (p_check #True)
       ask _            = (BP/skp)
       ask is_single    = (BP/try_consume "=")
       ask _            = (BP/skp)
-      if is_single do Parser {
+      if is_single do BP {
         ask body    = (BP/Fun/parse_term)
         let pats    = (List/map _ Pat args λnam #Var{#Some{nam}})
         let rules   = [#Rule{pats body}] :: (List Rule)
-        ask end_idx = (Parser/get_index)
+        ask end_idx = (BP/get_index)
         let source  = (Source/from_file_span ini_idx end_idx)
         ret #FnDef{name typ check rules source} :: FnDef
-      } else do Parser {
+      } else do BP {
         ask rules   = (./parse_rules name)
-        ask end_idx = (Parser/get_index)
+        ask end_idx = (BP/get_index)
         let source  = (Source/from_file_span ini_idx end_idx)
         ret #FnDef{name typ check rules source} :: FnDef
       }
     }
-    #None: do Parser {
+    #None: do BP {
       ask check        = (p_check #False)
       ask _            = (BP/skp)
       ask (name, pats) = (BP/Fun/parse_rule_lhs #None)
@@ -48,7 +48,7 @@ BP/Fun/parse_fn_def : (Parser FnDef)
       ask _            = (BP/skp)
       let rule         = #Rule{pats body} :: Rule
       ask rules        = (./parse_rules name)
-      ask end_idx      = (Parser/get_index)
+      ask end_idx      = (BP/get_index)
       let source       = (Source/from_file_span ini_idx end_idx)
       ret #FnDef{name #Any check (rule;;rules) source} :: FnDef
     }
@@ -59,9 +59,9 @@ BP/Fun/parse_fn_def : (Parser FnDef)
 // This is used for function definitions with multiple pattern-matching rules.
 // - name: The expected name of the function being defined.
 // = A list of pattern matching rules.
-./parse_rules : String -> (Parser (List Rule))
-| name = do Parser {
-  let p_rule = do Parser {
+./parse_rules : String -> (BP (List Rule))
+| name = do BP {
+  let p_rule = do BP {
     ask (name, pats) = (BP/Fun/parse_rule_lhs #Some{name})
     ask _            = (BP/skp)
     ask body         = (BP/Fun/parse_term)
@@ -69,5 +69,5 @@ BP/Fun/parse_fn_def : (Parser FnDef)
     ask tail         = (./parse_rules name)
     ret (#Rule{pats body} ;; tail) :: (List Rule)
   }
-  (Parser/alternative _ p_rule (Parser/pure (List Rule) []))
+  (BP/alternative _ p_rule (BP/pure (List Rule) []))
 }

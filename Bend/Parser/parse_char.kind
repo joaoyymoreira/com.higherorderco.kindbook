@@ -1,0 +1,58 @@
+use Bend/Parser as BP
+
+// Parses a single character, including escape sequences.
+// = The parsed character.
+BP/parse_char : (BP Char)
+= do BP {
+  ask mc = BP/advance_one
+  match mc {
+    #None: (BP/fail Char "Unexpected end of input")
+    #Some{c}: if (Char/eq c '\\') {
+      BP/parse_char/escape
+    } else {
+      (BP/pure Char c)
+    }
+  }
+}
+
+// Parses an escape sequence.
+// = Parsed escaped character.
+BP/parse_char/escape : (BP Char)
+= do BP {
+  ask mc = (BP/advance_one)
+  match mc {
+    #None: (BP/fail Char "unexpected_eof")
+    #Some{c}: when Char/eq c {
+      'n'  : (BP/pure Char '\n')
+      'r'  : (BP/pure Char '\r')
+      't'  : (BP/pure Char '\t')
+      '\\' : (BP/pure Char '\\')
+      '\'' : (BP/pure Char '\'')
+      '\"' : (BP/pure Char '\"')
+      'u'  : BP/parse_char/unicode_escape
+    } else {
+      (BP/fail Char (String/append "invalid_escape_char:" (String/from_char c)))
+    }
+  }
+}
+
+// Parses a unicode escape sequence.
+// = The character corresponding to the parsed Unicode code point.
+BP/parse_char/unicode_escape : (BP Char)
+= do BP {
+  ask (BP/consume "{")
+  ask digits = (BP/take_while Char/is_hex_digit)
+  ask (BP/consume "}")
+  match (String/to_u64_base digits 16) {
+    #None: (BP/fail Char "Invalid hexadecimal number in Unicode escape")
+    #Some{n}: (BP/pure Char n)
+  }
+}
+
+
+
+#test: (BP/run Char BP/parse_char "abc"   ) == #Done{"bc" , 'a'}
+#test: (BP/run Char BP/parse_char "bc"    ) == #Done{"c"  , 'b'}
+#test: (BP/run Char BP/parse_char "\\nabc") == #Done{"abc", '\n'}
+#test: (BP/run Char BP/parse_char "\\xabc") == #Fail{"invalid_escape_char:x"}
+#test: (BP/run Char BP/parse_char "\\u{123}abc") == #Done{"abc", 0x123}

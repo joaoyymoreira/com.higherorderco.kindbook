@@ -1,0 +1,9 @@
+use Bend/Parser as BP
+use Bend/Parser/State as State
+
+// Gets the current indentation level of the parser.
+// = The current indentation level as a U64.
+BP/get_indent : (BP U64)
+| #State{inp idx idn fil} = do Parser {
+  #Done{#Reply{#State{inp idx idn fil} idn}}
+}

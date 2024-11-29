@@ -3,21 +3,27 @@ use Bend/Parser as BP
 
 // Skips all trivia (whitespace and comments) except for newlines.
 BP/skp_inline : Bool -> (BP U64)
-| #True  = (./go 0)
+| #True  = ./go
 | #False = BP/skp
 
-./go : U64 -> (BP U64)
-| n = do BP {
+./go : (BP U64)
+| = do BP {
   ask c = (BP/peek_one)
   match c {
     #Some{v}:
-      if (BP/is_inline_space v) do BP {
+      if (Char/eq v ' ') do BP {
         ask z = (BP/advance_one)
-        (./go (+ n 1))
+        ask _ = (BP/add_indent 1)
+        (./go)
+      } else if (Char/eq v '\t') do BP {
+        (BP/fail _ "Tabs are not accepted for indentation.")
+      } else if (BP/is_inline_space v) do BP {
+        ask z = (BP/advance_one)
+        (./go)
       } else if (Char/eq v '#') do BP {
         ask _ = (BP/skip_multi_line_comment 0)
         ask _ = (BP/skip_single_line_comment)
-        (./go n)
+        (./go)
       } else {
         (BP/pure _ 0)
       }
