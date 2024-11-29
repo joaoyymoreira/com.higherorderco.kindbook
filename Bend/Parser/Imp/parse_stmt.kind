@@ -1,37 +1,39 @@
 use Bend/Parser/Imp/parse_stmt as .
 use Bend/Parser as BP
+use Bend/Imp/Stmt as Stmt
+use Bend/Imp/Pattern as Pat
 
-Bend/Parser/Imp/parse_stmt : U64 -> (Parser Stmt)
+BP/Imp/parse_stmt : U64 -> (BP Stmt)
 | indent =
-  let starts_with_pat = do Parser {
-    ask c = (Parser/peek_one)
+  let starts_with_pat = do BP {
+    ask c = (BP/peek_one)
     ret (Maybe/fold _ c Bool #False λc (List/any _ 
       [(BP/is_name_char c) (Char/eq "(" c) (Char/eq "{" c) (Char/eq "$" c)] λx x))
   }
   (BP/first_with_guard _ [
-    ((BP/starts_with_keyword "return")   , ./parse_ret)
-    ((BP/starts_with_keyword "use")      , (./parse_use indent))
-    ((BP/starts_with_keyword "def")      , (./parse_def indent))
-    ((BP/starts_with_keyword "if")       , (./parse_if  indent))
-    ((BP/starts_with_keyword "open")     , (./parse_opn indent))
-    ((BP/starts_with_keyword "match")    , (./parse_mat indent))
-    ((BP/starts_with_keyword "fold")     , (./parse_fld indent))
-    ((BP/starts_with_keyword "switch")   , (./parse_swi indent))
-    ((BP/starts_with_keyword "bend")     , (./parse_bnd indent))
-    (starts_with_pat                     , (./parse_ass indent))
-  ] (Parser/fail _ "Expected statement"))
+    ((BP/starts_with_keyword "return"), ./parse_ret)
+    ((BP/starts_with_keyword "use")   , (./parse_use indent))
+    ((BP/starts_with_keyword "def")   , (./parse_def indent))
+    ((BP/starts_with_keyword "if")    , (./parse_if  indent))
+    ((BP/starts_with_keyword "open")  , (./parse_opn indent))
+    ((BP/starts_with_keyword "match") , (./parse_mat indent))
+    ((BP/starts_with_keyword "fold")  , (./parse_fld indent))
+    ((BP/starts_with_keyword "switch"), (./parse_swi indent))
+    ((BP/starts_with_keyword "bend")  , (./parse_bnd indent))
+    (starts_with_pat                  , (./parse_ass indent))
+  ] (BP/fail _ "Expected statement"))
 
 
-./parse_ret : (Parser Stmt)
-| = do Parser {
+./parse_ret : (BP Stmt)
+| = do BP {
   ask (BP/parse_keyword "return")
   ask (BP/skp_inline #True)
   ask expr = (BP/Imp/parse_expr #True #True)
   ret #Ret{expr}
 }
 
-./parse_use : U64 -> (Parser Stmt)
-| indent = do Parser {
+./parse_use : U64 -> (BP Stmt)
+| indent = do BP {
   ask _          = (BP/parse_keyword "use")
   ask _          = (BP/skp_inline #True)
   ask nam        = (./parse_nam_or_era)
@@ -41,44 +43,53 @@ Bend/Parser/Imp/parse_stmt : U64 -> (Parser Stmt)
   ask val        = (BP/Imp/parse_expr #True #True)
   ask _          = (BP/skp_inline #True)
   ask _          = (BP/try_consume ";")
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent indent nxt_indent)
-  ask nxt        = (BP/Imp/parse_stmt nxt_indent)
+  ask _          = (BP/parse_newline)
+  ask _          = (BP/skp)
+  ask _          = (BP/Imp/check_indent indent)
+  ask nxt        = (BP/Imp/parse_stmt indent)
   ret #Use{nam val nxt}
 }
 
-./parse_def : U64 -> (Parser Stmt)
-| indent = do Parser {
+./parse_def : U64 -> (BP Stmt)
+| indent = do BP {
   ask def        = (BP/Imp/parse_fn_def indent)
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent indent nxt_indent)
-  ask nxt        = (BP/Imp/parse_stmt nxt_indent)
+  ask _          = (BP/parse_newline)
+  ask _          = (BP/skp)
+  ask _          = (BP/Imp/check_indent indent)
+  ask nxt        = (BP/Imp/parse_stmt indent)
   ret #Def{def nxt}
 }
 
-./parse_if : U64 -> (Parser Stmt)
-| indent = do Parser {
+./parse_if : U64 -> (BP Stmt)
+| indent = do BP {
   ask _          = (BP/parse_keyword "if")
   ask _          = (BP/skp_inline #True)
   ask cond       = (BP/Imp/parse_expr #True #True)
   ask _          = (BP/skp_inline #True)
   ask _          = (BP/consume ":")
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent (+ 2 indent) nxt_indent)
-  ask then       = (./parse_stmt nxt_indent)
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent indent nxt_indent)
+  ask _          = (BP/Imp/parse_newlines)
+  ask _          = (BP/Imp/check_indent (+ 2 indent))
+  ask then       = (./parse_stmt (+ 2 indent))
+  ask _          = (BP/Imp/parse_newlines)
+  ask _          = (BP/Imp/check_indent indent)
   ask _          = (BP/consume "else")
   ask _          = (BP/skp_inline #True)
   ask _          = (BP/consume ":")
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent (+ 2 indent) nxt_indent)
-  ask else       = (./parse_stmt nxt_indent)
-  ret #If{cond then else}
+  ask _          = (BP/Imp/parse_newlines)
+  ask _          = (BP/Imp/check_indent (+ 2 indent))
+  ask else       = (./parse_stmt (+ 2 indent))
+  ask next       = (BP/try_parse_newlines)
+  ask nxt_idn    = (BP/get_indent)
+  if (Bool/and next (U64/eq idn nxt_idn)) do BP {
+    ask nxt = (./parse_stmt indent)
+    ret #If{cond then else #Some{nxt}}
+  } else do BP {
+    ret #If{cond then else #None}
+  }
 }
 
-./parse_opn : U64 -> (Parser Stmt)
-| indent = do Parser {
+./parse_opn : U64 -> (BP Stmt)
+| indent = do BP {
   ask _          = (BP/parse_keyword "open")
   ask _          = (BP/skp_inline #True)
   ask typ        = (BP/parse_name "type")
@@ -86,14 +97,14 @@ Bend/Parser/Imp/parse_stmt : U64 -> (Parser Stmt)
   ask _          = (BP/consume ":")
   ask _          = (BP/skp_inline #True)
   ask nam        = (./parse_nam_or_era)
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent indent nxt_indent)
-  ask nxt        = (BP/Imp/parse_stmt nxt_indent)
+  ask _          = (BP/Imp/parse_newlines)
+  ask _          = (BP/Imp/check_indent indent)
+  ask nxt        = (BP/Imp/parse_stmt indent)
   ret #Opn{nam val nxt}
 }
 
-./parse_mat : U64 -> (Parser Pat)
-| indent = do Parser {
+./parse_mat : U64 -> (BP Stmt)
+| indent = do BP {
   ask _            = (BP/parse_keyword "match")
   ask _            = (BP/skp_inline #True)
   ask (bnd, arg)   = (./parse_match_arg)
@@ -101,61 +112,59 @@ Bend/Parser/Imp/parse_stmt : U64 -> (Parser Stmt)
   ask (wbnd, warg) = (./parse_match_with)
   ask _            = (BP/skp_inline #True)
   ask _            = (BP/consume ":")
-  ask nxt_indent   = (BP/skp_newlines)
-  ask _            = (BP/Imp/check_indent (+ 2 indent) nxt_indent)
+  ask _            = (BP/Imp/parse_newlines)
+  ask _            = (BP/Imp/check_indent (+ 2 indent))
   ask arms         = (./parse_match_arms nxt_indent)
-  ask pat        = (./parse_pat #True #True)
-  ask _          = (BP/consume ")")
-  ask _          = (BP/skp_inline #True)
-  ask _          = (BP/consume "{")
-  ask _          = (BP/skp_inline #True)
-  ask arms       = (./parse_match arms indent)
-  ask nxt_indent = (BP/skp_newlines)
-  ask _          = (BP/Imp/check_indent indent nxt_indent)
-  ask nxt        = (BP/Imp/parse_stmt nxt_indent)
-  ret #Mat{pat arms nxt}
+  ask nxt          = (BP/Imp/try_parse_newlines)
+  ask nxt_indent   = (BP/get_indent)
+  if (Bool/and nxt (U64/eq indend nxt_indent)) do BP {
+    ask nxt = (./parse_stmt indend)
+    ret #Mat{bnd arg wbnd warg arms #Some{nxt}}
+  } else do BP {
+    ret #Mat{bnd arg wbnd warg arms #None}
+  }
 }
 
-./parse_pat : Bool -> Bool -> (Parser Pat)
-| inline tup = do Parser {
-  let starts_with_nam = do Parser {
-    ask c = (Parser/peek_one)
+./parse_pat : Bool -> Bool -> (BP Pat)
+| inline tup = do BP {
+  let starts_with_nam = do BP {
+    ask c = (BP/peek_one)
     ret (Maybe/fold _ c Bool #False BP/is_name_char)
   }
   ask head = (BP/first_with_guard _ [
-    ((Parser/starts_with "(") , ./parse_pat/paren)
-    ((Parser/starts_with "{") , ./parse_pat/dup)
-    ((Parser/starts_with "$") , ./parse_pat/chn)
-    ((Parser/starts_with "*") , ./parse_pat/era)
+    ((BP/starts_with "(") , ./parse_pat/paren)
+    ((BP/starts_with "{") , ./parse_pat/dup)
+    ((BP/starts_with "$") , ./parse_pat/chn)
+    ((BP/starts_with "*") , ./parse_pat/era)
     (starts_with_nam          , (./parse_pat/var_or_get inline))
-  ] (Parser/fail _ "Expected pattern"))
-  if tup do Parser {
+  ] (BP/fail _ "Expected pattern"))
+  if tup do BP {
     (./parse_pat/tup inline)
-  } else do Parser {
+  } else do BP {
     ret head
   }
 }
 
-./parse_pat/tup : Bool -> (Parser Pat)
-| inline = do Parser {
+./parse_pat/tup : Bool -> (BP Pat)
+| inline = do BP {
   ask (BP/skp_inline inline)
   ask tup = (BP/try_consume ",")
   ask (BP/skp_inline inline)
-  ask eql = (Parser/starts_with "=")
-  ask prn = (Parser/starts_with ")")
+  ask eql = (BP/starts_with "=")
+  ask prn = (BP/starts_with ")")
   if (Bool/or eql prn) {
-    (Parser/pure _ head)
-  } else {
+    (BP/pure _ head)
+  } else do BP {
     ask tail = (./parse_pat inline #True)
     match tail {
-      #Tup{tail}: (Parser/pure _ #Tup{head;;tail})
-      _         : (Parser/pure _ #Tup{[head tail]})
+      #Tup{tail}: (BP/pure _ #Tup{head;;tail})
+      _         : (BP/pure _ #Tup{[head tail]})
     }
   }
 }
 
-./parse_pat/paren : (Parser Pat)
-| = do Parser {
+./parse_pat/paren : (BP Pat)
+| = do BP {
   ask _   = (BP/consume "(")
   ask BP/skp
   ask pat = (./parse_pat #False #True)
@@ -164,48 +173,48 @@ Bend/Parser/Imp/parse_stmt : U64 -> (Parser Stmt)
   ret pat
 }
 
-./parse_pat/dup : (Parser Pat)
-| = do Parser {
+./parse_pat/dup : (BP Pat)
+| = do BP {
   ask els = (BP/list_like _ (./parse_pat #False #False) "{" "}" "," #True #False 2)
   ret #Dup{els}
 }
 
-./parse_pat/chn : (Parser Pat)
-| = do Parser {
+./parse_pat/chn : (BP Pat)
+| = do BP {
   ask _   = (BP/consume "$")
   ask nam = (BP/parse_var_name)
   ret #Chn{nam}
 }
 
-./parse_pat/era : (Parser Pat)
-| = do Parser {
+./parse_pat/era : (BP Pat)
+| = do BP {
   ask _ = (BP/consume "*")
   ret #Era
 }
 
-./parse_pat/var_or_get : Bool -> (Parser Pat)
-| inline = do Parser {
+./parse_pat/var_or_get : Bool -> (BP Pat)
+| inline = do BP {
   ask nam = (BP/parse_var_name)
   ask (BP/skp_inline inline)
   ask set = (BP/try_consume "[")
-  if set do Parser {
+  if set do BP {
     // TODO: allow patterns like `x[a][b]`
     ask (BP/skp)
     ask key = (BP/Imp/parse_expr #False #True)
     ask (BP/skp)
     ask (BP/consume "]")
     ret #MapSet{key nam}
-  } else do Parser {
+  } else do BP {
     ret #Var{nam}
   }
 }
 
-./parse_nam_or_era : (Parser (Maybe String))
-| = do Parser {
+./parse_nam_or_era : (BP (Maybe String))
+| = do BP {
   ask era = (BP/try_consume "*")
-  if era do Parser {
+  if era do BP {
     ret #None
-  } else do Parser {
+  } else do BP {
     ask nam = (BP/parse_var_name)
     ret #Some{nam}
   }

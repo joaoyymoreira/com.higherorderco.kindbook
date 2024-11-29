@@ -24,9 +24,7 @@ BP/Imp/parse_adt : U64 -> (BP (Adt & (List Ctr)))
   }
   ask (BP/skp_inline #True)
   ask (BP/consume ":")
-  ask (BP/parse_newline)
-  ask (BP/skp)
-
+  ask (BP/Imp/parse_newlines)
   ask (BP/Imp/check_indent (+ 2 indent))
   ask head    = (./parse_ctr name vars)
   ask ctrs    = (./parse_ctrs name vars (+ 2 indent) [head])
@@ -38,12 +36,12 @@ BP/Imp/parse_adt : U64 -> (BP (Adt & (List Ctr)))
 }
 
 ./parse_ctrs : String -> (List String) -> U64 -> (List Ctr) -> (BP (List Ctr))
-| adt vars indent acc = do BP {
-  ask (BP/skp)
-  ask nxt_indent = (BP/get_indent)
-  if (U64/eq indent nxt_indent) do BP {
+| adt vars idn acc = do BP {
+  ask go      = (BP/Imp/try_parse_newlines)
+  ask nxt_idn = (BP/get_indent)
+  if (Bool/and go (U64/eq idn nxt_idn)) do BP {
     ask ctr = (./parse_ctr adt vars)
-    (./parse_ctrs adt vars indent (ctr;;acc))
+    (./parse_ctrs adt vars idn (ctr;;acc))
   } else do BP {
     ret (List/reverse _ acc)
   }

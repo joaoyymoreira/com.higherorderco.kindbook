@@ -1,0 +1,29 @@
+use Bend/Parser as BP
+
+// Consumes at least one new line, skipping all trivia after it.
+// Does not try to consume on EOF.
+// = True if consumed a new line, False if EOF, or an error otherwise.
+BP/Imp/try_parse_newlines : (BP Bool)
+| = do BP {
+  ask _   = (BP/skp_inline #True)
+  ask eof = (BP/is_eof)
+  if eof do BP {
+    ret #False
+  } else do BP {
+    ask (BP/consume "\n")
+    ask (BP/set_indent 0)
+    ask (BP/skp)
+    ret #True
+  }
+}
+
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "  \n  abc") == #Done{"abc", #True}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "\n\n  abc") == #Done{"abc", #True}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "abc")       == #Fail{"Expected \n"}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "  abc")     == #Fail{"Expected \n"}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "  \n \n  ") == #Done{"", #True}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "\n\t")      == #Fail{"Tabs are not accepted for indentation."}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "\n  \t")    == #Fail{"Tabs are not accepted for indentation."}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "\n")        == #Done{"", #True}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "")          == #Done{"", #False}
+#test: (BP/run Bool (BP/Imp/try_parse_newlines) "   ")       == #Done{"", #False}

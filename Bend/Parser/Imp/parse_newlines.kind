@@ -1,0 +1,22 @@
+use Bend/Parser as BP
+
+// Consumes at least one new line, skipping all trivia after it.
+// = 0 if successful or an error otherwise.
+BP/Imp/parse_newlines : (BP U64)
+| = do BP {
+  ask (BP/skp_inline #True)
+  ask (BP/consume "\n")
+  ask (BP/set_indent 0)
+  ask (BP/skp)
+  ret 0
+}
+
+#test: (BP/run U64 (BP/Imp/parse_newlines) "  \n  abc") == #Done{"abc", 0}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "\n\n  abc") == #Done{"abc", 0}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "abc")       == #Fail{"Expected \n"}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "  abc")     == #Fail{"Expected \n"}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "  \n \n  ") == #Done{"", 0}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "\n\t")      == #Fail{"Tabs are not accepted for indentation."}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "\n  \t")    == #Fail{"Tabs are not accepted for indentation."}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "\n")        == #Done{"", 0}
+#test: (BP/run U64 (BP/Imp/parse_newlines) "")          == #Fail{"Expected \n"}
