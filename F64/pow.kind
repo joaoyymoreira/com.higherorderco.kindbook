@@ -1,0 +1,13 @@
+// Computes x raised to the power of n.
+// - x: Base.
+// - n: Exponent.
+// = x^n.
+F64/pow : F64 -> U64 -> F64
+| x 0   = 1.0
+| x 1+p = (* x (F64/pow x p))
+
+#test: (F64/pow 2.0 0) == 1.0
+#test: (F64/pow 2.0 3) == 8.0
+#test: (F64/pow 5.0 2) == 25.0
+#test: (F64/pow 1.0 10) == 1.0
+#test: (F64/pow 0.0 100) == 0.0

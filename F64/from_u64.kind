@@ -1,11 +1,32 @@
 // Converts a U64 to a 64_bit signed float.
 // - x: The U64 to convert.
-// = The F64 representation of the input U64.
+// // = The F64 representation of the input U64.
 F64/from_u64 : U64 -> F64
-| n = switch n {
-  0:   0.0
-  1+p: (+ 1.0 (F64/from_u64 p))
-}
-#test: (F64/from_u64 0) == 0.0
-#test: (F64/from_u64 2) == 2.0
-#test: (F64/from_u64 1000) == 1000.0
+| n = 
+  let sign = (& (>> n 63) 0x1)
+  let expo = (& (>> n 52) 0x7FF)
+  let mant = (& n 0xFFFFFFFFFFFFF)
+  (F64/from_u64/go sign expo mant)
+  
+F64/from_u64/go : U64 -> U64 -> U64 -> F64
+| 0 0 0 = 0.0
+| 0 0 m = (F64/mul (U64/to_ 1022) (U64/to_ m))
+| 0 e m with #Pair{(== e 2047) (== m 0)} :: (Pair U64 U64)
+. | #Pair{0 0} =
+    if (U64/to_bool (> e 1023)) {
+      (F64/mul (F64/pow 2.0 (U64/sub e 1023)) (F64/add 1.0 (U64/to_ m)))
+    } else {
+      (F64/mul (U64/to_ (U64/sub 1023 e)) (F64/add 1.0 (U64/to_ m)))
+    }
+. | #Pair{e 0} = (/ 0.0 0.0)
+. | #Pair{e m} = (/ 1.0 0.0) 
+| s 0 m = (F64/mul (F64/negate 1.0) (F64/mul (U64/to_ 1022) (U64/to_ m)))
+| s e m with #Pair{(== e 2047) (== m 0)} :: (Pair U64 U64)
+. | #Pair{0 0} = 
+    if (U64/to_bool (> e 1023)) {
+      (F64/mul (F64/negate 1.0) (F64/mul (F64/pow 2.0 (U64/sub e 1023)) (F64/add 1.0 (U64/to_ m))))
+    } else {
+      (F64/mul (F64/negate 1.0) (F64/mul (U64/to_ (U64/sub 1023 e)) (F64/add 1.0 (U64/to_ m))))
+    }
+. | #Pair{e 0} = (/ 0.0 0.0)
+. | #Pair{e m} = (/ -1.0 0.0) 

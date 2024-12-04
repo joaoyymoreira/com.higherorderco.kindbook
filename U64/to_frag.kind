@@ -1,0 +1,22 @@
+
+U64/to_frag : U64 -> F64
+| n = (U64/to_frag_go n 2.0)
+
+// Helper function for U64/to_frag
+U64/to_frag_go : U64 -> F64 -> F64
+| 0   mult = 0.0
+| 1   mult = (/ 1.0 mult)
+| 2+p mult = 
+  let quotient  = (U64/div (+ 2 p) 2)
+  let remainder = (U64/mod (+ 2 p) 2)
+  if (U64/to_bool remainder) {
+    (+ (/ 1.0 mult) (U64/to_frag_go quotient (* 2.0 mult)))
+  } else {
+    (U64/to_frag_go quotient (* 2.0 mult))
+  }
+
+#test: (U64/to_frag 0) == 0.0
+#test: (U64/to_frag 1) == 0.5
+#test: (U64/to_frag 2) == 0.25
+#test: (U64/to_frag 5) == 0.625 
+#test: (U64/to_frag 18446744073709551615) == 1.0 

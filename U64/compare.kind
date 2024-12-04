@@ -4,9 +4,9 @@
 // = An Cmp value: LT if a < b, EQ if a = b, GT if a > b.
 U64/compare : U64 -> U64 -> Cmp
 = λa λb
-  if (U64/to_bool (U64/eql a b)) {
+  if (U64/eq a b) {
     #EQ
-  } else if (U64/to_bool (< a b)) {
+  } else if (U64/lt a b) {
     #LT
   } else {
     #GT

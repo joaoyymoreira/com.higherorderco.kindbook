@@ -2,7 +2,20 @@
 // - x: The U64 to convert.
 // = The F64 representation of the input U64.
 U64/to_f64 : U64 -> F64
-| x = (F64/from_u64 x)
+| n = (U64/to_f64_go n 1.0)
+
+// Helper function for U64/to_frag
+U64/to_f64_go : U64 -> F64 -> F64
+| 0   mult = 0.0
+| 1   mult = mult
+| 2+p mult = 
+  let quotient  = (U64/div (+ 2 p) 2)
+  let remainder = (U64/mod (+ 2 p) 2)
+  if (U64/to_bool remainder) {
+    (+ mult (U64/to_f64_go quotient (* 2.0 mult)))
+  } else {
+    (U64/to_f64_go quotient (* 2.0 mult))
+  }
 
 #test: (U64/to_f64 0) == 0.0
 #test: (U64/to_f64 1) == 1.0
