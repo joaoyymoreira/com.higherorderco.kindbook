@@ -1,0 +1,52 @@
+// Converts a U64 to a 64_bit signed float.
+// - x: The U64 to convert.
+// = The F64 representation of the input U64.
+U64/to_ieee754 : U64 -> F64
+| 0 = 0.0   
+| n = 
+  let sign = (& (>> n 63) 0x1)
+  let expo = (& (>> n 52) 0x7FF)
+  let mant = (& n 0xFFFFFFFFFFFFF)
+  (* (F64/pow (F64/negate 1.0) sign) (U64/to_ieee754/go expo mant))
+  
+U64/to_ieee754/go : U64 -> U64 -> F64
+| 0 0 = 0.0
+| 0 m with (U64/log 2 (U64/div 4503599627370496 m))
+. | 0 = (F64/mul (F64/div 1.0 (F64/pow 2.0 1022)) (U64/to_ieee754_frag m 2.0))
+. | p = (F64/mul (F64/div 1.0 (F64/pow 2.0 1022)) (U64/to_ieee754_frag m (F64/pow 2.0 p)))
+| e 0 with (== e 2047)
+. | 0 = 
+    if (U64/to_bool (> e 1023)) {
+      (F64/pow 2.0 (U64/sub e 1023))
+    } else {
+      (F64/div 1.0 (F64/pow 2.0 (U64/sub 1023 e)))
+    }
+. | q = (F64/div 1.0 0.0)
+| e m with (== e 2047)
+. | 0 with (U64/log 2 (U64/div 4503599627370496 m))
+. . | 0 = 
+      if (U64/to_bool (> e 1023)) {
+        (F64/mul (F64/pow 2.0 (U64/sub e 1023)) (F64/add 1.0 (U64/to_ieee754_frag m 2.0)))
+      } else {
+        (F64/mul (F64/div 1.0 (F64/pow 2.0 (U64/sub 1023 e))) (F64/add 1.0 (U64/to_ieee754_frag m 2.0)))
+      }
+. . | p = 
+      if (U64/to_bool (> e 1023)) {
+        (F64/mul (F64/pow 2.0 (U64/sub e 1023)) (F64/add 1.0 (U64/to_ieee754_frag m (F64/pow 2.0 p))))
+      } else {
+        (F64/mul (F64/div 1.0 (F64/pow 2.0 (U64/sub 1023 e))) (F64/add 1.0 (U64/to_ieee754_frag m (F64/pow 2.0 p))))
+      }
+. | q = (F64/div 0.0 0.0)
+
+
+U64/to_ieee754_frag : U64 -> F64 -> F64
+| 0   mult = 0.0
+| 1   mult = (F64/div 1.0 mult)
+| 2+p mult = 
+  let quotient  = (U64/div (U64/add 2 p) 2)
+  let remainder = (U64/mod (U64/add 2 p) 2)
+  if (U64/to_bool remainder) {
+    (F64/add (F64/div 1.0 mult) (U64/to_ieee754_frag quotient (F64/mul 2.0 mult)))
+  } else {
+    (U64/to_ieee754_frag quotient (F64/mul 2.0 mult))
+  }
