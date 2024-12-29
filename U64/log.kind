@@ -1,0 +1,22 @@
+// Computes the base logarithm of a U64 number.
+// - base: The logarithm base.
+// - x: The input number.
+// = The floor of the base logarithm of x.
+U64/log : U64 -> U64 -> U64
+| base x = (U64/log/go base x 0)
+
+// Helper function for U64/log
+U64/log/go : U64 -> U64 -> U64 -> U64
+| base x acc =
+  if (U64/eq x 1) {
+    acc
+  } else {
+    (U64/log/go base (U64/div x base) (U64/add acc 1))
+  }
+
+#test: (U64/log 2 8) == 3
+#test: (U64/log 2 16) == 4
+#test: (U64/log 3 27) == 3
+#test: (U64/log 10 1000) == 3
+#test: (U64/log 5 1) == 0
+#test: (U64/log 2 1) == 0
