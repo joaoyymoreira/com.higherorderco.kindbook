@@ -4,11 +4,11 @@ U64/to_frag : U64 -> F64
 
 // Helper function for U64/to_frag
 U64/to_frag_go : U64 -> F64 -> F64
-| 0   mult = 0.0
-| 1   mult = (/ 1.0 mult)
-| 2+p mult = 
-  let quotient  = (U64/div (+ 2 p) 2)
-  let remainder = (U64/mod (+ 2 p) 2)
+| 0 mult = 0.0
+| 1 mult = (/ 1.0 mult)
+| p mult = 
+  let quotient  = (/ p 2)
+  let remainder = (% p 2)
   if (U64/to_bool remainder) {
     (+ (/ 1.0 mult) (U64/to_frag_go quotient (* 2.0 mult)))
   } else {
